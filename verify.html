@@ -110,11 +110,21 @@ MCowBQYDK2VwAyEAqZh9e8PionpHa73JLiRLynkvpbednvH6b2/UHoLkOA4=
                 const receipt = JSON.parse(receiptText);
                 
                 // V5 AUDIT: Separate the signature from the signed data (payload)
-                const { signature, ...payload } = receipt;
+                const { signature, ...data } = receipt;
                 if (!signature) throw new Error("Receipt is missing 'signature' field.");
 
-                // V5 CANONICALIZATION: We sign the exact JSON representation of the payload
-                const message = JSON.stringify(payload);
+                // V5 CANONICALIZATION: Reconstruct payload in the EXACT order the Backend signed it
+                const cleanPayload = {
+                    receipt_id: data.receipt_id,
+                    issued_at: data.issued_at,
+                    mic: data.mic,
+                    status: data.status,
+                    source: data.source,
+                    terms_hash: data.terms_hash,
+                    public_key_id: data.public_key_id
+                };
+
+                const message = JSON.stringify(cleanPayload);
                 const msgBuffer = new TextEncoder().encode(message);
 
                 // IMPORT PUBLIC KEY
