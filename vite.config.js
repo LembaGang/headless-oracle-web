@@ -10,6 +10,7 @@ export default defineConfig({
         docs: resolve(__dirname, 'docs.html'),
         privacy: resolve(__dirname, 'privacy.html'),
         terms: resolve(__dirname, 'terms.html'),
+        status: resolve(__dirname, 'status.html'),
       },
     },
   },

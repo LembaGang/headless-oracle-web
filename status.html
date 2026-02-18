@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Status | Headless Oracle V5</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #cbd5e1; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .pill-open   { background: #052e16; color: #4ade80; border: 1px solid #166534; }
+        .pill-closed { background: #1c1917; color: #94a3b8; border: 1px solid #44403c; }
+        .pill-halted { background: #431407; color: #fb923c; border: 1px solid #9a3412; }
+        .pill-unknown{ background: #1c1917; color: #fbbf24; border: 1px solid #78350f; }
+        .pill-loading{ background: #1e293b; color: #64748b; border: 1px solid #334155; }
+        .dot-green  { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
+        .dot-red    { background: #ef4444; box-shadow: 0 0 6px #ef4444; }
+        .dot-yellow { background: #eab308; box-shadow: 0 0 6px #eab308; }
+        .dot-grey   { background: #64748b; }
+        @keyframes pulse-dot { 0%,100%{opacity:1}50%{opacity:.4} }
+        .animate-dot { animation: pulse-dot 2s ease-in-out infinite; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <nav class="w-full border-b border-slate-800 bg-slate-900/80 backdrop-blur-md fixed top-0 z-50">
+        <div class="max-w-5xl mx-auto px-6 h-16 flex justify-between items-center">
+            <a href="index.html" class="font-bold text-white tracking-wider">HEADLESS<span class="text-blue-500">ORACLE</span></a>
+            <div class="flex items-center gap-4">
+                <span id="global-status-badge" class="text-xs font-mono px-3 py-1 rounded-full pill-loading">Checking...</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow max-w-4xl mx-auto px-6 py-28 w-full">
+
+        <!-- Header -->
+        <div class="mb-10">
+            <h1 class="text-3xl font-bold text-white mb-2">System Status</h1>
+            <p class="text-slate-400 text-sm">Live market status across all supported exchanges. Updated on page load. All times UTC.</p>
+            <p class="text-xs text-slate-600 mt-1 mono" id="last-updated">Last checked: —</p>
+        </div>
+
+        <!-- API Health Banner -->
+        <div id="api-health-banner" class="mb-8 p-4 rounded-xl border border-slate-700 bg-slate-800/40 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div id="api-dot" class="w-3 h-3 rounded-full dot-grey animate-dot"></div>
+                <div>
+                    <p class="text-sm font-semibold text-white">Oracle API</p>
+                    <p class="text-xs text-slate-500 mono">headless-oracle-v5.mmsebenzi-oracle.workers.dev</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <p id="api-latency" class="text-xs text-slate-400 mono">—</p>
+                <p id="api-status-text" class="text-xs text-slate-500">Querying...</p>
+            </div>
+        </div>
+
+        <!-- Exchange Grid -->
+        <div class="mb-4 flex items-center justify-between">
+            <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-widest">Exchange Status</h2>
+            <button onclick="refreshAll()" class="text-xs text-blue-400 hover:text-blue-300 transition mono">↻ Refresh</button>
+        </div>
+
+        <div id="exchange-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
+            <!-- Populated by JS -->
+        </div>
+
+        <!-- Live Receipt Section -->
+        <div class="mb-4">
+            <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-1">Sample Live Receipt</h2>
+            <p class="text-xs text-slate-600 mono mb-3">Signed Ed25519 receipt — verify at <a href="verify.html" class="text-blue-500 hover:text-blue-400">headlessoracle.com/verify.html</a></p>
+        </div>
+        <div class="bg-slate-900 rounded-xl border border-slate-700 overflow-hidden mb-12">
+            <div class="px-4 py-2 border-b border-slate-700 flex items-center justify-between">
+                <span class="text-xs mono text-slate-500">GET /v5/demo?mic=XNYS</span>
+                <a href="verify.html" class="text-xs text-blue-400 hover:text-blue-300 transition">Verify →</a>
+            </div>
+            <pre id="sample-receipt" class="text-xs mono text-blue-300 p-5 overflow-x-auto leading-relaxed">Loading...</pre>
+        </div>
+
+        <!-- DST Countdown -->
+        <div class="mb-4">
+            <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-3">Upcoming DST Transitions</h2>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
+            <div class="p-5 rounded-xl border border-yellow-800/40 bg-yellow-900/10">
+                <div class="flex items-start justify-between mb-2">
+                    <div>
+                        <p class="text-sm font-semibold text-white">US DST — Spring Forward</p>
+                        <p class="text-xs text-slate-500 mono mt-0.5">March 8, 2026 · 02:00 ET</p>
+                    </div>
+                    <span id="us-dst-countdown" class="text-xs mono px-2 py-1 rounded bg-yellow-900/30 text-yellow-400 border border-yellow-800/40">—</span>
+                </div>
+                <p class="text-xs text-slate-400">EST → EDT (UTC-5 → UTC-4). Affects XNYS, XNAS.</p>
+                <p class="text-xs text-slate-600 mt-1">Bots with hardcoded UTC-5 will compute wrong session times from March 9 onward.</p>
+            </div>
+            <div class="p-5 rounded-xl border border-orange-800/40 bg-orange-900/10">
+                <div class="flex items-start justify-between mb-2">
+                    <div>
+                        <p class="text-sm font-semibold text-white">UK/EU DST — Spring Forward</p>
+                        <p class="text-xs text-slate-500 mono mt-0.5">March 29, 2026 · 01:00 GMT</p>
+                    </div>
+                    <span id="uk-dst-countdown" class="text-xs mono px-2 py-1 rounded bg-orange-900/30 text-orange-400 border border-orange-800/40">—</span>
+                </div>
+                <p class="text-xs text-slate-400">GMT → BST / CET → CEST (UTC+0 → UTC+1 / UTC+1 → UTC+2). Affects XLON, XPAR.</p>
+                <p class="text-xs text-slate-600 mt-1">Bots using hardcoded UTC+0 or UTC+1 will fail from March 31 onward.</p>
+            </div>
+        </div>
+
+        <!-- Integration Quick-Start -->
+        <div class="mb-4">
+            <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-3">3-Line Integration</h2>
+        </div>
+        <div class="bg-slate-900 rounded-xl border border-slate-700 overflow-hidden">
+            <div class="px-4 py-2 border-b border-slate-700">
+                <span class="text-xs mono text-slate-500">Python · fail-closed by design</span>
+            </div>
+            <pre class="text-xs mono text-blue-300 p-5 overflow-x-auto leading-relaxed">receipt = requests.get("https://headlessoracle.com/v5/status?mic=XNYS",
+    headers={"X-Oracle-Key": key}, timeout=4).json()
+
+if receipt["status"] != "OPEN": defer()   # fail-closed
+verify_signature(receipt)                 # Ed25519 check
+execute_trade()                           # only path to execution</pre>
+        </div>
+
+    </main>
+
+    <footer class="border-t border-slate-800 py-10 text-center text-slate-600 text-xs">
+        <div class="flex justify-center gap-6 mb-2">
+            <a href="index.html"        class="hover:text-white transition">Home</a>
+            <a href="docs.html"         class="hover:text-white transition">Docs</a>
+            <a href="verify.html"       class="hover:text-white transition">Verifier</a>
+            <a href="ed25519-public-key.txt" class="hover:text-white transition">Public Key</a>
+            <a href="terms.html"        class="hover:text-white transition">Terms</a>
+        </div>
+        <p>Headless Oracle V5 · Ed25519 signed · Fail-closed · 7 exchanges</p>
+    </footer>
+
+    <script>
+    const API = 'https://headless-oracle-v5.mmsebenzi-oracle.workers.dev';
+
+    const EXCHANGES = [
+        { mic: 'XNYS', name: 'New York Stock Exchange',         region: '🇺🇸 US',  tz: 'America/New_York' },
+        { mic: 'XNAS', name: 'NASDAQ',                          region: '🇺🇸 US',  tz: 'America/New_York' },
+        { mic: 'XLON', name: 'London Stock Exchange',           region: '🇬🇧 UK',  tz: 'Europe/London'   },
+        { mic: 'XJPX', name: 'Japan Exchange Group',            region: '🇯🇵 JP',  tz: 'Asia/Tokyo'      },
+        { mic: 'XPAR', name: 'Euronext Paris',                  region: '🇫🇷 EU',  tz: 'Europe/Paris'    },
+        { mic: 'XHKG', name: 'Hong Kong Exchanges',             region: '🇭🇰 HK',  tz: 'Asia/Hong_Kong'  },
+        { mic: 'XSES', name: 'Singapore Exchange',              region: '🇸🇬 SG',  tz: 'Asia/Singapore'  },
+    ];
+
+    function statusPill(status) {
+        const map = {
+            OPEN:    { cls: 'pill-open',    dot: 'dot-green',  label: '● OPEN'    },
+            CLOSED:  { cls: 'pill-closed',  dot: 'dot-grey',   label: '○ CLOSED'  },
+            HALTED:  { cls: 'pill-halted',  dot: 'dot-red',    label: '● HALTED'  },
+            UNKNOWN: { cls: 'pill-unknown', dot: 'dot-yellow', label: '? UNKNOWN' },
+        };
+        const s = map[status] || { cls: 'pill-loading', dot: 'dot-grey', label: '… ' + (status||'?') };
+        return `<span class="text-xs mono px-3 py-1 rounded-full ${s.cls} font-medium">${s.label}</span>`;
+    }
+
+    function localTime(tz) {
+        return new Intl.DateTimeFormat('en-GB', {
+            timeZone: tz, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+        }).format(new Date());
+    }
+
+    function buildGrid() {
+        const grid = document.getElementById('exchange-grid');
+        grid.innerHTML = EXCHANGES.map(ex => `
+            <div id="card-${ex.mic}" class="p-5 rounded-xl border border-slate-700 bg-slate-800/30">
+                <div class="flex items-start justify-between mb-3">
+                    <div>
+                        <p class="text-xs text-slate-500 mono mb-0.5">${ex.mic} · ${ex.region}</p>
+                        <p class="text-sm font-semibold text-white">${ex.name}</p>
+                    </div>
+                    <div id="pill-${ex.mic}">${statusPill('...')}</div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <p class="text-xs text-slate-600 mono" id="localtime-${ex.mic}">—</p>
+                    <p class="text-xs text-slate-600 mono" id="source-${ex.mic}">—</p>
+                </div>
+                <div id="next-${ex.mic}" class="mt-2 text-xs text-slate-600 mono hidden"></div>
+            </div>
+        `).join('');
+    }
+
+    async function fetchExchange(mic) {
+        try {
+            const [demoRes, schedRes] = await Promise.all([
+                fetch(`${API}/v5/demo?mic=${mic}`),
+                fetch(`${API}/v5/schedule?mic=${mic}`),
+            ]);
+            const receipt  = await demoRes.json();
+            const schedule = await schedRes.json();
+
+            document.getElementById(`pill-${mic}`).innerHTML = statusPill(receipt.status);
+
+            // Local clock for this exchange
+            const ex = EXCHANGES.find(e => e.mic === mic);
+            document.getElementById(`localtime-${mic}`).textContent = localTime(ex.tz) + ' local';
+            document.getElementById(`source-${mic}`).textContent = 'src: ' + (receipt.source || '—');
+
+            // Next session info
+            const nextEl = document.getElementById(`next-${mic}`);
+            if (schedule.next_open && receipt.status !== 'OPEN') {
+                const nextOpen = new Date(schedule.next_open);
+                const diff = nextOpen - new Date();
+                const h = Math.floor(diff / 3600000);
+                const m = Math.floor((diff % 3600000) / 60000);
+                nextEl.textContent = `Opens in ${h}h ${m}m · ${nextOpen.toUTCString().slice(17,22)} UTC`;
+                nextEl.classList.remove('hidden');
+            } else if (receipt.status === 'OPEN' && schedule.next_close) {
+                const nextClose = new Date(schedule.next_close);
+                const diff = nextClose - new Date();
+                const h = Math.floor(diff / 3600000);
+                const m = Math.floor((diff % 3600000) / 60000);
+                nextEl.textContent = `Closes in ${h}h ${m}m · ${nextClose.toUTCString().slice(17,22)} UTC`;
+                nextEl.classList.remove('hidden');
+            }
+
+            // Highlight card if open
+            const card = document.getElementById(`card-${mic}`);
+            if (receipt.status === 'OPEN') {
+                card.classList.add('border-green-800/50', 'bg-green-900/5');
+                card.classList.remove('border-slate-700', 'bg-slate-800/30');
+            } else if (receipt.status === 'HALTED') {
+                card.classList.add('border-orange-800/50', 'bg-orange-900/5');
+                card.classList.remove('border-slate-700', 'bg-slate-800/30');
+            }
+
+            return receipt;
+        } catch (e) {
+            document.getElementById(`pill-${mic}`).innerHTML = statusPill('UNKNOWN');
+            document.getElementById(`source-${mic}`).textContent = 'error';
+            return null;
+        }
+    }
+
+    async function refreshAll() {
+        const start = Date.now();
+
+        // Reset cards
+        EXCHANGES.forEach(ex => {
+            document.getElementById(`pill-${ex.mic}`).innerHTML = statusPill('...');
+            const card = document.getElementById(`card-${ex.mic}`);
+            card.classList.remove('border-green-800/50','bg-green-900/5','border-orange-800/50','bg-orange-900/5');
+            card.classList.add('border-slate-700','bg-slate-800/30');
+        });
+
+        // Fetch API health + XNYS receipt for sample
+        let apiOk = false;
+        let sampleReceipt = null;
+
+        try {
+            const healthStart = Date.now();
+            const res = await fetch(`${API}/v5/demo?mic=XNYS`);
+            const latency = Date.now() - healthStart;
+            sampleReceipt = await res.json();
+            apiOk = res.ok;
+
+            document.getElementById('api-dot').className = `w-3 h-3 rounded-full ${apiOk ? 'dot-green' : 'dot-red'} animate-dot`;
+            document.getElementById('api-latency').textContent = `${latency}ms`;
+            document.getElementById('api-status-text').textContent = apiOk ? 'Operational' : 'Degraded';
+            document.getElementById('global-status-badge').textContent = apiOk ? '● All Systems Operational' : '● Degraded';
+            document.getElementById('global-status-badge').className = `text-xs font-mono px-3 py-1 rounded-full ${apiOk ? 'pill-open' : 'pill-halted'}`;
+            document.getElementById('sample-receipt').textContent = JSON.stringify(sampleReceipt, null, 2);
+            document.getElementById('sample-receipt').className = 'text-xs mono text-green-300 p-5 overflow-x-auto leading-relaxed';
+        } catch(e) {
+            document.getElementById('api-dot').className = 'w-3 h-3 rounded-full dot-red animate-dot';
+            document.getElementById('api-status-text').textContent = 'Unreachable';
+            document.getElementById('global-status-badge').textContent = '● API Unreachable';
+            document.getElementById('global-status-badge').className = 'text-xs font-mono px-3 py-1 rounded-full pill-halted';
+        }
+
+        // Fetch all exchanges in parallel (skip XNYS since we already have it)
+        const others = EXCHANGES.filter(e => e.mic !== 'XNYS');
+        await Promise.all([
+            fetchExchange('XNYS'),
+            ...others.map(ex => fetchExchange(ex.mic))
+        ]);
+
+        document.getElementById('last-updated').textContent =
+            `Last checked: ${new Date().toUTCString()} · ${Date.now() - start}ms total`;
+    }
+
+    function countdowns() {
+        const usDST = new Date('2026-03-08T07:00:00Z'); // 2am ET = 7am UTC
+        const ukDST = new Date('2026-03-29T01:00:00Z'); // 1am GMT = 1am UTC
+        const now   = new Date();
+
+        function fmt(ms) {
+            if (ms <= 0) return 'Passed';
+            const d = Math.floor(ms / 86400000);
+            const h = Math.floor((ms % 86400000) / 3600000);
+            return `${d}d ${h}h`;
+        }
+
+        document.getElementById('us-dst-countdown').textContent = fmt(usDST - now);
+        document.getElementById('uk-dst-countdown').textContent = fmt(ukDST - now);
+    }
+
+    // Init
+    buildGrid();
+    countdowns();
+    refreshAll();
+    setInterval(countdowns, 60000);
+    </script>
+
+</body>
+</html>

@@ -2,11 +2,25 @@
 
 > Headless Oracle is the cryptographically signed market status API purpose-built for autonomous trading agents, DeFi bots, and AI-driven execution systems operating in the tokenized real-world asset (RWA) economy.
 
-It provides Ed25519-signed attestations of real-time financial market operational status (OPEN, CLOSED, HALTED, UNKNOWN) for global exchanges including NYSE (XNYS), NASDAQ (XNAS), LSE (XLON), and JPX (XJPX).
-
-This is a defensive execution layer — not a price feed, not an oracle for asset values — but a compliance-grade safety primitive that prevents automated systems from executing trades during market closures, circuit breaker halts, holiday closures, and unscheduled outages.
+It provides Ed25519-signed attestations of real-time financial market operational status (OPEN, CLOSED, HALTED, UNKNOWN) for seven global exchanges across four continents. This is a defensive execution layer — not a price feed, not an asset value oracle — but a compliance-grade safety primitive that prevents automated systems from executing trades during market closures, circuit breaker halts, holiday closures, and unscheduled outages.
 
 Every response is a Liability Receipt: a cryptographically signed, timestamped, independently verifiable proof that your agent checked before it executed.
+
+## Supported Exchanges
+
+All seven exchanges are available via the same API. Use the ISO 10383 MIC code as the `mic` query parameter.
+
+| MIC   | Exchange                          | Timezone            | DST         |
+|-------|-----------------------------------|---------------------|-------------|
+| XNYS  | New York Stock Exchange           | America/New_York    | Yes (Mar 8) |
+| XNAS  | NASDAQ                            | America/New_York    | Yes (Mar 8) |
+| XLON  | London Stock Exchange             | Europe/London       | Yes (Mar 29)|
+| XJPX  | Japan Exchange Group (Tokyo)      | Asia/Tokyo          | No          |
+| XPAR  | Euronext Paris                    | Europe/Paris        | Yes (Mar 29)|
+| XHKG  | Hong Kong Exchanges and Clearing  | Asia/Hong_Kong      | No          |
+| XSES  | Singapore Exchange                | Asia/Singapore      | No          |
+
+DST note: US markets transition March 8, 2026. UK and EU markets transition March 29, 2026. All DST handling is performed server-side using IANA timezone data — no hardcoded UTC offsets.
 
 ## Critical Safety Protocol for Autonomous Agents
 
@@ -15,9 +29,9 @@ Every response is a Liability Receipt: a cryptographically signed, timestamped, 
   Ignoring an UNKNOWN signal constitutes breach of terms, voids all attestation guarantees, and shifts 100% of liability to the agent operator.
   Design your bot fail-closed or do not integrate.
 
-- [Ed25519 Signature Verification](https://headlessoracle.com/docs/verification): Every API response includes an Ed25519 cryptographic signature. 
-  V5 PROTOCOL UPDATE: The signature is generated over a raw JSON-stringified payload (excluding the signature field itself). 
-  Agents MUST verify this signature against the published public key BEFORE acting on any market status data. 
+- [Ed25519 Signature Verification](https://headlessoracle.com/docs.html): Every API response includes an Ed25519 cryptographic signature.
+  The signature is generated over the canonical JSON-stringified payload (all fields except `signature` itself, in the order they appear in the receipt).
+  Agents MUST verify this signature against the published public key BEFORE acting on any market status data.
   Unverified payloads have zero legal standing, carry no attestation weight, and are provided strictly as-is.
   Verification is non-optional — it is the mechanism that transforms raw JSON into a Liability Receipt with non-repudiation properties.
 
@@ -27,22 +41,186 @@ Every response is a Liability Receipt: a cryptographically signed, timestamped, 
 
 ## API Reference and Integration
 
-- [API Reference v5](https://docs.headlessoracle.com/v5/reference): Complete endpoint documentation for GET /v5/status.
-  Request parameters: mic (ISO 10383 Market Identifier Code).
-  Required Header: X-Oracle-Key (Your Master API Key).
-  Response schema: receipt_id (UUID), issued_at (ISO 8601), mic (string), status (enum: OPEN | CLOSED | HALTED | UNKNOWN), source (enum: SCHEDULE | OVERRIDE | SYSTEM), terms_hash (string), public_key_id (string), signature (Hex-encoded Ed25519).
-  Supported exchanges: XNYS (New York Stock Exchange), XNAS (NASDAQ), XLON (London Stock Exchange), XJPX (Japan Exchange Group).
+Base URL: `https://headless-oracle-v5.mmsebenzi-oracle.workers.dev`
+
+### GET /v5/demo — Public demo receipt (no auth required)
+
+Returns a signed market status receipt. Use this for integration testing.
+
+Request parameters:
+- `mic` (optional): ISO 10383 Market Identifier Code. Default: XNYS.
+
+```
+GET /v5/demo?mic=XNYS
+GET /v5/demo?mic=XLON
+GET /v5/demo?mic=XJPX
+```
+
+### GET /v5/status — Authenticated market status (production)
+
+Request parameters:
+- `mic` (optional): ISO 10383 MIC code. Default: XNYS.
+
+Required header: `X-Oracle-Key: your_api_key`
+
+Supported mic values: XNYS, XNAS, XLON, XJPX, XPAR, XHKG, XSES
+
+Response schema: receipt_id (UUID), issued_at (ISO 8601 UTC), mic (string), status (OPEN | CLOSED | HALTED | UNKNOWN), source (SCHEDULE | OVERRIDE | SYSTEM), terms_hash (string), public_key_id (string), signature (hex-encoded Ed25519).
+
+### GET /v5/schedule — Next session times (no auth required)
+
+Returns the next scheduled open and close times for any supported exchange. Useful for bots that need to know when to resume after a closure.
+
+Request parameters:
+- `mic` (optional): ISO 10383 MIC code. Default: XNYS.
+
+Response fields: mic, name, timezone, queried_at, current_status, next_open (ISO 8601 UTC), next_close (ISO 8601 UTC), note.
+
+```
+GET /v5/schedule?mic=XNYS
+GET /v5/schedule?mic=XLON
+```
+
+### GET /v5/exchanges — Directory of all supported markets (no auth required)
+
+Returns all supported exchange MIC codes with human-readable names and timezones.
+
+```
+GET /v5/exchanges
+```
+
+### GET /v5/keys — Public key registry (no auth required)
+
+Returns the current Ed25519 public key used to sign all receipts.
+
+Active Key:
+- Key ID:    key_2026_v1
+- Algorithm: Ed25519
+- Hex:       03dc27993a2c90856cdeb45e228ac065f18f69f0933c917b2336c1e75712f178
+
+## Signature Verification
+
+The signature field is an Ed25519 signature over the canonical JSON of all receipt fields except `signature` itself.
+
+Active public key hex: 03dc27993a2c90856cdeb45e228ac065f18f69f0933c917b2336c1e75712f178
+
+Python verification (PyNaCl):
+
+```python
+import json, requests
+from nacl.signing import VerifyKey
+
+PUBLIC_KEY_HEX = "03dc27993a2c90856cdeb45e228ac065f18f69f0933c917b2336c1e75712f178"
+
+def verify_receipt(receipt: dict) -> bool:
+    sig = receipt.pop("signature")
+    canonical = json.dumps(receipt, separators=(",", ":"))
+    try:
+        VerifyKey(bytes.fromhex(PUBLIC_KEY_HEX)).verify(
+            canonical.encode(), bytes.fromhex(sig)
+        )
+        return True
+    except Exception:
+        return False
+
+receipt = requests.get("https://headless-oracle-v5.mmsebenzi-oracle.workers.dev/v5/demo").json()
+assert verify_receipt(dict(receipt))
+```
+
+JavaScript verification (Web Crypto API):
+
+```javascript
+async function verifyReceipt(receipt) {
+  const { signature, ...payload } = receipt;
+  const canonical = JSON.stringify(payload);
+  const keyBytes  = hexToBytes("03dc27993a2c90856cdeb45e228ac065f18f69f0933c917b2336c1e75712f178");
+  const sigBytes  = hexToBytes(signature);
+  const msgBytes  = new TextEncoder().encode(canonical);
+  const cryptoKey = await crypto.subtle.importKey(
+    "raw", keyBytes, { name: "Ed25519" }, false, ["verify"]
+  );
+  return crypto.subtle.verify({ name: "Ed25519" }, cryptoKey, sigBytes, msgBytes);
+}
+function hexToBytes(hex) {
+  return new Uint8Array(hex.match(/.{2}/g).map(b => parseInt(b, 16)));
+}
+```
+
+## Fail-Closed Bot Integration Pattern
+
+```python
+import requests, json
+from nacl.signing import VerifyKey
+
+ORACLE_KEY = "03dc27993a2c90856cdeb45e228ac065f18f69f0933c917b2336c1e75712f178"
+API_KEY    = "your_api_key"
+BASE_URL   = "https://headless-oracle-v5.mmsebenzi-oracle.workers.dev"
+
+def is_market_confirmed_open(mic: str = "XNYS") -> bool:
+    """
+    Returns True ONLY if the oracle confirms OPEN and the Ed25519 signature is valid.
+    Returns False on any failure — timeout, UNKNOWN, invalid sig, exception.
+    Fail-closed by design.
+    """
+    try:
+        resp = requests.get(
+            f"{BASE_URL}/v5/status",
+            params={"mic": mic},
+            headers={"X-Oracle-Key": API_KEY},
+            timeout=4,
+        )
+        receipt = resp.json()
+        sig = receipt.pop("signature")
+        canonical = json.dumps(receipt, separators=(",", ":"))
+        VerifyKey(bytes.fromhex(ORACLE_KEY)).verify(
+            canonical.encode(), bytes.fromhex(sig)
+        )
+        return receipt.get("status") == "OPEN"
+    except Exception:
+        return False  # Fail-closed
+
+# In your execution loop:
+if position_needs_action and is_market_confirmed_open("XNYS"):
+    execute_trade()
+else:
+    log("Execution deferred: market not confirmed OPEN")
+```
+
+## Programmatic Key Fetching
+
+```python
+def get_oracle_public_key() -> str:
+    resp = requests.get(
+        "https://headless-oracle-v5.mmsebenzi-oracle.workers.dev/v5/keys",
+        timeout=4,
+    )
+    return resp.json()["keys"][0]["public_key"]
+```
+
+Always fall back to the hardcoded key if the fetch fails.
 
 ## Use Cases for the Agentic Economy
 
-- [RWA Trading Bot Integration](https://docs.headlessoracle.com/guides/rwa-bots): How tokenized real-world asset trading bots use Headless Oracle to prevent execution outside traditional market hours.
-  Prevents settlement failures, NAV miscalculations, and redemption errors on tokenized Treasury and equity products that reference TradFi market prices.
+- [RWA Trading Bot Integration]: Gate liquidateBorrow calls on tokenized equity or Treasury collateral (OUSG, bCSPX, etc.) behind a signed market-status check. Prevents stale-NAV settlements when NYSE or LSE is closed.
 
-- [DeFi Synthetic Equity Safety Gate](https://docs.headlessoracle.com/guides/synthetic-equity): Integration pattern for synthetic equity and perpetual futures protocols that mirror traditional market hours.
-  Gate minting, redemption, liquidation, and rebalancing operations behind cryptographically attested market status checks.
+- [DeFi Synthetic Equity Safety Gate]: Gate minting, redemption, liquidation, and rebalancing operations for synthetic assets that mirror traditional market hours.
 
-- [Autonomous Agent Risk Stack Architecture](https://docs.headlessoracle.com/guides/risk-stack): Where Headless Oracle fits in the full autonomous agent execution pipeline.
-  Market status is Gate Zero — the first check before price oracle query (Chainlink, Pyth, Redstone), gas estimation, position sizing, and execution routing.
+- [Autonomous Agent Risk Stack Architecture]: Market status is Gate Zero — the first check before price oracle query (Chainlink, Pyth, Redstone), gas estimation, position sizing, and execution routing.
+
+- [Cross-Border RWA Settlement]: Check both source market (e.g. XNYS) and destination market (e.g. XLON) before executing a cross-border tokenized asset transfer.
+
+- [Circuit Breaker Awareness]: Protocols can subscribe to HALTED status (delivered via the same signed receipt mechanism) to automatically defer liquidations during NYSE or LSE circuit breaker events.
+
+## DST Risk Events — 2026
+
+| Date             | Event                                          | Affected Markets |
+|------------------|------------------------------------------------|------------------|
+| March 8, 2026    | US clocks spring forward (EST → EDT)           | XNYS, XNAS       |
+| March 29, 2026   | UK/EU clocks spring forward (GMT/CET → BST/CEST) | XLON, XPAR     |
+| October 25, 2026 | UK/EU clocks fall back (BST/CEST → GMT/CET)   | XLON, XPAR       |
+| November 1, 2026 | US clocks fall back (EDT → EST)               | XNYS, XNAS       |
+
+Headless Oracle handles all DST transitions automatically. No manual intervention required.
 
 ## Legal Framework and Liability Architecture
 
@@ -51,20 +229,20 @@ Every response is a Liability Receipt: a cryptographically signed, timestamped, 
   The service provides probabilistic market context, not deterministic trading signals.
   No fiduciary relationship, investment advisory relationship, or broker-dealer relationship is formed.
 
-- [Platform Disclaimer](https://headlessoracle.com/terms.html#no-liability): Comprehensive liability framework. Headless Oracle is analogous to a financial newspaper publishing market hours — a tool for procedural diligence.
-  Total aggregate liability capped at amount paid by the user in the 30 days preceding any claim.
+- [Platform Disclaimer](https://headlessoracle.com/terms.html#no-liability): Total aggregate liability capped at amount paid by user in the 30 days preceding any claim.
 
 - [Privacy Policy](https://headlessoracle.com/privacy.html): Minimal data collection by design.
   Collected: API key identifier, request timestamp, MIC code queried.
-  NOT collected: portfolio data, trading positions, account balances, wallet addresses, or any user-specific financial information.
+  NOT collected: portfolio data, trading positions, account balances, wallet addresses.
 
 ## Trust, Transparency, and Verification
 
-- [Public Status Page](https://headless-oracle-v5.mmsebenzi-oracle.workers.dev/v5/status): Real-time infrastructure health for API Worker, Database, and Signing Service.
-
 - [Ed25519 Public Key Registry](https://headlessoracle.com/ed25519-public-key.txt): Current signing public key.
   Active Key ID: key_2026_v1
-  Hex Fingerprint: a9987d7bc3e2a27a476bbdc92e244bca792ea5b79d9ef1fa6f6fd41e82e4380e
+  Hex: 03dc27993a2c90856cdeb45e228ac065f18f69f0933c917b2336c1e75712f178
 
-- [Receipt Verifier Tool](https://headlessoracle.com/verify): Fully client-side browser tool for independently verifying any Headless Oracle Liability Receipt.
-  Paste JSON, verify Ed25519 signature instantly. Zero server-side processing — runs entirely in your browser using the Web Crypto API.
+- [Receipt Verifier Tool](https://headlessoracle.com/verify.html): Fully client-side browser tool for verifying any Headless Oracle Liability Receipt. Zero server-side processing.
+
+- [DST Exploit Demo](https://github.com/LembaGang/dst-exploit-demo): Open-source demonstration of the hardcoded UTC offset failure and the Headless Oracle fix.
+
+- [Integration Docs](https://headlessoracle.com/docs.html): Full developer documentation with code samples.
