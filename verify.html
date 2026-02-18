@@ -41,8 +41,13 @@
             </div>
 
             <div class="glass rounded-xl p-6 mb-6">
-                <label class="block text-sm font-bold text-white mb-2">Liability Receipt (JSON)</label>
-                <textarea id="receipt-input" rows="8" 
+                <div class="flex justify-between items-center mb-2">
+                    <label class="block text-sm font-bold text-white">Liability Receipt (JSON)</label>
+                    <button id="fetch-demo-btn" class="text-xs bg-slate-700 hover:bg-slate-600 text-blue-400 px-3 py-1 rounded-md transition">
+                        Fetch Live Receipt
+                    </button>
+                </div>
+                <textarea id="receipt-input" rows="8"
                     class="w-full bg-slate-800 border border-slate-700 rounded-lg p-4 font-mono text-xs text-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
                     placeholder='{ "receipt_id": "...", "signature": "..." }'></textarea>
             </div>
@@ -52,7 +57,7 @@
                 <textarea id="public-key-input" rows="3" 
                     class="w-full bg-slate-800 border border-slate-700 rounded-lg p-4 font-mono text-xs text-slate-400 focus:ring-2 focus:ring-blue-500 outline-none"
                     placeholder="-----BEGIN PUBLIC KEY-----
-MCowBQYDK2VwAyEAqZh9e8PionpHa73JLiRLynkvpbednvH6b2/UHoLkOA4=
+MCowBQYDK2VwAyEAA9wnmToskIVs3rReIorAZfGPafCTPJF7IzbB51cS8Xg=
 -----END PUBLIC KEY-----"></textarea>
                 <p class="text-xs text-slate-600 mt-2">
                     Normally fetched automatically from the <a href="ed25519-public-key.txt" target="_blank" class="underline text-blue-500">Public Registry</a>.
@@ -77,19 +82,33 @@ MCowBQYDK2VwAyEAqZh9e8PionpHa73JLiRLynkvpbednvH6b2/UHoLkOA4=
     </footer>
 
     <script>
-        // Check browser capability on load
+        const ORACLE_API = "https://headless-oracle-v5.mmsebenzi-oracle.workers.dev";
+
+        // Check browser capability on load + auto-fetch public key
         window.addEventListener('DOMContentLoaded', async () => {
             try {
                 // Testing for Ed25519 support
                 await window.crypto.subtle.importKey(
-                    "raw", 
-                    new Uint8Array(32), 
-                    { name: "Ed25519" }, 
-                    false, 
+                    "raw",
+                    new Uint8Array(32),
+                    { name: "Ed25519" },
+                    false,
                     ["verify"]
                 );
             } catch (e) {
                 document.getElementById('browser-warning').classList.remove('hidden');
+            }
+
+            // Auto-fetch the current public key from /v5/keys
+            try {
+                const res = await fetch(ORACLE_API + "/v5/keys");
+                const data = await res.json();
+                if (data.keys && data.keys.length > 0) {
+                    document.getElementById('public-key-input').value = data.keys[0].public_key;
+                }
+            } catch (e) {
+                // Silently fail — user can paste manually
+                console.log("Could not auto-fetch public key:", e.message);
             }
         });
 
@@ -171,6 +190,23 @@ MCowBQYDK2VwAyEAqZh9e8PionpHa73JLiRLynkvpbednvH6b2/UHoLkOA4=
         }
 
         document.getElementById('verify-btn').addEventListener('click', verifySignature);
+
+        // Fetch live demo receipt with one click
+        document.getElementById('fetch-demo-btn').addEventListener('click', async () => {
+            const btn = document.getElementById('fetch-demo-btn');
+            btn.textContent = 'Fetching...';
+            btn.disabled = true;
+            try {
+                const res = await fetch(ORACLE_API + "/v5/demo");
+                const data = await res.json();
+                document.getElementById('receipt-input').value = JSON.stringify(data, null, 2);
+            } catch (e) {
+                document.getElementById('receipt-input').value = '{"error": "Could not fetch receipt: ' + e.message + '"}';
+            } finally {
+                btn.textContent = 'Fetch Live Receipt';
+                btn.disabled = false;
+            }
+        });
     </script>
 </body>
 </html>
