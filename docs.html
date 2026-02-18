@@ -49,8 +49,10 @@
 
             <section id="quickstart" class="mb-12 border-b border-slate-800 pb-12">
                 <h2>Quick Start</h2>
-                <p class="mb-4 text-sm">Fetch a signed attestation for the New York Stock Exchange. Note that Version 5 requires an API Key header.</p>
-                <pre class="text-blue-300">curl -X GET "https://status.headlessoracle.com/v5/status?mic=XNYS" \
+                <p class="mb-4 text-sm">Try the public demo endpoint instantly — no API key needed:</p>
+                <pre class="text-blue-300">curl https://headlessoracle.com/v5/demo</pre>
+                <p class="mt-4 mb-4 text-sm">For production use, fetch a signed attestation with your API key:</p>
+                <pre class="text-blue-300">curl -X GET "https://headlessoracle.com/v5/status?mic=XNYS" \
      -H "X-Oracle-Key: YOUR_API_KEY"</pre>
             </section>
 
@@ -64,7 +66,19 @@
                     </div>
                     <div>
                         <h3 class="text-blue-400">/v5/demo</h3>
-                        <p class="text-sm mb-2">Returns a signed demo receipt for testing your verification logic.</p>
+                        <p class="text-sm mb-2">Returns a signed demo receipt for testing your verification logic. No auth required.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-blue-400">/v5/keys</h3>
+                        <p class="text-sm mb-2">Returns the current Ed25519 public key registry for signature verification. No auth required.</p>
+                        <pre class="text-xs bg-slate-900 border-blue-900/30">{
+  "keys": [{
+    "key_id": "key_2026_v1",
+    "algorithm": "Ed25519",
+    "format": "spki-pem",
+    "public_key": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAA9wnmToskIVs3rReIorAZfGPafCTPJF7IzbB51cS8Xg=\n-----END PUBLIC KEY-----"
+  }]
+}</pre>
                     </div>
                 </div>
             </section>

@@ -85,8 +85,11 @@
 
     <section class="w-full max-w-3xl mx-auto px-6 mb-24">
         <div class="flex items-center justify-between mb-2 px-2">
-            <span class="text-xs font-mono text-slate-500">GET /v5/status</span>
-            <button onclick="copyCommand(this)" class="text-xs text-slate-500 hover:text-white transition cursor-pointer">Copy JSON</button>
+            <span class="text-xs font-mono text-slate-500">GET /v5/demo</span>
+            <div class="flex gap-3">
+                <button onclick="copyCommand(this)" class="text-xs text-slate-500 hover:text-white transition cursor-pointer">Copy JSON</button>
+                <a id="verify-link" href="verify.html" class="text-xs text-blue-500 hover:text-blue-400 transition cursor-pointer hidden">Verify This Receipt</a>
+            </div>
         </div>
         <div class="glass p-0 rounded-lg overflow-hidden border border-slate-700 shadow-2xl">
             <div class="bg-slate-900/50 px-4 py-2 border-b border-slate-700 flex gap-2">
@@ -119,22 +122,15 @@
     </footer>
 
     <script>
-        // Updated to use the live Worker URL
-        const API_URL = 'https://headless-oracle-v5.mmsebenzi-oracle.workers.dev/v5/status?mic=XNYS';
+        const ORACLE_API = 'https://headless-oracle-v5.mmsebenzi-oracle.workers.dev';
 
         async function testLiveAPI() {
             const pre = document.getElementById('api-response');
             pre.innerText = '{ "status": "QUERYING_ORACLE..." }';
-            
+
             try {
-                const response = await fetch(API_URL, {
-                    method: 'GET',
-                    headers: {
-                        // Uses the default master key we set up in Cloudflare Secrets
-                        'X-Oracle-Key': 'oracle_primary_key_2026'
-                    }
-                });
-                
+                const response = await fetch(ORACLE_API + '/v5/demo');
+
                 if (!response.ok) {
                     const errData = await response.json();
                     throw new Error(errData.message || response.statusText);
@@ -143,6 +139,9 @@
                 const data = await response.json();
                 pre.innerText = JSON.stringify(data, null, 2);
                 pre.className = "text-xs sm:text-sm text-green-400 font-mono p-6 overflow-x-auto";
+
+                // Show "Verify This Receipt" link
+                document.getElementById('verify-link').classList.remove('hidden');
             } catch (e) {
                 pre.innerText = JSON.stringify({ error: "Could not reach Oracle", details: e.message }, null, 2);
                 pre.className = "text-xs sm:text-sm text-red-400 font-mono p-6 overflow-x-auto";
@@ -153,7 +152,7 @@
             const textToCopy = document.getElementById('api-response').innerText;
             navigator.clipboard.writeText(textToCopy).then(() => {
                 const originalText = btn.innerText;
-                btn.innerText = "Copied JSON!";
+                btn.innerText = "Copied!";
                 btn.classList.add("text-green-500");
                 setTimeout(() => {
                     btn.innerText = originalText;
