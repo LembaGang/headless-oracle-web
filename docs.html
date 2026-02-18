@@ -14,6 +14,10 @@
         h2 { color: white; font-weight: 700; margin-top: 2rem; margin-bottom: 1rem; font-size: 1.5rem; }
         h3 { color: #e2e8f0; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.1rem; }
         .badge { background: #1e293b; color: #60a5fa; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; border: 1px solid #334155; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th { text-align: left; padding: 8px 12px; color: #94a3b8; font-weight: 600; border-bottom: 1px solid #334155; }
+        td { padding: 8px 12px; border-bottom: 1px solid #1e293b; }
+        tr:hover td { background: #1e293b; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -29,132 +33,311 @@
     </nav>
 
     <main class="flex-grow max-w-5xl mx-auto px-6 py-24 w-full grid grid-cols-1 md:grid-cols-4 gap-12">
-        
+
         <aside class="hidden md:block col-span-1 border-r border-slate-800 pr-6 h-[calc(100vh-100px)] sticky top-24">
             <div class="space-y-4 text-sm font-medium text-slate-400">
-                <a href="#quickstart" class="block hover:text-white transition">Quick Start</a>
-                <a href="#endpoints" class="block hover:text-white transition">Endpoints</a>
-                <a href="#schema" class="block hover:text-white transition">Response Schema</a>
+                <a href="#quickstart"   class="block hover:text-white transition">Quick Start</a>
+                <a href="#exchanges"    class="block hover:text-white transition">Supported Exchanges</a>
+                <a href="#endpoints"    class="block hover:text-white transition">Endpoints</a>
+                <a href="#schema"       class="block hover:text-white transition">Response Schema</a>
                 <a href="#verification" class="block hover:text-white transition">Verification Logic</a>
-                <a href="#fail-closed" class="block hover:text-white transition">Fail-Closed Architecture</a>
+                <a href="#fail-closed"  class="block hover:text-white transition">Fail-Closed Architecture</a>
+                <a href="#overrides"    class="block hover:text-white transition">Circuit Breaker Overrides</a>
             </div>
         </aside>
 
         <div class="col-span-1 md:col-span-3">
-            
+
             <h1 class="text-4xl font-bold text-white mb-6">Integration Guide</h1>
             <p class="text-lg text-slate-400 mb-8">
-                Headless Oracle provides a cryptographically verifiable defensive execution layer for autonomous agents. 
+                Headless Oracle provides a cryptographically verifiable defensive execution layer for autonomous agents operating across global markets.
             </p>
 
+            <!-- QUICK START -->
             <section id="quickstart" class="mb-12 border-b border-slate-800 pb-12">
                 <h2>Quick Start</h2>
                 <p class="mb-4 text-sm">Try the public demo endpoint instantly — no API key needed:</p>
-                <pre class="text-blue-300">curl https://headlessoracle.com/v5/demo</pre>
+                <pre class="text-blue-300">curl https://headlessoracle.com/v5/demo
+
+# Any supported exchange:
+curl "https://headlessoracle.com/v5/demo?mic=XLON"
+curl "https://headlessoracle.com/v5/demo?mic=XJPX"</pre>
                 <p class="mt-4 mb-4 text-sm">For production use, fetch a signed attestation with your API key:</p>
                 <pre class="text-blue-300">curl -X GET "https://headlessoracle.com/v5/status?mic=XNYS" \
      -H "X-Oracle-Key: YOUR_API_KEY"</pre>
+                <p class="mt-4 mb-4 text-sm">Check when the next session opens (no auth required):</p>
+                <pre class="text-blue-300">curl "https://headlessoracle.com/v5/schedule?mic=XNYS"</pre>
             </section>
 
+            <!-- SUPPORTED EXCHANGES -->
+            <section id="exchanges" class="mb-12 border-b border-slate-800 pb-12">
+                <h2>Supported Exchanges</h2>
+                <p class="text-sm text-slate-400 mb-4">
+                    Seven exchanges across four continents. All DST transitions are handled server-side using IANA timezone data — no hardcoded UTC offsets.
+                </p>
+                <div class="overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>MIC</th>
+                                <th>Exchange</th>
+                                <th>Local Hours</th>
+                                <th>Timezone</th>
+                                <th>DST</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="font-mono text-blue-400">XNYS</td>
+                                <td>New York Stock Exchange</td>
+                                <td class="font-mono text-xs">09:30 – 16:00</td>
+                                <td class="text-xs text-slate-500">America/New_York</td>
+                                <td class="text-xs text-yellow-500">Mar 8</td>
+                            </tr>
+                            <tr>
+                                <td class="font-mono text-blue-400">XNAS</td>
+                                <td>NASDAQ</td>
+                                <td class="font-mono text-xs">09:30 – 16:00</td>
+                                <td class="text-xs text-slate-500">America/New_York</td>
+                                <td class="text-xs text-yellow-500">Mar 8</td>
+                            </tr>
+                            <tr>
+                                <td class="font-mono text-blue-400">XLON</td>
+                                <td>London Stock Exchange</td>
+                                <td class="font-mono text-xs">08:00 – 16:30</td>
+                                <td class="text-xs text-slate-500">Europe/London</td>
+                                <td class="text-xs text-yellow-500">Mar 29</td>
+                            </tr>
+                            <tr>
+                                <td class="font-mono text-blue-400">XJPX</td>
+                                <td>Japan Exchange Group (Tokyo)</td>
+                                <td class="font-mono text-xs">09:00 – 15:30 <span class="text-slate-500">(lunch 11:30–12:30)</span></td>
+                                <td class="text-xs text-slate-500">Asia/Tokyo</td>
+                                <td class="text-xs text-slate-500">None</td>
+                            </tr>
+                            <tr>
+                                <td class="font-mono text-blue-400">XPAR</td>
+                                <td>Euronext Paris</td>
+                                <td class="font-mono text-xs">09:00 – 17:30</td>
+                                <td class="text-xs text-slate-500">Europe/Paris</td>
+                                <td class="text-xs text-yellow-500">Mar 29</td>
+                            </tr>
+                            <tr>
+                                <td class="font-mono text-blue-400">XHKG</td>
+                                <td>Hong Kong Exchanges and Clearing</td>
+                                <td class="font-mono text-xs">09:30 – 16:00 <span class="text-slate-500">(lunch 12:00–13:00)</span></td>
+                                <td class="text-xs text-slate-500">Asia/Hong_Kong</td>
+                                <td class="text-xs text-slate-500">None</td>
+                            </tr>
+                            <tr>
+                                <td class="font-mono text-blue-400">XSES</td>
+                                <td>Singapore Exchange</td>
+                                <td class="font-mono text-xs">09:00 – 17:00</td>
+                                <td class="text-xs text-slate-500">Asia/Singapore</td>
+                                <td class="text-xs text-slate-500">None</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-xs text-slate-500 mt-3">All times are local to the exchange. Retrieve the full exchange directory programmatically at <code>/v5/exchanges</code>.</p>
+
+                <div class="mt-6 p-4 bg-yellow-900/20 border border-yellow-800/40 rounded-lg">
+                    <p class="text-sm text-yellow-300 font-semibold mb-1">2026 DST Risk Events</p>
+                    <p class="text-xs text-slate-400">Any bot using hardcoded UTC offsets will compute incorrect hours after these dates:</p>
+                    <ul class="text-xs text-slate-400 mt-2 space-y-1">
+                        <li><span class="text-yellow-400 font-mono">Mar 8</span> — US clocks spring forward (EST → EDT). Affects XNYS, XNAS.</li>
+                        <li><span class="text-yellow-400 font-mono">Mar 29</span> — UK/EU clocks spring forward (GMT/CET → BST/CEST). Affects XLON, XPAR.</li>
+                        <li><span class="text-yellow-400 font-mono">Oct 25</span> — UK/EU clocks fall back. Affects XLON, XPAR.</li>
+                        <li><span class="text-yellow-400 font-mono">Nov 1</span> — US clocks fall back. Affects XNYS, XNAS.</li>
+                    </ul>
+                    <p class="text-xs text-slate-500 mt-2">Headless Oracle handles all transitions automatically.</p>
+                </div>
+            </section>
+
+            <!-- ENDPOINTS -->
             <section id="endpoints" class="mb-12 border-b border-slate-800 pb-12">
                 <h2>Available Endpoints</h2>
-                <div class="space-y-6">
+                <div class="space-y-8">
+
                     <div>
-                        <h3 class="text-blue-400">/v5/status</h3>
-                        <p class="text-sm mb-2">Primary endpoint for market state checks. Requires <code>X-Oracle-Key</code>.</p>
-                        <pre>Query Params: mic (ISO 10383 code, e.g., XNYS, XLON)</pre>
+                        <h3 class="text-blue-400">GET /v5/status <span class="text-xs text-slate-500 ml-2">Authenticated</span></h3>
+                        <p class="text-sm mb-2">Primary endpoint for production market status checks.</p>
+                        <pre>Header: X-Oracle-Key: YOUR_API_KEY
+Query:  mic=XNYS  (or XNAS, XLON, XJPX, XPAR, XHKG, XSES)</pre>
                     </div>
+
                     <div>
-                        <h3 class="text-blue-400">/v5/demo</h3>
-                        <p class="text-sm mb-2">Returns a signed demo receipt for testing your verification logic. No auth required.</p>
+                        <h3 class="text-blue-400">GET /v5/demo <span class="text-xs text-slate-500 ml-2">Public</span></h3>
+                        <p class="text-sm mb-2">Returns a signed receipt for any exchange. No auth required. Use this for integration testing and verification development.</p>
+                        <pre>Query: mic=XNYS  (optional, defaults to XNYS)</pre>
                     </div>
+
                     <div>
-                        <h3 class="text-blue-400">/v5/keys</h3>
-                        <p class="text-sm mb-2">Returns the current Ed25519 public key registry for signature verification. No auth required.</p>
-                        <pre class="text-xs bg-slate-900 border-blue-900/30">{
+                        <h3 class="text-blue-400">GET /v5/schedule <span class="text-xs text-slate-500 ml-2">Public</span></h3>
+                        <p class="text-sm mb-2">Returns the next scheduled open and close times for any exchange. Useful for bots that need to know when to resume after a closure. Does not reflect real-time halts or manual overrides.</p>
+                        <pre class="text-xs">{
+  "mic": "XNYS",
+  "name": "New York Stock Exchange",
+  "timezone": "America/New_York",
+  "queried_at": "2026-03-09T21:00:00.000Z",
+  "current_status": "CLOSED",
+  "next_open":  "2026-03-10T13:30:00.000Z",
+  "next_close": "2026-03-10T20:00:00.000Z"
+}</pre>
+                    </div>
+
+                    <div>
+                        <h3 class="text-blue-400">GET /v5/exchanges <span class="text-xs text-slate-500 ml-2">Public</span></h3>
+                        <p class="text-sm mb-2">Returns the full directory of supported exchanges with MIC codes, names, and timezones.</p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-blue-400">GET /v5/keys <span class="text-xs text-slate-500 ml-2">Public</span></h3>
+                        <p class="text-sm mb-2">Returns the current Ed25519 public key registry for signature verification.</p>
+                        <pre class="text-xs">{
   "keys": [{
-    "key_id": "key_2026_v1",
-    "algorithm": "Ed25519",
-    "format": "spki-pem",
-    "public_key": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAA9wnmToskIVs3rReIorAZfGPafCTPJF7IzbB51cS8Xg=\n-----END PUBLIC KEY-----"
+    "key_id":     "key_2026_v1",
+    "algorithm":  "Ed25519",
+    "format":     "hex",
+    "public_key": "03dc27993a2c90856cdeb45e228ac065f18f69f0933c917b2336c1e75712f178"
   }]
 }</pre>
                     </div>
+
                 </div>
             </section>
 
+            <!-- SCHEMA -->
             <section id="schema" class="mb-12 border-b border-slate-800 pb-12">
                 <h2>Response Schema</h2>
                 <pre>{
-  "receipt_id": "uuid-v4",
-  "issued_at": "ISO-8601-Timestamp",
-  "mic": "XNYS",
-  "status": "OPEN",           // OPEN, CLOSED, HALTED, or UNKNOWN
-  "source": "SCHEDULE",       // SCHEDULE, OVERRIDE, or SYSTEM
-  "terms_hash": "v5.0-beta",
+  "receipt_id":    "uuid-v4",
+  "issued_at":     "ISO-8601-Timestamp (UTC)",
+  "mic":           "XNYS",
+  "status":        "OPEN",       // OPEN | CLOSED | HALTED | UNKNOWN
+  "source":        "SCHEDULE",   // SCHEDULE | OVERRIDE | SYSTEM
+  "terms_hash":    "v5.0-beta",
   "public_key_id": "key_2026_v1",
-  "signature": "hex_string"
+  "signature":     "hex_string"
 }</pre>
-                
-                <h3 class="mt-6">Status Definitions</h3>
+
+                <h3 class="mt-6">Status Values</h3>
                 <ul class="list-disc pl-5 space-y-2 text-slate-400 text-sm">
-                    <li><strong class="text-green-400">OPEN:</strong> Market is trading. Safe to execute.</li>
-                    <li><strong class="text-red-400">CLOSED / HALTED:</strong> Market is offline. Do not execute.</li>
-                    <li><strong class="text-yellow-400">UNKNOWN:</strong> Fail-closed state. Oracle is unsure. Do not execute.</li>
+                    <li><strong class="text-green-400">OPEN:</strong> Market is in an active trading session. Safe to execute.</li>
+                    <li><strong class="text-red-400">CLOSED:</strong> Market is outside trading hours — weekend, holiday, or after close.</li>
+                    <li><strong class="text-orange-400">HALTED:</strong> Market has been manually halted (circuit breaker or emergency override). Treat identically to CLOSED.</li>
+                    <li><strong class="text-yellow-400">UNKNOWN:</strong> Oracle cannot determine status. <strong>Treat as CLOSED. Halt all execution.</strong></li>
+                </ul>
+
+                <h3 class="mt-6">Source Values</h3>
+                <ul class="list-disc pl-5 space-y-2 text-slate-400 text-sm">
+                    <li><strong class="text-slate-200">SCHEDULE:</strong> Status derived from the exchange holiday/hours calendar.</li>
+                    <li><strong class="text-orange-300">OVERRIDE:</strong> Status set manually. Active during circuit breakers or emergency halts. Includes a <code>reason</code> field.</li>
+                    <li><strong class="text-slate-500">SYSTEM:</strong> Internal fallback — returned when an error occurred in the primary logic. Always paired with UNKNOWN.</li>
                 </ul>
             </section>
 
+            <!-- VERIFICATION -->
             <section id="verification" class="mb-12 border-b border-slate-800 pb-12">
                 <h2>Verification Logic</h2>
-                <p class="mb-4">To ensure the receipt is authentic, you must reconstruct the <strong>Signed Payload</strong> and verify the signature using our <a href="ed25519-public-key.txt" class="text-blue-400 underline">Public Key</a>.</p>
-                
-                <h3 class="text-xs text-slate-500 uppercase tracking-widest mb-2">1. Construct the Payload</h3>
-                <p class="text-sm mb-4">The signature is calculated over the <strong>minified JSON string</strong> of all response fields <em>excluding</em> the signature itself.</p>
-                <pre class="text-blue-300">payload = { ...response_data }
-delete payload.signature
-data_to_verify = JSON.stringify(payload)</pre>
+                <p class="mb-4">To confirm a receipt is authentic, reconstruct the signed payload and verify the Ed25519 signature against the <a href="ed25519-public-key.txt" class="text-blue-400 underline">published public key</a>.</p>
+
+                <h3 class="text-xs text-slate-500 uppercase tracking-widest mb-2">1. Reconstruct the Payload</h3>
+                <p class="text-sm mb-4">The signature covers all fields in the receipt <em>except</em> the <code>signature</code> field itself, minified to JSON with no spaces.</p>
+                <pre class="text-blue-300">// Remove the signature field, then stringify the rest
+const { signature, ...payload } = receipt;
+const canonical = JSON.stringify(payload); // no spaces</pre>
 
                 <h3 class="text-xs text-slate-500 uppercase tracking-widest mt-8 mb-2">2. Implementation Samples</h3>
-                
-                <div class="space-y-4">
+
+                <div class="space-y-6">
                     <div>
                         <p class="text-xs font-mono text-slate-500 mb-1">Python (PyNaCl)</p>
-                        <pre class="text-xs bg-slate-900 border-blue-900/30">
-import json
+                        <pre class="text-xs">import json, requests
 from nacl.signing import VerifyKey
 
-# 1. Remove signature
-sig = r.pop('signature')
+PUBLIC_KEY_HEX = "03dc27993a2c90856cdeb45e228ac065f18f69f0933c917b2336c1e75712f178"
 
-# 2. Stringify (ensure no spaces after colons/commas to match JS)
-msg = json.dumps(r, separators=(',', ':'))
+def verify_and_check(mic="XNYS"):
+    receipt = requests.get(
+        f"https://headlessoracle.com/v5/status?mic={mic}",
+        headers={"X-Oracle-Key": "YOUR_KEY"},
+        timeout=4
+    ).json()
 
-# 3. Verify
-verify_key = VerifyKey(bytes.fromhex(PUBLIC_KEY_HEX))
-verify_key.verify(msg.encode(), bytes.fromhex(sig))</pre>
+    sig      = receipt.pop("signature")
+    canonical = json.dumps(receipt, separators=(",", ":"))
+    VerifyKey(bytes.fromhex(PUBLIC_KEY_HEX)).verify(
+        canonical.encode(), bytes.fromhex(sig)
+    )
+    return receipt["status"] == "OPEN"</pre>
                     </div>
 
                     <div>
-                        <p class="text-xs font-mono text-slate-500 mb-1">JavaScript (Web Crypto)</p>
-                        <pre class="text-xs bg-slate-900 border-blue-900/30">
-const { signature, ...payload } = receipt;
-const msg = JSON.stringify(payload);
-const isValid = await crypto.subtle.verify(
-    "Ed25519", 
-    pubKey, 
-    hexToBytes(signature), 
-    new TextEncoder().encode(msg)
-);</pre>
+                        <p class="text-xs font-mono text-slate-500 mb-1">JavaScript (Web Crypto API)</p>
+                        <pre class="text-xs">async function verifyReceipt(receipt) {
+  const { signature, ...payload } = receipt;
+  const canonical = JSON.stringify(payload);
+  const keyBytes  = hexToBytes("03dc27993a2c90856cdeb45e228ac065f18f69f0933c917b2336c1e75712f178");
+  const sigBytes  = hexToBytes(signature);
+  const msgBytes  = new TextEncoder().encode(canonical);
+  const cryptoKey = await crypto.subtle.importKey(
+    "raw", keyBytes, { name: "Ed25519" }, false, ["verify"]
+  );
+  return crypto.subtle.verify({ name: "Ed25519" }, cryptoKey, sigBytes, msgBytes);
+}
+
+function hexToBytes(hex) {
+  return new Uint8Array(hex.match(/.{2}/g).map(b => parseInt(b, 16)));
+}</pre>
                     </div>
+                </div>
+
+                <p class="text-sm mt-4 text-slate-400">
+                    Or use the <a href="verify.html" class="text-blue-400 underline">browser-based verifier</a> — paste any receipt and verify the Ed25519 signature instantly with zero server calls.
+                </p>
+            </section>
+
+            <!-- FAIL-CLOSED -->
+            <section id="fail-closed" class="mb-12 border-b border-slate-800 pb-12">
+                <h2>Fail-Closed Architecture</h2>
+                <p class="text-slate-400 mb-4">
+                    The oracle uses a three-tier safety cascade. If anything fails at any tier, the response always defaults to <code>UNKNOWN</code> — never a false <code>OPEN</code>.
+                </p>
+                <div class="space-y-2 text-sm mb-6">
+                    <div class="flex gap-3 items-start"><span class="text-orange-400 font-mono font-bold w-16 shrink-0">TIER 0</span><span>Manual override active — returns HALTED or CLOSED with signed reason.</span></div>
+                    <div class="flex gap-3 items-start"><span class="text-blue-400 font-mono font-bold w-16 shrink-0">TIER 1</span><span>Schedule-based calculation — checks holidays, weekends, trading hours, half-days, lunch breaks.</span></div>
+                    <div class="flex gap-3 items-start"><span class="text-yellow-400 font-mono font-bold w-16 shrink-0">TIER 2</span><span>Fail-closed safety net — any Tier 1 error returns a signed UNKNOWN receipt.</span></div>
+                    <div class="flex gap-3 items-start"><span class="text-red-400 font-mono font-bold w-16 shrink-0">TIER 3</span><span>Catastrophic — signing system offline. Returns unsigned CRITICAL_FAILURE with HTTP 500.</span></div>
+                </div>
+                <div class="p-4 bg-red-900/20 border border-red-800/40 rounded-lg">
+                    <p class="text-sm text-red-300 font-semibold">Integrator Rule (Binding)</p>
+                    <p class="text-sm text-slate-400 mt-1">Execute <em>only</em> if <code>status === 'OPEN'</code> AND the Ed25519 signature is valid. Any other result — CLOSED, HALTED, UNKNOWN, timeout, network error, or invalid signature — must halt execution. This is a contractual obligation under the <a href="terms.html" class="text-blue-400 underline">Terms of Service</a>.</p>
                 </div>
             </section>
 
-            <section id="fail-closed">
-                <h2>Fail-Closed Architecture</h2>
-                <p class="text-slate-400">
-                    This Oracle is designed with a three-tier safety cascade. If the primary schedule database fails, we return a signed <code>UNKNOWN</code> status from the system layer. 
-                    <br><br>
-                    <strong>Integrator Rule:</strong> Only execute trades if <code>status === 'OPEN'</code> AND the cryptographic signature is valid.
+            <!-- OVERRIDES -->
+            <section id="overrides">
+                <h2>Circuit Breaker Overrides</h2>
+                <p class="text-slate-400 mb-4">
+                    The <code>OVERRIDE</code> source tier allows manual status injection — used to broadcast HALTED during exchange circuit breakers, emergency closures, or scheduled maintenance windows.
+                </p>
+                <p class="text-sm text-slate-400 mb-4">
+                    When an override is active, the receipt includes a <code>reason</code> field explaining the override:
+                </p>
+                <pre class="text-xs">{
+  "receipt_id":    "uuid-v4",
+  "issued_at":     "2026-03-09T19:30:00.000Z",
+  "mic":           "XNYS",
+  "status":        "HALTED",
+  "source":        "OVERRIDE",
+  "reason":        "NYSE circuit breaker Level 1 triggered",
+  "terms_hash":    "v5.0-beta",
+  "public_key_id": "key_2026_v1",
+  "signature":     "hex_string"
+}</pre>
+                <p class="text-sm text-slate-500 mt-4">
+                    Override receipts are signed with the same Ed25519 key as schedule-based receipts. Verification logic is identical. Your bot does not need to handle overrides differently — treat HALTED identically to CLOSED.
                 </p>
             </section>
 
@@ -162,9 +345,10 @@ const isValid = await crypto.subtle.verify(
     </main>
 
     <footer class="border-t border-slate-800 py-12 text-center text-slate-500 text-sm">
-        <a href="index.html" class="hover:text-white">Home</a> &bull; 
-        <a href="verify.html" class="hover:text-white">Receipt Verifier</a> &bull; 
-        <a href="terms.html" class="hover:text-white">Terms</a>
+        <a href="index.html"  class="hover:text-white">Home</a> &bull;
+        <a href="verify.html" class="hover:text-white">Receipt Verifier</a> &bull;
+        <a href="terms.html"  class="hover:text-white">Terms</a> &bull;
+        <a href="privacy.html" class="hover:text-white">Privacy</a>
     </footer>
 
 </body>
