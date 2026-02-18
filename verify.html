@@ -43,8 +43,8 @@
             <div class="glass rounded-xl p-6 mb-6">
                 <div class="flex justify-between items-center mb-2">
                     <label class="block text-sm font-bold text-white">Liability Receipt (JSON)</label>
-                    <button id="fetch-demo-btn" class="text-xs bg-slate-700 hover:bg-slate-600 text-blue-400 px-3 py-1 rounded-md transition">
-                        Fetch Live Receipt
+                    <button id="fetch-demo-btn" class="text-xs bg-slate-700 hover:bg-slate-600 text-blue-400 px-3 py-1 rounded-md transition font-medium">
+                        Fetch &amp; Verify Live Receipt
                     </button>
                 </div>
                 <textarea id="receipt-input" rows="8"
@@ -84,10 +84,31 @@ MCowBQYDK2VwAyEAA9wnmToskIVs3rReIorAZfGPafCTPJF7IzbB51cS8Xg=
     <script>
         const ORACLE_API = "https://headless-oracle-v5.mmsebenzi-oracle.workers.dev";
 
-        // Check browser capability on load + auto-fetch public key
+        // Hardcoded fallback — always available even if API is down
+        const FALLBACK_PUBLIC_KEY = "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAA9wnmToskIVs3rReIorAZfGPafCTPJF7IzbB51cS8Xg=\n-----END PUBLIC KEY-----";
+
+        // Auto-fetch public key + check browser capability
         window.addEventListener('DOMContentLoaded', async () => {
+            // 1. Set the fallback key immediately so the field is never empty
+            const keyInput = document.getElementById('public-key-input');
+            keyInput.value = FALLBACK_PUBLIC_KEY;
+
+            // 2. Try to fetch the live key from the API (overwrites fallback if successful)
             try {
-                // Testing for Ed25519 support
+                const res = await fetch(ORACLE_API + "/v5/keys");
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.keys && data.keys.length > 0 && data.keys[0].public_key) {
+                        keyInput.value = data.keys[0].public_key;
+                    }
+                }
+            } catch (e) {
+                // Fallback already set — no action needed
+                console.log("Using fallback public key (API unreachable):", e.message);
+            }
+
+            // 3. Check Ed25519 browser support
+            try {
                 await window.crypto.subtle.importKey(
                     "raw",
                     new Uint8Array(32),
@@ -97,18 +118,6 @@ MCowBQYDK2VwAyEAA9wnmToskIVs3rReIorAZfGPafCTPJF7IzbB51cS8Xg=
                 );
             } catch (e) {
                 document.getElementById('browser-warning').classList.remove('hidden');
-            }
-
-            // Auto-fetch the current public key from /v5/keys
-            try {
-                const res = await fetch(ORACLE_API + "/v5/keys");
-                const data = await res.json();
-                if (data.keys && data.keys.length > 0) {
-                    document.getElementById('public-key-input').value = data.keys[0].public_key;
-                }
-            } catch (e) {
-                // Silently fail — user can paste manually
-                console.log("Could not auto-fetch public key:", e.message);
             }
         });
 
@@ -191,19 +200,28 @@ MCowBQYDK2VwAyEAA9wnmToskIVs3rReIorAZfGPafCTPJF7IzbB51cS8Xg=
 
         document.getElementById('verify-btn').addEventListener('click', verifySignature);
 
-        // Fetch live demo receipt with one click
+        // Fetch live demo receipt — then auto-verify
         document.getElementById('fetch-demo-btn').addEventListener('click', async () => {
             const btn = document.getElementById('fetch-demo-btn');
             btn.textContent = 'Fetching...';
             btn.disabled = true;
             try {
+                // Ensure public key is populated
+                const keyInput = document.getElementById('public-key-input');
+                if (!keyInput.value.trim()) {
+                    keyInput.value = FALLBACK_PUBLIC_KEY;
+                }
+
                 const res = await fetch(ORACLE_API + "/v5/demo");
                 const data = await res.json();
                 document.getElementById('receipt-input').value = JSON.stringify(data, null, 2);
+
+                // Auto-verify after a brief pause so the user sees both fields fill
+                setTimeout(() => verifySignature(), 300);
             } catch (e) {
                 document.getElementById('receipt-input').value = '{"error": "Could not fetch receipt: ' + e.message + '"}';
             } finally {
-                btn.textContent = 'Fetch Live Receipt';
+                btn.textContent = 'Fetch & Verify Live Receipt';
                 btn.disabled = false;
             }
         });
