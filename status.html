@@ -26,7 +26,7 @@
 
     <nav class="w-full border-b border-slate-800 bg-slate-900/80 backdrop-blur-md fixed top-0 z-50">
         <div class="max-w-5xl mx-auto px-6 h-16 flex justify-between items-center">
-            <a href="index.html" class="font-bold text-white tracking-wider">HEADLESS<span class="text-blue-500">ORACLE</span></a>
+            <a href="/" class="font-bold text-white tracking-wider">HEADLESS<span class="text-blue-500">ORACLE</span></a>
             <div class="flex items-center gap-4">
                 <span id="global-status-badge" class="text-xs font-mono px-3 py-1 rounded-full pill-loading">Checking...</span>
             </div>
@@ -70,12 +70,12 @@
         <!-- Live Receipt Section -->
         <div class="mb-4">
             <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-1">Sample Live Receipt</h2>
-            <p class="text-xs text-slate-600 mono mb-3">Signed Ed25519 receipt — verify at <a href="verify.html" class="text-blue-500 hover:text-blue-400">headlessoracle.com/verify.html</a></p>
+            <p class="text-xs text-slate-600 mono mb-3">Signed Ed25519 receipt — verify at <a href="/verify" class="text-blue-500 hover:text-blue-400">headlessoracle.com/verify</a></p>
         </div>
         <div class="bg-slate-900 rounded-xl border border-slate-700 overflow-hidden mb-12">
             <div class="px-4 py-2 border-b border-slate-700 flex items-center justify-between">
                 <span class="text-xs mono text-slate-500">GET /v5/demo?mic=XNYS</span>
-                <a href="verify.html" class="text-xs text-blue-400 hover:text-blue-300 transition">Verify →</a>
+                <a href="/verify" class="text-xs text-blue-400 hover:text-blue-300 transition">Verify →</a>
             </div>
             <pre id="sample-receipt" class="text-xs mono text-blue-300 p-5 overflow-x-auto leading-relaxed">Loading...</pre>
         </div>
@@ -129,11 +129,11 @@ execute_trade()                           # only path to execution</pre>
 
     <footer class="border-t border-slate-800 py-10 text-center text-slate-600 text-xs">
         <div class="flex justify-center gap-6 mb-2">
-            <a href="index.html"        class="hover:text-white transition">Home</a>
-            <a href="docs.html"         class="hover:text-white transition">Docs</a>
-            <a href="verify.html"       class="hover:text-white transition">Verifier</a>
+            <a href="/"        class="hover:text-white transition">Home</a>
+            <a href="/docs"         class="hover:text-white transition">Docs</a>
+            <a href="/verify"       class="hover:text-white transition">Verifier</a>
             <a href="ed25519-public-key.txt" class="hover:text-white transition">Public Key</a>
-            <a href="terms.html"        class="hover:text-white transition">Terms</a>
+            <a href="/terms"        class="hover:text-white transition">Terms</a>
         </div>
         <p>Headless Oracle V5 · Ed25519 signed · Fail-closed · 7 exchanges</p>
     </footer>

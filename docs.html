@@ -24,7 +24,7 @@
 
     <nav class="w-full border-b border-slate-800 bg-slate-900/80 backdrop-blur-md fixed top-0 z-50">
         <div class="max-w-5xl mx-auto px-6 h-16 flex justify-between items-center">
-            <a href="index.html" class="font-bold text-white tracking-wider">HEADLESS<span class="text-blue-500">ORACLE</span></a>
+            <a href="/" class="font-bold text-white tracking-wider">HEADLESS<span class="text-blue-500">ORACLE</span></a>
             <div class="flex items-center gap-4">
                 <span class="badge">V5.0-BETA</span>
                 <span class="text-xs font-mono text-slate-500">Public Key: key_2026_v1</span>
@@ -294,7 +294,7 @@ function hexToBytes(hex) {
                 </div>
 
                 <p class="text-sm mt-4 text-slate-400">
-                    Or use the <a href="verify.html" class="text-blue-400 underline">browser-based verifier</a> — paste any receipt and verify the Ed25519 signature instantly with zero server calls.
+                    Or use the <a href="/verify" class="text-blue-400 underline">browser-based verifier</a> — paste any receipt and verify the Ed25519 signature instantly with zero server calls.
                 </p>
             </section>
 
@@ -312,7 +312,7 @@ function hexToBytes(hex) {
                 </div>
                 <div class="p-4 bg-red-900/20 border border-red-800/40 rounded-lg">
                     <p class="text-sm text-red-300 font-semibold">Integrator Rule (Binding)</p>
-                    <p class="text-sm text-slate-400 mt-1">Execute <em>only</em> if <code>status === 'OPEN'</code> AND the Ed25519 signature is valid. Any other result — CLOSED, HALTED, UNKNOWN, timeout, network error, or invalid signature — must halt execution. This is a contractual obligation under the <a href="terms.html" class="text-blue-400 underline">Terms of Service</a>.</p>
+                    <p class="text-sm text-slate-400 mt-1">Execute <em>only</em> if <code>status === 'OPEN'</code> AND the Ed25519 signature is valid. Any other result — CLOSED, HALTED, UNKNOWN, timeout, network error, or invalid signature — must halt execution. This is a contractual obligation under the <a href="/terms" class="text-blue-400 underline">Terms of Service</a>.</p>
                 </div>
             </section>
 
@@ -345,10 +345,10 @@ function hexToBytes(hex) {
     </main>
 
     <footer class="border-t border-slate-800 py-12 text-center text-slate-500 text-sm">
-        <a href="index.html"  class="hover:text-white">Home</a> &bull;
-        <a href="verify.html" class="hover:text-white">Receipt Verifier</a> &bull;
-        <a href="terms.html"  class="hover:text-white">Terms</a> &bull;
-        <a href="privacy.html" class="hover:text-white">Privacy</a>
+        <a href="/"  class="hover:text-white">Home</a> &bull;
+        <a href="/verify" class="hover:text-white">Receipt Verifier</a> &bull;
+        <a href="/terms"  class="hover:text-white">Terms</a> &bull;
+        <a href="/privacy" class="hover:text-white">Privacy</a>
     </footer>
 
 </body>
