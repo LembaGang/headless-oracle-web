@@ -30,7 +30,7 @@ DST note: US markets transition March 8, 2026. UK and EU markets transition Marc
   Design your bot fail-closed or do not integrate.
 
 - [Ed25519 Signature Verification](https://headlessoracle.com/docs.html): Every API response includes an Ed25519 cryptographic signature.
-  The signature is generated over the canonical JSON-stringified payload (all fields except `signature` itself, in the order they appear in the receipt).
+  The signature is generated over the canonical JSON-stringified payload (all fields except `signature` itself, with keys sorted alphabetically, no whitespace).
   Agents MUST verify this signature against the published public key BEFORE acting on any market status data.
   Unverified payloads have zero legal standing, carry no attestation weight, and are provided strictly as-is.
   Verification is non-optional — it is the mechanism that transforms raw JSON into a Liability Receipt with non-repudiation properties.
@@ -65,7 +65,7 @@ Required header: `X-Oracle-Key: your_api_key`
 
 Supported mic values: XNYS, XNAS, XLON, XJPX, XPAR, XHKG, XSES
 
-Response schema: receipt_id (UUID), issued_at (ISO 8601 UTC), mic (string), status (OPEN | CLOSED | HALTED | UNKNOWN), source (SCHEDULE | OVERRIDE | SYSTEM), terms_hash (string), public_key_id (string), signature (hex-encoded Ed25519).
+Response schema: receipt_id (UUID), issued_at (ISO 8601 UTC), expires_at (ISO 8601 UTC, issued_at + 60s), mic (string), status (OPEN | CLOSED | HALTED | UNKNOWN), source (SCHEDULE | OVERRIDE | SYSTEM), schema_version (string, currently "v5.0"), public_key_id (string), signature (hex-encoded Ed25519). Do not act on a receipt whose expires_at has passed.
 
 ### GET /v5/schedule — Next session times (no auth required)
 
@@ -74,7 +74,7 @@ Returns the next scheduled open and close times for any supported exchange. Usef
 Request parameters:
 - `mic` (optional): ISO 10383 MIC code. Default: XNYS.
 
-Response fields: mic, name, timezone, queried_at, current_status, next_open (ISO 8601 UTC), next_close (ISO 8601 UTC), note.
+Response fields: mic, name, timezone, queried_at, current_status, next_open (ISO 8601 UTC or null), next_close (ISO 8601 UTC or null), lunch_break ({ start: "HH:MM", end: "HH:MM" } in local exchange time, or null if no lunch break), note. XJPX has lunch_break { start: "11:30", end: "12:30" } (JST). XHKG has lunch_break { start: "12:00", end: "13:00" } (HKT). All others return null.
 
 ```
 GET /v5/schedule?mic=XNYS
@@ -91,16 +91,22 @@ GET /v5/exchanges
 
 ### GET /v5/keys — Public key registry (no auth required)
 
-Returns the current Ed25519 public key used to sign all receipts.
+Returns the current Ed25519 public key registry and canonical_payload_spec documenting field lists and sort order for independent verification.
 
 Active Key:
-- Key ID:    key_2026_v1
-- Algorithm: Ed25519
-- Hex:       03dc27993a2c90856cdeb45e228ac065f18f69f0933c917b2336c1e75712f178
+- Key ID:      key_2026_v1
+- Algorithm:   Ed25519
+- Hex:         03dc27993a2c90856cdeb45e228ac065f18f69f0933c917b2336c1e75712f178
+- valid_from:  2026-01-01T00:00:00Z
+- valid_until: null (no rotation scheduled; will be set in advance of any planned rotation)
+
+### GET /v5/health — Signed liveness probe (no auth required)
+
+Returns a signed receipt confirming the Oracle signing infrastructure is alive. Use this to distinguish Oracle-is-down from market-is-UNKNOWN. Response: { receipt_id, issued_at, expires_at, status: "OK", source: "SYSTEM", public_key_id, signature }. No mic field — health is system-level. A 500 CRITICAL_FAILURE response means the signing system is offline.
 
 ## Signature Verification
 
-The signature field is an Ed25519 signature over the canonical JSON of all receipt fields except `signature` itself.
+The signature field is an Ed25519 signature over the canonical JSON of all receipt fields except `signature` itself, with keys sorted alphabetically.
 
 Active public key hex: 03dc27993a2c90856cdeb45e228ac065f18f69f0933c917b2336c1e75712f178
 
@@ -114,7 +120,7 @@ PUBLIC_KEY_HEX = "03dc27993a2c90856cdeb45e228ac065f18f69f0933c917b2336c1e75712f1
 
 def verify_receipt(receipt: dict) -> bool:
     sig = receipt.pop("signature")
-    canonical = json.dumps(receipt, separators=(",", ":"))
+    canonical = json.dumps(receipt, sort_keys=True, separators=(",", ":"))
     try:
         VerifyKey(bytes.fromhex(PUBLIC_KEY_HEX)).verify(
             canonical.encode(), bytes.fromhex(sig)
@@ -132,7 +138,9 @@ JavaScript verification (Web Crypto API):
 ```javascript
 async function verifyReceipt(receipt) {
   const { signature, ...payload } = receipt;
-  const canonical = JSON.stringify(payload);
+  const sorted = {};
+  for (const key of Object.keys(payload).sort()) sorted[key] = payload[key];
+  const canonical = JSON.stringify(sorted);
   const keyBytes  = hexToBytes("03dc27993a2c90856cdeb45e228ac065f18f69f0933c917b2336c1e75712f178");
   const sigBytes  = hexToBytes(signature);
   const msgBytes  = new TextEncoder().encode(canonical);
@@ -171,7 +179,7 @@ def is_market_confirmed_open(mic: str = "XNYS") -> bool:
         )
         receipt = resp.json()
         sig = receipt.pop("signature")
-        canonical = json.dumps(receipt, separators=(",", ":"))
+        canonical = json.dumps(receipt, sort_keys=True, separators=(",", ":"))
         VerifyKey(bytes.fromhex(ORACLE_KEY)).verify(
             canonical.encode(), bytes.fromhex(sig)
         )

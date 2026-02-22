@@ -26,7 +26,7 @@
         <div class="max-w-5xl mx-auto px-6 h-16 flex justify-between items-center">
             <a href="/" class="font-bold text-white tracking-wider">HEADLESS<span class="text-blue-500">ORACLE</span></a>
             <div class="flex items-center gap-4">
-                <span class="badge">V5.0-BETA</span>
+                <span class="badge">V5.0</span>
                 <span class="text-xs font-mono text-slate-500">Public Key: key_2026_v1</span>
             </div>
         </div>
@@ -39,6 +39,7 @@
                 <a href="#quickstart"   class="block hover:text-white transition">Quick Start</a>
                 <a href="#exchanges"    class="block hover:text-white transition">Supported Exchanges</a>
                 <a href="#endpoints"    class="block hover:text-white transition">Endpoints</a>
+                <a href="#health"       class="block pl-4 hover:text-white transition text-xs">↳ /v5/health</a>
                 <a href="#schema"       class="block hover:text-white transition">Response Schema</a>
                 <a href="#verification" class="block hover:text-white transition">Verification Logic</a>
                 <a href="#fail-closed"  class="block hover:text-white transition">Fail-Closed Architecture</a>
@@ -67,6 +68,8 @@ curl "https://headlessoracle.com/v5/demo?mic=XJPX"</pre>
      -H "X-Oracle-Key: YOUR_API_KEY"</pre>
                 <p class="mt-4 mb-4 text-sm">Check when the next session opens (no auth required):</p>
                 <pre class="text-blue-300">curl "https://headlessoracle.com/v5/schedule?mic=XNYS"</pre>
+                <p class="mt-4 mb-4 text-sm">Verify Oracle's signing infrastructure is live:</p>
+                <pre class="text-blue-300">curl "https://headlessoracle.com/v5/health"</pre>
             </section>
 
             <!-- SUPPORTED EXCHANGES -->
@@ -174,16 +177,21 @@ Query:  mic=XNYS  (or XNAS, XLON, XJPX, XPAR, XHKG, XSES)</pre>
 
                     <div>
                         <h3 class="text-blue-400">GET /v5/schedule <span class="text-xs text-slate-500 ml-2">Public</span></h3>
-                        <p class="text-sm mb-2">Returns the next scheduled open and close times for any exchange. Useful for bots that need to know when to resume after a closure. Does not reflect real-time halts or manual overrides.</p>
+                        <p class="text-sm mb-2">Returns the next scheduled open and close times for any exchange. Includes <code>lunch_break</code> for exchanges with midday breaks (XJPX, XHKG). Does not reflect real-time halts or manual overrides.</p>
                         <pre class="text-xs">{
-  "mic": "XNYS",
-  "name": "New York Stock Exchange",
-  "timezone": "America/New_York",
-  "queried_at": "2026-03-09T21:00:00.000Z",
-  "current_status": "CLOSED",
-  "next_open":  "2026-03-10T13:30:00.000Z",
-  "next_close": "2026-03-10T20:00:00.000Z"
-}</pre>
+  "mic": "XJPX",
+  "name": "Japan Exchange Group (Tokyo)",
+  "timezone": "Asia/Tokyo",
+  "queried_at": "2026-03-10T01:00:00.000Z",
+  "current_status": "OPEN",
+  "next_open":  "2026-03-10T03:30:00.000Z",
+  "next_close": "2026-03-10T06:30:00.000Z",
+  "lunch_break": { "start": "11:30", "end": "12:30" },
+  "note": "Times are UTC. lunch_break times are local exchange time (see timezone field)."
+}
+
+// Exchanges without a lunch break return lunch_break: null
+// { ..., "lunch_break": null, ... }</pre>
                     </div>
 
                     <div>
@@ -193,15 +201,38 @@ Query:  mic=XNYS  (or XNAS, XLON, XJPX, XPAR, XHKG, XSES)</pre>
 
                     <div>
                         <h3 class="text-blue-400">GET /v5/keys <span class="text-xs text-slate-500 ml-2">Public</span></h3>
-                        <p class="text-sm mb-2">Returns the current Ed25519 public key registry for signature verification.</p>
+                        <p class="text-sm mb-2">Returns the current Ed25519 public key registry and the canonical payload specification for independent signature verification.</p>
                         <pre class="text-xs">{
   "keys": [{
-    "key_id":     "key_2026_v1",
-    "algorithm":  "Ed25519",
-    "format":     "hex",
-    "public_key": "03dc27993a2c90856cdeb45e228ac065f18f69f0933c917b2336c1e75712f178"
-  }]
-}</pre>
+    "key_id":      "key_2026_v1",
+    "algorithm":   "Ed25519",
+    "format":      "hex",
+    "public_key":  "03dc27993a2c90856cdeb45e228ac065f18f69f0933c917b2336c1e75712f178",
+    "valid_from":  "2026-01-01T00:00:00Z",
+    "valid_until": null
+  }],
+  "canonical_payload_spec": { ... }
+}
+
+// valid_until is null when no key rotation is scheduled.
+// It will be set in advance of any planned rotation.</pre>
+                    </div>
+
+                    <div id="health">
+                        <h3 class="text-blue-400">GET /v5/health <span class="text-xs text-slate-500 ml-2">Public</span></h3>
+                        <p class="text-sm mb-2">Signed liveness probe. Use this to distinguish <em>Oracle is down</em> from <em>market is genuinely UNKNOWN</em>. A valid signed response means the signing infrastructure is alive.</p>
+                        <pre class="text-xs">{
+  "receipt_id":    "uuid-v4",
+  "issued_at":     "2026-03-10T13:00:00.000Z",
+  "expires_at":    "2026-03-10T13:01:00.000Z",
+  "status":        "OK",
+  "source":        "SYSTEM",
+  "public_key_id": "key_2026_v1",
+  "signature":     "hex_string"
+}
+
+// 200 + valid signature = Oracle is alive
+// 500 CRITICAL_FAILURE = signing system offline</pre>
                     </div>
 
                 </div>
@@ -211,15 +242,18 @@ Query:  mic=XNYS  (or XNAS, XLON, XJPX, XPAR, XHKG, XSES)</pre>
             <section id="schema" class="mb-12 border-b border-slate-800 pb-12">
                 <h2>Response Schema</h2>
                 <pre>{
-  "receipt_id":    "uuid-v4",
-  "issued_at":     "ISO-8601-Timestamp (UTC)",
-  "mic":           "XNYS",
-  "status":        "OPEN",       // OPEN | CLOSED | HALTED | UNKNOWN
-  "source":        "SCHEDULE",   // SCHEDULE | OVERRIDE | SYSTEM
-  "terms_hash":    "v5.0-beta",
-  "public_key_id": "key_2026_v1",
-  "signature":     "hex_string"
-}</pre>
+  "receipt_id":     "uuid-v4",
+  "issued_at":      "ISO-8601-Timestamp (UTC)",
+  "expires_at":     "ISO-8601-Timestamp (UTC, issued_at + 60s)",
+  "mic":            "XNYS",
+  "status":         "OPEN",       // OPEN | CLOSED | HALTED | UNKNOWN
+  "source":         "SCHEDULE",   // SCHEDULE | OVERRIDE | SYSTEM
+  "schema_version": "v5.0",
+  "public_key_id":  "key_2026_v1",
+  "signature":      "hex_string"
+}
+
+// Do not act on a receipt whose expires_at has passed.</pre>
 
                 <h3 class="mt-6">Status Values</h3>
                 <ul class="list-disc pl-5 space-y-2 text-slate-400 text-sm">
@@ -243,10 +277,12 @@ Query:  mic=XNYS  (or XNAS, XLON, XJPX, XPAR, XHKG, XSES)</pre>
                 <p class="mb-4">To confirm a receipt is authentic, reconstruct the signed payload and verify the Ed25519 signature against the <a href="ed25519-public-key.txt" class="text-blue-400 underline">published public key</a>.</p>
 
                 <h3 class="text-xs text-slate-500 uppercase tracking-widest mb-2">1. Reconstruct the Payload</h3>
-                <p class="text-sm mb-4">The signature covers all fields in the receipt <em>except</em> the <code>signature</code> field itself, minified to JSON with no spaces.</p>
-                <pre class="text-blue-300">// Remove the signature field, then stringify the rest
+                <p class="text-sm mb-4">The signature covers all fields in the receipt <em>except</em> <code>signature</code> itself, with keys sorted alphabetically, minified (no spaces).</p>
+                <pre class="text-blue-300">// Remove signature, sort remaining keys alphabetically, then stringify
 const { signature, ...payload } = receipt;
-const canonical = JSON.stringify(payload); // no spaces</pre>
+const sorted = {};
+for (const key of Object.keys(payload).sort()) sorted[key] = payload[key];
+const canonical = JSON.stringify(sorted); // no spaces, alphabetical keys</pre>
 
                 <h3 class="text-xs text-slate-500 uppercase tracking-widest mt-8 mb-2">2. Implementation Samples</h3>
 
@@ -266,7 +302,7 @@ def verify_and_check(mic="XNYS"):
     ).json()
 
     sig      = receipt.pop("signature")
-    canonical = json.dumps(receipt, separators=(",", ":"))
+    canonical = json.dumps(receipt, sort_keys=True, separators=(",", ":"))
     VerifyKey(bytes.fromhex(PUBLIC_KEY_HEX)).verify(
         canonical.encode(), bytes.fromhex(sig)
     )
@@ -277,7 +313,9 @@ def verify_and_check(mic="XNYS"):
                         <p class="text-xs font-mono text-slate-500 mb-1">JavaScript (Web Crypto API)</p>
                         <pre class="text-xs">async function verifyReceipt(receipt) {
   const { signature, ...payload } = receipt;
-  const canonical = JSON.stringify(payload);
+  const sorted = {};
+  for (const key of Object.keys(payload).sort()) sorted[key] = payload[key];
+  const canonical = JSON.stringify(sorted);
   const keyBytes  = hexToBytes("03dc27993a2c90856cdeb45e228ac065f18f69f0933c917b2336c1e75712f178");
   const sigBytes  = hexToBytes(signature);
   const msgBytes  = new TextEncoder().encode(canonical);
@@ -326,15 +364,16 @@ function hexToBytes(hex) {
                     When an override is active, the receipt includes a <code>reason</code> field explaining the override:
                 </p>
                 <pre class="text-xs">{
-  "receipt_id":    "uuid-v4",
-  "issued_at":     "2026-03-09T19:30:00.000Z",
-  "mic":           "XNYS",
-  "status":        "HALTED",
-  "source":        "OVERRIDE",
-  "reason":        "NYSE circuit breaker Level 1 triggered",
-  "terms_hash":    "v5.0-beta",
-  "public_key_id": "key_2026_v1",
-  "signature":     "hex_string"
+  "receipt_id":     "uuid-v4",
+  "issued_at":      "2026-03-09T19:30:00.000Z",
+  "expires_at":     "2026-03-09T19:31:00.000Z",
+  "mic":            "XNYS",
+  "status":         "HALTED",
+  "source":         "OVERRIDE",
+  "reason":         "NYSE circuit breaker Level 1 triggered",
+  "schema_version": "v5.0",
+  "public_key_id":  "key_2026_v1",
+  "signature":      "hex_string"
 }</pre>
                 <p class="text-sm text-slate-500 mt-4">
                     Override receipts are signed with the same Ed25519 key as schedule-based receipts. Verification logic is identical. Your bot does not need to handle overrides differently — treat HALTED identically to CLOSED.

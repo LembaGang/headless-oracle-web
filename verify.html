@@ -141,18 +141,14 @@ MCowBQYDK2VwAyEAA9wnmToskIVs3rReIorAZfGPafCTPJF7IzbB51cS8Xg=
                 const { signature, ...data } = receipt;
                 if (!signature) throw new Error("Receipt is missing 'signature' field.");
 
-                // V5 CANONICALIZATION: Reconstruct payload in the EXACT order the Backend signed it
-                const cleanPayload = {
-                    receipt_id: data.receipt_id,
-                    issued_at: data.issued_at,
-                    mic: data.mic,
-                    status: data.status,
-                    source: data.source,
-                    terms_hash: data.terms_hash,
-                    public_key_id: data.public_key_id
-                };
-
-                const message = JSON.stringify(cleanPayload);
+                // V5 CANONICALIZATION: Keys sorted alphabetically, no whitespace.
+                // Matches signPayload() in the worker. Works for all receipt types
+                // (market, override, health) without hardcoding field lists.
+                const sorted = {};
+                for (const key of Object.keys(data).sort()) {
+                    sorted[key] = data[key];
+                }
+                const message = JSON.stringify(sorted);
                 const msgBuffer = new TextEncoder().encode(message);
 
                 // IMPORT PUBLIC KEY
