@@ -40,10 +40,13 @@
                 <a href="#exchanges"    class="block hover:text-white transition">Supported Exchanges</a>
                 <a href="#endpoints"    class="block hover:text-white transition">Endpoints</a>
                 <a href="#health"       class="block pl-4 hover:text-white transition text-xs">↳ /v5/health</a>
+                <a href="#batch"        class="block pl-4 hover:text-white transition text-xs">↳ /v5/batch</a>
                 <a href="#schema"       class="block hover:text-white transition">Response Schema</a>
                 <a href="#verification" class="block hover:text-white transition">Verification Logic</a>
                 <a href="#fail-closed"  class="block hover:text-white transition">Fail-Closed Architecture</a>
                 <a href="#overrides"    class="block hover:text-white transition">Circuit Breaker Overrides</a>
+                <a href="#mcp"          class="block hover:text-white transition">MCP Integration</a>
+                <a href="#billing"      class="block hover:text-white transition">API Keys &amp; Billing</a>
             </div>
         </aside>
 
@@ -218,6 +221,14 @@ Query:  mic=XNYS  (or XNAS, XLON, XJPX, XPAR, XHKG, XSES)</pre>
 // It will be set in advance of any planned rotation.</pre>
                     </div>
 
+                    <div id="batch">
+                        <h3 class="text-blue-400">GET /v5/batch <span class="text-xs text-slate-500 ml-2">Authenticated</span></h3>
+                        <p class="text-sm mb-2">Fetch signed status receipts for multiple exchanges in one request. Each receipt is independently signed and verifiable in isolation.</p>
+                        <pre>Header: X-Oracle-Key: YOUR_API_KEY
+Query:  mics=XNYS,XNAS,XLON  (comma-separated, deduplicated)</pre>
+                        <p class="text-xs text-slate-500 mt-2">All MICs are validated up front — one invalid MIC returns 400 for the whole request. Tier 3 signing failure fails the whole batch.</p>
+                    </div>
+
                     <div id="health">
                         <h3 class="text-blue-400">GET /v5/health <span class="text-xs text-slate-500 ml-2">Public</span></h3>
                         <p class="text-sm mb-2">Signed liveness probe. Use this to distinguish <em>Oracle is down</em> from <em>market is genuinely UNKNOWN</em>. A valid signed response means the signing infrastructure is alive.</p>
@@ -352,6 +363,76 @@ function hexToBytes(hex) {
                     <p class="text-sm text-red-300 font-semibold">Integrator Rule (Binding)</p>
                     <p class="text-sm text-slate-400 mt-1">Execute <em>only</em> if <code>status === 'OPEN'</code> AND the Ed25519 signature is valid. Any other result — CLOSED, HALTED, UNKNOWN, timeout, network error, or invalid signature — must halt execution. This is a contractual obligation under the <a href="/terms" class="text-blue-400 underline">Terms of Service</a>.</p>
                 </div>
+            </section>
+
+            <!-- MCP -->
+            <section id="mcp" class="mb-12 border-b border-slate-800 pb-12">
+                <h2>MCP Integration</h2>
+                <p class="text-slate-400 mb-4">
+                    Headless Oracle exposes an MCP (Model Context Protocol) server at <code>POST /mcp</code>. Any agent framework that supports MCP tool calling — Claude Desktop, Cursor, or custom agents built on the MCP spec — can call Oracle directly without writing HTTP client code.
+                </p>
+
+                <h3 class="text-blue-400">POST /mcp <span class="text-xs text-slate-500 ml-2">Public · JSON-RPC 2.0</span></h3>
+                <p class="text-sm mb-4">Protocol version: <code>2024-11-05</code> (MCP Streamable HTTP transport). No authentication required for MCP tool calls.</p>
+
+                <h3>Available MCP Tools</h3>
+                <div class="space-y-4 text-sm mb-6">
+                    <div class="p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+                        <p class="font-semibold text-white mb-1"><code>get_market_status</code></p>
+                        <p class="text-slate-400 mb-2">Check whether a stock exchange is currently open or closed. Returns a cryptographically signed receipt. MANDATORY: treat UNKNOWN or HALTED as CLOSED and halt execution.</p>
+                        <p class="text-xs text-slate-500">Input: <code>{ "mic": "XNYS" }</code> — any of the 7 supported MIC codes.</p>
+                    </div>
+                    <div class="p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+                        <p class="font-semibold text-white mb-1"><code>get_market_schedule</code></p>
+                        <p class="text-slate-400 mb-2">Get next open and close times for an exchange. Includes lunch break windows for XJPX and XHKG. Not cryptographically signed — does not reflect real-time halts.</p>
+                        <p class="text-xs text-slate-500">Input: <code>{ "mic": "XJPX" }</code></p>
+                    </div>
+                    <div class="p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+                        <p class="font-semibold text-white mb-1"><code>list_exchanges</code></p>
+                        <p class="text-slate-400 mb-2">Returns all 7 supported exchanges with MIC codes, names, and timezones.</p>
+                        <p class="text-xs text-slate-500">No input required.</p>
+                    </div>
+                </div>
+
+                <h3>Setup: Claude Desktop</h3>
+                <pre class="text-xs">{
+  "mcpServers": {
+    "headless-oracle": {
+      "url": "https://headlessoracle.com/mcp"
+    }
+  }
+}</pre>
+                <p class="text-xs text-slate-500 mt-2">Add this to your Claude Desktop config file. The Oracle MCP server will appear as a tool source in Claude's tool use menu.</p>
+
+                <h3>Key Provenance</h3>
+                <p class="text-sm text-slate-400">The Ed25519 public key for verifying receipts returned by MCP tools is published at <a href="/.well-known/oracle-keys.json" class="text-blue-400 underline">/.well-known/oracle-keys.json</a> (RFC 8615 standard).</p>
+            </section>
+
+            <!-- API KEYS & BILLING -->
+            <section id="billing" class="mb-12 border-b border-slate-800 pb-12">
+                <h2>API Keys &amp; Billing</h2>
+                <p class="text-slate-400 mb-4">
+                    Production access to <code>/v5/status</code>, <code>/v5/batch</code>, and <code>/v5/account</code> requires an API key passed in the <code>X-Oracle-Key</code> header. All other endpoints are public.
+                </p>
+
+                <h3>Get an API Key</h3>
+                <p class="text-sm mb-4 text-slate-400">Subscribe via anonymous Paddle checkout — no account creation required. Your API key is emailed to you after payment and is shown once.</p>
+                <pre class="text-blue-300">curl -X POST https://headlessoracle.com/v5/checkout
+# Returns: { "url": "https://checkout.paddle.com/..." }
+# Redirect the user (or open the URL) to complete payment.</pre>
+                <p class="text-xs text-slate-500 mt-2">Keys are prefixed <code>ok_live_</code> for easy identification in logs and environment variables.</p>
+
+                <h3 class="mt-6">Check Your Account</h3>
+                <pre class="text-blue-300">curl https://headlessoracle.com/v5/account \
+     -H "X-Oracle-Key: YOUR_API_KEY"
+# Returns: { "plan": "pro", "status": "active", "key_prefix": "ok_live_..." }</pre>
+
+                <h3 class="mt-6">Error Codes</h3>
+                <ul class="list-disc pl-5 space-y-2 text-slate-400 text-sm">
+                    <li><strong class="text-red-400">401 API_KEY_REQUIRED:</strong> No key in header.</li>
+                    <li><strong class="text-red-400">403 INVALID_API_KEY:</strong> Key not found. Check for typos or use <code>/v5/account</code> to confirm it's active.</li>
+                    <li><strong class="text-yellow-400">402 PAYMENT_REQUIRED:</strong> Subscription is suspended or cancelled. Update billing to restore access.</li>
+                </ul>
             </section>
 
             <!-- OVERRIDES -->
