@@ -82,10 +82,10 @@ MCowBQYDK2VwAyEAA9wnmToskIVs3rReIorAZfGPafCTPJF7IzbB51cS8Xg=
     </footer>
 
     <script>
-        const ORACLE_API = "https://headless-oracle-v5.mmsebenzi-oracle.workers.dev";
+        const ORACLE_API = "https://headlessoracle.com";
 
         // Hardcoded fallback — always available even if API is down
-        const FALLBACK_PUBLIC_KEY = "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAA9wnmToskIVs3rReIorAZfGPafCTPJF7IzbB51cS8Xg=\n-----END PUBLIC KEY-----";
+        const FALLBACK_PUBLIC_KEY = "03dc27993a2c90856cdeb45e228ac065f18f69f0933c917b2336c1e75712f178";
 
         // Auto-fetch public key + check browser capability
         window.addEventListener('DOMContentLoaded', async () => {
@@ -151,22 +151,26 @@ MCowBQYDK2VwAyEAA9wnmToskIVs3rReIorAZfGPafCTPJF7IzbB51cS8Xg=
                 const message = JSON.stringify(sorted);
                 const msgBuffer = new TextEncoder().encode(message);
 
-                // IMPORT PUBLIC KEY
-                const pemHeader = "-----BEGIN PUBLIC KEY-----";
-                const pemFooter = "-----END PUBLIC KEY-----";
-                const pemContents = publicKeyPem.replace(pemHeader, "").replace(pemFooter, "").replace(/\s/g, "");
-                const binaryKey = Uint8Array.from(atob(pemContents), c => c.charCodeAt(0));
-                
-                // Determine if key is SPKI (has headers) or Raw (32 bytes)
-                const format = binaryKey.length > 32 ? "spki" : "raw";
-
-                const cryptoKey = await window.crypto.subtle.importKey(
-                    format,
-                    binaryKey,
-                    { name: "Ed25519" },
-                    true,
-                    ["verify"]
-                );
+                // IMPORT PUBLIC KEY — handles hex (from API) or PEM/SPKI (legacy)
+                let cryptoKey;
+                const trimmedKey = publicKeyPem.trim();
+                if (/^[0-9a-fA-F]{64}$/.test(trimmedKey)) {
+                    // Raw 32-byte hex key (current API format: format = "hex")
+                    const keyBytes = new Uint8Array(trimmedKey.match(/.{1,2}/g).map(b => parseInt(b, 16)));
+                    cryptoKey = await window.crypto.subtle.importKey(
+                        "raw", keyBytes, { name: "Ed25519" }, true, ["verify"]
+                    );
+                } else {
+                    // PEM/SPKI format (legacy fallback)
+                    const pemHeader = "-----BEGIN PUBLIC KEY-----";
+                    const pemFooter = "-----END PUBLIC KEY-----";
+                    const pemContents = trimmedKey.replace(pemHeader, "").replace(pemFooter, "").replace(/\s/g, "");
+                    const binaryKey = Uint8Array.from(atob(pemContents), c => c.charCodeAt(0));
+                    const format = binaryKey.length > 32 ? "spki" : "raw";
+                    cryptoKey = await window.crypto.subtle.importKey(
+                        format, binaryKey, { name: "Ed25519" }, true, ["verify"]
+                    );
+                }
 
                 // CONVERT HEX SIGNATURE TO BYTES
                 const signatureBytes = new Uint8Array(signature.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
