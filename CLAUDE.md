@@ -23,8 +23,7 @@ Or simply: `npm run deploy`
 - `verify.html` — Client-side Ed25519 receipt verifier
 - `terms.html` — Terms of Service
 - `privacy.html` — Privacy Policy
-- `llms.txt` — AI agent documentation (root — also in public/)
-- `public/` — Static assets copied verbatim to dist/ (llms.txt, ed25519-public-key.txt)
+- `public/` — Static assets copied verbatim to dist/ (ed25519-public-key.txt)
 - `src/` — Shared JS modules (if any)
 - `vite.config.js` — Multi-entry build config (all HTML pages registered here)
 - `dist/` — Built output (committed, deployed to Cloudflare Pages)
@@ -34,12 +33,15 @@ XNYS (NYSE), XNAS (NASDAQ), XLON (LSE), XJPX (JPX Tokyo),
 XPAR (Euronext Paris), XHKG (HKEX), XSES (SGX Singapore)
 
 ## Live API Base URL
-`https://headless-oracle-v5.mmsebenzi-oracle.workers.dev`
+`https://headlessoracle.com`
 
-## Important File Sync Rule
-`llms.txt` (root) and `public/llms.txt` must always be identical.
-If you update the root llms.txt, copy it to public/llms.txt before deploying.
-The root file is the source of truth; public/ is what gets served at headlessoracle.com/llms.txt.
+## llms.txt — served by the Worker, not Pages
+`headlessoracle.com/llms.txt` is intercepted by the Cloudflare Worker
+(headless-oracle-v5) before it reaches this Pages site. The canonical
+source is the `LLMS_TXT` constant in `headless-oracle-v5/src/index.ts`.
+
+Do NOT add llms.txt files to this repo — they will never be served and
+will only create sync problems. Edit the worker constant instead.
 
 ## Adding a New Page
 1. Create the `.html` file in the project root
