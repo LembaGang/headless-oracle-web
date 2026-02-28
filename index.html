@@ -80,6 +80,79 @@
         </div>
     </main>
 
+    <!-- Edge Case Counter -->
+    <section class="w-full max-w-5xl mx-auto px-6 mb-20">
+        <div class="text-center mb-10">
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">7 exchanges. ~1,300 edge cases per year.</h2>
+            <p class="text-slate-500 text-sm font-mono">The scheduling complexity a timezone library was not built to solve.</p>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
+            <div class="glass p-5 rounded-xl text-center">
+                <div class="text-3xl font-bold text-white mb-2">67</div>
+                <div class="text-xs text-slate-400 leading-snug">exchange-specific<br>holidays<br><span class="text-slate-600 text-xs">different per country, non-overlapping</span></div>
+            </div>
+            <div class="glass p-5 rounded-xl text-center">
+                <div class="text-3xl font-bold text-white mb-2">18</div>
+                <div class="text-xs text-slate-400 leading-snug">early close<br>days<br><span class="text-slate-600 text-xs">NYSE closes at 1:00 PM, not 4:00 PM</span></div>
+            </div>
+            <div class="glass p-5 rounded-xl text-center">
+                <div class="text-3xl font-bold text-white mb-2">8</div>
+                <div class="text-xs text-slate-400 leading-snug">DST<br>transitions<br><span class="text-slate-600 text-xs">incl. 3-week US/EU phantom window</span></div>
+            </div>
+            <div class="glass p-5 rounded-xl text-center">
+                <div class="text-3xl font-bold text-white mb-2">490</div>
+                <div class="text-xs text-slate-400 leading-snug">lunch break<br>sessions<br><span class="text-slate-600 text-xs">Tokyo 11:30–12:30, HK 12:00–13:00</span></div>
+            </div>
+            <div class="glass p-5 rounded-xl text-center col-span-2 md:col-span-1">
+                <div class="text-3xl font-bold text-white mb-2">728</div>
+                <div class="text-xs text-slate-400 leading-snug">weekend days<br>across 7 venues<br><span class="text-slate-600 text-xs">per calendar year</span></div>
+            </div>
+        </div>
+        <div class="border border-slate-700/80 rounded-lg p-5 bg-slate-900/40 text-center">
+            <p class="text-slate-300 font-mono text-sm">A timezone library handles zero of these. Headless Oracle handles all of them.</p>
+        </div>
+    </section>
+
+    <!-- Comparison Table -->
+    <section class="w-full max-w-5xl mx-auto px-6 mb-20">
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-white mb-2">Think it's simple?</h2>
+            <p class="text-slate-500 text-sm">Common assumptions about market schedules, and what the data actually shows.</p>
+        </div>
+        <div class="overflow-x-auto rounded-xl border border-slate-700">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="border-b border-slate-700 bg-slate-900/60">
+                        <th class="text-left py-3 px-5 text-slate-400 font-mono font-medium text-xs uppercase tracking-wider w-2/5">What you assume</th>
+                        <th class="text-left py-3 px-5 text-slate-400 font-mono font-medium text-xs uppercase tracking-wider">What actually happens</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-b border-slate-800/60">
+                        <td class="py-4 px-5 text-slate-300 font-mono text-xs align-top leading-relaxed">NYSE closes at 4pm ET</td>
+                        <td class="py-4 px-5 text-slate-400 align-top leading-relaxed">Except Good Friday (1pm), day before July 4th (1pm), Christmas Eve (1pm), and emergency halts at any time</td>
+                    </tr>
+                    <tr class="border-b border-slate-800/60 bg-slate-900/20">
+                        <td class="py-4 px-5 text-slate-300 font-mono text-xs align-top leading-relaxed">Tokyo is open 9am–3pm JST</td>
+                        <td class="py-4 px-5 text-slate-400 align-top leading-relaxed">There's a lunch break 11:30–12:30 every trading day. Your bot thinks it's open. It's not.</td>
+                    </tr>
+                    <tr class="border-b border-slate-800/60">
+                        <td class="py-4 px-5 text-slate-300 font-mono text-xs align-top leading-relaxed">"Just use a timezone library"</td>
+                        <td class="py-4 px-5 text-slate-400 align-top leading-relaxed">pytz handles DST. It doesn't handle that NYSE closes for Juneteenth but LSE doesn't, or that Hong Kong closes for Lunar New Year but Singapore doesn't.</td>
+                    </tr>
+                    <tr class="border-b border-slate-800/60 bg-slate-900/20">
+                        <td class="py-4 px-5 text-slate-300 font-mono text-xs align-top leading-relaxed">"I'll hardcode the holidays"</td>
+                        <td class="py-4 px-5 text-slate-400 align-top leading-relaxed">Which year? 2026 holidays differ from 2027. When a holiday falls on a weekend, some exchanges shift to Friday, others Monday, others don't shift.</td>
+                    </tr>
+                    <tr>
+                        <td class="py-4 px-5 text-slate-300 font-mono text-xs align-top leading-relaxed">"I'll check once at market open"</td>
+                        <td class="py-4 px-5 text-slate-400 align-top leading-relaxed">Circuit breaker at 2:47pm. Your cached "OPEN" is now wrong. Your bot trades into a halted market.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
     <section class="max-w-4xl mx-auto px-6 mb-24 grid md:grid-cols-2 gap-12 items-center">
         <div class="text-left">
             <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
