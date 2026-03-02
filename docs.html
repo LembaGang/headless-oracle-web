@@ -472,7 +472,16 @@ function hexToBytes(hex) {
                     </div>
                 </div>
 
-                <h3>Setup: Claude Desktop</h3>
+                <h3>Setup: Claude Desktop <span class="text-xs text-slate-500 font-normal ml-2">~30 seconds</span></h3>
+                <p class="text-sm text-slate-400 mb-2">Add this to your Claude Desktop config file, then restart Claude Desktop:</p>
+                <p class="text-xs text-slate-500 mb-1">
+                    <strong class="text-slate-400">macOS:</strong>
+                    <code>~/Library/Application Support/Claude/claude_desktop_config.json</code>
+                </p>
+                <p class="text-xs text-slate-500 mb-2">
+                    <strong class="text-slate-400">Windows:</strong>
+                    <code>%APPDATA%\Claude\claude_desktop_config.json</code>
+                </p>
                 <pre class="text-xs">{
   "mcpServers": {
     "headless-oracle": {
@@ -480,9 +489,19 @@ function hexToBytes(hex) {
     }
   }
 }</pre>
-                <p class="text-xs text-slate-500 mt-2">Add this to your Claude Desktop config file. The Oracle MCP server will appear as a tool source in Claude's tool use menu.</p>
+                <p class="text-xs text-slate-500 mt-2">After restarting Claude Desktop, Headless Oracle tools will appear automatically. No API key required for the demo tools.</p>
 
-                <h3>Key Provenance</h3>
+                <h3 class="mt-6">Example Prompts</h3>
+                <p class="text-sm text-slate-400 mb-3">Try these after setup:</p>
+                <ul class="list-none space-y-2 text-sm text-slate-400">
+                    <li><span class="text-slate-600 mr-2">›</span><em>"Is the NYSE open right now?"</em></li>
+                    <li><span class="text-slate-600 mr-2">›</span><em>"Check if any Asian markets are currently in their lunch break"</em></li>
+                    <li><span class="text-slate-600 mr-2">›</span><em>"What time does the London Stock Exchange close today?"</em></li>
+                    <li><span class="text-slate-600 mr-2">›</span><em>"Are there any market holidays this week across all exchanges?"</em></li>
+                    <li><span class="text-slate-600 mr-2">›</span><em>"Before I execute this trade — verify XNYS is open and give me the signed receipt"</em></li>
+                </ul>
+
+                <h3 class="mt-6">Key Provenance</h3>
                 <p class="text-sm text-slate-400">The Ed25519 public key for verifying receipts returned by MCP tools is published at <a href="/.well-known/oracle-keys.json" class="text-blue-400 underline">/.well-known/oracle-keys.json</a> (RFC 8615 standard).</p>
             </section>
 
