@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing | Headless Oracle</title>
+    <meta name="description" content="Simple, transparent pricing for Headless Oracle — Ed25519-signed market status for AI agents and autonomous trading systems. Free during beta.">
+    <meta name="robots" content="index, follow">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://headlessoracle.com/pricing">
+    <meta property="og:title" content="Pricing | Headless Oracle">
+    <meta property="og:description" content="Simple, transparent pricing for Headless Oracle. Free during beta.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .status-dot { height: 8px; width: 8px; background-color: #22c55e; border-radius: 50%; display: inline-block; margin-right: 6px; box-shadow: 0 0 8px #22c55e; }
+    </style>
+</head>
+<body class="text-slate-300 min-h-screen flex flex-col">
+
+    <nav class="w-full max-w-6xl mx-auto p-6 flex justify-between items-center border-b border-slate-800/50">
+        <a href="/" class="flex items-center gap-2 no-underline">
+            <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+            <span class="text-xl font-bold tracking-wider text-white">HEADLESS<span class="text-blue-500">ORACLE</span></span>
+        </a>
+        <div class="flex gap-6 text-sm font-medium">
+            <a href="/pricing" class="text-white font-semibold">Pricing</a>
+            <a href="/docs" class="hover:text-white transition">Docs</a>
+            <a href="/status" class="hover:text-white transition flex items-center gap-1"><span class="status-dot"></span>Live Status</a>
+        </div>
+    </nav>
+
+    <main class="flex-grow max-w-6xl mx-auto w-full px-6 py-20">
+
+        <div class="text-center mb-16">
+            <h1 class="text-5xl font-bold text-white mb-4 tracking-tight">Pricing</h1>
+            <p class="text-xl text-slate-400 max-w-2xl mx-auto">Simple, transparent pricing for market status verification.</p>
+        </div>
+
+        <!-- Pricing Cards -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+
+            <!-- Free Beta -->
+            <div class="glass rounded-xl p-6 flex flex-col">
+                <div class="mb-4">
+                    <span class="text-xs font-mono px-2 py-1 rounded-full bg-green-900/40 border border-green-500/30 text-green-400 font-semibold">Current</span>
+                </div>
+                <h2 class="text-xl font-bold text-white mb-1">Free Beta</h2>
+                <div class="text-4xl font-bold text-white mb-1">$0</div>
+                <p class="text-xs text-slate-500 mb-6">/month · no signup required</p>
+                <ul class="space-y-2 text-sm text-slate-300 flex-grow mb-6">
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> All API endpoints</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> Demo endpoint (no API key needed)</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> MCP server access</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> Community support</li>
+                </ul>
+                <p class="text-xs text-green-400 font-mono">Currently available — no signup required</p>
+            </div>
+
+            <!-- Builder -->
+            <div class="glass rounded-xl p-6 flex flex-col">
+                <div class="mb-4">
+                    <span class="text-xs font-mono px-2 py-1 rounded-full bg-blue-900/40 border border-blue-500/30 text-blue-400 font-semibold">Q2 2026</span>
+                </div>
+                <h2 class="text-xl font-bold text-white mb-1">Builder</h2>
+                <div class="text-4xl font-bold text-white mb-1">$99</div>
+                <p class="text-xs text-slate-500 mb-6">/month</p>
+                <ul class="space-y-2 text-sm text-slate-300 flex-grow mb-6">
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> 50,000 API calls/month</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> All 7 exchanges</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> Ed25519 signed receipts</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> Email support</li>
+                </ul>
+                <p class="text-xs text-slate-500 font-mono">Best for: solo developers, indie trading bots</p>
+            </div>
+
+            <!-- Pro -->
+            <div class="rounded-xl p-6 flex flex-col bg-blue-600/10 border border-blue-500/30 relative">
+                <div class="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <span class="text-xs font-bold px-3 py-1 rounded-full bg-blue-600 text-white tracking-wider uppercase">Popular</span>
+                </div>
+                <div class="mb-4">
+                    <span class="text-xs font-mono px-2 py-1 rounded-full bg-blue-900/40 border border-blue-500/30 text-blue-400 font-semibold">Q2 2026</span>
+                </div>
+                <h2 class="text-xl font-bold text-white mb-1">Pro</h2>
+                <div class="text-4xl font-bold text-white mb-1">$299</div>
+                <p class="text-xs text-slate-500 mb-6">/month</p>
+                <ul class="space-y-2 text-sm text-slate-300 flex-grow mb-6">
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> 200,000 API calls/month</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> All 7 exchanges</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> Ed25519 signed receipts</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> Priority email support</li>
+                </ul>
+                <p class="text-xs text-slate-500 font-mono">Best for: production trading systems, small protocols</p>
+            </div>
+
+            <!-- Protocol -->
+            <div class="glass rounded-xl p-6 flex flex-col">
+                <div class="mb-4">
+                    <span class="text-xs font-mono px-2 py-1 rounded-full bg-slate-700 border border-slate-600 text-slate-300 font-semibold">Custom</span>
+                </div>
+                <h2 class="text-xl font-bold text-white mb-1">Protocol</h2>
+                <div class="text-4xl font-bold text-white mb-1">Custom</div>
+                <p class="text-xs text-slate-500 mb-6">starting at $500/month</p>
+                <ul class="space-y-2 text-sm text-slate-300 flex-grow mb-6">
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> Unlimited API calls</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> Custom SLA</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> Dedicated support</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> Direct engineering access</li>
+                </ul>
+                <p class="text-xs text-slate-500 font-mono mb-3">Best for: DeFi protocols, RWA platforms, institutional trading systems</p>
+                <a href="mailto:hello@headlessoracle.com" class="text-blue-400 hover:text-blue-300 text-xs transition">hello@headlessoracle.com &rarr;</a>
+            </div>
+
+        </div>
+
+        <!-- What's included -->
+        <div class="border border-slate-700 rounded-xl p-8 mb-12 bg-slate-900/40">
+            <h3 class="text-lg font-bold text-white mb-4">All plans include</h3>
+            <div class="grid sm:grid-cols-2 gap-3 text-sm text-slate-400">
+                <div class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">&middot;</span> Ed25519 cryptographic signatures on every response</div>
+                <div class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">&middot;</span> Fail-closed architecture</div>
+                <div class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">&middot;</span> 7 global exchanges (NYSE, NASDAQ, London, Tokyo, Paris, Hong Kong, Singapore)</div>
+                <div class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">&middot;</span> ~1,300 schedule edge cases handled annually (holidays, DST, lunch breaks, early closes, circuit breakers)</div>
+            </div>
+        </div>
+
+        <!-- Beta notice -->
+        <div class="text-center">
+            <p class="text-slate-400 mb-3">Currently in free beta. Paid plans launching Q2 2026.</p>
+            <p class="text-slate-500 text-sm mb-6">Try the API now — no signup needed.</p>
+            <a href="https://headlessoracle.com/v5/demo?mic=XNYS" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold transition text-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                Try Live Demo
+            </a>
+        </div>
+
+    </main>
+
+    <footer class="border-t border-slate-800 bg-slate-900/50 mt-auto">
+        <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-sm text-slate-500">&copy; 2026 Headless Oracle.</p>
+            <div class="flex flex-wrap justify-center gap-6 text-xs text-slate-500">
+                <a href="/pricing" class="text-white">Pricing</a>
+                <a href="/privacy" class="hover:text-white transition">Privacy Policy</a>
+                <a href="/terms" class="hover:text-white transition">Terms of Service</a>
+                <a href="/refund" class="hover:text-white transition">Refund Policy</a>
+                <a href="mailto:hello@headlessoracle.com" class="hover:text-white transition">hello@headlessoracle.com</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
