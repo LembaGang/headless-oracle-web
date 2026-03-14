@@ -49,14 +49,15 @@
                 </div>
                 <h2 class="text-xl font-bold text-white mb-1">Free Beta</h2>
                 <div class="text-4xl font-bold text-white mb-1">$0</div>
-                <p class="text-xs text-slate-500 mb-6">/month · no signup required</p>
+                <p class="text-xs text-slate-500 mb-2">/month</p>
+                <p class="text-xs text-slate-400 mb-6">Get started instantly, no credit card needed</p>
                 <ul class="space-y-2 text-sm text-slate-300 flex-grow mb-6">
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> All API endpoints</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> Demo endpoint (no API key needed)</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> MCP server access</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> Market status for all 7 exchanges</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> Ed25519 signed receipts</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> Demo endpoint + free API key</li>
                     <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> Community support</li>
                 </ul>
-                <p class="text-xs text-green-400 font-mono">Currently available — no signup required</p>
+                <a href="#get-free-key" class="block w-full text-center px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg font-semibold transition text-sm">Get Free Key</a>
             </div>
 
             <!-- Builder -->
@@ -114,6 +115,19 @@
                 <a href="mailto:hello@headlessoracle.com" class="text-blue-400 hover:text-blue-300 text-xs transition">hello@headlessoracle.com &rarr;</a>
             </div>
 
+        </div>
+
+        <!-- Get Free Key -->
+        <div id="get-free-key" class="border border-green-700/40 rounded-xl p-8 mb-8 bg-green-900/10">
+            <h3 class="text-lg font-bold text-white mb-2">Get your free API key</h3>
+            <p class="text-sm text-slate-400 mb-5">Send a <code class="font-mono text-green-400 bg-slate-800 px-1 py-0.5 rounded">POST</code> request with your email address — a key will be returned immediately.</p>
+            <div class="bg-slate-900 rounded-lg p-4 font-mono text-sm text-slate-300 mb-4 overflow-x-auto">
+                <span class="text-slate-500"># Request a free API key</span><br>
+                curl -X POST https://headlessoracle.com/v5/keys/request \<br>
+                &nbsp;&nbsp;-H "Content-Type: application/json" \<br>
+                &nbsp;&nbsp;-d '{"email": "you@example.com"}'
+            </div>
+            <p class="text-xs text-slate-500">No credit card. No signup flow. Your key arrives in the response and is emailed to you.</p>
         </div>
 
         <!-- What's included -->
