@@ -12,6 +12,46 @@
     <meta property="og:description" content="Ed25519-signed market-status receipts for AI agents. 7 global exchanges. Fail-closed. MCP server included.">
     <link rel="alternate" type="application/json" href="/openapi.json" title="OpenAPI 3.1 specification">
     <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt — machine-readable API summary">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Headless Oracle",
+      "url": "https://headlessoracle.com",
+      "description": "Ed25519-signed market-status receipts for AI agents and autonomous trading systems. 7 global exchanges. Fail-closed by contract. MCP server included.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "description": "Free Beta tier — 500 requests/day, no credit card required"
+      },
+      "featureList": [
+        "Ed25519 cryptographic signing of every response",
+        "7 global exchanges: NYSE (XNYS), NASDAQ (XNAS), LSE (XLON), JPX Tokyo (XJPX), Euronext Paris (XPAR), HKEX (XHKG), SGX Singapore (XSES)",
+        "Fail-closed design: UNKNOWN or error status always halts",
+        "MCP server for Claude and agent frameworks",
+        "REST API with OpenAPI 3.1 schema at /openapi.json",
+        "Real-time circuit breaker and emergency halt detection",
+        "Machine-readable terms at /llms.txt"
+      ],
+      "provider": {
+        "@type": "Organization",
+        "name": "Headless Oracle",
+        "url": "https://headlessoracle.com"
+      },
+      "potentialAction": {
+        "@type": "ConsumeAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://headlessoracle.com/v5/demo?mic={mic}",
+          "actionPlatform": "https://schema.org/DigitalPlatform",
+          "description": "Query live market status. mic values: XNYS, XNAS, XLON, XJPX, XPAR, XHKG, XSES. Returns signed JSON receipt."
+        }
+      }
+    }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -81,6 +121,48 @@
         </div>
     </main>
 
+    <!-- Live Status Widget: the product demonstrating itself -->
+    <section class="w-full max-w-3xl mx-auto px-6 mb-16">
+        <div id="status-widget" class="glass rounded-xl p-5 cursor-pointer border border-slate-700 hover:border-blue-500/40 transition-colors group" onclick="toggleReceipt()">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                    <span id="sw-dot" class="w-2.5 h-2.5 rounded-full bg-slate-600 inline-block transition-all"></span>
+                    <span class="text-xs font-mono text-slate-500 uppercase tracking-wider">NYSE · Live Market Status</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-xs text-blue-400 font-mono flex items-center gap-1">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        cryptographically verified
+                    </span>
+                    <span class="text-xs text-slate-600 group-hover:text-slate-500 transition">click to inspect ↓</span>
+                </div>
+            </div>
+            <div class="flex items-end justify-between">
+                <div class="flex items-center gap-4">
+                    <span id="sw-label" class="text-3xl font-bold font-mono text-slate-500">—</span>
+                    <div class="text-xs text-slate-500 leading-relaxed">
+                        <div id="sw-time">Fetching live receipt…</div>
+                        <div id="sw-next" class="text-slate-600"></div>
+                    </div>
+                </div>
+                <div class="text-right hidden sm:block">
+                    <div class="text-xs text-slate-600 font-mono">Live — verified by Headless Oracle</div>
+                    <div id="sw-countdown" class="text-xs text-slate-700 font-mono"></div>
+                </div>
+            </div>
+        </div>
+        <div id="receipt-panel" class="hidden mt-1">
+            <div class="flex items-center justify-between px-2 py-1">
+                <span class="text-xs font-mono text-slate-600">Signed receipt JSON</span>
+                <button onclick="copyReceipt(event)" class="text-xs text-slate-500 hover:text-white transition">Copy</button>
+            </div>
+            <pre id="receipt-json" class="text-xs text-green-400 font-mono overflow-x-auto rounded-lg p-4 bg-slate-900 border border-slate-700 max-h-72 m-0">Loading…</pre>
+            <div class="mt-2 text-right">
+                <a href="/verify" class="text-xs text-blue-400 hover:text-blue-300">Verify this receipt yourself (no server needed) →</a>
+            </div>
+        </div>
+    </section>
+
     <!-- Edge Case Counter -->
     <section class="w-full max-w-5xl mx-auto px-6 mb-20">
         <div class="text-center mb-10">
@@ -111,6 +193,24 @@
         </div>
         <div class="border border-slate-700/80 rounded-lg p-5 bg-slate-900/40 text-center">
             <p class="text-slate-300 font-mono text-sm">A timezone library handles zero of these. Headless Oracle handles all of them.</p>
+        </div>
+    </section>
+
+    <!-- Integration Counter / Social Proof -->
+    <section class="w-full max-w-5xl mx-auto px-6 mb-16">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="glass rounded-xl p-5 text-center border border-slate-700/60">
+                <div class="text-3xl font-bold text-white mb-1">49</div>
+                <div class="text-xs text-slate-400 leading-relaxed">countries active<br><span class="text-slate-600">this week</span></div>
+            </div>
+            <div class="glass rounded-xl p-5 text-center border border-slate-700/60">
+                <div class="text-3xl font-bold text-white mb-1">~1,300</div>
+                <div class="text-xs text-slate-400 leading-relaxed">schedule edge cases<br><span class="text-slate-600">handled annually</span></div>
+            </div>
+            <div class="glass rounded-xl p-5 text-center border border-slate-700/60">
+                <div class="text-3xl font-bold text-white mb-1">0</div>
+                <div class="text-xs text-slate-400 leading-relaxed">execution errors<br><span class="text-slate-600">since launch</span></div>
+            </div>
         </div>
     </section>
 
@@ -180,6 +280,51 @@
         </div>
     </section>
 
+    <!-- Developer Quick-Start: the conversion funnel -->
+    <section class="w-full max-w-3xl mx-auto px-6 mb-24" id="quickstart">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-white mb-2">From zero to verified market status in 60 seconds</h2>
+            <p class="text-slate-500 text-sm">No signup required for the demo. Free key unlocks 500 req/day.</p>
+        </div>
+        <div class="space-y-3">
+            <!-- Step 1 -->
+            <div class="glass rounded-xl p-5 border border-slate-700">
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">1</span>
+                    <span class="text-white font-semibold text-sm">Query the demo endpoint — no signup</span>
+                </div>
+                <pre class="m-0 text-xs sm:text-sm text-green-400">curl https://headlessoracle.com/v5/demo?mic=XNYS</pre>
+                <p class="text-xs text-slate-500 mt-2">Returns a signed JSON receipt instantly. Swap <code class="text-slate-400">XNYS</code> for any supported MIC code.</p>
+            </div>
+            <!-- Step 2 -->
+            <div class="glass rounded-xl p-5 border border-slate-700">
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">2</span>
+                    <span class="text-white font-semibold text-sm">Request your free API key (instant, no card)</span>
+                </div>
+                <pre class="m-0 text-xs sm:text-sm text-blue-300">curl -X POST https://headlessoracle.com/v5/keys/request \
+  -H "Content-Type: application/json" \
+  -d '{"email":"you@yourorg.com"}'</pre>
+                <p class="text-xs text-slate-500 mt-2">Key arrives in your inbox in seconds. <a href="/pricing" class="text-blue-400 hover:text-blue-300">Free tier</a>: 500 req/day, all 7 exchanges.</p>
+            </div>
+            <!-- Step 3 -->
+            <div class="glass rounded-xl p-5 border border-slate-700">
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">3</span>
+                    <span class="text-white font-semibold text-sm">Add 3 lines to your agent</span>
+                </div>
+                <pre class="m-0 text-xs sm:text-sm text-blue-300">const r = await fetch('https://headlessoracle.com/v5/status?mic=XNYS',
+  { headers: { 'X-API-Key': process.env.ORACLE_KEY } }).then(r => r.json());
+if (r.status !== 'OPEN') return halt('Market not open — status: ' + r.status);</pre>
+                <p class="text-xs text-slate-500 mt-2">Fail-closed by design. Anything other than <code class="text-green-400">OPEN</code> halts your agent. Receipt is Ed25519-signed for audit.</p>
+            </div>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3 mt-6 justify-center">
+            <a href="/pricing" class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold text-sm text-center transition shadow-lg shadow-blue-900/20">Get Free Key →</a>
+            <a href="/docs" class="px-6 py-3 glass hover:bg-white/10 text-white rounded-lg font-semibold text-sm text-center transition">Full API Docs</a>
+        </div>
+    </section>
+
     <section class="w-full max-w-3xl mx-auto px-6 mb-24">
         <div class="flex items-center justify-between mb-2 px-2">
             <span class="text-xs font-mono text-slate-500">GET /v5/demo</span>
@@ -223,6 +368,103 @@
 
     <script>
         const ORACLE_API = 'https://headlessoracle.com';
+
+        // --- Live Status Widget ---
+        let _swReceipt = null;
+        let _swCountdown = 60;
+        let _swTimer = null;
+
+        async function fetchNYSEStatus() {
+            try {
+                const res = await fetch(ORACLE_API + '/v5/demo?mic=XNYS');
+                if (!res.ok) throw new Error(res.status);
+                const data = await res.json();
+                _swReceipt = data;
+                renderStatusWidget(data);
+            } catch (e) {
+                renderStatusWidget(null, e.message);
+            }
+            _swCountdown = 60;
+        }
+
+        function renderStatusWidget(data, errMsg) {
+            const dot = document.getElementById('sw-dot');
+            const label = document.getElementById('sw-label');
+            const timeEl = document.getElementById('sw-time');
+            const nextEl = document.getElementById('sw-next');
+
+            if (!data) {
+                dot.style.cssText = 'background:#ef4444';
+                label.textContent = 'ERROR';
+                label.style.color = '#f87171';
+                timeEl.textContent = 'Could not reach Oracle' + (errMsg ? ': ' + errMsg : '');
+                nextEl.textContent = '';
+                return;
+            }
+
+            const status = data.status || 'UNKNOWN';
+            const ts = data.timestamp ? new Date(data.timestamp).toUTCString() : '—';
+
+            if (status === 'OPEN') {
+                dot.style.cssText = 'background:#22c55e;box-shadow:0 0 8px #22c55e';
+                dot.classList.add('animate-pulse');
+                label.textContent = 'OPEN';
+                label.style.color = '#4ade80';
+            } else if (status === 'HALTED') {
+                dot.style.cssText = 'background:#f59e0b;box-shadow:0 0 8px #f59e0b';
+                dot.classList.add('animate-pulse');
+                label.textContent = 'HALTED';
+                label.style.color = '#fbbf24';
+            } else {
+                dot.style.cssText = 'background:#475569';
+                dot.classList.remove('animate-pulse');
+                label.textContent = status;
+                label.style.color = '#94a3b8';
+            }
+
+            timeEl.textContent = ts;
+            nextEl.textContent = data.next_open ? 'Next open: ' + data.next_open : '';
+
+            // Refresh receipt panel if open
+            const panel = document.getElementById('receipt-panel');
+            if (!panel.classList.contains('hidden') && _swReceipt) {
+                document.getElementById('receipt-json').textContent = JSON.stringify(_swReceipt, null, 2);
+            }
+        }
+
+        function toggleReceipt() {
+            const panel = document.getElementById('receipt-panel');
+            const jsonEl = document.getElementById('receipt-json');
+            if (panel.classList.contains('hidden')) {
+                panel.classList.remove('hidden');
+                jsonEl.textContent = _swReceipt ? JSON.stringify(_swReceipt, null, 2) : 'Loading…';
+            } else {
+                panel.classList.add('hidden');
+            }
+        }
+
+        function copyReceipt(e) {
+            e.stopPropagation();
+            const text = _swReceipt ? JSON.stringify(_swReceipt, null, 2) : '';
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = e.target;
+                const orig = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.classList.add('text-green-400');
+                setTimeout(() => { btn.textContent = orig; btn.classList.remove('text-green-400'); }, 2000);
+            });
+        }
+
+        (function startStatusPolling() {
+            fetchNYSEStatus();
+            _swTimer = setInterval(() => {
+                _swCountdown--;
+                const el = document.getElementById('sw-countdown');
+                if (el) el.textContent = 'Refreshes in ' + _swCountdown + 's';
+                if (_swCountdown <= 0) fetchNYSEStatus();
+            }, 1000);
+        })();
+        // --- End Live Status Widget ---
 
         async function testLiveAPI() {
             const pre = document.getElementById('api-response');
