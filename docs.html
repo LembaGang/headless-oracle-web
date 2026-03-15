@@ -572,13 +572,6 @@ function hexToBytes(hex) {
     </footer>
 
     <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
-    <script>
-      Paddle.Initialize({ token: 'live_8d7ef54e91c43573f6afd77c7bd' });
-      const params = new URLSearchParams(window.location.search);
-      const ptxn = params.get('_ptxn');
-      if (ptxn) {
-        Paddle.Checkout.open({ transactionId: ptxn });
-      }
-    </script>
+    <script src="/js/paddle-init.js"></script>
 </body>
 </html>
