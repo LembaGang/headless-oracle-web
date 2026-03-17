@@ -69,7 +69,7 @@
 
             <!-- EDGE CASES -->
             <section id="complexity" class="mb-12 border-b border-slate-800 pb-12">
-                <h2>7 exchanges. ~1,300 edge cases per year.</h2>
+                <h2>23 exchanges. Global 24/7 coverage.</h2>
                 <p class="text-sm text-slate-400 mb-6">The scheduling complexity a timezone library was not built to solve.</p>
 
                 <div class="flex flex-wrap justify-center gap-3 mb-6">
@@ -157,7 +157,7 @@ curl "https://headlessoracle.com/v5/demo?mic=XJPX"</pre>
             <section id="exchanges" class="mb-12 border-b border-slate-800 pb-12">
                 <h2>Supported Exchanges</h2>
                 <p class="text-sm text-slate-400 mb-4">
-                    Seven exchanges across four continents. All DST transitions are handled server-side using IANA timezone data — no hardcoded UTC offsets.
+                    23 exchanges across 6 regions. All DST transitions are handled server-side using IANA timezone data — no hardcoded UTC offsets.
                 </p>
                 <div class="overflow-x-auto">
                     <table>
@@ -186,18 +186,18 @@ curl "https://headlessoracle.com/v5/demo?mic=XJPX"</pre>
                                 <td class="text-xs text-yellow-500">Mar 8</td>
                             </tr>
                             <tr>
+                                <td class="font-mono text-blue-400">XBSP</td>
+                                <td>B3 (São Paulo Stock Exchange)</td>
+                                <td class="font-mono text-xs">10:00 – 17:00</td>
+                                <td class="text-xs text-slate-500">America/Sao_Paulo</td>
+                                <td class="text-xs text-yellow-500">Brazil (Nov)</td>
+                            </tr>
+                            <tr>
                                 <td class="font-mono text-blue-400">XLON</td>
                                 <td>London Stock Exchange</td>
                                 <td class="font-mono text-xs">08:00 – 16:30</td>
                                 <td class="text-xs text-slate-500">Europe/London</td>
                                 <td class="text-xs text-yellow-500">Mar 29</td>
-                            </tr>
-                            <tr>
-                                <td class="font-mono text-blue-400">XJPX</td>
-                                <td>Japan Exchange Group (Tokyo)</td>
-                                <td class="font-mono text-xs">09:00 – 15:30 <span class="text-slate-500">(lunch 11:30–12:30)</span></td>
-                                <td class="text-xs text-slate-500">Asia/Tokyo</td>
-                                <td class="text-xs text-slate-500">None</td>
                             </tr>
                             <tr>
                                 <td class="font-mono text-blue-400">XPAR</td>
@@ -207,10 +207,108 @@ curl "https://headlessoracle.com/v5/demo?mic=XJPX"</pre>
                                 <td class="text-xs text-yellow-500">Mar 29</td>
                             </tr>
                             <tr>
+                                <td class="font-mono text-blue-400">XSWX</td>
+                                <td>SIX Swiss Exchange</td>
+                                <td class="font-mono text-xs">09:00 – 17:30</td>
+                                <td class="text-xs text-slate-500">Europe/Zurich</td>
+                                <td class="text-xs text-yellow-500">Mar 29</td>
+                            </tr>
+                            <tr>
+                                <td class="font-mono text-blue-400">XMIL</td>
+                                <td>Borsa Italiana (Milan)</td>
+                                <td class="font-mono text-xs">09:00 – 17:30</td>
+                                <td class="text-xs text-slate-500">Europe/Rome</td>
+                                <td class="text-xs text-yellow-500">Mar 29</td>
+                            </tr>
+                            <tr>
+                                <td class="font-mono text-blue-400">XHEL</td>
+                                <td>Nasdaq Helsinki</td>
+                                <td class="font-mono text-xs">10:00 – 18:30</td>
+                                <td class="text-xs text-slate-500">Europe/Helsinki</td>
+                                <td class="text-xs text-yellow-500">Mar 29</td>
+                            </tr>
+                            <tr>
+                                <td class="font-mono text-blue-400">XSTO</td>
+                                <td>Nasdaq Stockholm</td>
+                                <td class="font-mono text-xs">09:00 – 17:30</td>
+                                <td class="text-xs text-slate-500">Europe/Stockholm</td>
+                                <td class="text-xs text-yellow-500">Mar 29</td>
+                            </tr>
+                            <tr>
+                                <td class="font-mono text-blue-400">XIST</td>
+                                <td>Borsa Istanbul</td>
+                                <td class="font-mono text-xs">10:00 – 18:00</td>
+                                <td class="text-xs text-slate-500">Europe/Istanbul</td>
+                                <td class="text-xs text-yellow-500">Mar 29</td>
+                            </tr>
+                            <tr>
+                                <td class="font-mono text-blue-400">XSAU</td>
+                                <td>Saudi Exchange (Tadawul) <span class="text-slate-500 text-xs">Sun–Thu</span></td>
+                                <td class="font-mono text-xs">10:00 – 15:00</td>
+                                <td class="text-xs text-slate-500">Asia/Riyadh</td>
+                                <td class="text-xs text-slate-500">None</td>
+                            </tr>
+                            <tr>
+                                <td class="font-mono text-blue-400">XDFM</td>
+                                <td>Dubai Financial Market <span class="text-slate-500 text-xs">Sun–Thu</span></td>
+                                <td class="font-mono text-xs">10:00 – 14:00</td>
+                                <td class="text-xs text-slate-500">Asia/Dubai</td>
+                                <td class="text-xs text-slate-500">None</td>
+                            </tr>
+                            <tr>
+                                <td class="font-mono text-blue-400">XJSE</td>
+                                <td>Johannesburg Stock Exchange</td>
+                                <td class="font-mono text-xs">09:00 – 17:00</td>
+                                <td class="text-xs text-slate-500">Africa/Johannesburg</td>
+                                <td class="text-xs text-slate-500">None</td>
+                            </tr>
+                            <tr>
+                                <td class="font-mono text-blue-400">XSHG</td>
+                                <td>Shanghai Stock Exchange</td>
+                                <td class="font-mono text-xs">09:30 – 15:00 <span class="text-slate-500">(lunch 11:30–13:00)</span></td>
+                                <td class="text-xs text-slate-500">Asia/Shanghai</td>
+                                <td class="text-xs text-slate-500">None</td>
+                            </tr>
+                            <tr>
+                                <td class="font-mono text-blue-400">XSHE</td>
+                                <td>Shenzhen Stock Exchange</td>
+                                <td class="font-mono text-xs">09:30 – 15:00 <span class="text-slate-500">(lunch 11:30–13:00)</span></td>
+                                <td class="text-xs text-slate-500">Asia/Shanghai</td>
+                                <td class="text-xs text-slate-500">None</td>
+                            </tr>
+                            <tr>
                                 <td class="font-mono text-blue-400">XHKG</td>
                                 <td>Hong Kong Exchanges and Clearing</td>
                                 <td class="font-mono text-xs">09:30 – 16:00 <span class="text-slate-500">(lunch 12:00–13:00)</span></td>
                                 <td class="text-xs text-slate-500">Asia/Hong_Kong</td>
+                                <td class="text-xs text-slate-500">None</td>
+                            </tr>
+                            <tr>
+                                <td class="font-mono text-blue-400">XJPX</td>
+                                <td>Japan Exchange Group (Tokyo)</td>
+                                <td class="font-mono text-xs">09:00 – 15:30 <span class="text-slate-500">(lunch 11:30–12:30)</span></td>
+                                <td class="text-xs text-slate-500">Asia/Tokyo</td>
+                                <td class="text-xs text-slate-500">None</td>
+                            </tr>
+                            <tr>
+                                <td class="font-mono text-blue-400">XKRX</td>
+                                <td>Korea Exchange (Seoul)</td>
+                                <td class="font-mono text-xs">09:00 – 15:30</td>
+                                <td class="text-xs text-slate-500">Asia/Seoul</td>
+                                <td class="text-xs text-slate-500">None</td>
+                            </tr>
+                            <tr>
+                                <td class="font-mono text-blue-400">XBOM</td>
+                                <td>BSE Ltd (Bombay Stock Exchange)</td>
+                                <td class="font-mono text-xs">09:15 – 15:30</td>
+                                <td class="text-xs text-slate-500">Asia/Kolkata</td>
+                                <td class="text-xs text-slate-500">None</td>
+                            </tr>
+                            <tr>
+                                <td class="font-mono text-blue-400">XNSE</td>
+                                <td>National Stock Exchange of India</td>
+                                <td class="font-mono text-xs">09:15 – 15:30</td>
+                                <td class="text-xs text-slate-500">Asia/Kolkata</td>
                                 <td class="text-xs text-slate-500">None</td>
                             </tr>
                             <tr>
@@ -219,6 +317,20 @@ curl "https://headlessoracle.com/v5/demo?mic=XJPX"</pre>
                                 <td class="font-mono text-xs">09:00 – 17:00</td>
                                 <td class="text-xs text-slate-500">Asia/Singapore</td>
                                 <td class="text-xs text-slate-500">None</td>
+                            </tr>
+                            <tr>
+                                <td class="font-mono text-blue-400">XASX</td>
+                                <td>Australian Securities Exchange (Sydney)</td>
+                                <td class="font-mono text-xs">10:00 – 16:00</td>
+                                <td class="text-xs text-slate-500">Australia/Sydney</td>
+                                <td class="text-xs text-yellow-500">Oct (AU)</td>
+                            </tr>
+                            <tr>
+                                <td class="font-mono text-blue-400">XNZE</td>
+                                <td>New Zealand Exchange (Auckland)</td>
+                                <td class="font-mono text-xs">10:00 – 16:45</td>
+                                <td class="text-xs text-slate-500">Pacific/Auckland</td>
+                                <td class="text-xs text-yellow-500">Oct (NZ)</td>
                             </tr>
                         </tbody>
                     </table>
@@ -247,7 +359,7 @@ curl "https://headlessoracle.com/v5/demo?mic=XJPX"</pre>
                         <h3 class="text-blue-400">GET /v5/status <span class="text-xs text-slate-500 ml-2">Authenticated</span></h3>
                         <p class="text-sm mb-2">Primary endpoint for production market status checks.</p>
                         <pre>Header: X-Oracle-Key: YOUR_API_KEY
-Query:  mic=XNYS  (or XNAS, XLON, XJPX, XPAR, XHKG, XSES)</pre>
+Query:  mic=XNYS  (or any of the 23 supported MIC codes — see /v5/exchanges)</pre>
                     </div>
 
                     <div>
@@ -458,7 +570,7 @@ function hexToBytes(hex) {
                     <div class="p-4 bg-slate-800/50 rounded-lg border border-slate-700">
                         <p class="font-semibold text-white mb-1"><code>get_market_status</code></p>
                         <p class="text-slate-400 mb-2">Check whether a stock exchange is currently open or closed. Returns a cryptographically signed receipt. MANDATORY: treat UNKNOWN or HALTED as CLOSED and halt execution.</p>
-                        <p class="text-xs text-slate-500">Input: <code>{ "mic": "XNYS" }</code> — any of the 7 supported MIC codes.</p>
+                        <p class="text-xs text-slate-500">Input: <code>{ "mic": "XNYS" }</code> — any of the 23 supported MIC codes.</p>
                     </div>
                     <div class="p-4 bg-slate-800/50 rounded-lg border border-slate-700">
                         <p class="font-semibold text-white mb-1"><code>get_market_schedule</code></p>
@@ -467,7 +579,7 @@ function hexToBytes(hex) {
                     </div>
                     <div class="p-4 bg-slate-800/50 rounded-lg border border-slate-700">
                         <p class="font-semibold text-white mb-1"><code>list_exchanges</code></p>
-                        <p class="text-slate-400 mb-2">Returns all 7 supported exchanges with MIC codes, names, and timezones.</p>
+                        <p class="text-slate-400 mb-2">Returns all 23 supported exchanges with MIC codes, names, and timezones.</p>
                         <p class="text-xs text-slate-500">No input required.</p>
                     </div>
                 </div>
