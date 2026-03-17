@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Headless Oracle | Signed Market-Status API for AI Agents</title>
-    <meta name="description" content="Ed25519-signed market-status receipts for AI agents and autonomous trading systems. 23 global exchanges. Fail-closed by contract. MCP server included. Free during beta.">
+    <meta name="description" content="Headless Oracle — cryptographic market state verification for autonomous agents. The verification layer for Mastercard Verifiable Intent and BVNK execution pipelines. 23 global exchanges. Ed25519 signed receipts. Fail-closed.">
     <meta name="robots" content="index, follow">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://headlessoracle.com/">
@@ -67,6 +67,10 @@
         "name": "Headless Oracle",
         "url": "https://headlessoracle.com"
       },
+      "sameAs": [
+        "https://github.com/agent-intent/verifiable-intent",
+        "https://github.com/LembaGang/sma-protocol"
+      ],
       "potentialAction": {
         "@type": "ConsumeAction",
         "target": {
@@ -241,6 +245,52 @@
         </div>
         <div class="border border-slate-700/80 rounded-lg p-5 bg-slate-900/40 text-center">
             <p class="text-slate-300 font-mono text-sm">A timezone library handles zero of these. Headless Oracle handles all of them.</p>
+        </div>
+    </section>
+
+    <!-- Verifiable Intent Section: The Verification Layer for Autonomous Finance -->
+    <section class="w-full max-w-4xl mx-auto px-6 mb-20">
+        <div class="glass rounded-2xl p-8 border border-blue-500/20 bg-blue-900/10">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-2.5 py-0.5 rounded text-xs font-mono font-bold bg-blue-900/50 border border-blue-500/40 text-blue-300 uppercase tracking-wider">RFC Submitted · March 17, 2026</span>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold text-white mb-4 tracking-tight">The Verification Layer for Autonomous Finance</h2>
+            <p class="text-slate-400 mb-6 leading-relaxed">The autonomous finance stack is assembling. Mastercard acquired BVNK — programmable stablecoin payment rails — for $1.8B. The three layers are now in place. Headless Oracle is the third.</p>
+
+            <div class="grid md:grid-cols-3 gap-4 mb-6">
+                <div class="glass rounded-xl p-4 border border-slate-700/60">
+                    <div class="text-xs font-mono text-slate-500 uppercase tracking-wider mb-2">Layer 1 · Authorization</div>
+                    <div class="text-white font-semibold mb-1">Mastercard Verifiable Intent</div>
+                    <div class="text-xs text-slate-400">The agent is permitted to execute this action</div>
+                </div>
+                <div class="glass rounded-xl p-4 border border-slate-700/60">
+                    <div class="text-xs font-mono text-slate-500 uppercase tracking-wider mb-2">Layer 2 · Execution</div>
+                    <div class="text-white font-semibold mb-1">BVNK / Mastercard Rails</div>
+                    <div class="text-xs text-slate-400">Programmable stablecoin settlement moves</div>
+                </div>
+                <div class="glass rounded-xl p-4 border border-blue-500/30 bg-blue-900/10">
+                    <div class="text-xs font-mono text-blue-400 uppercase tracking-wider mb-2">Layer 3 · Verification</div>
+                    <div class="text-white font-semibold mb-1">Headless Oracle</div>
+                    <div class="text-xs text-slate-400">Cryptographic proof the market was open at execution time</div>
+                </div>
+            </div>
+
+            <p class="text-slate-400 text-sm mb-4 leading-relaxed">An agent with authorization and rails but without verified market state has no auditable proof of what external conditions it acted on. The External State Attestation RFC formalises the third layer: a signed, independently verifiable record that the market was open before execution.</p>
+
+            <div class="flex flex-wrap gap-3 text-sm">
+                <a href="https://github.com/agent-intent/verifiable-intent/pulls" class="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 hover:text-white rounded-lg transition font-mono text-xs">
+                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    RFC: agent-intent/verifiable-intent
+                </a>
+                <a href="https://headlessoracle.com/v5/compliance" class="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 hover:text-white rounded-lg transition font-mono text-xs">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                    /v5/compliance
+                </a>
+                <a href="https://headlessoracle.com/v5/stack" class="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 hover:text-white rounded-lg transition font-mono text-xs">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                    /v5/stack
+                </a>
+            </div>
         </div>
     </section>
 
