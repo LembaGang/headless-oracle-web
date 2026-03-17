@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anthropic Claude Integration | Headless Oracle</title>
+    <meta name="description" content="Define Headless Oracle as a Claude tool via the Anthropic tool_use API. Claude requests the tool; your code verifies the signed receipt; fail-closed market gating for Claude agents.">
+    <meta name="robots" content="index, follow">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://headlessoracle.com/docs/integrations/anthropic-claude">
+    <meta property="og:title" content="Anthropic Claude Integration | Headless Oracle">
+    <meta property="og:description" content="Headless Oracle as a Claude tool: signed market receipts verified in your code, not the model.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #cbd5e1; }
+        .glass { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(51, 65, 85, 0.5); }
+        pre { background: #1e293b; padding: 1.25rem; border-radius: 0.5rem; overflow-x: auto; font-family: 'Menlo', 'Consolas', monospace; font-size: 0.82rem; border: 1px solid #334155; line-height: 1.6; }
+        code { color: #60a5fa; font-family: 'Menlo', 'Consolas', monospace; font-size: 0.85em; }
+        .note { background: #1e2a1e; border: 1px solid #365a36; border-left: 3px solid #4ade80; padding: 0.75rem 1rem; border-radius: 0 0.375rem 0.375rem 0; }
+        .warn { background: #2a1e1e; border: 1px solid #5a3636; border-left: 3px solid #f87171; padding: 0.75rem 1rem; border-radius: 0 0.375rem 0.375rem 0; }
+        .badge { background: #1e293b; color: #60a5fa; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; border: 1px solid #334155; font-family: monospace; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <nav class="w-full border-b border-slate-800 bg-slate-900/80 backdrop-blur-md">
+        <div class="max-w-5xl mx-auto px-6 h-16 flex justify-between items-center">
+            <a href="/" class="font-bold text-white tracking-wider">HEADLESS<span class="text-blue-500">ORACLE</span></a>
+            <div class="flex items-center gap-4 text-sm">
+                <a href="/docs" class="text-slate-400 hover:text-white transition">Docs</a>
+                <a href="/pricing" class="text-slate-400 hover:text-white transition">Pricing</a>
+                <span class="badge">TypeScript SDK</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow max-w-5xl mx-auto px-6 py-12 w-full">
+
+        <div class="text-xs text-slate-500 mb-8 font-mono">
+            <a href="/docs" class="hover:text-slate-300">docs</a>
+            <span class="mx-2">/</span><span>integrations</span><span class="mx-2">/</span>
+            <span class="text-slate-300">anthropic-claude</span>
+        </div>
+
+        <div class="mb-10">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-3xl">🤖</span>
+                <h1 class="text-4xl font-bold text-white">Anthropic Claude API</h1>
+            </div>
+            <p class="text-lg text-slate-400 max-w-3xl">
+                Define Headless Oracle as a Claude tool via the Anthropic <code>tool_use</code> API. Claude requests the tool; your code fetches and verifies the signed receipt; the verified result is returned in a <code>tool_result</code> block. Verification runs in your code — not inside the model.
+            </p>
+        </div>
+
+        <section class="mb-10">
+            <h2 class="text-xl font-bold text-white mb-4">Prerequisites</h2>
+            <pre><span style="color:#4ade80">npm install @anthropic-ai/sdk @headlessoracle/verify</span>
+<span style="color:#94a3b8"># or</span>
+<span style="color:#4ade80">pip install anthropic headless-oracle</span></pre>
+        </section>
+
+        <section class="mb-10">
+            <h2 class="text-xl font-bold text-white mb-4">TypeScript Example</h2>
+            <pre><span style="color:#f8fafc">import Anthropic from "@anthropic-ai/sdk";
+import { verify } from "@headlessoracle/verify";
+
+const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
+const ORACLE_BASE = "https://headlessoracle.com";
+const ORACLE_KEY = process.env.ORACLE_KEY!;
+
+<span style="color:#94a3b8">// --- Tool definitions sent to Claude ---</span>
+
+const tools: Anthropic.Tool[] = [
+  {
+    name: "check_market_status",
+    description:
+      "Check whether a stock exchange is currently OPEN using a cryptographically " +
+      "signed receipt from Headless Oracle. Always call this before recommending " +
+      "or executing a trade. The result includes safe_to_trade (bool) and a " +
+      "verified status string. If safe_to_trade is false, do not proceed.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        mic: {
+          type: "string",
+          enum: ["XNYS", "XNAS", "XLON", "XJPX", "XPAR", "XHKG", "XSES"],
+          description: "ISO 10383 MIC code for the exchange.",
+        },
+      },
+      required: ["mic"],
+    },
+  },
+];
+
+<span style="color:#94a3b8">// --- Tool execution ---</span>
+
+async function executeTool(name: string, input: Record&lt;string, string&gt;): Promise&lt;string&gt; {
+  if (name === "check_market_status") {
+    const { mic } = input;
+    try {
+      const res = await fetch(`${ORACLE_BASE}/v5/status?mic=${mic}`, {
+        headers: { "X-Oracle-Key": ORACLE_KEY },
+        signal: AbortSignal.timeout(5000),
+      });
+
+      if (!res.ok) {
+        return JSON.stringify({ mic, status: "UNKNOWN", safe_to_trade: false,
+                                reason: `HTTP ${res.status}` });
+      }
+
+      const receipt = await res.json() as Record&lt;string, unknown&gt;;
+      const result = await verify(receipt);
+
+      if (!result.valid) {
+        return JSON.stringify({ mic, status: "UNKNOWN", safe_to_trade: false,
+                                reason: `Verification failed: ${result.reason}` });
+      }
+
+      const isOpen = receipt.status === "OPEN";
+      return JSON.stringify({
+        mic,
+        status: receipt.status,
+        safe_to_trade: isOpen,
+        reason: isOpen ? "Verified OPEN." : `Market is ${receipt.status} — do not trade.`,
+        expires_at: receipt.expires_at,
+        receipt_mode: receipt.receipt_mode,
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      return JSON.stringify({ mic, status: "UNKNOWN", safe_to_trade: false,
+                              reason: `Oracle error: ${message}` });
+    }
+  }
+  return JSON.stringify({ error: `Unknown tool: ${name}` });
+}
+
+<span style="color:#94a3b8">// --- Tool use loop ---</span>
+
+async function runWithOracle(userMessage: string): Promise&lt;string&gt; {
+  const messages: Anthropic.MessageParam[] = [
+    { role: "user", content: userMessage },
+  ];
+
+  const SYSTEM_PROMPT =
+    "You are a trading safety assistant. Before recommending or executing any trade, " +
+    "you must call check_market_status for the relevant exchange. " +
+    "If safe_to_trade is false, halt and explain why. " +
+    "UNKNOWN status means the market state cannot be verified. Treat UNKNOWN as CLOSED.";
+
+  while (true) {
+    const response = await client.messages.create({
+      model: "claude-opus-4-5",
+      max_tokens: 1024,
+      system: SYSTEM_PROMPT,
+      tools,
+      messages,
+    });
+
+    if (response.stop_reason === "end_turn") {
+      const textBlock = response.content.find((b) =&gt; b.type === "text");
+      return textBlock &amp;&amp; textBlock.type === "text" ? textBlock.text : "";
+    }
+
+    if (response.stop_reason === "tool_use") {
+      messages.push({ role: "assistant", content: response.content });
+      const toolResults: Anthropic.ToolResultBlockParam[] = [];
+      for (const block of response.content) {
+        if (block.type !== "tool_use") continue;
+        const output = await executeTool(block.name, block.input as Record&lt;string, string&gt;);
+        toolResults.push({ type: "tool_result", tool_use_id: block.id, content: output });
+      }
+      messages.push({ role: "user", content: toolResults });
+      continue;
+    }
+
+    const textBlock = response.content.find((b) =&gt; b.type === "text");
+    return textBlock &amp;&amp; textBlock.type === "text" ? textBlock.text : "";
+  }
+}
+
+<span style="color:#94a3b8">// --- Usage ---</span>
+
+async function main() {
+  const response = await runWithOracle(
+    "I want to buy shares on the NYSE. Is it safe to trade right now?"
+  );
+  console.log(response);
+}
+
+main().catch(console.error);</span></pre>
+        </section>
+
+        <section class="mb-10">
+            <h2 class="text-xl font-bold text-white mb-4">System Prompt Fragment</h2>
+            <p class="text-sm text-slate-400 mb-3">Include this in your system prompt whenever Oracle tools are registered:</p>
+            <pre><span style="color:#f8fafc">Before recommending or executing any trade, call check_market_status for the
+relevant exchange and evaluate safe_to_trade:
+
+- safe_to_trade: true  → market is OPEN with a cryptographically verified receipt
+- safe_to_trade: false → market is CLOSED, HALTED, or UNKNOWN — do not trade
+
+UNKNOWN means the Oracle's signing infrastructure could not produce a verified
+receipt. Treat it as CLOSED. Never infer that a market is open from context,
+time of day, or prior messages. Only a verified receipt with safe_to_trade=true
+authorizes a trade.</span></pre>
+        </section>
+
+        <section class="mb-10">
+            <h2 class="text-xl font-bold text-white mb-4">Important</h2>
+            <div class="space-y-3 text-sm">
+                <div class="warn">
+                    <strong class="text-red-300">Verification runs in your code, not in the model.</strong>
+                    <span class="text-slate-300 ml-1">Claude cannot verify Ed25519 signatures. The <code>executeTool</code> function calls <code>verify()</code> before returning <code>safe_to_trade</code> to Claude. Claude should never be asked to reason about raw signature bytes.</span>
+                </div>
+                <div class="note">
+                    <strong class="text-green-300">Return <code>safe_to_trade</code> as a top-level boolean.</strong>
+                    <span class="text-slate-300 ml-1">Claude parses the <code>tool_result</code> content string as JSON. A flat, clearly named boolean is more reliable than nesting it inside a receipt object the model must interpret.</span>
+                </div>
+                <div class="note">
+                    <strong class="text-green-300">The tool use loop handles multiple tool calls per turn.</strong>
+                    <span class="text-slate-300 ml-1">Claude may call multiple tools in the same response. The loop above handles all blocks in a single pass before returning results.</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-10 border-t border-slate-800 pt-8">
+            <h2 class="text-xl font-bold text-white mb-4">Resources</h2>
+            <div class="grid sm:grid-cols-2 gap-3 text-sm">
+                <a href="/docs" class="glass rounded-lg p-4 hover:bg-white/5 transition">
+                    <div class="text-white font-semibold mb-1">API Reference</div>
+                    <div class="text-slate-400 text-xs">All endpoints, response schemas, authentication</div>
+                </a>
+                <a href="https://www.npmjs.com/package/@headlessoracle/verify" target="_blank" rel="noopener" class="glass rounded-lg p-4 hover:bg-white/5 transition">
+                    <div class="text-white font-semibold mb-1">npm: @headlessoracle/verify</div>
+                    <div class="text-xs text-slate-400">Zero-dependency Ed25519 verification SDK</div>
+                </a>
+                <a href="/docs/x402-payments" class="glass rounded-lg p-4 hover:bg-white/5 transition">
+                    <div class="text-white font-semibold mb-1">x402 Payments</div>
+                    <div class="text-xs text-slate-400">Agents that pay for themselves on Base mainnet</div>
+                </a>
+                <a href="/pricing" class="glass rounded-lg p-4 hover:bg-white/5 transition">
+                    <div class="text-white font-semibold mb-1">Pricing</div>
+                    <div class="text-xs text-slate-400">Free tier: 500 req/day. No credit card required.</div>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-slate-800 bg-slate-900/50 mt-auto">
+        <div class="max-w-5xl mx-auto px-6 py-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p class="text-xs text-slate-500">&copy; 2026 Headless Oracle.</p>
+            <div class="flex gap-6 text-xs text-slate-500">
+                <a href="/docs" class="hover:text-white transition">Docs</a>
+                <a href="/pricing" class="hover:text-white transition">Pricing</a>
+                <a href="/terms" class="hover:text-white transition">Terms</a>
+                <a href="mailto:hello@headlessoracle.com" class="hover:text-white transition">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

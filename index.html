@@ -89,21 +89,27 @@
     </nav>
 
     <main class="flex-grow flex flex-col items-center justify-center text-center px-4 mt-16 mb-20">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-900/30 border border-blue-500/30 text-blue-400 text-xs font-semibold mb-6">
-            <span class="relative flex h-2 w-2">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
-            </span>
-            V5 Beta is Live
+        <div class="flex flex-wrap justify-center gap-2 mb-6">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-900/30 border border-blue-500/30 text-blue-400 text-xs font-semibold">
+                <span class="relative flex h-2 w-2">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                </span>
+                V5 Beta is Live
+            </div>
+            <a href="/docs/x402-payments" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-900/30 border border-indigo-500/40 text-indigo-300 text-xs font-semibold hover:bg-indigo-900/50 transition">
+                <span class="font-mono font-bold">x402</span>
+                Agents can pay for themselves · 0.001 USDC/req
+            </a>
         </div>
-        
+
         <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight max-w-4xl">
-            Stop Liquidation Bots<br />
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Firing Against Closed Markets.</span>
+            The only market oracle<br />
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">autonomous agents can pay for themselves.</span>
         </h1>
 
         <p class="text-xl text-slate-400 mb-8 max-w-2xl mx-auto">
-            Headless Oracle is a <strong class="text-white">fail-closed execution guardrail</strong> for RWA liquidation bots. Get a cryptographically signed market status receipt — covering <strong class="text-white">7 global exchanges</strong> — before your bot executes. If the market is closed, halted, or unknown: your bot stops.
+            Headless Oracle is a <strong class="text-white">fail-closed execution guardrail</strong> for AI agents and RWA bots. Get a cryptographically signed market status receipt — covering <strong class="text-white">7 global exchanges</strong> — before your agent executes. Agents pay 0.001 USDC per request via <a href="/docs/x402-payments" class="text-indigo-400 hover:text-indigo-300">x402</a> on Base mainnet. No subscription required.
         </p>
 
         <div class="flex flex-wrap justify-center gap-2 mb-6">
@@ -127,7 +133,7 @@
         </div>
 
         <div class="flex flex-wrap justify-center gap-4 mt-6 text-xs text-slate-500">
-            <span>REST API &nbsp;·&nbsp; <a href="/docs#mcp" class="text-blue-400 hover:text-blue-300">MCP server</a> for Claude &amp; agent frameworks &nbsp;·&nbsp; <a href="/llms.txt" class="text-slate-400 hover:text-white">llms.txt</a></span>
+            <span>REST API &nbsp;·&nbsp; <a href="/docs#mcp" class="text-blue-400 hover:text-blue-300">MCP server</a> for Claude &amp; agent frameworks &nbsp;·&nbsp; <a href="/docs/x402-payments" class="text-indigo-400 hover:text-indigo-300">x402 micropayments</a> &nbsp;·&nbsp; <a href="/llms.txt" class="text-slate-400 hover:text-white">llms.txt</a></span>
         </div>
     </main>
 

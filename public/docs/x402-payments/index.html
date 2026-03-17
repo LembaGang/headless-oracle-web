@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>x402 Micropayments | Headless Oracle</title>
+    <meta name="description" content="Headless Oracle supports x402 per-request USDC micropayments on Base mainnet. Autonomous agents pay for API access without a subscription or pre-registered key.">
+    <meta name="robots" content="index, follow">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://headlessoracle.com/docs/x402-payments">
+    <meta property="og:title" content="x402 Micropayments | Headless Oracle">
+    <meta property="og:description" content="Agents pay for API access themselves — 0.001 USDC per request on Base mainnet.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #cbd5e1; }
+        .glass { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(51, 65, 85, 0.5); }
+        pre { background: #1e293b; padding: 1.25rem; border-radius: 0.5rem; overflow-x: auto; font-family: 'Menlo', 'Consolas', monospace; font-size: 0.82rem; border: 1px solid #334155; line-height: 1.6; }
+        code { color: #60a5fa; font-family: 'Menlo', 'Consolas', monospace; font-size: 0.85em; }
+        .note { background: #1e2a1e; border: 1px solid #365a36; border-left: 3px solid #4ade80; padding: 0.75rem 1rem; border-radius: 0 0.375rem 0.375rem 0; }
+        .warn { background: #2a1e1e; border: 1px solid #5a3636; border-left: 3px solid #f87171; padding: 0.75rem 1rem; border-radius: 0 0.375rem 0.375rem 0; }
+        .badge { background: #1e293b; color: #60a5fa; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; border: 1px solid #334155; font-family: monospace; }
+        .x402-badge { background: linear-gradient(135deg, #1e293b, #0f172a); border: 1px solid #3b82f6; color: #93c5fd; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-family: monospace; font-weight: 600; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <nav class="w-full border-b border-slate-800 bg-slate-900/80 backdrop-blur-md">
+        <div class="max-w-5xl mx-auto px-6 h-16 flex justify-between items-center">
+            <a href="/" class="font-bold text-white tracking-wider">HEADLESS<span class="text-blue-500">ORACLE</span></a>
+            <div class="flex items-center gap-4 text-sm">
+                <a href="/docs" class="text-slate-400 hover:text-white transition">Docs</a>
+                <a href="/pricing" class="text-slate-400 hover:text-white transition">Pricing</a>
+                <span class="x402-badge">x402</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow max-w-5xl mx-auto px-6 py-12 w-full">
+
+        <div class="text-xs text-slate-500 mb-8 font-mono">
+            <a href="/docs" class="hover:text-slate-300">docs</a>
+            <span class="mx-2">/</span>
+            <span class="text-slate-300">x402-payments</span>
+        </div>
+
+        <div class="mb-10">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="x402-badge text-sm">x402</span>
+                <h1 class="text-4xl font-bold text-white">x402 Micropayments</h1>
+            </div>
+            <p class="text-lg text-slate-400 max-w-3xl mb-3">
+                Headless Oracle supports the <a href="https://x402.org" target="_blank" rel="noopener" class="text-blue-400 hover:text-blue-300">x402 protocol</a> for per-request USDC micropayments on Base mainnet. This lets autonomous agents pay for API access without a subscription or pre-registered key.
+            </p>
+            <div class="flex flex-wrap gap-3 text-xs font-mono">
+                <span class="px-2 py-1 rounded bg-slate-800 border border-slate-700 text-slate-400">0.001 USDC / request</span>
+                <span class="px-2 py-1 rounded bg-slate-800 border border-slate-700 text-slate-400">Base mainnet · chainId 8453</span>
+                <span class="px-2 py-1 rounded bg-slate-800 border border-slate-700 text-slate-400">Replay-protected · 300s TTL</span>
+            </div>
+        </div>
+
+        <!-- When it kicks in -->
+        <section class="mb-10">
+            <h2 class="text-xl font-bold text-white mb-4">When x402 kicks in</h2>
+            <p class="text-sm text-slate-400 mb-4">Free tier keys (<code>ho_free_*</code>) have a <strong class="text-white">500 requests/day</strong> limit. After the limit is reached:</p>
+            <ol class="space-y-2 text-sm text-slate-400 list-none">
+                <li class="flex items-start gap-3"><span class="text-blue-400 font-bold mt-0.5">1.</span> If your account has prepaid credits → one credit is consumed automatically.</li>
+                <li class="flex items-start gap-3"><span class="text-blue-400 font-bold mt-0.5">2.</span> If <code>X-Payment</code> header is present with a valid Base mainnet USDC transaction → request is fulfilled.</li>
+                <li class="flex items-start gap-3"><span class="text-blue-400 font-bold mt-0.5">3.</span> Otherwise → HTTP 402 with a machine-readable payment instruction.</li>
+            </ol>
+            <p class="text-sm text-slate-500 mt-3">Paid Paddle subscriptions (Builder/Pro/Protocol) and internal keys are never rate-limited by this gate.</p>
+        </section>
+
+        <!-- The 402 Response -->
+        <section class="mb-10">
+            <h2 class="text-xl font-bold text-white mb-4">The 402 Response</h2>
+            <p class="text-sm text-slate-400 mb-3">When payment is required, the server returns HTTP 402 with:</p>
+            <pre><span style="color:#f8fafc">{
+  "error": "PAYMENT_REQUIRED",
+  "message": "Free tier exhausted. Pay 0.001 USDC per request via x402 on Base network...",
+  "x402": {
+    "version": "1",
+    "scheme": "exact",
+    "network": "base-mainnet",
+    "chainId": 8453,
+    "amount": "1000",
+    "currency": "USDC",
+    "decimals": 6,
+    "paymentAddress": "0x26D4Ffe98017D2f160E2dAaE9d119e3d8b860AD3",
+    "usdcContractAddress": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "memo": "{key_hash}:{date}:{request_id}",
+    "maxAge": 300
+  },
+  "alternatives": {
+    "monthly": "https://headlessoracle.com/pricing",
+    "free_key": "https://headlessoracle.com/v5/keys/request",
+    "prepaid": "https://headlessoracle.com/v5/credits/purchase"
+  }
+}</span></pre>
+            <p class="text-sm text-slate-400 mt-3">Response headers also include:</p>
+            <pre><span style="color:#94a3b8">X-Payment-Required: true
+X-Payment-Scheme: x402
+X-Payment-Network: base-mainnet
+X-Payment-Chain-ID: 8453
+X-Payment-Amount: 0.001 USDC</span></pre>
+        </section>
+
+        <!-- Paying with X-Payment -->
+        <section class="mb-10">
+            <h2 class="text-xl font-bold text-white mb-4">Paying with X-Payment header</h2>
+            <ol class="space-y-2 text-sm text-slate-400 mb-4 list-none">
+                <li class="flex items-start gap-3"><span class="text-blue-400 font-bold">1.</span>Send 0.001 USDC (1000 units at 6 decimals) to the <code>paymentAddress</code> on Base mainnet.</li>
+                <li class="flex items-start gap-3"><span class="text-blue-400 font-bold">2.</span>Retry the request with the <code>X-Payment</code> header containing the transaction details.</li>
+            </ol>
+            <pre><span style="color:#94a3b8">X-Payment: {"txHash":"0x...","network":"base-mainnet","amount":"1000","paymentAddress":"0x26D4...","memo":""}</span></pre>
+            <p class="text-sm text-slate-400 mt-3">The server verifies:</p>
+            <ul class="space-y-1 text-sm text-slate-400 mt-2">
+                <li class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">·</span> Transaction is on Base mainnet</li>
+                <li class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">·</span> USDC Transfer event credits the correct payment address</li>
+                <li class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">·</span> Amount ≥ 1000 units (0.001 USDC)</li>
+                <li class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">·</span> Transaction is &lt; 300 seconds old</li>
+                <li class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">·</span> Transaction hash has not been used before (replay protection)</li>
+            </ul>
+        </section>
+
+        <!-- Node.js auto-pay -->
+        <section class="mb-10">
+            <h2 class="text-xl font-bold text-white mb-4">Node.js auto-pay agent</h2>
+            <pre><span style="color:#f8fafc">import { createPublicClient, createWalletClient, http, parseUnits } from 'viem';
+import { base } from 'viem/chains';
+import { privateKeyToAccount } from 'viem/accounts';
+
+const ORACLE_KEY = 'ho_free_your_key_here';
+const PRIVATE_KEY = process.env.WALLET_PRIVATE_KEY; <span style="color:#94a3b8">// Base wallet with USDC</span>
+
+const USDC_CONTRACT = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
+const USDC_ABI = [
+  { name: 'transfer', type: 'function', inputs: [
+    { name: 'to', type: 'address' },
+    { name: 'amount', type: 'uint256' }
+  ], outputs: [{ type: 'bool' }] }
+];
+
+async function fetchOracleWithAutoPayment(mic = 'XNYS') {
+  <span style="color:#94a3b8">// First attempt — no payment</span>
+  let res = await fetch(`https://headlessoracle.com/v5/status?mic=${mic}`, {
+    headers: { 'X-Oracle-Key': ORACLE_KEY }
+  });
+
+  if (res.status !== 402) return res.json();
+
+  const body = await res.json();
+  const { paymentAddress, amount } = body.x402;
+
+  <span style="color:#94a3b8">// Pay on Base mainnet via viem</span>
+  const account = privateKeyToAccount(PRIVATE_KEY);
+  const client = createPublicClient({ chain: base, transport: http() });
+  const { request } = await client.simulateContract({
+    address: USDC_CONTRACT, abi: USDC_ABI,
+    functionName: 'transfer', args: [paymentAddress, BigInt(amount)], account,
+  });
+  const walletClient = createWalletClient({ chain: base, transport: http() });
+  const txHash = await walletClient.writeContract(request);
+
+  await client.waitForTransactionReceipt({ hash: txHash });
+
+  <span style="color:#94a3b8">// Retry with X-Payment header</span>
+  const payment = JSON.stringify({ txHash, network: 'base-mainnet', amount, paymentAddress, memo: '' });
+  res = await fetch(`https://headlessoracle.com/v5/status?mic=${mic}`, {
+    headers: { 'X-Oracle-Key': ORACLE_KEY, 'X-Payment': payment }
+  });
+  return res.json();
+}</span></pre>
+        </section>
+
+        <!-- Python auto-pay -->
+        <section class="mb-10">
+            <h2 class="text-xl font-bold text-white mb-4">Python auto-pay agent</h2>
+            <pre><span style="color:#f8fafc">import json, os, requests
+from web3 import Web3
+
+ORACLE_KEY = "ho_free_your_key_here"
+PRIVATE_KEY = os.environ["WALLET_PRIVATE_KEY"]
+
+USDC_CONTRACT = Web3.to_checksum_address("0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913")
+USDC_ABI = [{"name": "transfer", "type": "function",
+             "inputs": [{"name": "to", "type": "address"}, {"name": "amount", "type": "uint256"}],
+             "outputs": [{"type": "bool"}]}]
+
+w3 = Web3(Web3.HTTPProvider("https://mainnet.base.org"))
+account = w3.eth.account.from_key(PRIVATE_KEY)
+usdc = w3.eth.contract(address=USDC_CONTRACT, abi=USDC_ABI)
+
+def fetch_oracle_with_autopay(mic="XNYS"):
+    r = requests.get(f"https://headlessoracle.com/v5/status?mic={mic}",
+                     headers={"X-Oracle-Key": ORACLE_KEY})
+    if r.status_code != 402:
+        return r.json()
+
+    x402 = r.json()["x402"]
+    payment_address = Web3.to_checksum_address(x402["paymentAddress"])
+    amount = int(x402["amount"])  <span style="color:#94a3b8"># 1000 = 0.001 USDC</span>
+
+    nonce = w3.eth.get_transaction_count(account.address)
+    tx = usdc.functions.transfer(payment_address, amount).build_transaction({
+        "from": account.address, "nonce": nonce,
+        "gas": 100000, "gasPrice": w3.eth.gas_price, "chainId": 8453,
+    })
+    signed = w3.eth.account.sign_transaction(tx, PRIVATE_KEY)
+    tx_hash = w3.eth.send_raw_transaction(signed.rawTransaction).hex()
+
+    receipt = w3.eth.wait_for_transaction_receipt(tx_hash, timeout=60)
+    if receipt["status"] != 1:
+        raise RuntimeError("USDC transfer failed")
+
+    payment = json.dumps({"txHash": tx_hash, "network": "base-mainnet",
+                          "amount": str(amount), "paymentAddress": x402["paymentAddress"], "memo": ""})
+    r2 = requests.get(f"https://headlessoracle.com/v5/status?mic={mic}",
+                      headers={"X-Oracle-Key": ORACLE_KEY, "X-Payment": payment})
+    return r2.json()</span></pre>
+        </section>
+
+        <!-- Prepaid Credits -->
+        <section class="mb-10">
+            <h2 class="text-xl font-bold text-white mb-4">Prepaid Credits</h2>
+            <p class="text-sm text-slate-400 mb-4">Buy credits in bulk to avoid per-request on-chain transactions.</p>
+
+            <h3 class="text-white font-semibold mb-2">Buy 100 credits (0.09 USDC)</h3>
+            <pre><span style="color:#94a3b8"># 1. Pay 90000 USDC units to the payment address on Base mainnet
+# 2. POST to credits/purchase with X-Payment header</span>
+<span style="color:#f8fafc">curl -X POST https://headlessoracle.com/v5/credits/purchase \
+  -H "X-Oracle-Key: ho_free_your_key" \
+  -H 'X-Payment: {"txHash":"0x...","network":"base-mainnet","amount":"90000","paymentAddress":"0x26D4Ffe98017D2f160E2dAaE9d119e3d8b860AD3","memo":""}'</span></pre>
+
+            <h3 class="text-white font-semibold mt-6 mb-2">Buy 1000 credits (0.80 USDC)</h3>
+            <p class="text-sm text-slate-400 mb-3">Same as above but send 800000 USDC units.</p>
+
+            <h3 class="text-white font-semibold mt-6 mb-2">Check balance</h3>
+            <pre><span style="color:#f8fafc">curl https://headlessoracle.com/v5/credits/balance \
+  -H "X-Oracle-Key: ho_free_your_key"
+<span style="color:#94a3b8"># {"balance": 42, "estimated_requests_remaining": 42, "last_purchased": "2026-03-17T..."}</span></span></pre>
+        </section>
+
+        <!-- Security notes -->
+        <section class="mb-10">
+            <h2 class="text-xl font-bold text-white mb-4">Security Notes</h2>
+            <div class="space-y-3 text-sm">
+                <div class="warn">
+                    <strong class="text-red-300">Transactions expire after 300 seconds.</strong>
+                    <span class="text-slate-300 ml-1">Do not reuse old receipts. The server rejects transactions older than 5 minutes.</span>
+                </div>
+                <div class="warn">
+                    <strong class="text-red-300">Each txHash can only be used once.</strong>
+                    <span class="text-slate-300 ml-1">Replay protection is enforced via a 600s KV TTL. Attempting to reuse a transaction hash returns <code>PAYMENT_ALREADY_USED</code>.</span>
+                </div>
+                <div class="note">
+                    <strong class="text-green-300">Verify the paymentAddress before paying.</strong>
+                    <span class="text-slate-300 ml-1">The <code>paymentAddress</code> in the 402 response is read from the operator's server environment. Agents should verify it matches the expected operator address before sending funds.</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-10 border-t border-slate-800 pt-8">
+            <h2 class="text-xl font-bold text-white mb-4">Resources</h2>
+            <div class="grid sm:grid-cols-2 gap-3 text-sm">
+                <a href="/docs" class="glass rounded-lg p-4 hover:bg-white/5 transition">
+                    <div class="text-white font-semibold mb-1">API Reference</div>
+                    <div class="text-slate-400 text-xs">All endpoints, response schemas, authentication</div>
+                </a>
+                <a href="https://x402.org" target="_blank" rel="noopener" class="glass rounded-lg p-4 hover:bg-white/5 transition">
+                    <div class="text-white font-semibold mb-1">x402.org</div>
+                    <div class="text-xs text-slate-400">The x402 protocol specification</div>
+                </a>
+                <a href="/pricing" class="glass rounded-lg p-4 hover:bg-white/5 transition">
+                    <div class="text-white font-semibold mb-1">Pricing</div>
+                    <div class="text-xs text-slate-400">Free tier, monthly plans, and pay-per-use</div>
+                </a>
+                <a href="/docs/integrations/anthropic-claude" class="glass rounded-lg p-4 hover:bg-white/5 transition">
+                    <div class="text-white font-semibold mb-1">Claude API Integration</div>
+                    <div class="text-xs text-slate-400">Full tool_use integration example</div>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-slate-800 bg-slate-900/50 mt-auto">
+        <div class="max-w-5xl mx-auto px-6 py-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p class="text-xs text-slate-500">&copy; 2026 Headless Oracle.</p>
+            <div class="flex gap-6 text-xs text-slate-500">
+                <a href="/docs" class="hover:text-white transition">Docs</a>
+                <a href="/pricing" class="hover:text-white transition">Pricing</a>
+                <a href="/terms" class="hover:text-white transition">Terms</a>
+                <a href="mailto:hello@headlessoracle.com" class="hover:text-white transition">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

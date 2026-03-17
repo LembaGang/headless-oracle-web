@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bun Integration | Headless Oracle</title>
+    <meta name="description" content="Use Headless Oracle in a Bun TypeScript runtime. Fetch signed receipts with native fetch, gate Bun.serve() webhooks on market status, and schedule periodic checks.">
+    <meta name="robots" content="index, follow">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://headlessoracle.com/docs/integrations/bun">
+    <meta property="og:title" content="Bun Integration | Headless Oracle">
+    <meta property="og:description" content="Headless Oracle + Bun: fetch signed receipts, gate webhooks on market status, zero polyfills.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #cbd5e1; }
+        .glass { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(51, 65, 85, 0.5); }
+        pre { background: #1e293b; padding: 1.25rem; border-radius: 0.5rem; overflow-x: auto; font-family: 'Menlo', 'Consolas', monospace; font-size: 0.82rem; border: 1px solid #334155; line-height: 1.6; }
+        code { color: #60a5fa; font-family: 'Menlo', 'Consolas', monospace; font-size: 0.85em; }
+        .note { background: #1e2a1e; border: 1px solid #365a36; border-left: 3px solid #4ade80; padding: 0.75rem 1rem; border-radius: 0 0.375rem 0.375rem 0; }
+        .warn { background: #2a1e1e; border: 1px solid #5a3636; border-left: 3px solid #f87171; padding: 0.75rem 1rem; border-radius: 0 0.375rem 0.375rem 0; }
+        .badge { background: #1e293b; color: #60a5fa; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; border: 1px solid #334155; font-family: monospace; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <nav class="w-full border-b border-slate-800 bg-slate-900/80 backdrop-blur-md">
+        <div class="max-w-5xl mx-auto px-6 h-16 flex justify-between items-center">
+            <a href="/" class="font-bold text-white tracking-wider">HEADLESS<span class="text-blue-500">ORACLE</span></a>
+            <div class="flex items-center gap-4 text-sm">
+                <a href="/docs" class="text-slate-400 hover:text-white transition">Docs</a>
+                <a href="/pricing" class="text-slate-400 hover:text-white transition">Pricing</a>
+                <span class="badge">TypeScript SDK</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow max-w-5xl mx-auto px-6 py-12 w-full">
+
+        <div class="text-xs text-slate-500 mb-8 font-mono">
+            <a href="/docs" class="hover:text-slate-300">docs</a>
+            <span class="mx-2">/</span><span>integrations</span><span class="mx-2">/</span>
+            <span class="text-slate-300">bun</span>
+        </div>
+
+        <div class="mb-10">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-3xl">🥟</span>
+                <h1 class="text-4xl font-bold text-white">Bun Integration</h1>
+            </div>
+            <p class="text-lg text-slate-400 max-w-3xl">
+                Use Headless Oracle in a Bun TypeScript runtime: fetch and verify signed receipts with native <code>fetch</code>, gate a <code>Bun.serve()</code> webhook on market status, and schedule periodic checks. <code>@headlessoracle/verify</code> uses the Web Crypto API which Bun provides natively — no polyfills required.
+            </p>
+        </div>
+
+        <section class="mb-10">
+            <h2 class="text-xl font-bold text-white mb-4">Prerequisites</h2>
+            <pre><span style="color:#4ade80">bun add @headlessoracle/verify</span></pre>
+        </section>
+
+        <section class="mb-10">
+            <h2 class="text-xl font-bold text-white mb-4">Complete Example</h2>
+            <pre><span style="color:#94a3b8">// oracle-gate.ts</span>
+<span style="color:#f8fafc">import { verify } from "@headlessoracle/verify";
+
+const ORACLE_BASE = "https://headlessoracle.com";
+const ORACLE_KEY = Bun.env.ORACLE_KEY!;
+
+<span style="color:#94a3b8">// Cache the public key after first fetch to avoid a network round-trip per receipt.</span>
+let cachedPublicKey: string | null = null;
+
+async function getPublicKey(): Promise&lt;string&gt; {
+  if (cachedPublicKey) return cachedPublicKey;
+  const res = await fetch(`${ORACLE_BASE}/v5/keys`);
+  const data = await res.json() as { keys: Array&lt;{ public_key: string }&gt; };
+  cachedPublicKey = data.keys[0].public_key;
+  return cachedPublicKey;
+}
+
+interface OracleResult {
+  mic: string;
+  status: string;
+  safeToTrade: boolean;
+  reason: string;
+  expiresAt: string | null;
+}
+
+export async function checkMarket(mic: string): Promise&lt;OracleResult&gt; {
+  try {
+    const res = await fetch(`${ORACLE_BASE}/v5/status?mic=${mic}`, {
+      headers: { "X-Oracle-Key": ORACLE_KEY },
+      signal: AbortSignal.timeout(5000),
+    });
+
+    if (!res.ok) {
+      return { mic, status: "UNKNOWN", safeToTrade: false,
+               reason: `HTTP ${res.status}`, expiresAt: null };
+    }
+
+    const receipt = await res.json() as Record&lt;string, unknown&gt;;
+    const publicKey = await getPublicKey();
+
+    <span style="color:#94a3b8">// Pass the cached key — skips the /v5/keys fetch inside verify()</span>
+    const result = await verify(receipt, { publicKey });
+
+    if (!result.valid) {
+      return { mic, status: "UNKNOWN", safeToTrade: false,
+               reason: `Verification failed: ${result.reason}`, expiresAt: null };
+    }
+
+    const isOpen = receipt.status === "OPEN";
+    return {
+      mic,
+      status: receipt.status as string,
+      safeToTrade: isOpen,
+      reason: isOpen ? "Verified OPEN." : `Market is ${receipt.status}.`,
+      expiresAt: receipt.expires_at as string,
+    };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    return { mic, status: "UNKNOWN", safeToTrade: false,
+             reason: `Error: ${message}`, expiresAt: null };
+  }
+}
+
+
+<span style="color:#94a3b8">// --- Webhook server: gate trade signals on market status ---</span>
+
+const server = Bun.serve({
+  port: 3000,
+
+  async fetch(req) {
+    const url = new URL(req.url);
+
+    if (req.method === "POST" &amp;&amp; url.pathname === "/trade-signal") {
+      const body = await req.json() as { mic: string; symbol: string; action: string };
+      const { mic, symbol, action } = body;
+
+      const oracle = await checkMarket(mic);
+
+      if (!oracle.safeToTrade) {
+        return Response.json(
+          { accepted: false, reason: oracle.reason, mic, oracle_status: oracle.status },
+          { status: 422 }
+        );
+      }
+
+      console.log(`[trade] ${action} ${symbol} on ${mic} — Oracle verified OPEN`);
+      return Response.json({ accepted: true, mic, oracle_status: oracle.status });
+    }
+
+    if (req.method === "GET" &amp;&amp; url.pathname === "/health") {
+      const oracle = await checkMarket("XNYS");
+      return Response.json({ oracle });
+    }
+
+    return new Response("Not Found", { status: 404 });
+  },
+});
+
+console.log(`Webhook server listening on http://localhost:${server.port}`);
+
+
+<span style="color:#94a3b8">// --- Scheduled market check ---</span>
+
+const CHECK_INTERVAL_MS = 60_000;
+const MICs = ["XNYS", "XNAS", "XLON"] as const;
+
+async function scheduledMarketCheck() {
+  for (const mic of MICs) {
+    const result = await checkMarket(mic);
+    if (!result.safeToTrade) {
+      console.warn(`[cron] HALT signal: ${mic} — ${result.reason}`);
+    } else {
+      console.log(`[cron] ${mic} OPEN — verified until ${result.expiresAt}`);
+    }
+  }
+}
+
+scheduledMarketCheck();
+setInterval(scheduledMarketCheck, CHECK_INTERVAL_MS);</span></pre>
+
+            <p class="text-sm text-slate-400 mt-4">Run with:</p>
+            <pre><span style="color:#4ade80">bun run oracle-gate.ts</span></pre>
+
+            <p class="text-sm text-slate-400 mt-4">Test the webhook:</p>
+            <pre><span style="color:#94a3b8"># Should be accepted when NYSE is open</span>
+<span style="color:#f8fafc">curl -X POST http://localhost:3000/trade-signal \
+  -H "Content-Type: application/json" \
+  -d '{"mic":"XNYS","symbol":"AAPL","action":"buy"}'</span></pre>
+        </section>
+
+        <section class="mb-10">
+            <h2 class="text-xl font-bold text-white mb-4">Important</h2>
+            <div class="space-y-3 text-sm">
+                <div class="note">
+                    <strong class="text-green-300">Cache the public key, not the receipt.</strong>
+                    <span class="text-slate-300 ml-1">The public key is stable across a process lifetime. The receipt expires in 60 seconds and must never be cached or reused between requests.</span>
+                </div>
+                <div class="note">
+                    <strong class="text-green-300"><code>AbortSignal.timeout(5000)</code> is Bun-native.</strong>
+                    <span class="text-slate-300 ml-1">No polyfill needed. On timeout, <code>checkMarket</code> returns <code>safeToTrade: false</code> — fail-closed.</span>
+                </div>
+                <div class="warn">
+                    <strong class="text-red-300">Return 422 (not 200) for rejected signals.</strong>
+                    <span class="text-slate-300 ml-1">A 200 response with <code>accepted: false</code> in the body is ambiguous for agent callers. A 4xx status is deterministic.</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-10 border-t border-slate-800 pt-8">
+            <h2 class="text-xl font-bold text-white mb-4">Resources</h2>
+            <div class="grid sm:grid-cols-2 gap-3 text-sm">
+                <a href="/docs" class="glass rounded-lg p-4 hover:bg-white/5 transition">
+                    <div class="text-white font-semibold mb-1">API Reference</div>
+                    <div class="text-slate-400 text-xs">All endpoints, response schemas, authentication</div>
+                </a>
+                <a href="https://www.npmjs.com/package/@headlessoracle/verify" target="_blank" rel="noopener" class="glass rounded-lg p-4 hover:bg-white/5 transition">
+                    <div class="text-white font-semibold mb-1">npm: @headlessoracle/verify</div>
+                    <div class="text-xs text-slate-400">Zero-dependency Ed25519 verification SDK</div>
+                </a>
+                <a href="/docs/x402-payments" class="glass rounded-lg p-4 hover:bg-white/5 transition">
+                    <div class="text-white font-semibold mb-1">x402 Payments</div>
+                    <div class="text-xs text-slate-400">Agent-native micropayments on Base mainnet</div>
+                </a>
+                <a href="/pricing" class="glass rounded-lg p-4 hover:bg-white/5 transition">
+                    <div class="text-white font-semibold mb-1">Pricing</div>
+                    <div class="text-xs text-slate-400">Free tier: 500 req/day. No credit card required.</div>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-slate-800 bg-slate-900/50 mt-auto">
+        <div class="max-w-5xl mx-auto px-6 py-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p class="text-xs text-slate-500">&copy; 2026 Headless Oracle.</p>
+            <div class="flex gap-6 text-xs text-slate-500">
+                <a href="/docs" class="hover:text-white transition">Docs</a>
+                <a href="/pricing" class="hover:text-white transition">Pricing</a>
+                <a href="/terms" class="hover:text-white transition">Terms</a>
+                <a href="mailto:hello@headlessoracle.com" class="hover:text-white transition">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
