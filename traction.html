@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Traction | Headless Oracle</title>
+    <meta name="description" content="Live metrics from Headless Oracle — the verification layer for autonomous agent commerce.">
+    <meta name="robots" content="index, follow">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://headlessoracle.com/traction">
+    <meta property="og:title" content="Live Traction | Headless Oracle">
+    <meta property="og:description" content="Live metrics from Headless Oracle — exchanges covered, MCP usage today, uptime, and more.">
+    <link rel="canonical" href="https://headlessoracle.com/traction">
+    <link rel="alternate" type="application/json" href="/openapi.json" title="OpenAPI 3.1 specification">
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt — machine-readable API summary">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #cbd5e1; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glass { background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .metric-value { font-size: 2.5rem; font-weight: 700; color: #f1f5f9; font-family: 'JetBrains Mono', monospace; }
+        .metric-label { font-size: 0.75rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.1em; }
+        .metric-sub { font-size: 0.85rem; color: #94a3b8; margin-top: 0.25rem; }
+        .status-dot { height: 8px; width: 8px; background-color: #22c55e; border-radius: 50%; display: inline-block; margin-right: 6px; box-shadow: 0 0 8px #22c55e; animation: pulse 2s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .badge { display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+        .badge-green { background: #052e16; color: #4ade80; border: 1px solid #166534; }
+        .badge-blue { background: #0c1a2e; color: #60a5fa; border: 1px solid #1e3a5f; }
+        .badge-indigo { background: #0f0c29; color: #a5b4fc; border: 1px solid #3730a3; }
+        .fade-in { animation: fadeIn 0.4s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        #refresh-countdown { font-size: 0.7rem; color: #475569; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Nav -->
+    <nav class="border-b border-slate-800 bg-slate-900/80 sticky top-0 z-50 backdrop-blur">
+        <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-3">
+                <span class="text-white font-semibold text-lg">Headless Oracle</span>
+                <span class="badge badge-green">Live</span>
+            </a>
+            <div class="flex items-center gap-6 text-sm text-slate-400">
+                <a href="/docs" class="hover:text-white transition">Docs</a>
+                <a href="/pricing" class="hover:text-white transition">Pricing</a>
+                <a href="/status" class="hover:text-white transition">Status</a>
+                <a href="https://headlessoracle.com/v5/demo" class="text-emerald-400 hover:text-emerald-300 transition font-medium">Try Free →</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <div class="max-w-5xl mx-auto px-6 pt-16 pb-8 w-full">
+        <div class="flex items-start justify-between flex-wrap gap-4">
+            <div>
+                <h1 class="text-3xl font-bold text-white mb-2">Live Traction</h1>
+                <p class="text-slate-400 text-sm">Real metrics from the Headless Oracle API. Updates every 60 seconds.</p>
+            </div>
+            <div class="flex items-center gap-3 text-sm text-slate-500">
+                <span class="status-dot"></span>
+                <span id="last-updated">Loading...</span>
+                <span id="refresh-countdown"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Metrics grid -->
+    <main class="max-w-5xl mx-auto px-6 pb-16 w-full flex-1">
+
+        <!-- Primary metrics -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" id="primary-metrics">
+            <div class="glass rounded-xl p-6 fade-in">
+                <div class="metric-label mb-3">Exchanges Covered</div>
+                <div class="metric-value" id="exchanges-covered">—</div>
+                <div class="metric-sub">global markets</div>
+            </div>
+            <div class="glass rounded-xl p-6 fade-in">
+                <div class="metric-label mb-3">Edge Cases / Year</div>
+                <div class="metric-value" id="edge-cases">—</div>
+                <div class="metric-sub">DST · holidays · halts</div>
+            </div>
+            <div class="glass rounded-xl p-6 fade-in">
+                <div class="metric-label mb-3">Days Live</div>
+                <div class="metric-value" id="days-live">—</div>
+                <div class="metric-sub" id="uptime-since">since launch</div>
+            </div>
+            <div class="glass rounded-xl p-6 fade-in">
+                <div class="metric-label mb-3">MCP Requests Today</div>
+                <div class="metric-value" id="mcp-requests">—</div>
+                <div class="metric-sub" id="unique-clients">— unique clients</div>
+            </div>
+        </div>
+
+        <!-- Secondary metrics -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="glass rounded-xl p-6 fade-in">
+                <div class="metric-label mb-3">SMA Protocol</div>
+                <div class="flex items-center gap-2 mt-2">
+                    <span class="badge badge-green" id="sma-version">v1.0</span>
+                    <span class="text-slate-400 text-sm">Signed Market Attestation</span>
+                </div>
+                <div class="metric-sub mt-2">
+                    <a href="https://github.com/LembaGang/sma-protocol" class="text-blue-400 hover:underline" target="_blank" rel="noopener">github.com/LembaGang/sma-protocol →</a>
+                </div>
+            </div>
+            <div class="glass rounded-xl p-6 fade-in">
+                <div class="metric-label mb-3">Verifiable Intent RFC</div>
+                <div class="flex items-center gap-2 mt-2">
+                    <span class="badge badge-indigo" id="vi-rfc">submitted</span>
+                    <span class="text-slate-400 text-sm">External State Attestation</span>
+                </div>
+                <div class="metric-sub mt-2">
+                    <a href="https://github.com/agent-intent/verifiable-intent" class="text-blue-400 hover:underline" target="_blank" rel="noopener">agent-intent/verifiable-intent →</a>
+                </div>
+            </div>
+            <div class="glass rounded-xl p-6 fade-in">
+                <div class="metric-label mb-3">x402 Micropayments</div>
+                <div class="flex items-center gap-2 mt-2">
+                    <span class="badge badge-blue" id="x402-status">enabled</span>
+                    <span class="text-slate-400 text-sm">0.001 USDC / call</span>
+                </div>
+                <div class="metric-sub mt-2">
+                    <a href="/docs/x402-payments" class="text-blue-400 hover:underline">Agent-native payments →</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Halt monitor -->
+        <div class="glass rounded-xl p-6 mb-6 fade-in">
+            <div class="flex items-center justify-between flex-wrap gap-3">
+                <div>
+                    <div class="metric-label mb-1">Autonomous Halt Monitor</div>
+                    <div class="text-slate-300 text-sm">1-minute cron · Polygon.io primary · Alpaca fallback · fail-open</div>
+                </div>
+                <span class="badge badge-green" id="halt-monitor-status">active</span>
+            </div>
+        </div>
+
+        <!-- Raw JSON -->
+        <div class="glass rounded-xl p-6 fade-in">
+            <div class="flex items-center justify-between mb-4">
+                <div class="metric-label">Raw API Response</div>
+                <a href="https://headlessoracle.com/v5/traction" target="_blank" rel="noopener"
+                   class="text-xs text-blue-400 hover:underline mono">GET /v5/traction →</a>
+            </div>
+            <pre class="mono text-xs text-slate-300 overflow-x-auto leading-relaxed" id="raw-json">Loading...</pre>
+        </div>
+
+        <!-- CTA -->
+        <div class="mt-10 text-center">
+            <p class="text-slate-500 text-sm mb-4">Verifiable data for autonomous agents. Free tier: 500 requests/day.</p>
+            <div class="flex justify-center gap-4 flex-wrap">
+                <a href="/docs" class="bg-slate-800 hover:bg-slate-700 text-white px-6 py-2 rounded-lg text-sm transition">Read the docs</a>
+                <a href="https://headlessoracle.com/v5/demo" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2 rounded-lg text-sm transition font-medium">Try the API →</a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 bg-slate-900/50">
+        <div class="max-w-5xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-xs text-slate-600">&copy; 2026 Headless Oracle. Verification layer for autonomous agent commerce.</p>
+            <div class="flex gap-6 text-xs text-slate-500">
+                <a href="/" class="hover:text-white transition">Home</a>
+                <a href="/pricing" class="hover:text-white transition">Pricing</a>
+                <a href="/docs" class="hover:text-white transition">Docs</a>
+                <a href="/status" class="hover:text-white transition">Status</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const API_BASE = 'https://headlessoracle.com';
+        let countdown = 60;
+        let countdownTimer = null;
+
+        function formatDate(iso) {
+            if (!iso) return '—';
+            try {
+                return new Date(iso).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            } catch { return iso; }
+        }
+
+        async function fetchTraction() {
+            try {
+                const res = await fetch(`${API_BASE}/v5/traction`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                renderTraction(data);
+                document.getElementById('last-updated').textContent = `Updated ${new Date().toLocaleTimeString()}`;
+                document.getElementById('raw-json').textContent = JSON.stringify(data, null, 2);
+                resetCountdown();
+            } catch (err) {
+                document.getElementById('last-updated').textContent = 'Update failed — retrying';
+                document.getElementById('raw-json').textContent = `Error: ${err.message}`;
+            }
+        }
+
+        function renderTraction(d) {
+            document.getElementById('exchanges-covered').textContent = d.exchanges_covered ?? '—';
+            document.getElementById('edge-cases').textContent = d.edge_cases_per_year != null ? d.edge_cases_per_year.toLocaleString() : '—';
+            document.getElementById('days-live').textContent = d.days_live ?? '—';
+            document.getElementById('mcp-requests').textContent = d.mcp_requests_today != null ? d.mcp_requests_today.toLocaleString() : '—';
+
+            const clients = d.unique_mcp_clients_today;
+            document.getElementById('unique-clients').textContent =
+                clients != null ? `${clients} unique client${clients !== 1 ? 's' : ''} today` : 'unique clients today';
+
+            if (d.uptime_since) {
+                document.getElementById('uptime-since').textContent = `since ${formatDate(d.uptime_since)}`;
+            }
+
+            if (d.sma_spec_version) {
+                document.getElementById('sma-version').textContent = `v${d.sma_spec_version}`;
+            }
+
+            if (d.verifiable_intent_rfc) {
+                document.getElementById('vi-rfc').textContent = d.verifiable_intent_rfc;
+            }
+
+            if (d.x402_enabled != null) {
+                const el = document.getElementById('x402-status');
+                el.textContent = d.x402_enabled ? 'enabled' : 'disabled';
+                if (!d.x402_enabled) { el.className = 'badge badge-indigo'; }
+            }
+
+            if (d.halt_monitor) {
+                document.getElementById('halt-monitor-status').textContent = d.halt_monitor;
+            }
+        }
+
+        function resetCountdown() {
+            countdown = 60;
+            if (countdownTimer) clearInterval(countdownTimer);
+            countdownTimer = setInterval(() => {
+                countdown--;
+                document.getElementById('refresh-countdown').textContent = `(refreshes in ${countdown}s)`;
+                if (countdown <= 0) {
+                    clearInterval(countdownTimer);
+                    fetchTraction();
+                }
+            }, 1000);
+        }
+
+        fetchTraction();
+    </script>
+</body>
+</html>
