@@ -8,3 +8,5 @@ Allow: /v5/exchanges
 Allow: /v5/keys
 Allow: /v5/health
 Disallow:
+
+Sitemap: https://headlessoracle.com/sitemap.xml
