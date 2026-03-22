@@ -1,5 +1,10 @@
 {
   "version": 1,
   "include": ["/*"],
-  "exclude": ["/sitemap.xml", "/robots.txt", "/ed25519-public-key.txt"]
+  "exclude": [
+    "/*.xml",
+    "/*.txt",
+    "/*.json",
+    "/.well-known/*"
+  ]
 }
