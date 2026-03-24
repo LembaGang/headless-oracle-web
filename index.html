@@ -418,6 +418,30 @@ if (r.status !== 'OPEN') return halt('Market not open — status: ' + r.status);
                 <p class="text-xs text-slate-500 mt-2">Fail-closed by design. Anything other than <code class="text-green-400">OPEN</code> halts your agent. Receipt is Ed25519-signed for audit.</p>
             </div>
         </div>
+        <!-- Inline sandbox key generator -->
+        <div class="mt-8 glass rounded-xl p-6 border border-slate-700">
+            <h3 class="text-white font-semibold text-sm mb-1">Get an instant sandbox key — no email required</h3>
+            <p class="text-xs text-slate-500 mb-4">24 hours · 100 calls · no signup. Optional: add your email to receive the key and get an expiry reminder.</p>
+            <div class="flex flex-col sm:flex-row gap-3 mb-3">
+                <input id="sandbox-email" type="email" placeholder="you@example.com (optional)" class="flex-1 bg-slate-900 border border-slate-600 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 placeholder-slate-600">
+                <button onclick="getSandboxKey()" id="sandbox-btn" class="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold text-sm transition flex items-center gap-2 justify-center">
+                    Get free API key →
+                </button>
+            </div>
+            <div id="sandbox-result" class="hidden mt-4">
+                <div class="bg-slate-900 rounded-lg p-4 border border-slate-700">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs text-slate-500 font-mono">Your sandbox key</span>
+                        <button onclick="copySandboxKey()" class="text-xs text-blue-400 hover:text-blue-300 transition">Copy key</button>
+                    </div>
+                    <pre id="sandbox-key-display" class="text-sm text-green-400 font-mono break-all"></pre>
+                    <p class="text-xs text-slate-500 mt-3">Quick test:</p>
+                    <pre id="sandbox-curl" class="text-xs text-blue-300 font-mono mt-1 break-all whitespace-pre-wrap"></pre>
+                </div>
+                <p class="text-xs text-slate-500 mt-3 text-center">Ready to go further? <a href="/pricing" class="text-blue-400 hover:text-blue-300">View plans →</a></p>
+            </div>
+            <div id="sandbox-error" class="hidden mt-3 text-xs text-red-400"></div>
+        </div>
         <div class="flex flex-col sm:flex-row gap-3 mt-6 justify-center">
             <a href="/pricing" class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold text-sm text-center transition shadow-lg shadow-blue-900/20">Get Free Key →</a>
             <a href="/docs" class="px-6 py-3 glass hover:bg-white/10 text-white rounded-lg font-semibold text-sm text-center transition">Full API Docs</a>
@@ -468,6 +492,52 @@ if (r.status !== 'OPEN') return halt('Market not open — status: ' + r.status);
 
     <script>
         const ORACLE_API = 'https://headlessoracle.com';
+
+        // --- Sandbox Key Generator ---
+        let _sandboxKey = null;
+
+        async function getSandboxKey() {
+            const btn = document.getElementById('sandbox-btn');
+            const errEl = document.getElementById('sandbox-error');
+            const resultEl = document.getElementById('sandbox-result');
+            const email = document.getElementById('sandbox-email').value.trim();
+            errEl.classList.add('hidden');
+            resultEl.classList.add('hidden');
+            btn.textContent = 'Getting key…';
+            btn.disabled = true;
+            try {
+                const url = email
+                    ? `https://api.headlessoracle.com/v5/sandbox?email=${encodeURIComponent(email)}`
+                    : 'https://api.headlessoracle.com/v5/sandbox';
+                const res = await fetch(url);
+                const data = await res.json();
+                if (!res.ok || !data.api_key) {
+                    errEl.textContent = data.message || data.error || 'Failed to get key. Try again.';
+                    errEl.classList.remove('hidden');
+                } else {
+                    _sandboxKey = data.api_key;
+                    document.getElementById('sandbox-key-display').textContent = data.api_key;
+                    document.getElementById('sandbox-curl').textContent =
+                        `curl 'https://api.headlessoracle.com/v5/status?mic=XNYS' \\\n  -H 'X-Oracle-Key: ${data.api_key}'`;
+                    resultEl.classList.remove('hidden');
+                }
+            } catch (e) {
+                errEl.textContent = 'Network error. Check your connection and try again.';
+                errEl.classList.remove('hidden');
+            } finally {
+                btn.textContent = 'Get free API key →';
+                btn.disabled = false;
+            }
+        }
+
+        function copySandboxKey() {
+            if (_sandboxKey) {
+                navigator.clipboard.writeText(_sandboxKey).catch(() => {});
+                const btn = event.target;
+                btn.textContent = 'Copied!';
+                setTimeout(() => { btn.textContent = 'Copy key'; }, 2000);
+            }
+        }
 
         // --- Live Status Widget ---
         let _swReceipt = null;
