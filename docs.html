@@ -70,7 +70,7 @@
 
             <!-- EDGE CASES -->
             <section id="complexity" class="mb-12 border-b border-slate-800 pb-12">
-                <h2>23 exchanges. Global 24/7 coverage.</h2>
+                <h2>28 exchanges. Global 24/7 coverage.</h2>
                 <p class="text-sm text-slate-400 mb-6">The scheduling complexity a timezone library was not built to solve.</p>
 
                 <div class="flex flex-wrap justify-center gap-3 mb-6">
@@ -158,7 +158,7 @@ curl "https://headlessoracle.com/v5/demo?mic=XJPX"</pre>
             <section id="exchanges" class="mb-12 border-b border-slate-800 pb-12">
                 <h2>Supported Exchanges</h2>
                 <p class="text-sm text-slate-400 mb-4">
-                    23 exchanges across 6 regions. All DST transitions are handled server-side using IANA timezone data — no hardcoded UTC offsets.
+                    28 exchanges across 7 regions (including derivatives and 24/7 crypto). All DST transitions are handled server-side using IANA timezone data — no hardcoded UTC offsets.
                 </p>
                 <div class="overflow-x-auto">
                     <table>
@@ -360,7 +360,7 @@ curl "https://headlessoracle.com/v5/demo?mic=XJPX"</pre>
                         <h3 class="text-blue-400">GET /v5/status <span class="text-xs text-slate-500 ml-2">Authenticated</span></h3>
                         <p class="text-sm mb-2">Primary endpoint for production market status checks.</p>
                         <pre>Header: X-Oracle-Key: YOUR_API_KEY
-Query:  mic=XNYS  (or any of the 23 supported MIC codes — see /v5/exchanges)</pre>
+Query:  mic=XNYS  (or any of the 28 supported MIC codes — see /v5/exchanges)</pre>
                     </div>
 
                     <div>
@@ -571,7 +571,7 @@ function hexToBytes(hex) {
                     <div class="p-4 bg-slate-800/50 rounded-lg border border-slate-700">
                         <p class="font-semibold text-white mb-1"><code>get_market_status</code></p>
                         <p class="text-slate-400 mb-2">Check whether a stock exchange is currently open or closed. Returns a cryptographically signed receipt. MANDATORY: treat UNKNOWN or HALTED as CLOSED and halt execution.</p>
-                        <p class="text-xs text-slate-500">Input: <code>{ "mic": "XNYS" }</code> — any of the 23 supported MIC codes.</p>
+                        <p class="text-xs text-slate-500">Input: <code>{ "mic": "XNYS" }</code> — any of the 28 supported MIC codes.</p>
                     </div>
                     <div class="p-4 bg-slate-800/50 rounded-lg border border-slate-700">
                         <p class="font-semibold text-white mb-1"><code>get_market_schedule</code></p>
@@ -580,7 +580,7 @@ function hexToBytes(hex) {
                     </div>
                     <div class="p-4 bg-slate-800/50 rounded-lg border border-slate-700">
                         <p class="font-semibold text-white mb-1"><code>list_exchanges</code></p>
-                        <p class="text-slate-400 mb-2">Returns all 23 supported exchanges with MIC codes, names, and timezones.</p>
+                        <p class="text-slate-400 mb-2">Returns all 28 supported exchanges with MIC codes, names, and timezones.</p>
                         <p class="text-xs text-slate-500">No input required.</p>
                     </div>
                 </div>

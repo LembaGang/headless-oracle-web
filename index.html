@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Headless Oracle | Signed Market-Status API for AI Agents</title>
-    <meta name="description" content="Headless Oracle — cryptographic market state verification for autonomous agents. The verification layer for Mastercard Verifiable Intent and BVNK execution pipelines. 23 global exchanges. Ed25519 signed receipts. Fail-closed.">
+    <meta name="description" content="Headless Oracle — cryptographic market state verification for autonomous agents. The verification layer for Mastercard Verifiable Intent and BVNK execution pipelines. 28 global exchanges. Ed25519 signed receipts. Fail-closed.">
     <meta name="robots" content="index, follow">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://headlessoracle.com/">
     <meta property="og:title" content="Headless Oracle | Signed Market-Status API for AI Agents">
-    <meta property="og:description" content="Ed25519-signed market-status receipts for AI agents. 23 global exchanges. Fail-closed. MCP server included.">
+    <meta property="og:description" content="Ed25519-signed market-status receipts for AI agents. 28 global exchanges. Fail-closed. MCP server included.">
     <link rel="canonical" href="https://headlessoracle.com/">
     <link rel="alternate" type="application/json" href="/openapi.json" title="OpenAPI 3.1 specification">
     <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt — machine-readable API summary">
@@ -19,7 +19,7 @@
       "@type": "SoftwareApplication",
       "name": "Headless Oracle",
       "url": "https://headlessoracle.com",
-      "description": "Ed25519-signed market-status receipts for AI agents and autonomous trading systems. 23 global exchanges. Fail-closed by contract. MCP server included.",
+      "description": "Ed25519-signed market-status receipts for AI agents and autonomous trading systems. 28 global exchanges. Fail-closed by contract. MCP server included.",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "Any",
       "offers": {
@@ -30,7 +30,7 @@
       },
       "featureList": [
         "Ed25519 cryptographic signing of every response",
-        "23 global exchanges across 6 regions: Americas (XNYS, XNAS, XBSP), Europe (XLON, XPAR, XSWX, XMIL, XHEL, XSTO, XIST), Middle East (XSAU, XDFM), Africa (XJSE), Asia (XSHG, XSHE, XHKG, XJPX, XKRX, XBOM, XNSE, XSES), Pacific (XASX, XNZE)",
+        "28 global exchanges across 7 regions: Americas (XNYS, XNAS, XBSP), Europe (XLON, XPAR, XSWX, XMIL, XHEL, XSTO, XIST), Middle East (XSAU, XDFM), Africa (XJSE), Asia (XSHG, XSHE, XHKG, XJPX, XKRX, XBOM, XNSE, XSES), Pacific (XASX, XNZE), Derivatives & Crypto 24/7 (XCBT, XNYM, XCBO, XCOI, XBIN)",
         "Fail-closed design: UNKNOWN or error status always halts",
         "MCP server for Claude and agent frameworks",
         "REST API with OpenAPI 3.1 schema at /openapi.json",
@@ -61,7 +61,12 @@
         { "@type": "Organization", "name": "National Stock Exchange of India", "identifier": "XNSE", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
         { "@type": "Organization", "name": "Singapore Exchange",               "identifier": "XSES", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
         { "@type": "Organization", "name": "Australian Securities Exchange",   "identifier": "XASX", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "New Zealand Exchange",             "identifier": "XNZE", "sameAs": "https://www.iso20022.org/market-identifier-codes" }
+        { "@type": "Organization", "name": "New Zealand Exchange",             "identifier": "XNZE", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
+        { "@type": "Organization", "name": "CME Futures (overnight)",          "identifier": "XCBT", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
+        { "@type": "Organization", "name": "NYMEX (overnight)",                "identifier": "XNYM", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
+        { "@type": "Organization", "name": "Cboe Options Exchange",            "identifier": "XCBO", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
+        { "@type": "Organization", "name": "Coinbase Exchange",                "identifier": "XCOI", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
+        { "@type": "Organization", "name": "Binance",                          "identifier": "XBIN", "sameAs": "https://www.iso20022.org/market-identifier-codes" }
       ],
       "provider": {
         "@type": "Organization",
@@ -78,7 +83,7 @@
           "@type": "EntryPoint",
           "urlTemplate": "https://headlessoracle.com/v5/demo?mic={mic}",
           "actionPlatform": "https://schema.org/DigitalPlatform",
-          "description": "Query live market status. mic values: any of 23 supported MIC codes (XNYS, XNAS, XLON, XJPX, XPAR, XHKG, XSES, XASX, XBOM, XNSE, XSHG, XSHE, XKRX, XJSE, XBSP, XSWX, XMIL, XIST, XSAU, XDFM, XNZE, XHEL, XSTO). Returns signed JSON receipt."
+          "description": "Query live market status. mic values: any of 28 supported MIC codes (XNYS, XNAS, XLON, XJPX, XPAR, XHKG, XSES, XASX, XBOM, XNSE, XSHG, XSHE, XKRX, XJSE, XBSP, XSWX, XMIL, XIST, XSAU, XDFM, XNZE, XHEL, XSTO, XCBT, XNYM, XCBO, XCOI, XBIN). Returns signed JSON receipt."
         }
       }
     }
@@ -130,7 +135,7 @@
         </h1>
 
         <p class="text-xl text-slate-400 mb-8 max-w-2xl mx-auto">
-            Headless Oracle is a <strong class="text-white">fail-closed execution guardrail</strong> for AI agents and RWA bots. Get a cryptographically signed market status receipt — covering <strong class="text-white">23 global exchanges</strong> — before your agent executes. Agents pay 0.001 USDC per request via <a href="/docs/x402-payments" class="text-indigo-400 hover:text-indigo-300">x402</a> on Base mainnet. No subscription required.
+            Headless Oracle is a <strong class="text-white">fail-closed execution guardrail</strong> for AI agents and RWA bots. Get a cryptographically signed market status receipt — covering <strong class="text-white">28 global exchanges</strong> — before your agent executes. Agents pay 0.001 USDC per request via <a href="/docs/x402-payments" class="text-indigo-400 hover:text-indigo-300">x402</a> on Base mainnet. No subscription required.
         </p>
 
         <div class="flex flex-wrap justify-center gap-2 mb-6">
@@ -157,6 +162,11 @@
             <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">SGX · XSES</span>
             <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">Sydney · XASX</span>
             <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">NZX · XNZE</span>
+            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">CME · XCBT</span>
+            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">NYMEX · XNYM</span>
+            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">Cboe · XCBO</span>
+            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">Coinbase · XCOI</span>
+            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">Binance · XBIN</span>
         </div>
 
         <div class="flex flex-col sm:flex-row gap-4 w-full justify-center">
@@ -219,7 +229,7 @@
     <!-- Edge Case Counter -->
     <section class="w-full max-w-5xl mx-auto px-6 mb-20">
         <div class="text-center mb-10">
-            <h2 class="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">23 exchanges. Global 24/7 coverage.</h2>
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">28 exchanges. Global 24/7 coverage.</h2>
             <p class="text-slate-500 text-sm font-mono">The scheduling complexity a timezone library was not built to solve.</p>
         </div>
         <div class="flex flex-wrap justify-center gap-3 mb-8">
@@ -241,7 +251,7 @@
             </div>
             <div class="glass p-5 rounded-xl text-center w-[calc(50%-6px)] md:w-auto md:flex-1">
                 <div class="text-3xl font-bold text-white mb-2">728</div>
-                <div class="text-xs text-slate-400 leading-snug">weekend days<br>across 23 venues<br><span class="text-slate-600 text-xs">per calendar year</span></div>
+                <div class="text-xs text-slate-400 leading-snug">weekend days<br>across 28 venues<br><span class="text-slate-600 text-xs">per calendar year</span></div>
             </div>
         </div>
         <div class="border border-slate-700/80 rounded-lg p-5 bg-slate-900/40 text-center">
@@ -404,7 +414,7 @@
                 <pre class="m-0 text-xs sm:text-sm text-blue-300">curl -X POST https://headlessoracle.com/v5/keys/request \
   -H "Content-Type: application/json" \
   -d '{"email":"you@yourorg.com"}'</pre>
-                <p class="text-xs text-slate-500 mt-2">Key arrives in your inbox in seconds. <a href="/pricing" class="text-blue-400 hover:text-blue-300">Free tier</a>: 500 req/day, all 23 exchanges.</p>
+                <p class="text-xs text-slate-500 mt-2">Key arrives in your inbox in seconds. <a href="/pricing" class="text-blue-400 hover:text-blue-300">Free tier</a>: 500 req/day, all 28 exchanges.</p>
             </div>
             <!-- Step 3 -->
             <div class="glass rounded-xl p-5 border border-slate-700">
