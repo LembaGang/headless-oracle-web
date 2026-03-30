@@ -58,6 +58,7 @@
                 <a href="#overrides"    class="block hover:text-white transition">Circuit Breaker Overrides</a>
                 <a href="#mcp"          class="block hover:text-white transition">MCP Integration</a>
                 <a href="#billing"      class="block hover:text-white transition">API Keys &amp; Billing</a>
+                <a href="#standards"   class="block hover:text-white transition">Open Standards</a>
             </div>
         </aside>
 
@@ -643,6 +644,59 @@ function hexToBytes(hex) {
                     <li><strong class="text-red-400">403 INVALID_API_KEY:</strong> Key not found. Check for typos or use <code>/v5/account</code> to confirm it's active.</li>
                     <li><strong class="text-yellow-400">402 PAYMENT_REQUIRED:</strong> Subscription is suspended or cancelled. Update billing to restore access.</li>
                 </ul>
+            </section>
+
+            <!-- OPEN STANDARDS -->
+            <section id="standards" class="mb-12 border-b border-slate-800 pb-12">
+                <h2>Open Standards</h2>
+                <p class="text-slate-400 text-sm mb-6">Headless Oracle publishes the protocols it implements as Apache 2.0 open standards. Any operator can implement these independently — the value is in the interoperability, not the lock-in.</p>
+
+                <div class="space-y-4">
+                    <div class="glass rounded-xl p-5 border border-blue-500/20">
+                        <div class="flex items-start justify-between gap-4 mb-2">
+                            <div>
+                                <span class="text-xs font-mono text-blue-400 uppercase tracking-wider">SMA Protocol</span>
+                                <h3 class="text-white font-semibold mt-1 mb-0">Signed Market Attestation</h3>
+                            </div>
+                            <a href="https://github.com/LembaGang/sma-protocol" target="_blank" rel="noopener" class="text-xs font-mono text-blue-400 hover:text-blue-300 whitespace-nowrap">GitHub →</a>
+                        </div>
+                        <p class="text-sm text-slate-400 mb-2">Defines the canonical JSON schema for a cryptographically signed market-state receipt: fields, Ed25519 signing algorithm, canonical payload serialisation (alphabetical key sort), 60-second TTL, and fail-closed UNKNOWN semantics.</p>
+                        <div class="flex gap-3 flex-wrap">
+                            <a href="https://headlessoracle.com/docs/sma-protocol/rfc-001" class="text-xs text-blue-400 hover:text-blue-300">RFC-001 (hosted) →</a>
+                            <a href="https://headlessoracle.com/v5/compliance" class="text-xs text-slate-400 hover:text-white font-mono">/v5/compliance →</a>
+                            <a href="https://headlessoracle.com/v5/conformance-vectors" class="text-xs text-slate-400 hover:text-white font-mono">/v5/conformance-vectors →</a>
+                        </div>
+                    </div>
+
+                    <div class="glass rounded-xl p-5 border border-purple-500/20">
+                        <div class="flex items-start justify-between gap-4 mb-2">
+                            <div>
+                                <span class="text-xs font-mono text-purple-400 uppercase tracking-wider">MPAS-1.0</span>
+                                <h3 class="text-white font-semibold mt-1 mb-0">Multi-Party Attestation Aggregation</h3>
+                            </div>
+                            <a href="https://github.com/LembaGang/mpas-spec" target="_blank" rel="noopener" class="text-xs font-mono text-purple-400 hover:text-purple-300 whitespace-nowrap">GitHub →</a>
+                        </div>
+                        <p class="text-sm text-slate-400 mb-2">Defines how N independent oracle operators' SMA receipts are aggregated into a single <code>AggregatedAttestation</code> with quorum consensus. A 2-of-3 quorum means no single compromised operator can produce a forged result. Includes consumer verification algorithm, operator registration conventions, and on-chain verification sketch.</p>
+                        <div class="flex gap-3 flex-wrap">
+                            <a href="https://headlessoracle.com/docs/mpas" class="text-xs text-purple-400 hover:text-purple-300">Spec (hosted) →</a>
+                            <a href="https://github.com/LembaGang/mpas-spec/blob/main/IMPLEMENTATIONS.md" target="_blank" rel="noopener" class="text-xs text-slate-400 hover:text-white">IMPLEMENTATIONS.md →</a>
+                        </div>
+                    </div>
+
+                    <div class="glass rounded-xl p-5 border border-green-500/20">
+                        <div class="flex items-start justify-between gap-4 mb-2">
+                            <div>
+                                <span class="text-xs font-mono text-green-400 uppercase tracking-wider">APTS-1.0</span>
+                                <h3 class="text-white font-semibold mt-1 mb-0">Agent Pre-Trade Safety Standard</h3>
+                            </div>
+                            <a href="https://github.com/LembaGang/agent-pretrade-safety-standard" target="_blank" rel="noopener" class="text-xs font-mono text-green-400 hover:text-green-300 whitespace-nowrap">GitHub →</a>
+                        </div>
+                        <p class="text-sm text-slate-400 mb-2">A vendor-neutral 6-step checklist every autonomous trading agent must complete before executing: fetch signed attestation → verify circuit breakers → verify settlement window → verify TTL → verify Ed25519 signature → halt on any failure. Includes CI badge, CHECKLIST.yaml, and conformance table.</p>
+                        <div class="flex gap-3 flex-wrap">
+                            <a href="https://headlessoracle.com/v5/compliance" class="text-xs text-slate-400 hover:text-white font-mono">/v5/compliance →</a>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <!-- OVERRIDES -->
