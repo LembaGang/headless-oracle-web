@@ -13,6 +13,7 @@ export default defineConfig({
         status: resolve(__dirname, 'status.html'),
         pricing: resolve(__dirname, 'pricing.html'),
         refund: resolve(__dirname, 'refund.html'),
+        traction: resolve(__dirname, 'traction.html'),
       },
     },
   },
