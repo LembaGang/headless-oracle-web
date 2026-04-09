@@ -439,12 +439,12 @@
             <div class="glass rounded-xl p-5 border border-slate-700">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">2</span>
-                    <span class="text-white font-semibold text-sm">Request your free API key (instant, no card)</span>
+                    <span class="text-white font-semibold text-sm">Get a free API key (instant, no card)</span>
                 </div>
-                <pre class="m-0 text-xs sm:text-sm text-blue-300">curl -X POST https://headlessoracle.com/v5/keys/request \
+                <pre class="m-0 text-xs sm:text-sm text-blue-300">curl -X POST https://headlessoracle.com/v5/keys/instant \
   -H "Content-Type: application/json" \
-  -d '{"email":"you@yourorg.com"}'</pre>
-                <p class="text-xs text-slate-500 mt-2">Key arrives in your inbox in seconds. <a href="/pricing" class="text-blue-400 hover:text-blue-300">Free tier</a>: 500 req/day, all 28 exchanges.</p>
+  -d '{"agent_id":"my-trading-bot"}'</pre>
+                <p class="text-xs text-slate-500 mt-2">Returns a key instantly in the response. 500 calls/day, all 28 exchanges. Or <a href="#quickstart" onclick="getSandboxKey();return false;" class="text-green-400 hover:text-green-300">click here to get one now</a>.</p>
             </div>
             <!-- Step 3 -->
             <div class="glass rounded-xl p-5 border border-slate-700">
@@ -453,19 +453,18 @@
                     <span class="text-white font-semibold text-sm">Add 3 lines to your agent</span>
                 </div>
                 <pre class="m-0 text-xs sm:text-sm text-blue-300">const r = await fetch('https://headlessoracle.com/v5/status?mic=XNYS',
-  { headers: { 'X-API-Key': process.env.ORACLE_KEY } }).then(r => r.json());
+  { headers: { 'X-Oracle-Key': process.env.ORACLE_KEY } }).then(r => r.json());
 if (r.status !== 'OPEN') return halt('Market not open — status: ' + r.status);</pre>
                 <p class="text-xs text-slate-500 mt-2">Fail-closed by design. Anything other than <code class="text-green-400">OPEN</code> halts your agent. Receipt is Ed25519-signed for audit.</p>
             </div>
         </div>
         <!-- Inline sandbox key generator -->
         <div class="mt-8 glass rounded-xl p-6 border border-slate-700">
-            <h3 class="text-white font-semibold text-sm mb-1">Get an instant sandbox key — no email required</h3>
-            <p class="text-xs text-slate-500 mb-4">24 hours · 100 calls · no signup. Optional: add your email to receive the key and get an expiry reminder.</p>
+            <h3 class="text-white font-semibold text-sm mb-1">Get a free API key instantly — no email required</h3>
+            <p class="text-xs text-slate-500 mb-4">500 calls/day. No signup. No credit card. Key appears in seconds.</p>
             <div class="flex flex-col sm:flex-row gap-3 mb-3">
-                <input id="sandbox-email" type="email" placeholder="you@example.com (optional)" class="flex-1 bg-slate-900 border border-slate-600 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 placeholder-slate-600">
-                <button onclick="getSandboxKey()" id="sandbox-btn" class="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold text-sm transition flex items-center gap-2 justify-center">
-                    Get free API key →
+                <button onclick="getSandboxKey()" id="sandbox-btn" class="px-6 py-2.5 bg-green-600 hover:bg-green-500 text-white rounded-lg font-semibold text-sm transition flex items-center gap-2 justify-center cursor-pointer">
+                    Get Free API Key
                 </button>
             </div>
             <div id="sandbox-result" class="hidden mt-4">
@@ -483,7 +482,7 @@ if (r.status !== 'OPEN') return halt('Market not open — status: ' + r.status);
             <div id="sandbox-error" class="hidden mt-3 text-xs text-red-400"></div>
         </div>
         <div class="flex flex-col sm:flex-row gap-3 mt-6 justify-center">
-            <a href="/pricing" class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold text-sm text-center transition shadow-lg shadow-blue-900/20">Get Free Key →</a>
+            <button onclick="getSandboxKey(); document.getElementById('sandbox-result').scrollIntoView({behavior:'smooth'})" class="px-6 py-3 bg-green-600 hover:bg-green-500 text-white rounded-lg font-semibold text-sm text-center transition shadow-lg shadow-green-900/20 cursor-pointer">Get Free API Key</button>
             <a href="/docs" class="px-6 py-3 glass hover:bg-white/10 text-white rounded-lg font-semibold text-sm text-center transition">Full API Docs</a>
         </div>
     </section>
@@ -540,16 +539,17 @@ if (r.status !== 'OPEN') return halt('Market not open — status: ' + r.status);
             const btn = document.getElementById('sandbox-btn');
             const errEl = document.getElementById('sandbox-error');
             const resultEl = document.getElementById('sandbox-result');
-            const email = document.getElementById('sandbox-email').value.trim();
             errEl.classList.add('hidden');
             resultEl.classList.add('hidden');
-            btn.textContent = 'Getting key…';
+            btn.textContent = 'Getting key...';
             btn.disabled = true;
             try {
-                const url = email
-                    ? `https://api.headlessoracle.com/v5/sandbox?email=${encodeURIComponent(email)}`
-                    : 'https://api.headlessoracle.com/v5/sandbox';
-                const res = await fetch(url);
+                const agentId = 'web-' + crypto.randomUUID().slice(0, 12);
+                const res = await fetch(ORACLE_API + '/v5/keys/instant', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ agent_id: agentId }),
+                });
                 const data = await res.json();
                 if (!res.ok || !data.api_key) {
                     errEl.textContent = data.message || data.error || 'Failed to get key. Try again.';
@@ -558,16 +558,19 @@ if (r.status !== 'OPEN') return halt('Market not open — status: ' + r.status);
                     _sandboxKey = data.api_key;
                     document.getElementById('sandbox-key-display').textContent = data.api_key;
                     document.getElementById('sandbox-curl').textContent =
-                        `curl 'https://api.headlessoracle.com/v5/status?mic=XNYS' \\\n  -H 'X-Oracle-Key: ${data.api_key}'`;
+                        `curl 'https://headlessoracle.com/v5/status?mic=XNYS' \\\n  -H 'X-Oracle-Key: ${data.api_key}'`;
                     resultEl.classList.remove('hidden');
+                    btn.textContent = 'Key created!';
+                    btn.disabled = false;
+                    setTimeout(() => { btn.textContent = 'Get Free API Key'; btn.disabled = false; }, 3000);
+                    return;
                 }
             } catch (e) {
                 errEl.textContent = 'Network error. Check your connection and try again.';
                 errEl.classList.remove('hidden');
-            } finally {
-                btn.textContent = 'Get free API key →';
-                btn.disabled = false;
             }
+            btn.textContent = 'Get Free API Key';
+            btn.disabled = false;
         }
 
         function copySandboxKey() {

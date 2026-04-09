@@ -50,109 +50,134 @@
                 <div class="mb-4">
                     <span class="text-xs font-mono px-2 py-1 rounded-full bg-green-900/40 border border-green-500/30 text-green-400 font-semibold">Current</span>
                 </div>
-                <h2 class="text-xl font-bold text-white mb-1">Free Beta</h2>
+                <h2 class="text-xl font-bold text-white mb-1">Free</h2>
                 <div class="text-4xl font-bold text-white mb-1">$0</div>
                 <p class="text-xs text-slate-500 mb-2">/month</p>
                 <p class="text-xs text-slate-400 mb-6">Get started instantly, no credit card needed</p>
                 <ul class="space-y-2 text-sm text-slate-300 flex-grow mb-6">
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> Market status for all 28 exchanges</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> Ed25519 signed receipts</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> Demo endpoint + free API key</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> Community support</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> 500 API calls/day</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> All 28 exchanges</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> Ed25519 signed receipts</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> Instant provisioning</li>
                 </ul>
-                <a href="#get-free-key" class="block w-full text-center px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg font-semibold transition text-sm">Get Free Key</a>
+                <button onclick="getInstantKey('free-card')" id="free-card-btn" class="block w-full text-center px-4 py-2.5 bg-green-600 hover:bg-green-500 text-white rounded-lg font-semibold transition text-sm cursor-pointer">Get Free API Key</button>
+                <div id="free-card-result" class="hidden mt-3"></div>
             </div>
 
             <!-- Pay-per-use (x402) -->
             <div class="rounded-xl p-6 flex flex-col bg-indigo-950/30 border border-indigo-500/40 relative">
                 <div class="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span class="text-xs font-bold px-3 py-1 rounded-full bg-indigo-600 text-white tracking-wider uppercase">For agents that pay themselves</span>
+                    <span class="text-xs font-bold px-3 py-1 rounded-full bg-indigo-600 text-white tracking-wider uppercase whitespace-nowrap">Agents pay themselves</span>
                 </div>
                 <div class="mb-4">
-                    <span class="text-xs font-mono px-2 py-1 rounded-full bg-indigo-900/40 border border-indigo-500/30 text-indigo-300 font-semibold">x402 · Live</span>
+                    <span class="text-xs font-mono px-2 py-1 rounded-full bg-indigo-900/40 border border-indigo-500/30 text-indigo-300 font-semibold">x402 &middot; Live</span>
                 </div>
                 <h2 class="text-xl font-bold text-white mb-1">Pay-per-use</h2>
                 <div class="text-4xl font-bold text-white mb-1">$0.001</div>
                 <p class="text-xs text-slate-500 mb-2">/request</p>
                 <p class="text-xs text-slate-400 mb-6">0.001 USDC on Base mainnet — no subscription required</p>
                 <ul class="space-y-2 text-sm text-slate-300 flex-grow mb-6">
-                    <li class="flex items-start gap-2"><span class="text-indigo-400 mt-0.5">✓</span> No API key required</li>
-                    <li class="flex items-start gap-2"><span class="text-indigo-400 mt-0.5">✓</span> All 28 exchanges</li>
-                    <li class="flex items-start gap-2"><span class="text-indigo-400 mt-0.5">✓</span> Ed25519 signed receipts</li>
-                    <li class="flex items-start gap-2"><span class="text-indigo-400 mt-0.5">✓</span> HTTP 402 machine-readable</li>
-                    <li class="flex items-start gap-2"><span class="text-indigo-400 mt-0.5">✓</span> Replay-protected · 300s TTL</li>
+                    <li class="flex items-start gap-2"><span class="text-indigo-400 mt-0.5">&#10003;</span> No API key required</li>
+                    <li class="flex items-start gap-2"><span class="text-indigo-400 mt-0.5">&#10003;</span> All 28 exchanges</li>
+                    <li class="flex items-start gap-2"><span class="text-indigo-400 mt-0.5">&#10003;</span> Ed25519 signed receipts</li>
+                    <li class="flex items-start gap-2"><span class="text-indigo-400 mt-0.5">&#10003;</span> HTTP 402 machine-readable</li>
                 </ul>
-                <a href="/docs/x402-payments" class="block w-full text-center px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-semibold transition text-sm">x402 Guide →</a>
+                <button onclick="toggleX402Panel()" id="x402-btn" class="block w-full text-center px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-semibold transition text-sm cursor-pointer">Pay with Crypto</button>
+                <div id="x402-panel" class="hidden mt-3"></div>
+            </div>
+
+            <!-- Credits -->
+            <div class="glass rounded-xl p-6 flex flex-col">
+                <div class="mb-4">
+                    <span class="text-xs font-mono px-2 py-1 rounded-full bg-amber-900/40 border border-amber-500/30 text-amber-400 font-semibold">One-time</span>
+                </div>
+                <h2 class="text-xl font-bold text-white mb-1">Credits</h2>
+                <div class="text-4xl font-bold text-white mb-1">$5</div>
+                <p class="text-xs text-slate-500 mb-2">one-time</p>
+                <p class="text-xs text-slate-400 mb-6">1,000 API calls, no expiry</p>
+                <ul class="space-y-2 text-sm text-slate-300 flex-grow mb-6">
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> 1,000 API calls</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> All 28 exchanges</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> No expiry date</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> Pay via card</li>
+                </ul>
+                <button onclick="openPaddleCheckout('credits')" id="credits-btn" class="block w-full text-center px-4 py-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-lg font-semibold transition text-sm cursor-pointer">Buy Credits</button>
+                <div id="credits-fallback" class="hidden mt-3 text-xs text-slate-400"></div>
             </div>
 
             <!-- Builder -->
-            <div class="glass rounded-xl p-6 flex flex-col">
-                <div class="mb-4">
-                    <span class="text-xs font-mono px-2 py-1 rounded-full bg-blue-900/40 border border-blue-500/30 text-blue-400 font-semibold">Q2 2026</span>
-                </div>
-                <h2 class="text-xl font-bold text-white mb-1">Builder</h2>
-                <div class="text-4xl font-bold text-white mb-1">$99</div>
-                <p class="text-xs text-slate-500 mb-6">/month</p>
-                <ul class="space-y-2 text-sm text-slate-300 flex-grow mb-6">
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> 50,000 API calls/month</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> All 28 exchanges</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> Ed25519 signed receipts</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> Email support</li>
-                </ul>
-                <p class="text-xs text-slate-500 font-mono">Best for: solo developers, indie trading bots</p>
-            </div>
-
-            <!-- Pro -->
             <div class="rounded-xl p-6 flex flex-col bg-blue-600/10 border border-blue-500/30 relative">
                 <div class="absolute -top-3 left-1/2 -translate-x-1/2">
                     <span class="text-xs font-bold px-3 py-1 rounded-full bg-blue-600 text-white tracking-wider uppercase">Popular</span>
                 </div>
                 <div class="mb-4">
-                    <span class="text-xs font-mono px-2 py-1 rounded-full bg-blue-900/40 border border-blue-500/30 text-blue-400 font-semibold">Q2 2026</span>
+                    <span class="text-xs font-mono px-2 py-1 rounded-full bg-blue-900/40 border border-blue-500/30 text-blue-400 font-semibold">Subscription</span>
+                </div>
+                <h2 class="text-xl font-bold text-white mb-1">Builder</h2>
+                <div class="text-4xl font-bold text-white mb-1">$99</div>
+                <p class="text-xs text-slate-500 mb-6">/month</p>
+                <ul class="space-y-2 text-sm text-slate-300 flex-grow mb-6">
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> 50,000 API calls/day</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> All 28 exchanges</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> Webhook subscriptions</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> Receipt audit log</li>
+                </ul>
+                <button onclick="openPaddleCheckout('builder')" id="builder-btn" class="block w-full text-center px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold transition text-sm cursor-pointer">Subscribe &mdash; $99/mo</button>
+                <div id="builder-fallback" class="hidden mt-3 text-xs text-slate-400"></div>
+            </div>
+
+            <!-- Pro -->
+            <div class="glass rounded-xl p-6 flex flex-col">
+                <div class="mb-4">
+                    <span class="text-xs font-mono px-2 py-1 rounded-full bg-purple-900/40 border border-purple-500/30 text-purple-400 font-semibold">Subscription</span>
                 </div>
                 <h2 class="text-xl font-bold text-white mb-1">Pro</h2>
                 <div class="text-4xl font-bold text-white mb-1">$299</div>
                 <p class="text-xs text-slate-500 mb-6">/month</p>
                 <ul class="space-y-2 text-sm text-slate-300 flex-grow mb-6">
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> 200,000 API calls/month</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> All 28 exchanges</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> Ed25519 signed receipts</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> Priority email support</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> 200,000 API calls/day</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> All 28 exchanges</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> 25 webhook subscriptions</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> Priority support</li>
                 </ul>
-                <p class="text-xs text-slate-500 font-mono">Best for: production trading systems, small protocols</p>
-            </div>
-
-            <!-- Protocol -->
-            <div class="glass rounded-xl p-6 flex flex-col">
-                <div class="mb-4">
-                    <span class="text-xs font-mono px-2 py-1 rounded-full bg-slate-700 border border-slate-600 text-slate-300 font-semibold">Custom</span>
-                </div>
-                <h2 class="text-xl font-bold text-white mb-1">Protocol</h2>
-                <div class="text-4xl font-bold text-white mb-1">Custom</div>
-                <p class="text-xs text-slate-500 mb-6">starting at $500/month</p>
-                <ul class="space-y-2 text-sm text-slate-300 flex-grow mb-6">
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> Unlimited API calls</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> Custom SLA</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> Dedicated support</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">✓</span> Direct engineering access</li>
-                </ul>
-                <p class="text-xs text-slate-500 font-mono mb-3">Best for: DeFi protocols, RWA platforms, institutional trading systems</p>
-                <a href="mailto:hello@headlessoracle.com" class="text-blue-400 hover:text-blue-300 text-xs transition">hello@headlessoracle.com &rarr;</a>
+                <button onclick="openPaddleCheckout('pro')" id="pro-btn" class="block w-full text-center px-4 py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-semibold transition text-sm cursor-pointer">Subscribe &mdash; $299/mo</button>
+                <div id="pro-fallback" class="hidden mt-3 text-xs text-slate-400"></div>
             </div>
 
         </div>
 
-        <!-- Get Free Key -->
-        <div id="get-free-key" class="border border-green-700/40 rounded-xl p-8 mb-8 bg-green-900/10">
-            <h3 class="text-lg font-bold text-white mb-2">Get your free API key</h3>
-            <p class="text-sm text-slate-400 mb-5">Send a <code class="font-mono text-green-400 bg-slate-800 px-1 py-0.5 rounded">POST</code> request with your email address — a key will be returned immediately.</p>
-            <div class="bg-slate-900 rounded-lg p-4 font-mono text-sm text-slate-300 mb-4 overflow-x-auto">
-                <span class="text-slate-500"># Request a free API key</span><br>
-                curl -X POST https://headlessoracle.com/v5/keys/request \<br>
-                &nbsp;&nbsp;-H "Content-Type: application/json" \<br>
-                &nbsp;&nbsp;-d '{"email": "you@example.com"}'
+        <!-- Protocol tier -->
+        <div class="border border-slate-700 rounded-xl p-8 mb-12 bg-slate-900/40 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div>
+                <h3 class="text-lg font-bold text-white mb-1">Protocol / Enterprise</h3>
+                <p class="text-sm text-slate-400">Unlimited calls, custom SLA, dedicated support, direct engineering access.</p>
+                <p class="text-xs text-slate-500 mt-1">Starting at $500/month. Best for DeFi protocols, RWA platforms, institutional trading.</p>
             </div>
-            <p class="text-xs text-slate-500">No credit card. No signup flow. Your key arrives in the response and is emailed to you.</p>
+            <a href="mailto:mike@headlessoracle.com?subject=Protocol%20tier%20inquiry" class="px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-semibold text-sm transition whitespace-nowrap">Contact Sales</a>
+        </div>
+
+        <!-- Instant API Key Section -->
+        <div id="get-free-key" class="border border-green-700/40 rounded-xl p-8 mb-8 bg-green-900/10">
+            <h3 class="text-lg font-bold text-white mb-2">Get your API key instantly</h3>
+            <p class="text-sm text-slate-400 mb-5">Click the button below. No email, no signup, no credit card. Your key appears in seconds.</p>
+            <div class="flex flex-col sm:flex-row gap-3 mb-3">
+                <input id="instant-agent-id" type="text" placeholder="Agent ID (optional — any unique string)" class="flex-1 bg-slate-900 border border-slate-600 text-white text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-green-500 placeholder-slate-600 font-mono">
+                <button onclick="getInstantKey('section')" id="section-btn" class="px-6 py-2.5 bg-green-600 hover:bg-green-500 text-white rounded-lg font-semibold text-sm transition cursor-pointer whitespace-nowrap">Get Free API Key</button>
+            </div>
+            <div id="section-result" class="hidden mt-4">
+                <div class="bg-slate-900 rounded-lg p-4 border border-slate-700">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs text-slate-500 font-mono">Your API key (500 calls/day)</span>
+                        <button onclick="copyToClipboard(this, document.getElementById('section-key').textContent)" class="text-xs text-green-400 hover:text-green-300 transition cursor-pointer">Copy key</button>
+                    </div>
+                    <pre id="section-key" class="text-sm text-green-400 font-mono break-all whitespace-pre-wrap"></pre>
+                    <p class="text-xs text-slate-500 mt-3">Quick test:</p>
+                    <pre id="section-curl" class="text-xs text-blue-300 font-mono mt-1 break-all whitespace-pre-wrap"></pre>
+                    <button onclick="copyToClipboard(this, document.getElementById('section-curl').textContent)" class="mt-2 text-xs text-blue-400 hover:text-blue-300 transition cursor-pointer">Copy curl command</button>
+                </div>
+            </div>
+            <div id="section-error" class="hidden mt-3 text-xs text-red-400"></div>
+            <p class="text-xs text-slate-500 mt-4">Want email delivery instead? <code class="font-mono text-green-400 bg-slate-800 px-1 py-0.5 rounded">curl -X POST https://headlessoracle.com/v5/keys/request -H "Content-Type: application/json" -d '{"email":"you@example.com"}'</code></p>
         </div>
 
         <!-- What's included -->
@@ -166,14 +191,17 @@
             </div>
         </div>
 
-        <!-- Beta notice -->
+        <!-- Bottom CTA -->
         <div class="text-center">
-            <p class="text-slate-400 mb-3">Free beta active. Paid plans Q2 2026. <span class="text-indigo-400">x402 micropayments available now.</span></p>
+            <p class="text-slate-400 mb-3">All tiers are live. <span class="text-indigo-400">x402 micropayments available now.</span></p>
             <p class="text-slate-500 text-sm mb-6">Try the API now — no signup needed.</p>
-            <a href="https://headlessoracle.com/v5/demo?mic=XNYS" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold transition text-sm">
+            <button onclick="testDemo()" id="demo-btn" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold transition text-sm cursor-pointer">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                 Try Live Demo
-            </a>
+            </button>
+            <div id="demo-result" class="hidden mt-4 max-w-2xl mx-auto text-left">
+                <pre id="demo-json" class="text-xs text-green-400 font-mono overflow-x-auto rounded-lg p-4 bg-slate-900 border border-slate-700 max-h-72"></pre>
+            </div>
         </div>
 
     </main>
@@ -186,7 +214,7 @@
                 <a href="/privacy" class="hover:text-white transition">Privacy Policy</a>
                 <a href="/terms" class="hover:text-white transition">Terms of Service</a>
                 <a href="/refund" class="hover:text-white transition">Refund Policy</a>
-                <a href="mailto:hello@headlessoracle.com" class="hover:text-white transition">hello@headlessoracle.com</a>
+                <a href="mailto:mike@headlessoracle.com" class="hover:text-white transition">mike@headlessoracle.com</a>
                 <a href="/llms.txt" class="hover:text-white transition">llms.txt</a>
             </div>
         </div>
@@ -194,5 +222,184 @@
 
     <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
     <script src="/js/paddle-init.js"></script>
+    <script>
+    const API = 'https://headlessoracle.com';
+
+    // --- Instant Key Provisioning ---
+    async function getInstantKey(source) {
+        const btn = document.getElementById(source + '-btn');
+        const resultEl = document.getElementById(source + '-result');
+        const errorEl = document.getElementById(source + '-error');
+        const origText = btn.textContent;
+        btn.textContent = 'Getting key...';
+        btn.disabled = true;
+        if (errorEl) errorEl.classList.add('hidden');
+        if (resultEl) resultEl.classList.add('hidden');
+
+        // Use agent_id from the section input, or generate one
+        let agentId = '';
+        const inputEl = document.getElementById('instant-agent-id');
+        if (inputEl && inputEl.value.trim()) {
+            agentId = inputEl.value.trim();
+        } else {
+            agentId = 'web-' + crypto.randomUUID().slice(0, 12);
+        }
+
+        try {
+            const res = await fetch(API + '/v5/keys/instant', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ agent_id: agentId }),
+            });
+            const data = await res.json();
+
+            if (!res.ok || !data.api_key) {
+                throw new Error(data.message || data.error || 'Failed to get key');
+            }
+
+            if (source === 'free-card') {
+                // Show inline result on the card
+                resultEl.innerHTML = '<div class="bg-slate-900 rounded-lg p-3 border border-green-700/40">' +
+                    '<div class="flex justify-between items-center mb-1"><span class="text-xs text-slate-500 font-mono">Your key</span>' +
+                    '<button onclick="copyToClipboard(this, \'' + escapeHtml(data.api_key) + '\')" class="text-xs text-green-400 hover:text-green-300 cursor-pointer">Copy</button></div>' +
+                    '<pre class="text-xs text-green-400 font-mono break-all whitespace-pre-wrap">' + escapeHtml(data.api_key) + '</pre></div>';
+                resultEl.classList.remove('hidden');
+            } else {
+                // Show in the section
+                document.getElementById('section-key').textContent = data.api_key;
+                document.getElementById('section-curl').textContent =
+                    "curl -H 'X-Oracle-Key: " + data.api_key + "' \\\n  'https://headlessoracle.com/v5/status?mic=XNYS'";
+                resultEl.classList.remove('hidden');
+            }
+
+            // If the key was already created (note field present), show a message
+            if (data.note) {
+                btn.textContent = 'Key exists (see below)';
+                setTimeout(() => { btn.textContent = origText; btn.disabled = false; }, 3000);
+                return;
+            }
+
+            btn.textContent = 'Key created!';
+            setTimeout(() => { btn.textContent = origText; btn.disabled = false; }, 3000);
+        } catch (e) {
+            if (errorEl) {
+                errorEl.textContent = e.message || 'Failed to provision key. Try again.';
+                errorEl.classList.remove('hidden');
+            }
+            btn.textContent = origText;
+            btn.disabled = false;
+        }
+    }
+
+    // --- x402 Inline Panel ---
+    function toggleX402Panel() {
+        const panel = document.getElementById('x402-panel');
+        if (!panel.classList.contains('hidden')) {
+            panel.classList.add('hidden');
+            return;
+        }
+        panel.innerHTML =
+            '<div class="bg-slate-900 rounded-lg p-4 border border-indigo-500/30 text-left">' +
+            '<p class="text-xs text-indigo-300 font-semibold mb-2">Pay 0.001 USDC per request on Base mainnet</p>' +
+            '<p class="text-xs text-slate-400 mb-3">Your agent sends an <code class="text-indigo-300">X-Payment</code> header with the USDC transfer proof. No API key needed.</p>' +
+            '<div class="mb-3"><p class="text-xs text-slate-500 mb-1">Payment address (Base mainnet):</p>' +
+            '<pre class="text-xs text-green-400 font-mono break-all">0x26d4ffe98017d2f160e2daae9d119e3d8b860ad3</pre></div>' +
+            '<div class="mb-3"><p class="text-xs text-slate-500 mb-1">Chain:</p>' +
+            '<pre class="text-xs text-slate-300 font-mono">Base (EIP-155: 8453) &middot; USDC &middot; 0.001 per request</pre></div>' +
+            '<div class="mb-3"><p class="text-xs text-slate-500 mb-1">Example curl:</p>' +
+            '<pre class="text-xs text-blue-300 font-mono break-all whitespace-pre-wrap">curl \'https://headlessoracle.com/v5/status?mic=XNYS\' \\\n  -H \'X-Payment: {"tx_hash":"0x...your_tx_hash"}\' </pre>' +
+            '<button onclick="copyToClipboard(this, this.previousElementSibling.textContent)" class="mt-1 text-xs text-blue-400 hover:text-blue-300 cursor-pointer">Copy</button></div>' +
+            '<div class="flex gap-3 mt-3">' +
+            '<a href="/docs/x402-payments" class="text-xs text-indigo-400 hover:text-indigo-300 transition">Full x402 guide &rarr;</a>' +
+            '<a href="/.well-known/x402.json" class="text-xs text-slate-500 hover:text-slate-400 transition">x402 discovery JSON</a></div>' +
+            '</div>';
+        panel.classList.remove('hidden');
+    }
+
+    // --- Paddle Checkout ---
+    async function openPaddleCheckout(plan) {
+        const btn = document.getElementById(plan + '-btn');
+        const fallbackEl = document.getElementById(plan + '-fallback');
+        const origText = btn.textContent;
+        btn.textContent = 'Loading checkout...';
+        btn.disabled = true;
+
+        try {
+            // First try the server-side checkout creation (returns a transaction ID)
+            const res = await fetch(API + '/v5/checkout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ plan: plan }),
+            });
+            const data = await res.json();
+
+            if (res.ok && data.transaction_id) {
+                // Use Paddle.js overlay checkout
+                if (typeof Paddle !== 'undefined' && Paddle.Checkout) {
+                    Paddle.Checkout.open({ transactionId: data.transaction_id });
+                    btn.textContent = origText;
+                    btn.disabled = false;
+                    return;
+                }
+            }
+
+            if (res.ok && data.url) {
+                // Fallback: redirect to Paddle hosted checkout
+                window.location.href = data.url;
+                return;
+            }
+
+            // If we got a SERVICE_UNAVAILABLE or CHECKOUT_FAILED, show fallback
+            throw new Error(data.message || data.error || 'Checkout not available');
+        } catch (e) {
+            // Show fallback with x402 alternative + contact
+            const priceLabel = plan === 'credits' ? '$5' : plan === 'builder' ? '$99/mo' : '$299/mo';
+            fallbackEl.innerHTML =
+                '<div class="bg-slate-900 rounded-lg p-3 border border-slate-700">' +
+                '<p class="text-amber-400 font-semibold mb-2">Card checkout loading &mdash; if it doesn\'t open:</p>' +
+                '<p class="mb-2">&#8226; <strong class="text-white">x402 alternative:</strong> Pay with USDC on Base mainnet. <button onclick="toggleX402Panel()" class="text-indigo-400 hover:text-indigo-300 cursor-pointer underline">Show details</button></p>' +
+                (plan !== 'credits' ?
+                    '<p class="mb-2">&#8226; <strong class="text-white">Mint via x402:</strong> Send ' + (plan === 'builder' ? '99' : '299') + ' USDC to mint a ' + plan + ' key instantly via <code class="text-slate-300">POST /v5/x402/mint</code></p>' : '') +
+                '<p>&#8226; <strong class="text-white">Email:</strong> <a href="mailto:mike@headlessoracle.com?subject=' + encodeURIComponent(plan + ' plan subscription') + '" class="text-blue-400 hover:text-blue-300">mike@headlessoracle.com</a></p>' +
+                '<p class="mt-2 text-slate-500">Meanwhile, <button onclick="getInstantKey(\'free-card\')" class="text-green-400 hover:text-green-300 underline cursor-pointer">get a free key</button> to start using the API immediately.</p>' +
+                '</div>';
+            fallbackEl.classList.remove('hidden');
+            btn.textContent = origText;
+            btn.disabled = false;
+        }
+    }
+
+    // --- Demo ---
+    async function testDemo() {
+        const btn = document.getElementById('demo-btn');
+        btn.textContent = 'Fetching...';
+        btn.disabled = true;
+        try {
+            const res = await fetch(API + '/v5/demo?mic=XNYS');
+            const data = await res.json();
+            document.getElementById('demo-json').textContent = JSON.stringify(data, null, 2);
+            document.getElementById('demo-result').classList.remove('hidden');
+        } catch (e) {
+            document.getElementById('demo-json').textContent = '{ "error": "Network error. Try again." }';
+            document.getElementById('demo-result').classList.remove('hidden');
+        }
+        btn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg> Try Live Demo';
+        btn.disabled = false;
+    }
+
+    // --- Utilities ---
+    function copyToClipboard(btn, text) {
+        navigator.clipboard.writeText(text.trim()).then(() => {
+            const orig = btn.textContent;
+            btn.textContent = 'Copied!';
+            btn.classList.add('text-green-400');
+            setTimeout(() => { btn.textContent = orig; btn.classList.remove('text-green-400'); }, 2000);
+        }).catch(() => {});
+    }
+
+    function escapeHtml(str) {
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+    </script>
 </body>
 </html>
