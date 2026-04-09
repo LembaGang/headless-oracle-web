@@ -29,9 +29,11 @@
             <span class="text-xl font-bold tracking-wider text-white">HEADLESS<span class="text-blue-500">ORACLE</span></span>
         </a>
         <div class="flex gap-6 text-sm font-medium">
-            <a href="/pricing" class="text-white font-semibold">Pricing</a>
             <a href="/docs" class="hover:text-white transition">Docs</a>
-            <a href="/status" class="hover:text-white transition flex items-center gap-1"><span class="status-dot"></span>Live Status</a>
+            <a href="/status" class="hover:text-white transition flex items-center gap-1"><span class="status-dot"></span>Status</a>
+            <a href="/pricing" class="text-white font-semibold">Pricing</a>
+            <a href="https://dev.to/msebenzi" class="hover:text-white transition" target="_blank" rel="noopener">Blog</a>
+            <a href="https://github.com/LembaGang" class="hover:text-white transition" target="_blank" rel="noopener">GitHub</a>
         </div>
     </nav>
 
@@ -62,6 +64,7 @@
                 </ul>
                 <button onclick="getInstantKey('free-card')" id="free-card-btn" class="block w-full text-center px-4 py-2.5 bg-green-600 hover:bg-green-500 text-white rounded-lg font-semibold transition text-sm cursor-pointer">Get Free API Key</button>
                 <div id="free-card-result" class="hidden mt-3"></div>
+                <div id="free-card-error" class="hidden mt-2 text-xs text-red-400"></div>
             </div>
 
             <!-- Pay-per-use (x402) -->
@@ -210,12 +213,14 @@
         <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <p class="text-sm text-slate-500">&copy; 2026 Headless Oracle.</p>
             <div class="flex flex-wrap justify-center gap-6 text-xs text-slate-500">
-                <a href="/pricing" class="text-white">Pricing</a>
-                <a href="/privacy" class="hover:text-white transition">Privacy Policy</a>
-                <a href="/terms" class="hover:text-white transition">Terms of Service</a>
-                <a href="/refund" class="hover:text-white transition">Refund Policy</a>
-                <a href="mailto:mike@headlessoracle.com" class="hover:text-white transition">mike@headlessoracle.com</a>
+                <a href="/" class="hover:text-white transition">Home</a>
+                <a href="/docs" class="hover:text-white transition">Docs</a>
+                <a href="https://dev.to/msebenzi" class="hover:text-white transition" target="_blank" rel="noopener">Blog</a>
                 <a href="/llms.txt" class="hover:text-white transition">llms.txt</a>
+                <a href="/terms" class="hover:text-white transition">Terms</a>
+                <a href="/privacy" class="hover:text-white transition">Privacy</a>
+                <a href="/refund" class="hover:text-white transition">Refund Policy</a>
+                <a href="https://github.com/LembaGang" class="hover:text-white transition" target="_blank" rel="noopener">GitHub</a>
             </div>
         </div>
     </footer>
