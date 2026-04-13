@@ -13,6 +13,11 @@
     <link rel="canonical" href="https://headlessoracle.com/">
     <link rel="alternate" type="application/json" href="/openapi.json" title="OpenAPI 3.1 specification">
     <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt — machine-readable API summary">
+    <meta property="og:image" content="https://headlessoracle.com/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Headless Oracle | Signed Market-Status API for AI Agents">
+    <meta name="twitter:description" content="Ed25519-signed market-status receipts for AI agents. 28 global exchanges. Fail-closed. MCP server included.">
+    <meta name="twitter:image" content="https://headlessoracle.com/og-image.png">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -113,7 +118,8 @@
             <a href="/docs" class="hover:text-white transition">Docs</a>
             <a href="/status" class="hover:text-white transition flex items-center gap-1"><span class="status-dot"></span>Status</a>
             <a href="/pricing" class="hover:text-white transition">Pricing</a>
-            <a href="https://dev.to/msebenzi" class="hover:text-white transition" target="_blank" rel="noopener">Blog</a>
+            <a href="/standards" class="hover:text-white transition">Standards</a>
+            <a href="/blog" class="hover:text-white transition">Blog</a>
             <a href="https://github.com/LembaGang" class="hover:text-white transition" target="_blank" rel="noopener">GitHub</a>
         </div>
     </nav>
@@ -134,12 +140,16 @@
         </div>
 
         <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight max-w-4xl">
-            The only market oracle<br />
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">autonomous agents can pay for themselves.</span>
+            Ed25519-signed market-state<br />
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">attestations for AI agents.</span>
         </h1>
 
-        <p class="text-xl text-slate-400 mb-8 max-w-2xl mx-auto">
-            Headless Oracle is a <strong class="text-white">fail-closed execution guardrail</strong> for AI agents and RWA bots. Get a cryptographically signed market status receipt — covering <strong class="text-white">28 global exchanges</strong> — before your agent executes. Agents pay 0.001 USDC per request via <a href="/docs/x402-payments" class="text-indigo-400 hover:text-indigo-300">x402</a> on Base mainnet. No subscription required.
+        <p class="text-2xl text-slate-400 mb-4 max-w-2xl mx-auto font-mono">
+            28 exchanges. 60-second TTL. Fail-closed.
+        </p>
+
+        <p class="text-lg text-slate-500 mb-8 max-w-2xl mx-auto">
+            Headless Oracle is a <strong class="text-white">fail-closed execution guardrail</strong> for AI agents and RWA bots. Get a cryptographically signed market status receipt before your agent executes. Agents pay 0.001 USDC per request via <a href="/docs/x402-payments" class="text-indigo-400 hover:text-indigo-300">x402</a> on Base mainnet.
         </p>
 
         <div class="flex flex-wrap justify-center gap-2 mb-6">
@@ -174,13 +184,14 @@
         </div>
 
         <div class="flex flex-col sm:flex-row gap-4 w-full justify-center">
-            <button onclick="testLiveAPI().then(() => document.getElementById('api-response').scrollIntoView({behavior:'smooth'}))" class="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-bold transition shadow-lg shadow-blue-900/20 flex items-center justify-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                Get a Signed Receipt
+            <button onclick="getSandboxKey().then(() => document.getElementById('sandbox-result').scrollIntoView({behavior:'smooth'}))" class="px-8 py-4 bg-green-600 hover:bg-green-500 text-white rounded-lg font-bold transition shadow-lg shadow-green-900/20 flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
+                Get API Key
             </button>
-            <a href="/docs" class="px-8 py-4 glass hover:bg-white/10 text-white rounded-lg font-bold transition flex items-center justify-center">
-                3-Line Integration Guide
-            </a>
+            <button onclick="copyDemoCurl()" id="try-demo-btn" class="px-8 py-4 glass hover:bg-white/10 text-white rounded-lg font-bold transition flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                Try Demo
+            </button>
         </div>
 
         <div class="flex flex-wrap justify-center gap-4 mt-6 text-xs text-slate-500">
@@ -484,7 +495,7 @@ if (r.status !== 'OPEN') return halt('Market not open — status: ' + r.status);
             <div id="sandbox-error" class="hidden mt-3 text-xs text-red-400"></div>
         </div>
         <div class="flex flex-col sm:flex-row gap-3 mt-6 justify-center">
-            <button onclick="getSandboxKey(); document.getElementById('sandbox-result').scrollIntoView({behavior:'smooth'})" class="px-6 py-3 bg-green-600 hover:bg-green-500 text-white rounded-lg font-semibold text-sm text-center transition shadow-lg shadow-green-900/20 cursor-pointer">Get Free API Key</button>
+            <button onclick="getSandboxKey().then(() => document.getElementById('sandbox-result').scrollIntoView({behavior:'smooth'}))" class="px-6 py-3 bg-green-600 hover:bg-green-500 text-white rounded-lg font-semibold text-sm text-center transition shadow-lg shadow-green-900/20 cursor-pointer">Get Free API Key</button>
             <a href="/docs" class="px-6 py-3 glass hover:bg-white/10 text-white rounded-lg font-semibold text-sm text-center transition">Full API Docs</a>
         </div>
     </section>
@@ -521,7 +532,8 @@ if (r.status !== 'OPEN') return halt('Market not open — status: ' + r.status);
                 <a href="/" class="hover:text-white transition">Home</a>
                 <a href="/docs" class="hover:text-white transition">Docs</a>
                 <a href="/pricing" class="hover:text-white transition">Pricing</a>
-                <a href="https://dev.to/msebenzi" class="hover:text-white transition" target="_blank" rel="noopener">Blog</a>
+                <a href="/standards" class="hover:text-white transition">Standards</a>
+                <a href="/blog" class="hover:text-white transition">Blog</a>
                 <a href="/llms.txt" class="hover:text-white transition">llms.txt</a>
                 <a href="/terms" class="hover:text-white transition">Terms</a>
                 <a href="/privacy" class="hover:text-white transition">Privacy</a>
@@ -529,6 +541,7 @@ if (r.status !== 'OPEN') return halt('Market not open — status: ' + r.status);
                 <a href="/status" class="hover:text-white transition">Status</a>
                 <a href="/verify" class="hover:text-white transition">Verify</a>
                 <a href="https://github.com/LembaGang" class="hover:text-white transition" target="_blank" rel="noopener">GitHub</a>
+                <a href="mailto:mike@headlessoracle.com" class="hover:text-white transition">mike@headlessoracle.com</a>
             </div>
         </div>
     </footer>
@@ -683,6 +696,16 @@ if (r.status !== 'OPEN') return halt('Market not open — status: ' + r.status);
         })();
         // --- End Live Status Widget ---
 
+        function copyDemoCurl() {
+            const cmd = "curl https://headlessoracle.com/v5/demo?mic=XNYS";
+            navigator.clipboard.writeText(cmd).then(() => {
+                const btn = document.getElementById('try-demo-btn');
+                const orig = btn.innerHTML;
+                btn.textContent = 'Copied to clipboard!';
+                setTimeout(() => { btn.innerHTML = orig; }, 2000);
+            }).catch(() => {});
+        }
+
         async function testLiveAPI() {
             const pre = document.getElementById('api-response');
             pre.innerText = '{ "status": "QUERYING_ORACLE..." }';
@@ -719,6 +742,9 @@ if (r.status !== 'OPEN') return halt('Market not open — status: ' + r.status);
                 }, 2000);
             });
         }
+
+        // Auto-load live demo receipt on page load
+        testLiveAPI();
     </script>
     <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
     <script src="/js/paddle-init.js"></script>

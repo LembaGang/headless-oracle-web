@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Standards & Compliance | Headless Oracle</title>
+    <meta name="description" content="Headless Oracle is regulatory-aligned infrastructure for the agentic economy — Signed Market-State Attestations (SMAs) meeting SEC/CFTC Technical Framework requirements for cryptographic attestation of tokenized collateral.">
+    <meta name="robots" content="index, follow">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://headlessoracle.com/standards">
+    <meta property="og:title" content="Standards & Compliance | Headless Oracle">
+    <meta property="og:description" content="Signed Market-State Attestations — Ed25519, ISO 10383, fail-closed, multi-oracle verifiable. Regulatory-aligned infrastructure for autonomous agents.">
+    <meta property="og:image" content="https://headlessoracle.com/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Standards & Compliance | Headless Oracle">
+    <meta name="twitter:description" content="Regulatory-aligned market attestations for agents — SEC/CFTC framework, Ed25519, multi-oracle consensus.">
+    <meta name="twitter:image" content="https://headlessoracle.com/og-image.png">
+    <link rel="canonical" href="https://headlessoracle.com/standards">
+    <link rel="alternate" type="application/json" href="/openapi.json" title="OpenAPI 3.1 specification">
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt — machine-readable API summary">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .status-dot { height: 8px; width: 8px; background-color: #22c55e; border-radius: 50%; display: inline-block; margin-right: 6px; box-shadow: 0 0 8px #22c55e; }
+        .mic { font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace; }
+        h2 { scroll-margin-top: 80px; }
+    </style>
+</head>
+<body class="text-slate-300 min-h-screen flex flex-col">
+
+    <nav class="w-full max-w-6xl mx-auto p-6 flex justify-between items-center border-b border-slate-800/50">
+        <a href="/" class="flex items-center gap-2 no-underline">
+            <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+            <span class="text-xl font-bold tracking-wider text-white">HEADLESS<span class="text-blue-500">ORACLE</span></span>
+        </a>
+        <div class="flex gap-6 text-sm font-medium">
+            <a href="/docs" class="hover:text-white transition">Docs</a>
+            <a href="/status" class="hover:text-white transition flex items-center gap-1"><span class="status-dot"></span>Status</a>
+            <a href="/pricing" class="hover:text-white transition">Pricing</a>
+            <a href="/standards" class="text-white font-semibold">Standards</a>
+            <a href="/blog" class="hover:text-white transition">Blog</a>
+            <a href="https://github.com/LembaGang" class="hover:text-white transition" target="_blank" rel="noopener">GitHub</a>
+        </div>
+    </nav>
+
+    <main class="flex-grow max-w-5xl mx-auto w-full px-6 py-16">
+
+        <!-- Hero -->
+        <div class="mb-14">
+            <div class="flex flex-wrap gap-2 mb-4">
+                <span class="text-xs font-mono px-2 py-1 rounded-full bg-blue-900/40 border border-blue-500/30 text-blue-400 font-semibold">Regulatory-aligned</span>
+                <span class="text-xs font-mono px-2 py-1 rounded-full bg-indigo-900/40 border border-indigo-500/30 text-indigo-300 font-semibold">Ed25519</span>
+                <span class="text-xs font-mono px-2 py-1 rounded-full bg-slate-700/60 border border-slate-600/40 text-slate-300 font-semibold">ISO 10383</span>
+                <span class="text-xs font-mono px-2 py-1 rounded-full bg-green-900/40 border border-green-500/30 text-green-400 font-semibold">Fail-closed</span>
+            </div>
+            <h1 class="text-5xl font-bold text-white mb-4 tracking-tight">Standards &amp; Compliance</h1>
+            <p class="text-xl text-slate-400 max-w-3xl">Headless Oracle is cryptographically verifiable market-state infrastructure, built to meet emerging regulatory requirements for autonomous agents and tokenized collateral.</p>
+        </div>
+
+        <!-- Table of contents -->
+        <div class="glass rounded-xl p-5 mb-14 text-sm">
+            <p class="text-xs text-slate-500 font-mono uppercase tracking-wider mb-3">On this page</p>
+            <div class="grid sm:grid-cols-2 gap-2">
+                <a href="#sma" class="text-blue-400 hover:text-blue-300 transition">&rarr; What is an SMA?</a>
+                <a href="#regulatory" class="text-blue-400 hover:text-blue-300 transition">&rarr; Regulatory alignment</a>
+                <a href="#multi-oracle" class="text-blue-400 hover:text-blue-300 transition">&rarr; Multi-oracle verification</a>
+                <a href="#exchanges" class="text-blue-400 hover:text-blue-300 transition">&rarr; 28 global exchanges</a>
+                <a href="#agentic" class="text-blue-400 hover:text-blue-300 transition">&rarr; Built for the agentic economy</a>
+                <a href="#developers" class="text-blue-400 hover:text-blue-300 transition">&rarr; For developers</a>
+            </div>
+        </div>
+
+        <!-- SMA -->
+        <section id="sma" class="mb-16">
+            <h2 class="text-3xl font-bold text-white mb-5 tracking-tight">What is a Signed Market-State Attestation (SMA)?</h2>
+            <div class="space-y-4 text-slate-300 leading-relaxed">
+                <p>A <strong class="text-white">Signed Market-State Attestation</strong> (SMA) is a cryptographically signed claim about the current trading state of a regulated venue at a specific moment in time. Every response from Headless Oracle is an SMA: a structured payload describing whether a market is open, closed, in pre-auction, in lunch break, or on an early-close schedule, together with the exchange's ISO 10383 MIC code, an RFC 3339 timestamp, and an Ed25519 signature over the canonical form of the payload.</p>
+                <p>The design goal is simple: make market state a <em>verifiable fact</em> rather than a trusted claim. A smart contract, trading agent, or compliance process can independently validate an SMA against Headless Oracle's published Ed25519 public key, without ever calling back to our service. The signature is the source of truth. If the public key verifies the signature, the payload is authentic; if it doesn't, the payload is rejected. There is no middle state.</p>
+                <p>SMAs are short-lived by design. Each attestation carries a <strong class="text-white">60-second time-to-live</strong>, after which downstream consumers must refuse to act on it. This bounds the window in which a stale reading can drive an incorrect decision — a critical property for autonomous systems handling real capital.</p>
+            </div>
+        </section>
+
+        <!-- Regulatory alignment -->
+        <section id="regulatory" class="mb-16">
+            <h2 class="text-3xl font-bold text-white mb-5 tracking-tight">Regulatory Alignment</h2>
+            <p class="text-slate-300 leading-relaxed mb-6">The SEC/CFTC Technical Framework for tokenized collateral and agent-driven settlement identifies cryptographic attestation of venue state as a core requirement. SMAs are designed to map one-to-one onto that requirement.</p>
+
+            <div class="grid md:grid-cols-2 gap-5">
+                <div class="glass rounded-xl p-5">
+                    <div class="text-xs font-mono text-blue-400 mb-2 uppercase tracking-wider">Cryptographic signing</div>
+                    <h3 class="text-lg font-bold text-white mb-2">Ed25519 signatures</h3>
+                    <p class="text-sm text-slate-400">Every response is signed with Ed25519 (RFC 8032). The public key is published at <a href="/ed25519-public-key.txt" class="text-blue-400 hover:text-blue-300">/ed25519-public-key.txt</a> and can be pinned by consumers for deterministic verification without external trust.</p>
+                </div>
+                <div class="glass rounded-xl p-5">
+                    <div class="text-xs font-mono text-green-400 mb-2 uppercase tracking-wider">Freshness guarantee</div>
+                    <h3 class="text-lg font-bold text-white mb-2">60-second TTL</h3>
+                    <p class="text-sm text-slate-400">Attestations are valid for 60 seconds from issuance. Consumers must reject expired receipts. This bounds the risk window for autonomous settlement and matches the cadence at which regulated venues publish state transitions.</p>
+                </div>
+                <div class="glass rounded-xl p-5">
+                    <div class="text-xs font-mono text-indigo-300 mb-2 uppercase tracking-wider">Venue identification</div>
+                    <h3 class="text-lg font-bold text-white mb-2">ISO 10383 MIC codes</h3>
+                    <p class="text-sm text-slate-400">Every SMA identifies its venue using the ISO 10383 Market Identifier Code — the same standard used by the SEC, ESMA, and global clearing infrastructure. No ambiguous aliases, no custom identifiers.</p>
+                </div>
+                <div class="glass rounded-xl p-5">
+                    <div class="text-xs font-mono text-amber-400 mb-2 uppercase tracking-wider">Safe defaults</div>
+                    <h3 class="text-lg font-bold text-white mb-2">Fail-closed architecture</h3>
+                    <p class="text-sm text-slate-400">When Headless Oracle cannot confirm a venue's state with confidence, it returns an explicit <code class="text-amber-300 font-mono">unknown</code> with a 4xx status — never a permissive default. Agents treating "unknown" as "open" fail safe.</p>
+                </div>
+            </div>
+
+            <div class="mt-6 border border-slate-700 rounded-xl p-5 bg-slate-900/40 text-sm text-slate-400">
+                <strong class="text-white">Note on regulatory status:</strong> Headless Oracle is infrastructure, not a regulated financial institution. SMAs are a compliance <em>building block</em> — they give regulated parties the cryptographic evidence they need to demonstrate that a trading decision was made with reference to authentic, timely venue state. Consult your compliance counsel for how SMAs fit into your specific regulatory obligations.
+            </div>
+        </section>
+
+        <!-- Multi-oracle -->
+        <section id="multi-oracle" class="mb-16">
+            <h2 class="text-3xl font-bold text-white mb-5 tracking-tight">Multi-Oracle Verification</h2>
+            <p class="text-slate-300 leading-relaxed mb-4">A single oracle is a single point of failure — and a single point of <em>trust</em>. For high-value settlement and tokenized collateral flows, we recommend consuming attestations from <strong class="text-white">three or more independent oracles</strong> and acting only on majority consensus.</p>
+            <p class="text-slate-300 leading-relaxed mb-6">Multi-oracle consensus converts the question "do you trust Headless Oracle?" into "do you trust that three independent operators all signed the same claim?" — a materially stronger guarantee. Divergent readings are a first-class signal: they indicate an upstream venue issue, an oracle outage, or an attempted data-integrity attack, and should trigger a fail-closed response in downstream systems.</p>
+
+            <div class="grid md:grid-cols-3 gap-4 mb-6">
+                <div class="glass rounded-xl p-4">
+                    <div class="text-2xl font-bold text-white mb-1">3+</div>
+                    <p class="text-xs text-slate-400">Independent oracles recommended for high-value settlement</p>
+                </div>
+                <div class="glass rounded-xl p-4">
+                    <div class="text-2xl font-bold text-white mb-1">N-1</div>
+                    <p class="text-xs text-slate-400">Byzantine-fault tolerance: consensus survives one oracle compromise per three</p>
+                </div>
+                <div class="glass rounded-xl p-4">
+                    <div class="text-2xl font-bold text-white mb-1">Signed</div>
+                    <p class="text-xs text-slate-400">Every oracle's attestation carries its own Ed25519 signature — trivially aggregatable</p>
+                </div>
+            </div>
+
+            <a href="/v1/verification/multi-oracle-guide" class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold text-sm transition">
+                Read the multi-oracle consensus spec &rarr;
+            </a>
+        </section>
+
+        <!-- 28 Exchanges -->
+        <section id="exchanges" class="mb-16">
+            <h2 class="text-3xl font-bold text-white mb-5 tracking-tight">28 Global Exchanges</h2>
+            <p class="text-slate-300 leading-relaxed mb-6">Coverage spans the primary regulated venues across every major time zone, plus the derivatives and 24/7 crypto venues most relevant to autonomous settlement. Every venue is addressed by its ISO 10383 MIC code.</p>
+
+            <div class="space-y-5">
+                <!-- Americas -->
+                <div class="glass rounded-xl p-5">
+                    <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+                        <h3 class="text-lg font-bold text-white">Americas</h3>
+                        <span class="text-xs text-slate-500 font-mono">3 venues</span>
+                    </div>
+                    <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-2 text-sm">
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">NYSE</span><span class="mic text-slate-500">XNYS</span></div>
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">NASDAQ</span><span class="mic text-slate-500">XNAS</span></div>
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">B3 São Paulo</span><span class="mic text-slate-500">XBSP</span></div>
+                    </div>
+                </div>
+
+                <!-- Europe -->
+                <div class="glass rounded-xl p-5">
+                    <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+                        <h3 class="text-lg font-bold text-white">Europe</h3>
+                        <span class="text-xs text-slate-500 font-mono">6 venues</span>
+                    </div>
+                    <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-2 text-sm">
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">London (LSE)</span><span class="mic text-slate-500">XLON</span></div>
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">Euronext Paris</span><span class="mic text-slate-500">XPAR</span></div>
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">SIX Swiss</span><span class="mic text-slate-500">XSWX</span></div>
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">Borsa Italiana</span><span class="mic text-slate-500">XMIL</span></div>
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">Nasdaq Helsinki</span><span class="mic text-slate-500">XHEL</span></div>
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">Nasdaq Stockholm</span><span class="mic text-slate-500">XSTO</span></div>
+                    </div>
+                </div>
+
+                <!-- MENA -->
+                <div class="glass rounded-xl p-5">
+                    <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+                        <h3 class="text-lg font-bold text-white">Middle East &amp; North Africa</h3>
+                        <span class="text-xs text-slate-500 font-mono">3 venues</span>
+                    </div>
+                    <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-2 text-sm">
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">Borsa Istanbul</span><span class="mic text-slate-500">XIST</span></div>
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">Saudi Exchange (Tadawul)</span><span class="mic text-slate-500">XSAU</span></div>
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">Dubai Financial Market</span><span class="mic text-slate-500">XDFM</span></div>
+                    </div>
+                </div>
+
+                <!-- Africa -->
+                <div class="glass rounded-xl p-5">
+                    <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+                        <h3 class="text-lg font-bold text-white">Africa</h3>
+                        <span class="text-xs text-slate-500 font-mono">1 venue</span>
+                    </div>
+                    <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-2 text-sm">
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">Johannesburg (JSE)</span><span class="mic text-slate-500">XJSE</span></div>
+                    </div>
+                </div>
+
+                <!-- Asia-Pacific -->
+                <div class="glass rounded-xl p-5">
+                    <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+                        <h3 class="text-lg font-bold text-white">Asia-Pacific</h3>
+                        <span class="text-xs text-slate-500 font-mono">10 venues</span>
+                    </div>
+                    <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-2 text-sm">
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">Tokyo (TSE)</span><span class="mic text-slate-500">XJPX</span></div>
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">Hong Kong (HKEX)</span><span class="mic text-slate-500">XHKG</span></div>
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">Singapore (SGX)</span><span class="mic text-slate-500">XSES</span></div>
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">Australia (ASX)</span><span class="mic text-slate-500">XASX</span></div>
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">Shanghai (SSE)</span><span class="mic text-slate-500">XSHG</span></div>
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">Shenzhen (SZSE)</span><span class="mic text-slate-500">XSHE</span></div>
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">BSE Mumbai</span><span class="mic text-slate-500">XBOM</span></div>
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">NSE India</span><span class="mic text-slate-500">XNSE</span></div>
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">Korea (KRX)</span><span class="mic text-slate-500">XKRX</span></div>
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">New Zealand (NZX)</span><span class="mic text-slate-500">XNZE</span></div>
+                    </div>
+                </div>
+
+                <!-- Derivatives/Crypto -->
+                <div class="glass rounded-xl p-5">
+                    <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+                        <h3 class="text-lg font-bold text-white">Derivatives &amp; Crypto</h3>
+                        <span class="text-xs text-slate-500 font-mono">5 venues</span>
+                    </div>
+                    <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-2 text-sm">
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">CME</span><span class="mic text-slate-500">XCBT</span></div>
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">NYMEX</span><span class="mic text-slate-500">XNYM</span></div>
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">Cboe Options</span><span class="mic text-slate-500">XCBO</span></div>
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">Coinbase (24/7)</span><span class="mic text-slate-500">XCOI</span></div>
+                        <div class="flex justify-between bg-slate-900/50 rounded px-3 py-2"><span class="text-slate-300">Binance (24/7)</span><span class="mic text-slate-500">XBIN</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-xs text-slate-500 mt-4">Total: 28 venues. ~1,300 schedule edge cases handled annually (holidays, DST, lunch breaks, early closes, circuit breakers).</p>
+        </section>
+
+        <!-- Agentic Economy -->
+        <section id="agentic" class="mb-16">
+            <h2 class="text-3xl font-bold text-white mb-5 tracking-tight">Built for the Agentic Economy</h2>
+            <p class="text-slate-300 leading-relaxed mb-6">Human-facing market data APIs assume a human operator will handle ambiguity, read documentation, and retry on error. Autonomous agents cannot. Headless Oracle is designed for consumers that must act on the response without human mediation.</p>
+
+            <div class="grid md:grid-cols-2 gap-5">
+                <div class="glass rounded-xl p-5">
+                    <h3 class="text-base font-bold text-white mb-2">Model-agnostic</h3>
+                    <p class="text-sm text-slate-400">No lock-in to a single LLM provider or agent framework. HTTP, JSON, and standard crypto primitives work for any runtime — from LangGraph and Claude Agent SDK to bespoke Go and Rust stacks.</p>
+                </div>
+                <div class="glass rounded-xl p-5">
+                    <h3 class="text-base font-bold text-white mb-2">Protocol-native</h3>
+                    <p class="text-sm text-slate-400">Discoverable over <a href="/mcp" class="text-blue-400 hover:text-blue-300">MCP</a> for agent runtimes, billable via <a href="/docs/x402-payments" class="text-blue-400 hover:text-blue-300">x402</a> micropayments, and interoperable with emerging A2A agent-to-agent flows. No bespoke SDKs required.</p>
+                </div>
+                <div class="glass rounded-xl p-5">
+                    <h3 class="text-base font-bold text-white mb-2">Fail-closed by default</h3>
+                    <p class="text-sm text-slate-400">Ambiguous or unverifiable states return an explicit <code class="text-amber-300 font-mono">unknown</code> status with a 4xx code. An agent that treats 4xx as "do not act" will always fail safe. Never a 200 with an error body.</p>
+                </div>
+                <div class="glass rounded-xl p-5">
+                    <h3 class="text-base font-bold text-white mb-2">Autonomous agent payments</h3>
+                    <p class="text-sm text-slate-400">x402 lets an agent pay per-request in USDC on Base with no human-in-the-loop onboarding, no API key provisioning, and no subscription management. The agent settles its own invoice.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- For Developers -->
+        <section id="developers" class="mb-16">
+            <h2 class="text-3xl font-bold text-white mb-5 tracking-tight">For Developers</h2>
+            <p class="text-slate-300 leading-relaxed mb-6">Every resource below is designed to be consumed by a build tool, an agent runtime, or a CI pipeline — not just a human reading a docs page.</p>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <a href="/docs/quickstart" class="glass rounded-xl p-5 hover:bg-white/[0.08] transition block">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-base font-bold text-white">MCP Quickstart</h3>
+                        <span class="text-blue-400">&rarr;</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Drop-in <code class="font-mono text-blue-300">.mcp.json</code> config for Claude Code and compatible agent runtimes.</p>
+                </a>
+                <a href="/llms.txt" class="glass rounded-xl p-5 hover:bg-white/[0.08] transition block">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-base font-bold text-white">llms.txt</h3>
+                        <span class="text-blue-400">&rarr;</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Machine-readable API summary for LLM ingestion and agent discovery.</p>
+                </a>
+                <a href="/openapi.json" class="glass rounded-xl p-5 hover:bg-white/[0.08] transition block">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-base font-bold text-white">OpenAPI 3.1 spec</h3>
+                        <span class="text-blue-400">&rarr;</span>
+                    </div>
+                    <p class="text-sm text-slate-400">73 paths, strict schemas, fail-closed error contracts. Generate a client in any language.</p>
+                </a>
+                <a href="/v5/demo?mic=XNYS" class="glass rounded-xl p-5 hover:bg-white/[0.08] transition block">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-base font-bold text-white">Sandbox endpoint</h3>
+                        <span class="text-blue-400">&rarr;</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Signed demo responses with no API key required. Start testing in 10 seconds.</p>
+                </a>
+                <a href="/verify" class="glass rounded-xl p-5 hover:bg-white/[0.08] transition block">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-base font-bold text-white">Receipt verifier</h3>
+                        <span class="text-blue-400">&rarr;</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Client-side Ed25519 verification — paste a receipt, confirm authenticity without trusting us.</p>
+                </a>
+                <a href="/.well-known/x402.json" class="glass rounded-xl p-5 hover:bg-white/[0.08] transition block">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-base font-bold text-white">x402 discovery</h3>
+                        <span class="text-blue-400">&rarr;</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Autonomous agent payment metadata — chain, asset, per-request price, settlement address.</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- Bottom CTA -->
+        <div class="border border-blue-700/40 rounded-xl p-8 bg-blue-900/10 text-center">
+            <h3 class="text-2xl font-bold text-white mb-2">Ready to build on verifiable market state?</h3>
+            <p class="text-slate-400 mb-5">Get a free API key in under 10 seconds. No credit card, no signup form.</p>
+            <div class="flex flex-wrap justify-center gap-3">
+                <a href="/pricing" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold text-sm transition">Get an API key &rarr;</a>
+                <a href="/docs" class="inline-flex items-center gap-2 px-6 py-3 border border-slate-700 hover:bg-slate-800 text-white rounded-lg font-semibold text-sm transition">Read the docs</a>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="border-t border-slate-800 bg-slate-900/50 mt-auto">
+        <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-sm text-slate-500">&copy; 2026 Headless Oracle.</p>
+            <div class="flex flex-wrap justify-center gap-6 text-xs text-slate-500">
+                <a href="/" class="hover:text-white transition">Home</a>
+                <a href="/docs" class="hover:text-white transition">Docs</a>
+                <a href="/pricing" class="hover:text-white transition">Pricing</a>
+                <a href="/standards" class="hover:text-white transition">Standards</a>
+                <a href="/blog" class="hover:text-white transition">Blog</a>
+                <a href="/llms.txt" class="hover:text-white transition">llms.txt</a>
+                <a href="/terms" class="hover:text-white transition">Terms</a>
+                <a href="/privacy" class="hover:text-white transition">Privacy</a>
+                <a href="/refund" class="hover:text-white transition">Refund Policy</a>
+                <a href="https://github.com/LembaGang" class="hover:text-white transition" target="_blank" rel="noopener">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -14,6 +14,8 @@ export default defineConfig({
         pricing: resolve(__dirname, 'pricing.html'),
         refund: resolve(__dirname, 'refund.html'),
         traction: resolve(__dirname, 'traction.html'),
+        blog: resolve(__dirname, 'blog.html'),
+        standards: resolve(__dirname, 'standards.html'),
       },
     },
   },

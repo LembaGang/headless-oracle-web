@@ -10,6 +10,11 @@
     <meta property="og:url" content="https://headlessoracle.com/pricing">
     <meta property="og:title" content="Pricing | Headless Oracle">
     <meta property="og:description" content="Simple, transparent pricing for Headless Oracle — Ed25519-signed market status for AI agents and autonomous trading systems. Free tier: 500 req/day, no card required.">
+    <meta property="og:image" content="https://headlessoracle.com/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Pricing | Headless Oracle">
+    <meta name="twitter:description" content="Simple, transparent pricing for Headless Oracle — Ed25519-signed market status for AI agents.">
+    <meta name="twitter:image" content="https://headlessoracle.com/og-image.png">
     <link rel="canonical" href="https://headlessoracle.com/pricing">
     <link rel="alternate" type="application/json" href="/openapi.json" title="OpenAPI 3.1 specification">
     <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt — machine-readable API summary">
@@ -32,7 +37,8 @@
             <a href="/docs" class="hover:text-white transition">Docs</a>
             <a href="/status" class="hover:text-white transition flex items-center gap-1"><span class="status-dot"></span>Status</a>
             <a href="/pricing" class="text-white font-semibold">Pricing</a>
-            <a href="https://dev.to/msebenzi" class="hover:text-white transition" target="_blank" rel="noopener">Blog</a>
+            <a href="/standards" class="hover:text-white transition">Standards</a>
+            <a href="/blog" class="hover:text-white transition">Blog</a>
             <a href="https://github.com/LembaGang" class="hover:text-white transition" target="_blank" rel="noopener">GitHub</a>
         </div>
     </nav>
@@ -45,14 +51,34 @@
         </div>
 
         <!-- Pricing Cards -->
-        <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-6 mb-16">
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
 
-            <!-- Free Beta -->
+            <!-- Sandbox -->
+            <div class="glass rounded-xl p-6 flex flex-col">
+                <div class="mb-4">
+                    <span class="text-xs font-mono px-2 py-1 rounded-full bg-slate-700/60 border border-slate-600/40 text-slate-400 font-semibold">Explore</span>
+                </div>
+                <h2 class="text-xl font-bold text-white mb-1">Sandbox</h2>
+                <div class="text-4xl font-bold text-white mb-1">$0</div>
+                <p class="text-xs text-slate-500 mb-2">forever free</p>
+                <p class="text-xs text-slate-400 mb-6">Demo endpoint, no key needed</p>
+                <ul class="space-y-2 text-sm text-slate-300 flex-grow mb-6">
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> /v5/demo endpoint</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> All 28 exchanges</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> Ed25519 signed receipts</li>
+                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> No auth required</li>
+                </ul>
+                <button onclick="getInstantKey('sandbox-card')" id="sandbox-card-btn" class="block w-full text-center px-4 py-2.5 bg-slate-600 hover:bg-slate-500 text-white rounded-lg font-semibold transition text-sm cursor-pointer">Get Sandbox Key</button>
+                <div id="sandbox-card-result" class="hidden mt-3"></div>
+                <div id="sandbox-card-error" class="hidden mt-2 text-xs text-red-400"></div>
+            </div>
+
+            <!-- Free Tier -->
             <div class="glass rounded-xl p-6 flex flex-col">
                 <div class="mb-4">
                     <span class="text-xs font-mono px-2 py-1 rounded-full bg-green-900/40 border border-green-500/30 text-green-400 font-semibold">Current</span>
                 </div>
-                <h2 class="text-xl font-bold text-white mb-1">Free</h2>
+                <h2 class="text-xl font-bold text-white mb-1">Free Tier</h2>
                 <div class="text-4xl font-bold text-white mb-1">$0</div>
                 <p class="text-xs text-slate-500 mb-2">/month</p>
                 <p class="text-xs text-slate-400 mb-6">Get started instantly, no credit card needed</p>
@@ -215,7 +241,8 @@
             <div class="flex flex-wrap justify-center gap-6 text-xs text-slate-500">
                 <a href="/" class="hover:text-white transition">Home</a>
                 <a href="/docs" class="hover:text-white transition">Docs</a>
-                <a href="https://dev.to/msebenzi" class="hover:text-white transition" target="_blank" rel="noopener">Blog</a>
+                <a href="/standards" class="hover:text-white transition">Standards</a>
+                <a href="/blog" class="hover:text-white transition">Blog</a>
                 <a href="/llms.txt" class="hover:text-white transition">llms.txt</a>
                 <a href="/terms" class="hover:text-white transition">Terms</a>
                 <a href="/privacy" class="hover:text-white transition">Privacy</a>
@@ -262,18 +289,21 @@
                 throw new Error(data.message || data.error || 'Failed to get key');
             }
 
-            if (source === 'free-card') {
-                // Show inline result on the card
-                resultEl.innerHTML = '<div class="bg-slate-900 rounded-lg p-3 border border-green-700/40">' +
-                    '<div class="flex justify-between items-center mb-1"><span class="text-xs text-slate-500 font-mono">Your key</span>' +
-                    '<button onclick="copyToClipboard(this, \'' + escapeHtml(data.api_key) + '\')" class="text-xs text-green-400 hover:text-green-300 cursor-pointer">Copy</button></div>' +
-                    '<pre class="text-xs text-green-400 font-mono break-all whitespace-pre-wrap">' + escapeHtml(data.api_key) + '</pre></div>';
-                resultEl.classList.remove('hidden');
-            } else {
-                // Show in the section
+            if (source === 'section') {
+                // Show in the dedicated section with pre-built DOM
                 document.getElementById('section-key').textContent = data.api_key;
                 document.getElementById('section-curl').textContent =
                     "curl -H 'X-Oracle-Key: " + data.api_key + "' \\\n  'https://headlessoracle.com/v5/status?mic=XNYS'";
+                resultEl.classList.remove('hidden');
+            } else {
+                // Show inline result on the card (free-card, sandbox-card, etc.)
+                resultEl.innerHTML = '<div class="bg-slate-900 rounded-lg p-3 border border-green-700/40">' +
+                    '<div class="flex justify-between items-center mb-1"><span class="text-xs text-slate-500 font-mono">Your API key (500 calls/day)</span>' +
+                    '<button onclick="copyToClipboard(this, \'' + escapeHtml(data.api_key) + '\')" class="text-xs text-green-400 hover:text-green-300 cursor-pointer">Copy</button></div>' +
+                    '<pre class="text-xs text-green-400 font-mono break-all whitespace-pre-wrap">' + escapeHtml(data.api_key) + '</pre>' +
+                    '<p class="text-xs text-slate-500 mt-2">Quick test:</p>' +
+                    '<pre class="text-xs text-blue-300 font-mono mt-1 break-all whitespace-pre-wrap">curl -H \'X-Oracle-Key: ' + escapeHtml(data.api_key) + '\' \\\n  \'https://headlessoracle.com/v5/status?mic=XNYS\'</pre>' +
+                    '</div>';
                 resultEl.classList.remove('hidden');
             }
 

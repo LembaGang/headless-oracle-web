@@ -10,6 +10,11 @@
     <meta property="og:url" content="https://headlessoracle.com/status">
     <meta property="og:title" content="System Status | Headless Oracle V5">
     <meta property="og:description" content="Live market status for NYSE, NASDAQ, London, Tokyo, Paris, Hong Kong, and Singapore. Cryptographically signed.">
+    <meta property="og:image" content="https://headlessoracle.com/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="System Status | Headless Oracle">
+    <meta name="twitter:description" content="Live market status for 28 global exchanges. Ed25519-signed receipts. Updated in real time.">
+    <meta name="twitter:image" content="https://headlessoracle.com/og-image.png">
     <link rel="canonical" href="https://headlessoracle.com/status">
     <link rel="alternate" type="application/json" href="/openapi.json" title="OpenAPI 3.1 specification">
     <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt — machine-readable API summary">
@@ -40,7 +45,8 @@
                 <a href="/docs" class="text-slate-400 hover:text-white transition">Docs</a>
                 <a href="/status" class="text-white font-semibold">Status</a>
                 <a href="/pricing" class="text-slate-400 hover:text-white transition">Pricing</a>
-                <a href="https://dev.to/msebenzi" class="text-slate-400 hover:text-white transition" target="_blank" rel="noopener">Blog</a>
+                <a href="/standards" class="text-slate-400 hover:text-white transition">Standards</a>
+                <a href="/blog" class="text-slate-400 hover:text-white transition">Blog</a>
                 <a href="https://github.com/LembaGang" class="text-slate-400 hover:text-white transition" target="_blank" rel="noopener">GitHub</a>
                 <span id="global-status-badge" class="font-mono px-3 py-1 rounded-full pill-loading">Checking...</span>
             </div>
@@ -77,8 +83,8 @@
             <button onclick="refreshAll()" class="text-xs text-blue-400 hover:text-blue-300 transition mono">↻ Refresh</button>
         </div>
 
-        <div id="exchange-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
-            <!-- Populated by JS -->
+        <div id="exchange-grid" class="space-y-8 mb-12">
+            <!-- Populated by JS — grouped by region -->
         </div>
 
         <!-- Live Receipt Section -->
@@ -146,11 +152,13 @@ execute_trade()                           # only path to execution</pre>
             <a href="/" class="hover:text-white transition">Home</a>
             <a href="/docs" class="hover:text-white transition">Docs</a>
             <a href="/pricing" class="hover:text-white transition">Pricing</a>
-            <a href="https://dev.to/msebenzi" class="hover:text-white transition" target="_blank" rel="noopener">Blog</a>
+            <a href="/standards" class="hover:text-white transition">Standards</a>
+            <a href="/blog" class="hover:text-white transition">Blog</a>
             <a href="/llms.txt" class="hover:text-white transition">llms.txt</a>
             <a href="/terms" class="hover:text-white transition">Terms</a>
             <a href="/privacy" class="hover:text-white transition">Privacy</a>
             <a href="https://github.com/LembaGang" class="hover:text-white transition" target="_blank" rel="noopener">GitHub</a>
+            <a href="mailto:mike@headlessoracle.com" class="hover:text-white transition">mike@headlessoracle.com</a>
         </div>
         <p>Headless Oracle V5 · Ed25519 signed · Fail-closed · 28 exchanges</p>
     </footer>
@@ -158,88 +166,118 @@ execute_trade()                           # only path to execution</pre>
     <script>
     const API = 'https://headlessoracle.com';
 
-    const EXCHANGES = [
-        { mic: 'XNYS', name: 'New York Stock Exchange',         region: '🇺🇸 US',  tz: 'America/New_York' },
-        { mic: 'XNAS', name: 'NASDAQ',                          region: '🇺🇸 US',  tz: 'America/New_York' },
-        { mic: 'XLON', name: 'London Stock Exchange',           region: '🇬🇧 UK',  tz: 'Europe/London'   },
-        { mic: 'XJPX', name: 'Japan Exchange Group',            region: '🇯🇵 JP',  tz: 'Asia/Tokyo'      },
-        { mic: 'XPAR', name: 'Euronext Paris',                  region: '🇫🇷 EU',  tz: 'Europe/Paris'    },
-        { mic: 'XHKG', name: 'Hong Kong Exchanges',             region: '🇭🇰 HK',  tz: 'Asia/Hong_Kong'  },
-        { mic: 'XSES', name: 'Singapore Exchange',              region: '🇸🇬 SG',  tz: 'Asia/Singapore'  },
+    const REGIONS = [
+        {
+            id: 'americas', label: 'Americas',
+            exchanges: [
+                { mic: 'XNYS', name: 'New York Stock Exchange',   tz: 'America/New_York'    },
+                { mic: 'XNAS', name: 'NASDAQ',                    tz: 'America/New_York'    },
+                { mic: 'XCBO', name: 'Cboe Options Exchange',     tz: 'America/Chicago'     },
+                { mic: 'XCBT', name: 'CME Futures (overnight)',    tz: 'America/Chicago'     },
+                { mic: 'XNYM', name: 'NYMEX (overnight)',          tz: 'America/New_York'    },
+                { mic: 'XBSP', name: 'B3 (Sao Paulo)',            tz: 'America/Sao_Paulo'   },
+            ]
+        },
+        {
+            id: 'europe', label: 'Europe',
+            exchanges: [
+                { mic: 'XLON', name: 'London Stock Exchange',     tz: 'Europe/London'       },
+                { mic: 'XPAR', name: 'Euronext Paris',            tz: 'Europe/Paris'        },
+                { mic: 'XHEL', name: 'Nasdaq Helsinki',           tz: 'Europe/Helsinki'     },
+                { mic: 'XSTO', name: 'Nasdaq Stockholm',          tz: 'Europe/Stockholm'    },
+                { mic: 'XSWX', name: 'SIX Swiss Exchange',        tz: 'Europe/Zurich'       },
+                { mic: 'XMIL', name: 'Borsa Italiana',            tz: 'Europe/Rome'         },
+                { mic: 'XIST', name: 'Borsa Istanbul',            tz: 'Europe/Istanbul'     },
+                { mic: 'XJSE', name: 'Johannesburg Stock Exchange', tz: 'Africa/Johannesburg' },
+            ]
+        },
+        {
+            id: 'asia-pacific', label: 'Asia-Pacific',
+            exchanges: [
+                { mic: 'XJPX', name: 'Japan Exchange Group',      tz: 'Asia/Tokyo'          },
+                { mic: 'XHKG', name: 'Hong Kong Exchanges',       tz: 'Asia/Hong_Kong'      },
+                { mic: 'XSHG', name: 'Shanghai Stock Exchange',   tz: 'Asia/Shanghai'       },
+                { mic: 'XSHE', name: 'Shenzhen Stock Exchange',   tz: 'Asia/Shanghai'       },
+                { mic: 'XSES', name: 'Singapore Exchange',        tz: 'Asia/Singapore'      },
+                { mic: 'XASX', name: 'Australian Securities Exchange', tz: 'Australia/Sydney' },
+                { mic: 'XBOM', name: 'BSE Ltd (Bombay)',          tz: 'Asia/Kolkata'        },
+                { mic: 'XNSE', name: 'National Stock Exchange India', tz: 'Asia/Kolkata'    },
+                { mic: 'XKRX', name: 'Korea Exchange',            tz: 'Asia/Seoul'          },
+                { mic: 'XNZE', name: 'New Zealand Exchange',      tz: 'Pacific/Auckland'    },
+            ]
+        },
+        {
+            id: 'middle-east', label: 'Middle East',
+            exchanges: [
+                { mic: 'XDFM', name: 'Dubai Financial Market',    tz: 'Asia/Dubai'          },
+                { mic: 'XSAU', name: 'Saudi Exchange (Tadawul)',   tz: 'Asia/Riyadh'         },
+                { mic: 'XBIN', name: 'Binance',                   tz: 'UTC'                 },
+                { mic: 'XCOI', name: 'Coinbase Exchange',          tz: 'UTC'                 },
+            ]
+        },
     ];
+
+    // Flat list for iteration
+    const EXCHANGES = REGIONS.flatMap(r => r.exchanges);
 
     function statusPill(status) {
         const map = {
-            OPEN:    { cls: 'pill-open',    dot: 'dot-green',  label: '● OPEN'    },
-            CLOSED:  { cls: 'pill-closed',  dot: 'dot-grey',   label: '○ CLOSED'  },
-            HALTED:  { cls: 'pill-halted',  dot: 'dot-red',    label: '● HALTED'  },
-            UNKNOWN: { cls: 'pill-unknown', dot: 'dot-yellow', label: '? UNKNOWN' },
+            OPEN:    { cls: 'pill-open',    label: '● OPEN'    },
+            CLOSED:  { cls: 'pill-closed',  label: '○ CLOSED'  },
+            HALTED:  { cls: 'pill-halted',  label: '● HALTED'  },
+            UNKNOWN: { cls: 'pill-unknown', label: '? UNKNOWN' },
         };
-        const s = map[status] || { cls: 'pill-loading', dot: 'dot-grey', label: '… ' + (status||'?') };
+        const s = map[status] || { cls: 'pill-loading', label: '… ' + (status||'?') };
         return `<span class="text-xs mono px-3 py-1 rounded-full ${s.cls} font-medium">${s.label}</span>`;
     }
 
     function localTime(tz) {
-        return new Intl.DateTimeFormat('en-GB', {
-            timeZone: tz, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
-        }).format(new Date());
+        try {
+            return new Intl.DateTimeFormat('en-GB', {
+                timeZone: tz, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+            }).format(new Date());
+        } catch { return '—'; }
     }
 
     function buildGrid() {
         const grid = document.getElementById('exchange-grid');
-        grid.innerHTML = EXCHANGES.map(ex => `
-            <div id="card-${ex.mic}" class="p-5 rounded-xl border border-slate-700 bg-slate-800/30">
-                <div class="flex items-start justify-between mb-3">
-                    <div>
-                        <p class="text-xs text-slate-500 mono mb-0.5">${ex.mic} · ${ex.region}</p>
-                        <p class="text-sm font-semibold text-white">${ex.name}</p>
-                    </div>
-                    <div id="pill-${ex.mic}">${statusPill('...')}</div>
+        grid.innerHTML = REGIONS.map(region => `
+            <div>
+                <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-3 px-1">${region.label}</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    ${region.exchanges.map(ex => `
+                        <div id="card-${ex.mic}" class="p-4 rounded-xl border border-slate-700 bg-slate-800/30">
+                            <div class="flex items-start justify-between mb-2">
+                                <div>
+                                    <p class="text-xs text-slate-500 mono mb-0.5">${ex.mic}</p>
+                                    <p class="text-sm font-semibold text-white">${ex.name}</p>
+                                </div>
+                                <div id="pill-${ex.mic}">${statusPill('...')}</div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <p class="text-xs text-slate-600 mono" id="localtime-${ex.mic}">—</p>
+                                <p class="text-xs text-slate-600 mono" id="source-${ex.mic}">—</p>
+                            </div>
+                            <div id="next-${ex.mic}" class="mt-2 text-xs text-slate-600 mono hidden"></div>
+                        </div>
+                    `).join('')}
                 </div>
-                <div class="flex items-center justify-between">
-                    <p class="text-xs text-slate-600 mono" id="localtime-${ex.mic}">—</p>
-                    <p class="text-xs text-slate-600 mono" id="source-${ex.mic}">—</p>
-                </div>
-                <div id="next-${ex.mic}" class="mt-2 text-xs text-slate-600 mono hidden"></div>
             </div>
         `).join('');
     }
 
     async function fetchExchange(mic) {
         try {
-            const [demoRes, schedRes] = await Promise.all([
-                fetch(`${API}/v5/demo?mic=${mic}`),
-                fetch(`${API}/v5/schedule?mic=${mic}`),
-            ]);
-            const receipt  = await demoRes.json();
-            const schedule = await schedRes.json();
+            const res = await fetch(`${API}/v5/demo?mic=${mic}`);
+            const receipt = await res.json();
 
             document.getElementById(`pill-${mic}`).innerHTML = statusPill(receipt.status);
 
-            // Local clock for this exchange
             const ex = EXCHANGES.find(e => e.mic === mic);
             document.getElementById(`localtime-${mic}`).textContent = localTime(ex.tz) + ' local';
             document.getElementById(`source-${mic}`).textContent = 'src: ' + (receipt.source || '—');
 
-            // Next session info
-            const nextEl = document.getElementById(`next-${mic}`);
-            if (schedule.next_open && receipt.status !== 'OPEN') {
-                const nextOpen = new Date(schedule.next_open);
-                const diff = nextOpen - new Date();
-                const h = Math.floor(diff / 3600000);
-                const m = Math.floor((diff % 3600000) / 60000);
-                nextEl.textContent = `Opens in ${h}h ${m}m · ${nextOpen.toUTCString().slice(17,22)} UTC`;
-                nextEl.classList.remove('hidden');
-            } else if (receipt.status === 'OPEN' && schedule.next_close) {
-                const nextClose = new Date(schedule.next_close);
-                const diff = nextClose - new Date();
-                const h = Math.floor(diff / 3600000);
-                const m = Math.floor((diff % 3600000) / 60000);
-                nextEl.textContent = `Closes in ${h}h ${m}m · ${nextClose.toUTCString().slice(17,22)} UTC`;
-                nextEl.classList.remove('hidden');
-            }
-
-            // Highlight card if open
+            // Highlight card based on status
             const card = document.getElementById(`card-${mic}`);
             if (receipt.status === 'OPEN') {
                 card.classList.add('border-green-800/50', 'bg-green-900/5');
@@ -247,6 +285,19 @@ execute_trade()                           # only path to execution</pre>
             } else if (receipt.status === 'HALTED') {
                 card.classList.add('border-orange-800/50', 'bg-orange-900/5');
                 card.classList.remove('border-slate-700', 'bg-slate-800/30');
+            }
+
+            // Next open/close from receipt fields (if present)
+            const nextEl = document.getElementById(`next-${mic}`);
+            if (receipt.next_open && receipt.status !== 'OPEN') {
+                const nextOpen = new Date(receipt.next_open);
+                const diff = nextOpen - new Date();
+                if (diff > 0) {
+                    const h = Math.floor(diff / 3600000);
+                    const m = Math.floor((diff % 3600000) / 60000);
+                    nextEl.textContent = `Opens in ${h}h ${m}m`;
+                    nextEl.classList.remove('hidden');
+                }
             }
 
             return receipt;
@@ -266,9 +317,10 @@ execute_trade()                           # only path to execution</pre>
             const card = document.getElementById(`card-${ex.mic}`);
             card.classList.remove('border-green-800/50','bg-green-900/5','border-orange-800/50','bg-orange-900/5');
             card.classList.add('border-slate-700','bg-slate-800/30');
+            document.getElementById(`next-${ex.mic}`).classList.add('hidden');
         });
 
-        // Fetch API health + XNYS receipt for sample
+        // Fetch API health with XNYS
         let apiOk = false;
         let sampleReceipt = null;
 
@@ -293,20 +345,16 @@ execute_trade()                           # only path to execution</pre>
             document.getElementById('global-status-badge').className = 'text-xs font-mono px-3 py-1 rounded-full pill-halted';
         }
 
-        // Fetch all exchanges in parallel (skip XNYS since we already have it)
-        const others = EXCHANGES.filter(e => e.mic !== 'XNYS');
-        await Promise.all([
-            fetchExchange('XNYS'),
-            ...others.map(ex => fetchExchange(ex.mic))
-        ]);
+        // Fetch all 28 exchanges in parallel
+        await Promise.all(EXCHANGES.map(ex => fetchExchange(ex.mic)));
 
         document.getElementById('last-updated').textContent =
             `Last checked: ${new Date().toUTCString()} · ${Date.now() - start}ms total`;
     }
 
     function countdowns() {
-        const usDST = new Date('2026-03-08T07:00:00Z'); // 2am ET = 7am UTC
-        const ukDST = new Date('2026-03-29T01:00:00Z'); // 1am GMT = 1am UTC
+        const usDST = new Date('2026-03-08T07:00:00Z');
+        const ukDST = new Date('2026-03-29T01:00:00Z');
         const now   = new Date();
 
         function fmt(ms) {
@@ -325,6 +373,7 @@ execute_trade()                           # only path to execution</pre>
     countdowns();
     refreshAll();
     setInterval(countdowns, 60000);
+    setInterval(refreshAll, 60000);
     </script>
 
     <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
