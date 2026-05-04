@@ -105,27 +105,27 @@
             <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-3">Upcoming DST Transitions</h2>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
-            <div class="p-5 rounded-xl border border-yellow-800/40 bg-yellow-900/10">
-                <div class="flex items-start justify-between mb-2">
-                    <div>
-                        <p class="text-sm font-semibold text-white">US DST — Spring Forward</p>
-                        <p class="text-xs text-slate-500 mono mt-0.5">March 8, 2026 · 02:00 ET</p>
-                    </div>
-                    <span id="us-dst-countdown" class="text-xs mono px-2 py-1 rounded bg-yellow-900/30 text-yellow-400 border border-yellow-800/40">—</span>
-                </div>
-                <p class="text-xs text-slate-400">EST → EDT (UTC-5 → UTC-4). Affects XNYS, XNAS.</p>
-                <p class="text-xs text-slate-600 mt-1">Bots with hardcoded UTC-5 will compute wrong session times from March 9 onward.</p>
-            </div>
             <div class="p-5 rounded-xl border border-orange-800/40 bg-orange-900/10">
                 <div class="flex items-start justify-between mb-2">
                     <div>
-                        <p class="text-sm font-semibold text-white">UK/EU DST — Spring Forward</p>
-                        <p class="text-xs text-slate-500 mono mt-0.5">March 29, 2026 · 01:00 GMT</p>
+                        <p class="text-sm font-semibold text-white">UK/EU DST — Fall Back</p>
+                        <p class="text-xs text-slate-500 mono mt-0.5">October 25, 2026 · 01:00 UTC</p>
                     </div>
                     <span id="uk-dst-countdown" class="text-xs mono px-2 py-1 rounded bg-orange-900/30 text-orange-400 border border-orange-800/40">—</span>
                 </div>
-                <p class="text-xs text-slate-400">GMT → BST / CET → CEST (UTC+0 → UTC+1 / UTC+1 → UTC+2). Affects XLON, XPAR.</p>
-                <p class="text-xs text-slate-600 mt-1">Bots using hardcoded UTC+0 or UTC+1 will fail from March 31 onward.</p>
+                <p class="text-xs text-slate-400">BST → GMT / CEST → CET (UTC+1 → UTC+0 / UTC+2 → UTC+1). Clocks fall back 1 hour. Affects XLON, XPAR, XSWX, XMIL, XHEL, XSTO.</p>
+                <p class="text-xs text-slate-600 mt-1">Bots using hardcoded UTC+1 or UTC+2 will compute wrong session times from October 26 onward.</p>
+            </div>
+            <div class="p-5 rounded-xl border border-yellow-800/40 bg-yellow-900/10">
+                <div class="flex items-start justify-between mb-2">
+                    <div>
+                        <p class="text-sm font-semibold text-white">US DST — Fall Back</p>
+                        <p class="text-xs text-slate-500 mono mt-0.5">November 1, 2026 · 02:00 ET</p>
+                    </div>
+                    <span id="us-dst-countdown" class="text-xs mono px-2 py-1 rounded bg-yellow-900/30 text-yellow-400 border border-yellow-800/40">—</span>
+                </div>
+                <p class="text-xs text-slate-400">EDT → EST (UTC-4 → UTC-5). Clocks fall back 1 hour. Affects XNYS, XNAS, XCBT, XNYM, XCBO.</p>
+                <p class="text-xs text-slate-600 mt-1">Bots with hardcoded UTC-4 will compute wrong session times from November 2 onward.</p>
             </div>
         </div>
 
@@ -188,6 +188,11 @@ execute_trade()                           # only path to execution</pre>
                 { mic: 'XSWX', name: 'SIX Swiss Exchange',        tz: 'Europe/Zurich'       },
                 { mic: 'XMIL', name: 'Borsa Italiana',            tz: 'Europe/Rome'         },
                 { mic: 'XIST', name: 'Borsa Istanbul',            tz: 'Europe/Istanbul'     },
+            ]
+        },
+        {
+            id: 'africa', label: 'Africa',
+            exchanges: [
                 { mic: 'XJSE', name: 'Johannesburg Stock Exchange', tz: 'Africa/Johannesburg' },
             ]
         },
@@ -353,8 +358,9 @@ execute_trade()                           # only path to execution</pre>
     }
 
     function countdowns() {
-        const usDST = new Date('2026-03-08T07:00:00Z');
-        const ukDST = new Date('2026-03-29T01:00:00Z');
+        // Fall-back DST transitions
+        const ukDST = new Date('2026-10-25T01:00:00Z');
+        const usDST = new Date('2026-11-01T06:00:00Z');
         const now   = new Date();
 
         function fmt(ms) {

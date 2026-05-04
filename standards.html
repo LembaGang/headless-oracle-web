@@ -66,6 +66,7 @@
                 <a href="#sma" class="text-blue-400 hover:text-blue-300 transition">&rarr; What is an SMA?</a>
                 <a href="#regulatory" class="text-blue-400 hover:text-blue-300 transition">&rarr; Regulatory alignment</a>
                 <a href="#multi-oracle" class="text-blue-400 hover:text-blue-300 transition">&rarr; Multi-oracle verification</a>
+                <a href="#open-standards" class="text-blue-400 hover:text-blue-300 transition">&rarr; Open standards &amp; family specs</a>
                 <a href="#exchanges" class="text-blue-400 hover:text-blue-300 transition">&rarr; 28 global exchanges</a>
                 <a href="#agentic" class="text-blue-400 hover:text-blue-300 transition">&rarr; Built for the agentic economy</a>
                 <a href="#developers" class="text-blue-400 hover:text-blue-300 transition">&rarr; For developers</a>
@@ -79,6 +80,7 @@
                 <p>A <strong class="text-white">Signed Market-State Attestation</strong> (SMA) is a cryptographically signed claim about the current trading state of a regulated venue at a specific moment in time. Every response from Headless Oracle is an SMA: a structured payload describing whether a market is open, closed, in pre-auction, in lunch break, or on an early-close schedule, together with the exchange's ISO 10383 MIC code, an RFC 3339 timestamp, and an Ed25519 signature over the canonical form of the payload.</p>
                 <p>The design goal is simple: make market state a <em>verifiable fact</em> rather than a trusted claim. A smart contract, trading agent, or compliance process can independently validate an SMA against Headless Oracle's published Ed25519 public key, without ever calling back to our service. The signature is the source of truth. If the public key verifies the signature, the payload is authentic; if it doesn't, the payload is rejected. There is no middle state.</p>
                 <p>SMAs are short-lived by design. Each attestation carries a <strong class="text-white">60-second time-to-live</strong>, after which downstream consumers must refuse to act on it. This bounds the window in which a stale reading can drive an incorrect decision — a critical property for autonomous systems handling real capital.</p>
+                <p class="text-xs italic text-slate-500 pt-2">Headless Oracle is the reference implementation of the <code class="not-italic text-slate-400 font-mono">environment.market_state</code> constraint. Operational since 2026-02-18.</p>
             </div>
         </section>
 
@@ -142,6 +144,31 @@
             <a href="/v1/verification/multi-oracle-guide" class="inline-flex items-center gap-2 px-5 py-2.5 ml-3 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-semibold text-sm transition">
                 JSON discovery doc
             </a>
+        </section>
+
+        <!-- Open Standards & Family Specs -->
+        <section id="open-standards" class="mb-16">
+            <h2 class="text-3xl font-bold text-white mb-5 tracking-tight">Open Standards &amp; Family Specs</h2>
+            <p class="text-slate-300 leading-relaxed mb-6"><code class="font-mono text-slate-400">environment.market_state</code> is one member of the <code class="font-mono text-slate-400">environment.*</code> constraint family within the Verifiable Intent specification. Headless Oracle operates the reference implementation; sibling implementations cover adjacent constraint surfaces, and a forthcoming IETF Internet-Draft formalises the family and vocabulary layer.</p>
+
+            <div class="grid md:grid-cols-2 gap-5">
+                <a href="https://github.com/agent-intent/verifiable-intent/pull/22" target="_blank" rel="noopener" class="glass rounded-xl p-5 hover:bg-white/[0.08] transition block">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="text-xs font-mono text-purple-300 uppercase tracking-wider">Sibling spec</div>
+                        <span class="text-blue-400">&rarr;</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Sibling Spec: <code class="font-mono text-slate-300">environment.wallet_state</code></h3>
+                    <p class="text-sm text-slate-400">InsumerAPI (Douglas Borthwick) operates the parallel reference implementation of <code class="font-mono text-slate-400">environment.wallet_state</code> at PR #22 on <code class="font-mono text-slate-400">agent-intent/verifiable-intent</code>. Together, <code class="font-mono text-slate-400">environment.market_state</code> and <code class="font-mono text-slate-400">environment.wallet_state</code> form the <code class="font-mono text-slate-400">environment.*</code> constraint family.</p>
+                </a>
+                <div class="glass rounded-xl p-5">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="text-xs font-mono text-amber-300 uppercase tracking-wider">Standards body</div>
+                        <span class="text-xs font-mono px-2 py-0.5 rounded-full bg-amber-900/40 border border-amber-500/30 text-amber-300 font-semibold">forthcoming</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">IETF Internet-Draft (forthcoming)</h3>
+                    <p class="text-sm text-slate-400">Family and vocabulary layer for the <code class="font-mono text-slate-400">environment.*</code> constraint family. Independent Submission stream. Co-authored with Douglas Borthwick (InsumerAPI). Expected filing within 30 days of May 4, 2026.</p>
+                </div>
+            </div>
         </section>
 
         <!-- 28 Exchanges -->
@@ -292,7 +319,7 @@
                         <h3 class="text-base font-bold text-white">OpenAPI 3.1 spec</h3>
                         <span class="text-blue-400">&rarr;</span>
                     </div>
-                    <p class="text-sm text-slate-400">73 paths, strict schemas, fail-closed error contracts. Generate a client in any language.</p>
+                    <p class="text-sm text-slate-400">81 paths, strict schemas, fail-closed error contracts. Generate a client in any language.</p>
                 </a>
                 <a href="/v5/demo?mic=XNYS" class="glass rounded-xl p-5 hover:bg-white/[0.08] transition block">
                     <div class="flex items-center justify-between mb-2">
@@ -314,6 +341,20 @@
                         <span class="text-blue-400">&rarr;</span>
                     </div>
                     <p class="text-sm text-slate-400">Autonomous agent payment metadata — chain, asset, per-request price, settlement address.</p>
+                </a>
+                <a href="https://github.com/headlessoracle/demo-agent" target="_blank" rel="noopener" class="glass rounded-xl p-5 hover:bg-white/[0.08] transition block">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-base font-bold text-white">Reference verifier (demo-agent)</h3>
+                        <span class="text-blue-400">&rarr;</span>
+                    </div>
+                    <p class="text-sm text-slate-400">~100-line Node.js reference verifier (MIT). Demonstrates fail-closed verification of HO receipts. <code class="font-mono text-slate-500">github.com/headlessoracle/demo-agent</code></p>
+                </a>
+                <a href="https://github.com/headlessoracle/essays" target="_blank" rel="noopener" class="glass rounded-xl p-5 hover:bg-white/[0.08] transition block">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-base font-bold text-white">Architectural essays</h3>
+                        <span class="text-blue-400">&rarr;</span>
+                    </div>
+                    <p class="text-sm text-slate-400">Long-form writing on environment-state attestation. Latest: <em>The Trust Primitive</em>, v1.6.4, April 2026 (CC BY 4.0). <code class="font-mono text-slate-500">github.com/headlessoracle/essays</code></p>
                 </a>
             </div>
         </section>

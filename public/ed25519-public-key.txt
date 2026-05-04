@@ -1,4 +1,7 @@
-HEADLESS ORACLE - PUBLIC KEY REGISTRY (V5 BETA)
+HEADLESS ORACLE - PUBLIC KEY REGISTRY
+-----------------------------------------------
+CANONICAL_SOURCE: https://headlessoracle.com/.well-known/oracle-keys.json
+FORMAT: This .txt file mirrors the canonical JSON registry for human readers.
 -----------------------------------------------
 KEY_ID: key_2026_v1
 ALGORITHM: Ed25519

@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Receipt Verifier | Headless Oracle</title>
-    <meta name="description" content="Verify Ed25519-signed market-status receipts from Headless Oracle. Paste a receipt JSON and verify the cryptographic signature against the live public key.">
+    <meta name="description" content="Verify Ed25519-signed market-state attestations from Headless Oracle. Paste a signed receipt JSON and verify the cryptographic signature against the live public key.">
     <meta name="robots" content="index, follow">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://headlessoracle.com/verify">
     <meta property="og:title" content="Receipt Verifier | Headless Oracle">
-    <meta property="og:description" content="Verify Ed25519-signed market-status receipts. Cryptographic proof of market state for autonomous agents.">
+    <meta property="og:description" content="Verify Ed25519-signed market-state attestations. Cryptographic proof of market state for autonomous agents.">
     <meta property="og:image" content="https://headlessoracle.com/og-image.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Receipt Verifier | Headless Oracle">
-    <meta name="twitter:description" content="Verify Ed25519-signed market-status receipts. Cryptographic proof in your browser.">
+    <meta name="twitter:description" content="Verify Ed25519-signed market-state attestations. Cryptographic proof in your browser.">
     <meta name="twitter:image" content="https://headlessoracle.com/og-image.png">
     <link rel="canonical" href="https://headlessoracle.com/verify">
     <link rel="alternate" type="application/json" href="/openapi.json" title="OpenAPI 3.1 specification">
@@ -47,10 +47,18 @@
 
     <main class="flex-grow flex flex-col items-center justify-center p-4">
         <div class="max-w-3xl w-full">
-            
-            <h1 class="text-3xl font-bold text-white mb-2 text-center">Verify Liability Receipt</h1>
+
+            <div class="mb-6 p-4 rounded-lg border border-blue-500/40 bg-blue-900/20 text-blue-100 text-sm">
+                <strong class="text-white">Looking for an independent verifier?</strong>
+                For an independent client-side verifier on a separate trust boundary, see
+                <a href="https://verify.headlessoracle.com" target="_blank" rel="noopener" class="underline text-blue-300 hover:text-white">verify.headlessoracle.com</a>
+                &mdash; same Ed25519 verification, served from a separate Cloudflare Pages deployment, source at
+                <a href="https://github.com/headlessoracle/verify" target="_blank" rel="noopener" class="underline text-blue-300 hover:text-white">github.com/headlessoracle/verify</a>.
+            </div>
+
+            <h1 class="text-3xl font-bold text-white mb-2 text-center">Verify Signed Market-State Attestation</h1>
             <p class="text-center text-slate-500 mb-8">
-                Paste a JSON receipt below to independently verify its Ed25519 signature using the Web Crypto API.
+                Paste a signed receipt JSON below to independently verify its Ed25519 signature using the Web Crypto API.
                 <br>This happens entirely in your browser. No data is sent to our servers.
             </p>
 
@@ -60,7 +68,7 @@
 
             <div class="glass rounded-xl p-6 mb-6">
                 <div class="flex justify-between items-center mb-2">
-                    <label class="block text-sm font-bold text-white">Liability Receipt (JSON)</label>
+                    <label class="block text-sm font-bold text-white">Signed Receipt (JSON)</label>
                     <button id="fetch-demo-btn" class="text-xs bg-slate-700 hover:bg-slate-600 text-blue-400 px-3 py-1 rounded-md transition font-medium">
                         Fetch &amp; Verify Live Receipt
                     </button>
@@ -71,14 +79,13 @@
             </div>
 
             <div class="glass rounded-xl p-6 mb-8">
-                <label class="block text-sm font-bold text-white mb-2">Oracle Public Key (PEM Format)</label>
-                <textarea id="public-key-input" rows="3" 
+                <label class="block text-sm font-bold text-white mb-2">Oracle Public Key (hex or PEM)</label>
+                <textarea id="public-key-input" rows="3"
                     class="w-full bg-slate-800 border border-slate-700 rounded-lg p-4 font-mono text-xs text-slate-400 focus:ring-2 focus:ring-blue-500 outline-none"
-                    placeholder="-----BEGIN PUBLIC KEY-----
-MCowBQYDK2VwAyEAA9wnmToskIVs3rReIorAZfGPafCTPJF7IzbB51cS8Xg=
------END PUBLIC KEY-----"></textarea>
+                    placeholder="03dc27993a2c90856cdeb45e228ac065f18f69f0933c917b2336c1e75712f178"></textarea>
                 <p class="text-xs text-slate-600 mt-2">
-                    Normally fetched automatically from the <a href="ed25519-public-key.txt" target="_blank" class="underline text-blue-500">Public Registry</a>.
+                    Hex is the canonical format. PEM/SPKI is also accepted as a legacy fallback. Public keys are published at
+                    <a href="/.well-known/oracle-keys.json" target="_blank" class="underline text-blue-500">/.well-known/oracle-keys.json</a> (RFC 8615).
                 </p>
             </div>
 

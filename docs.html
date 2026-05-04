@@ -103,7 +103,7 @@
                     </div>
                     <div class="glass p-5 rounded-xl text-center w-[calc(50%-6px)] md:w-auto md:flex-1">
                         <div class="text-3xl font-bold text-white mb-2">728</div>
-                        <div class="text-xs text-slate-400 leading-snug">weekend days<br>across 7 venues<br><span class="text-slate-600 text-xs">per calendar year</span></div>
+                        <div class="text-xs text-slate-400 leading-snug">weekend days<br>across 28 venues<br><span class="text-slate-600 text-xs">per calendar year</span></div>
                     </div>
                 </div>
 
@@ -491,7 +491,7 @@ Query:  mics=XNYS,XNAS,XLON  (comma-separated, deduplicated)</pre>
             <!-- VERIFICATION -->
             <section id="verification" class="mb-12 border-b border-slate-800 pb-12">
                 <h2>Verification Logic</h2>
-                <p class="mb-4">To confirm a receipt is authentic, reconstruct the signed payload and verify the Ed25519 signature against the <a href="ed25519-public-key.txt" class="text-blue-400 underline">published public key</a>.</p>
+                <p class="mb-4">To confirm a receipt is authentic, reconstruct the signed payload and verify the Ed25519 signature against the <a href="/ed25519-public-key.txt" class="text-blue-400 underline">published public key</a>.</p>
 
                 <h3 class="text-xs text-slate-500 uppercase tracking-widest mb-2">1. Reconstruct the Payload</h3>
                 <p class="text-sm mb-4">The signature covers all fields in the receipt <em>except</em> <code>signature</code> itself, with keys sorted alphabetically, minified (no spaces).</p>
@@ -549,7 +549,12 @@ function hexToBytes(hex) {
                 </div>
 
                 <p class="text-sm mt-4 text-slate-400">
-                    Or use the <a href="/verify" class="text-blue-400 underline">browser-based verifier</a> — paste any receipt and verify the Ed25519 signature instantly with zero server calls.
+                    Or use the <a href="/verify" class="text-blue-400 underline">browser-based verifier</a> — paste any receipt and verify the Ed25519 signature instantly with zero server calls. An independent client-side verifier on a separate trust boundary is also live at <a href="https://verify.headlessoracle.com" target="_blank" rel="noopener" class="text-blue-400 underline">verify.headlessoracle.com</a>.
+                </p>
+                <p class="text-sm mt-4 text-slate-400">
+                    Reference implementations:
+                    <a href="https://github.com/headlessoracle/demo-agent" target="_blank" rel="noopener" class="text-blue-400 underline">github.com/headlessoracle/demo-agent</a> — ~100-line Node.js reference verifier (MIT). Architectural context:
+                    <a href="https://github.com/headlessoracle/essays" target="_blank" rel="noopener" class="text-blue-400 underline">github.com/headlessoracle/essays</a> — including <em>The Trust Primitive: Why Agent Commerce Needs Environment-State Attestation</em> (v1.6.4, April 2026, CC BY 4.0).
                 </p>
             </section>
 

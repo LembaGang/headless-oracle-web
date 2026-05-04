@@ -86,8 +86,8 @@
             <pre><span style="color:#f8fafc">import requests
 
 resp = requests.post(
-    "https://headlessoracle.com/v5/keys/request",
-    json={"email": "you@example.com"}
+    "https://headlessoracle.com/v5/keys/instant",
+    json={"agent_id": "my-datacamp-notebook"}
 )
 print(resp.json())
 <span style="color:#94a3b8"># {"key": "ho_free_...", "plan": "free", "requests_per_day": 500}</span></span></pre>

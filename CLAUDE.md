@@ -5,7 +5,7 @@ Headless Oracle runs as two Cloudflare deployments:
 
 | Repo | Runtime | Handles | Deploy Command |
 |---|---|---|---|
-| `headless-oracle-v5` | Cloudflare Worker | API routes only (73 paths in OpenAPI) | `npm run deploy` (wrangler deploy) |
+| `headless-oracle-v5` | Cloudflare Worker | API routes only (81 paths in OpenAPI) | `npm run deploy` (wrangler deploy) |
 | `headless-oracle-web` (this repo) | Cloudflare Pages | All HTML pages | `npm run deploy` (wrangler pages deploy) |
 
 **How routing works**: The Worker has a catch-all route on `headlessoracle.com/*`.
