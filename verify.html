@@ -124,19 +124,40 @@
         // Hardcoded fallback — always available even if API is down
         const FALLBACK_PUBLIC_KEY = "03dc27993a2c90856cdeb45e228ac065f18f69f0933c917b2336c1e75712f178";
 
-        // Auto-fetch public key + check browser capability
+        // Canonical signed-payload field allowlist. The worker signs ONLY these fields;
+        // /v5/demo and other endpoints may decorate the response with extra metadata
+        // (e.g. discovery_url, extensions.bazaar, a duplicated `receipt` wrapper) that
+        // is NOT part of the signed bytes. The live spec is published at /v5/keys
+        // under canonical_payload_spec; this fallback is the union of receipt_fields,
+        // override_fields, and health_fields as of v5.0.
+        let CANONICAL_FIELDS = [
+            "expires_at", "halt_detection", "issued_at", "issuer", "mic",
+            "public_key_id", "reason", "receipt_id", "receipt_mode",
+            "schema_version", "source", "status"
+        ];
+
+        // Auto-fetch public key + canonical spec + check browser capability
         window.addEventListener('DOMContentLoaded', async () => {
             // 1. Set the fallback key immediately so the field is never empty
             const keyInput = document.getElementById('public-key-input');
             keyInput.value = FALLBACK_PUBLIC_KEY;
 
-            // 2. Try to fetch the live key from the API (overwrites fallback if successful)
+            // 2. Try to fetch the live key + canonical spec from the API
             try {
                 const res = await fetch(ORACLE_API + "/v5/keys");
                 if (res.ok) {
                     const data = await res.json();
                     if (data.keys && data.keys.length > 0 && data.keys[0].public_key) {
                         keyInput.value = data.keys[0].public_key;
+                    }
+                    if (data.canonical_payload_spec) {
+                        const spec = data.canonical_payload_spec;
+                        const union = new Set([
+                            ...(spec.receipt_fields || []),
+                            ...(spec.override_fields || []),
+                            ...(spec.health_fields || []),
+                        ]);
+                        if (union.size > 0) CANONICAL_FIELDS = Array.from(union);
                     }
                 }
             } catch (e) {
@@ -173,17 +194,19 @@
                 if (!receiptText || !publicKeyPem) throw new Error("Please fill in both fields.");
 
                 const receipt = JSON.parse(receiptText);
-                
-                // V5 AUDIT: Separate the signature from the signed data (payload)
-                const { signature, ...data } = receipt;
+
+                const { signature } = receipt;
                 if (!signature) throw new Error("Receipt is missing 'signature' field.");
 
-                // V5 CANONICALIZATION: Keys sorted alphabetically, no whitespace.
-                // Matches signPayload() in the worker. Works for all receipt types
-                // (market, override, health) without hardcoding field lists.
+                // V5 CANONICALIZATION: Keys sorted alphabetically, no whitespace,
+                // restricted to the canonical_payload_spec allowlist. Matches
+                // signPayload() in the worker. Decoration fields the worker added
+                // to the response after signing (receipt wrapper, discovery_url,
+                // extensions.*) are excluded so the message bytes match what was
+                // actually signed.
                 const sorted = {};
-                for (const key of Object.keys(data).sort()) {
-                    sorted[key] = data[key];
+                for (const key of CANONICAL_FIELDS.slice().sort()) {
+                    if (key in receipt) sorted[key] = receipt[key];
                 }
                 const message = JSON.stringify(sorted);
                 const msgBuffer = new TextEncoder().encode(message);
