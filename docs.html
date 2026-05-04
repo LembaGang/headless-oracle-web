@@ -494,12 +494,24 @@ Query:  mics=XNYS,XNAS,XLON  (comma-separated, deduplicated)</pre>
                 <p class="mb-4">To confirm a receipt is authentic, reconstruct the signed payload and verify the Ed25519 signature against the <a href="/ed25519-public-key.txt" class="text-blue-400 underline">published public key</a>.</p>
 
                 <h3 class="text-xs text-slate-500 uppercase tracking-widest mb-2">1. Reconstruct the Payload</h3>
-                <p class="text-sm mb-4">The signature covers all fields in the receipt <em>except</em> <code>signature</code> itself, with keys sorted alphabetically, minified (no spaces).</p>
-                <pre class="text-blue-300">// Remove signature, sort remaining keys alphabetically, then stringify
-const { signature, ...payload } = receipt;
-const sorted = {};
-for (const key of Object.keys(payload).sort()) sorted[key] = payload[key];
-const canonical = JSON.stringify(sorted); // no spaces, alphabetical keys</pre>
+                <p class="text-sm mb-4">The signature covers a fixed allowlist of receipt fields enumerated in <code>canonical_payload_spec</code> at <a href="/v5/keys" class="text-blue-400 underline">/v5/keys</a> (union of <code>receipt_fields</code>, <code>override_fields</code>, <code>health_fields</code>). Filter the response to that allowlist, sort the keys alphabetically, then minify with no whitespace. Decoration the worker added to the response after signing — <code>extensions</code>, a duplicated <code>receipt</code> wrapper, <code>discovery_url</code> — must be excluded so the message bytes match what was signed.</p>
+                <pre class="text-blue-300">// 1. Fetch the canonical field spec from /v5/keys
+const { keys, canonical_payload_spec: spec } =
+  await fetch("https://headlessoracle.com/v5/keys").then(r =&gt; r.json());
+
+// 2. Build the allowlist (union of all receipt-type field lists)
+const canonicalFields = [
+  ...spec.receipt_fields,
+  ...(spec.override_fields || []),
+  ...(spec.health_fields  || []),
+].filter((v, i, a) =&gt; a.indexOf(v) === i).sort();
+
+// 3. Filter the receipt to the allowlist (drops signature + decoration)
+const filtered = {};
+for (const key of canonicalFields) {
+  if (key !== "signature" &amp;&amp; key in receipt) filtered[key] = receipt[key];
+}
+const canonical = JSON.stringify(filtered); // no spaces, alphabetical keys</pre>
 
                 <h3 class="text-xs text-slate-500 uppercase tracking-widest mt-8 mb-2">2. Implementation Samples</h3>
 
@@ -508,33 +520,69 @@ const canonical = JSON.stringify(sorted); // no spaces, alphabetical keys</pre>
                         <p class="text-xs font-mono text-slate-500 mb-1">Python (PyNaCl)</p>
                         <pre class="text-xs">import json, requests
 from nacl.signing import VerifyKey
+from nacl.exceptions import BadSignatureError
 
-PUBLIC_KEY_HEX = "03dc27993a2c90856cdeb45e228ac065f18f69f0933c917b2336c1e75712f178"
+ORACLE_BASE = "https://headlessoracle.com"
 
 def verify_and_check(mic="XNYS"):
+    # Fetch the receipt and the public key + canonical field spec
     receipt = requests.get(
-        f"https://headlessoracle.com/v5/status?mic={mic}",
+        f"{ORACLE_BASE}/v5/status?mic={mic}",
         headers={"X-Oracle-Key": "YOUR_KEY"},
-        timeout=4
+        timeout=4,
     ).json()
+    keys_doc = requests.get(f"{ORACLE_BASE}/v5/keys", timeout=4).json()
+    public_key_hex = keys_doc["keys"][0]["public_key"]
+    spec           = keys_doc["canonical_payload_spec"]
 
-    sig      = receipt.pop("signature")
-    canonical = json.dumps(receipt, sort_keys=True, separators=(",", ":"))
-    VerifyKey(bytes.fromhex(PUBLIC_KEY_HEX)).verify(
-        canonical.encode(), bytes.fromhex(sig)
-    )
+    # Build the allowlist (union of receipt / override / health fields)
+    canonical_fields = sorted(set(
+        spec["receipt_fields"]
+        + spec.get("override_fields", [])
+        + spec.get("health_fields",  [])
+    ))
+
+    # Filter the receipt to the allowlist — drops signature + decoration
+    # (extensions, discovery_url, duplicate `receipt` wrapper)
+    filtered = {k: receipt[k] for k in canonical_fields
+                if k != "signature" and k in receipt}
+
+    # Canonical message: alphabetical sort, no whitespace, UTF-8
+    canonical = json.dumps(filtered, sort_keys=True, separators=(",", ":"))
+    sig       = bytes.fromhex(receipt["signature"])
+
+    try:
+        VerifyKey(bytes.fromhex(public_key_hex)).verify(canonical.encode(), sig)
+    except BadSignatureError:
+        return False  # fail closed
     return receipt["status"] == "OPEN"</pre>
                     </div>
 
                     <div>
                         <p class="text-xs font-mono text-slate-500 mb-1">JavaScript (Web Crypto API)</p>
-                        <pre class="text-xs">async function verifyReceipt(receipt) {
-  const { signature, ...payload } = receipt;
-  const sorted = {};
-  for (const key of Object.keys(payload).sort()) sorted[key] = payload[key];
-  const canonical = JSON.stringify(sorted);
-  const keyBytes  = hexToBytes("03dc27993a2c90856cdeb45e228ac065f18f69f0933c917b2336c1e75712f178");
-  const sigBytes  = hexToBytes(signature);
+                        <pre class="text-xs">const ORACLE_BASE = "https://headlessoracle.com";
+
+async function verifyReceipt(receipt) {
+  // Fetch the public key + canonical field spec
+  const { keys, canonical_payload_spec: spec } =
+    await fetch(`${ORACLE_BASE}/v5/keys`).then(r =&gt; r.json());
+
+  // Build the allowlist (union of receipt / override / health fields)
+  const canonicalFields = [
+    ...spec.receipt_fields,
+    ...(spec.override_fields || []),
+    ...(spec.health_fields  || []),
+  ].filter((v, i, a) =&gt; a.indexOf(v) === i).sort();
+
+  // Filter the receipt to the allowlist — drops signature + decoration
+  const filtered = {};
+  for (const key of canonicalFields) {
+    if (key !== "signature" &amp;&amp; key in receipt) filtered[key] = receipt[key];
+  }
+  const canonical = JSON.stringify(filtered);
+
+  const keyBytes  = hexToBytes(keys[0].public_key);
+  const sigBytes  = hexToBytes(receipt.signature);
   const msgBytes  = new TextEncoder().encode(canonical);
   const cryptoKey = await crypto.subtle.importKey(
     "raw", keyBytes, { name: "Ed25519" }, false, ["verify"]
@@ -543,7 +591,7 @@ def verify_and_check(mic="XNYS"):
 }
 
 function hexToBytes(hex) {
-  return new Uint8Array(hex.match(/.{2}/g).map(b => parseInt(b, 16)));
+  return new Uint8Array(hex.match(/.{2}/g).map(b =&gt; parseInt(b, 16)));
 }</pre>
                     </div>
                 </div>
