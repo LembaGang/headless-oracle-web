@@ -115,7 +115,7 @@
             <div class="glass rounded-xl p-6 fade-in">
                 <div class="metric-label mb-3">Verifiable Intent RFC</div>
                 <div class="flex items-center gap-2 mt-2 flex-wrap">
-                    <a href="/essays/environment-internet-draft" class="badge badge-green" id="vi-rfc">I-D Filed · May 11, 2026</a>
+                    <a href="/essays/environment-internet-draft" class="badge badge-green">I-D Filed · May 11, 2026</a>
                     <span class="text-slate-400 text-sm">External State Attestation</span>
                 </div>
                 <div class="metric-sub mt-2 flex flex-wrap gap-x-3">
@@ -231,9 +231,8 @@
                 document.getElementById('sma-version').textContent = `v${d.sma_spec_version}`;
             }
 
-            if (d.verifiable_intent_rfc) {
-                document.getElementById('vi-rfc').textContent = d.verifiable_intent_rfc;
-            }
+            // verifiable_intent_rfc badge is now a static link to the I-D announcement
+            // essay; intentionally not bound to API state.
 
             if (d.x402_enabled != null) {
                 const el = document.getElementById('x402-status');
