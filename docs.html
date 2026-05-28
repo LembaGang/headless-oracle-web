@@ -663,6 +663,17 @@ function hexToBytes(hex) {
                     <strong class="text-slate-400">Windows:</strong>
                     <code>%APPDATA%\Claude\claude_desktop_config.json</code>
                 </p>
+                <p class="text-xs text-slate-400 mb-1"><strong class="text-white">Option 1 &mdash; Local stdio</strong> (one-prompt install via <code>npx</code>, Node.js 18+):</p>
+                <pre class="text-xs">{
+  "mcpServers": {
+    "headless-oracle": {
+      "command": "npx",
+      "args": ["-y", "headless-oracle-mcp"]
+    }
+  }
+}</pre>
+                <p class="text-xs text-slate-500 mt-1 mb-3">Runs the <a href="https://www.npmjs.com/package/headless-oracle-mcp" class="text-blue-400 hover:underline" target="_blank" rel="noopener">headless-oracle-mcp</a> npm package locally over stdio. Add <code>"env": { "HEADLESS_ORACLE_API_KEY": "ho_live_..." }</code> for authenticated tiers.</p>
+                <p class="text-xs text-slate-400 mb-1"><strong class="text-white">Option 2 &mdash; Remote URL</strong> (no local Node required):</p>
                 <pre class="text-xs">{
   "mcpServers": {
     "headless-oracle": {

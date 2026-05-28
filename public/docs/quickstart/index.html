@@ -59,7 +59,24 @@
                 <h2 class="text-white font-semibold text-lg">Copy <code>.mcp.json</code> to your project root</h2>
             </div>
 
-            <p class="text-slate-400 text-sm mb-4">Choose <strong class="text-white">Sandbox</strong> (no key required, 200 calls free) or <strong class="text-white">Authenticated</strong> (unlimited, requires API key):</p>
+            <p class="text-slate-400 text-sm mb-4">Choose <strong class="text-white">Local stdio</strong> (one-line install via <code>npx</code>), <strong class="text-white">Sandbox</strong> (remote URL, no key, 200 calls free), or <strong class="text-white">Authenticated</strong> (remote URL, unlimited, requires API key):</p>
+
+            <!-- Local stdio (npx) variant -->
+            <div class="mb-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-medium text-slate-300">Local stdio — <code>npx headless-oracle-mcp</code>, no install</span>
+                    <button class="copy-btn text-slate-400 text-xs px-3 py-1 rounded border border-slate-700" onclick="copyCode('stdio-config', this)">Copy</button>
+                </div>
+                <pre id="stdio-config">{
+  "mcpServers": {
+    "headless-oracle": {
+      "command": "npx",
+      "args": ["-y", "headless-oracle-mcp"]
+    }
+  }
+}</pre>
+                <p class="text-xs text-slate-500 mt-2">Runs the <a href="https://www.npmjs.com/package/headless-oracle-mcp" class="text-blue-400 hover:underline" target="_blank" rel="noopener">headless-oracle-mcp</a> npm package locally over stdio. Requires Node.js 18+. Add <code>"env": { "HEADLESS_ORACLE_API_KEY": "ho_live_..." }</code> for authenticated use.</p>
+            </div>
 
             <!-- Sandbox variant -->
             <div class="mb-4">
