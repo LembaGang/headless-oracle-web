@@ -30,6 +30,16 @@ npm run build && npx wrangler pages deploy dist --project-name headless-oracle-w
 ```
 Or simply: `npm run deploy`
 
+## Verifying live content (CRITICAL — read before curl-checking the site)
+ALWAYS use `curl -L` (follow redirects) when verifying live Cloudflare Pages content.
+Pages serves a 308 redirect from `.html` → extensionless URLs, so `curl -s` without `-L`
+returns an empty body and falsely reads as "content missing / not deployed."
+
+**Symptom of this mistake**: BOTH new and old strings grep empty on the same page
+(a page serving real content would match one or the other).
+
+**Use**: `curl -sL https://headlessoracle.com/standards.html`
+
 ## Project Structure
 - `index.html` — Homepage (28 exchange pills, hero, live demo, instant key provisioning)
 - `docs.html` — Full API documentation (28 exchanges, all endpoints, DST calendar)
