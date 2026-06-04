@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Headless Oracle | Environment Verification for Autonomous Agents</title>
-    <meta name="description" content="Headless Oracle — the environment.market_state reference implementation in Mastercard Verifiable Intent. The verification layer for BVNK execution pipelines. Cryptographically verifiable market venue state for autonomous agents. 28 exchanges. Ed25519 signed. Fail-closed.">
+    <meta name="description" content="Headless Oracle — proposed reference implementation of environment.market_state, an open PR on Mastercard's Verifiable Intent repo. Cryptographically verifiable market venue state for autonomous agents. 28 exchanges. Ed25519 signed. Fail-closed.">
     <meta name="robots" content="index, follow">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://headlessoracle.com/">
     <meta property="og:title" content="Headless Oracle | Environment Verification for Autonomous Agents">
-    <meta property="og:description" content="environment.market_state reference implementation. Ed25519-signed attestations for 28 global exchanges. Fail-closed by contract.">
+    <meta property="og:description" content="Proposed environment.market_state reference implementation (open PR on Mastercard's Verifiable Intent repo). Ed25519-signed attestations for 28 global exchanges. Fail-closed by contract.">
     <link rel="canonical" href="https://headlessoracle.com/">
     <link rel="alternate" type="application/json" href="/openapi.json" title="OpenAPI 3.1 specification">
     <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt — machine-readable API summary">
     <meta property="og:image" content="https://headlessoracle.com/og-image.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Headless Oracle | Environment Verification for Autonomous Agents">
-    <meta name="twitter:description" content="environment.market_state reference implementation. Ed25519-signed attestations for 28 global exchanges. Fail-closed by contract.">
+    <meta name="twitter:description" content="Proposed environment.market_state reference implementation (open PR on Mastercard's Verifiable Intent repo). Ed25519-signed attestations for 28 global exchanges. Fail-closed by contract.">
     <meta name="twitter:image" content="https://headlessoracle.com/og-image.png">
     <script type="application/ld+json">
     {
@@ -24,7 +24,7 @@
       "@type": "SoftwareApplication",
       "name": "Headless Oracle",
       "url": "https://headlessoracle.com",
-      "description": "Reference implementation of environment.market_state — the cryptographically verifiable constraint type for market venue state in autonomous agent execution. 28 global exchanges. Ed25519 signed. Fail-closed by contract.",
+      "description": "Proposed reference implementation of environment.market_state — a cryptographically verifiable constraint type for market venue state, currently an open PR on Mastercard's Verifiable Intent repo. 28 global exchanges. Ed25519 signed. Fail-closed by contract.",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "Any",
       "offers": {
@@ -152,11 +152,11 @@
         </p>
 
         <p class="text-lg text-slate-500 mb-2 max-w-2xl mx-auto">
-            Headless Oracle is the reference implementation of <code class="text-slate-300">environment.market_state</code> &mdash; the cryptographically verifiable constraint type for market venue state in agentic execution. Ed25519-signed attestations. 60-second TTL. Agents pay 0.001 USDC per request via <a href="/docs/x402-payments" class="text-indigo-400 hover:text-indigo-300">x402</a> on Base mainnet.
+            Headless Oracle is the proposed reference implementation of <code class="text-slate-300">environment.market_state</code> &mdash; an open PR on Mastercard's Verifiable Intent repo for a cryptographically verifiable constraint type covering market venue state in agentic execution. Ed25519-signed attestations. 60-second TTL. Agents pay 0.001 USDC per request via <a href="/docs/x402-payments" class="text-indigo-400 hover:text-indigo-300">x402</a> on Base mainnet.
         </p>
 
         <p class="text-xs font-mono text-slate-600 mb-8 max-w-2xl mx-auto italic">
-            Member of the <code class="text-slate-500">environment.*</code> constraint family in Mastercard Verifiable Intent &middot; operational since 2026-02-18
+            Proposed member of the <code class="text-slate-500">environment.*</code> constraint family — PR #9 on Mastercard's Verifiable Intent repo &middot; operational since 2026-02-18
         </p>
 
         <div class="flex flex-wrap justify-center gap-2 mb-6">
@@ -286,10 +286,10 @@
         <div class="glass rounded-2xl p-8 border border-blue-500/20 bg-blue-900/10">
             <div class="flex items-center gap-3 mb-4 flex-wrap">
                 <a href="/essays/environment-internet-draft" class="px-2.5 py-0.5 rounded text-xs font-mono font-bold bg-emerald-900/50 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-800/60 transition uppercase tracking-wider">I-D Filed · May 11, 2026</a>
-                <span class="px-2.5 py-0.5 rounded text-xs font-mono font-bold bg-blue-900/50 border border-blue-500/40 text-blue-300 uppercase tracking-wider">PR #9 · Reference Implementation · v0.5.11-draft</span>
+                <span class="px-2.5 py-0.5 rounded text-xs font-mono font-bold bg-blue-900/50 border border-blue-500/40 text-blue-300 uppercase tracking-wider">PR #9 · Open · v0.5.11-draft</span>
             </div>
-            <h2 class="text-2xl md:text-3xl font-bold text-white mb-4 tracking-tight">The Verification Layer for Autonomous Finance</h2>
-            <p class="text-slate-400 mb-6 leading-relaxed">The autonomous finance stack is assembling. Mastercard acquired BVNK — programmable stablecoin payment rails — for $1.8B. The three layers are now in place. Headless Oracle is the third.</p>
+            <h2 class="text-2xl md:text-3xl font-bold text-white mb-4 tracking-tight">The Agent Execution Stack Composes in Three Layers</h2>
+            <p class="text-slate-400 mb-6 leading-relaxed">Autonomous finance is assembling its stack. Mastercard's agreed acquisition of BVNK — programmable stablecoin payment rails, for up to $1.8B — brings on-chain settlement into the picture. What that stack still lacks is a verification layer: cryptographic proof of external market state before an agent commits capital. That's the gap Headless Oracle is built to fill.</p>
 
             <div class="grid md:grid-cols-3 gap-4 mb-6">
                 <div class="glass rounded-xl p-4 border border-slate-700/60">
@@ -304,12 +304,12 @@
                 </div>
                 <div class="glass rounded-xl p-4 border border-blue-500/30 bg-blue-900/10">
                     <div class="text-xs font-mono text-blue-400 uppercase tracking-wider mb-2">Layer 3 · Verification</div>
-                    <div class="text-white font-semibold mb-1">Headless Oracle</div>
+                    <div class="text-white font-semibold mb-1">Headless Oracle <span class="text-xs font-mono text-blue-300/80 font-normal">(proposed)</span></div>
                     <div class="text-xs text-slate-400">Cryptographic proof the market was open at execution time</div>
                 </div>
             </div>
 
-            <p class="text-slate-400 text-sm mb-4 leading-relaxed">An agent with authorization and rails but without verified market state has no auditable proof of what external conditions it acted on. The External State Attestation RFC formalises the third layer: a signed, independently verifiable record that the market was open before execution.</p>
+            <p class="text-slate-400 text-sm mb-4 leading-relaxed">An agent with authorization and rails but without verified market state has no auditable proof of what external conditions it acted on. The External State Attestation RFC (PR #9, open) proposes the third layer: a signed, independently verifiable record that the market was open before execution.</p>
 
             <div class="flex flex-wrap gap-3 text-sm">
                 <a href="https://github.com/agent-intent/verifiable-intent/pulls" class="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 hover:text-white rounded-lg transition font-mono text-xs">
