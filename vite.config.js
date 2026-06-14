@@ -16,6 +16,7 @@ export default defineConfig({
         traction: resolve(__dirname, 'traction.html'),
         blog: resolve(__dirname, 'blog.html'),
         standards: resolve(__dirname, 'standards.html'),
+        haltGate: resolve(__dirname, 'halt-gate.html'),
       },
     },
   },
