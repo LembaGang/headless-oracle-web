@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  TRAP NOTICE — this file is NOT the live sitemap.
+
+  The live https://headlessoracle.com/sitemap.xml is served by the Worker
+  in the headless-oracle-v5 repo (wrangler.toml routes /sitemap.xml to
+  the worker, which returns the SITEMAP_XML constant in src/index.ts).
+  Edits to THIS file are silently ignored on prod.
+
+  To update the live sitemap, edit the SITEMAP_XML constant in
+  headless-oracle-v5/src/index.ts and redeploy the worker.
+
+  This file is kept as a fallback for any environment where the Worker
+  route is not active, and to satisfy local `vite preview` against the
+  Pages build.
+-->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://headlessoracle.com/</loc>
