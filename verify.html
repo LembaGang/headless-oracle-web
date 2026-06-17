@@ -124,40 +124,80 @@
         // Hardcoded fallback — always available even if API is down
         const FALLBACK_PUBLIC_KEY = "03dc27993a2c90856cdeb45e228ac065f18f69f0933c917b2336c1e75712f178";
 
-        // Canonical signed-payload field allowlist. The worker signs ONLY these fields;
-        // /v5/demo and other endpoints may decorate the response with extra metadata
-        // (e.g. discovery_url, extensions.bazaar, a duplicated `receipt` wrapper) that
-        // is NOT part of the signed bytes. The live spec is published at /v5/keys
-        // under canonical_payload_spec; this fallback is the union of receipt_fields,
-        // override_fields, and health_fields as of v5.0.
-        let CANONICAL_FIELDS = [
-            "expires_at", "halt_detection", "issued_at", "issuer", "mic",
-            "public_key_id", "reason", "receipt_id", "receipt_mode",
-            "schema_version", "source", "status"
-        ];
+        // Wrapper keys are response decorations the worker adds AFTER signing —
+        // they are NOT part of the canonical bytes. They must be stripped before
+        // canonicalization or the signature mismatches. Keep this list in sync
+        // with what HO endpoints actually emit as wrapper fields.
+        //
+        // Current set:
+        //   - receipt:        nested copy of the signed payload (convenience for
+        //                     verifiers that prefer a contained object)
+        //   - discovery_url:  pointer to /.well-known/mcp/server-card.json
+        //   - extensions:     CDP Bazaar discovery block on x402 endpoints
+        //   - door:           "public-sample" on /v1/safe-to-trade/sample
+        //   - note:           human-readable door description on /v1/safe-to-trade/sample
+        const WRAPPER_KEYS = new Set([
+            'receipt', 'discovery_url', 'extensions', 'door', 'note'
+        ]);
 
-        // Auto-fetch public key + canonical spec + check browser capability
+        // Pick the object whose keys (minus signature) define the canonical bytes.
+        // Two input forms the user might paste:
+        //   (a) the full wire body — flat receipt + nested `receipt` + door/note/etc.
+        //   (b) the nested receipt object alone — just the 15 canonical fields + signature
+        // For (a), the cleanest path is to use the nested `receipt`, which is byte-
+        // for-byte the object the worker signed. For (b) and any future flat-only
+        // shape, strip the known wrapper keys instead. Either way the verifier
+        // never reads a field allowlist — anything in the resulting object except
+        // `signature` is treated as part of the signed bytes.
+        function extractInnerReceipt(input) {
+            if (
+                input &&
+                typeof input === 'object' &&
+                input.receipt &&
+                typeof input.receipt === 'object' &&
+                typeof input.receipt.signature === 'string'
+            ) {
+                return input.receipt;
+            }
+            const stripped = {};
+            for (const k of Object.keys(input)) {
+                if (!WRAPPER_KEYS.has(k)) stripped[k] = input[k];
+            }
+            return stripped;
+        }
+
+        // Canonical JSON serialisation. Matches signPayload() in the worker:
+        //   1. Drop the `signature` field.
+        //   2. Sort remaining keys alphabetically.
+        //   3. JSON.stringify with no whitespace.
+        // Note: no field allowlist. The signer signs every field in the payload
+        // it constructed; the verifier signs whatever remains after wrapper-stripping
+        // and signature-removal. This means adding a new receipt type (a new field
+        // set published at /v5/keys → canonical_payload_spec) does NOT require a
+        // verifier change — the input shape is the contract.
+        function canonicalJSON(receipt) {
+            const fields = Object.keys(receipt)
+                .filter((k) => k !== 'signature')
+                .sort();
+            const sorted = {};
+            for (const k of fields) sorted[k] = receipt[k];
+            return JSON.stringify(sorted);
+        }
+
+        // Auto-fetch public key + check browser capability
         window.addEventListener('DOMContentLoaded', async () => {
             // 1. Set the fallback key immediately so the field is never empty
             const keyInput = document.getElementById('public-key-input');
             keyInput.value = FALLBACK_PUBLIC_KEY;
 
-            // 2. Try to fetch the live key + canonical spec from the API
+            // 2. Try to fetch the live key from the API. We no longer fetch
+            // canonical_payload_spec — the verifier is spec-agnostic now.
             try {
                 const res = await fetch(ORACLE_API + "/v5/keys");
                 if (res.ok) {
                     const data = await res.json();
                     if (data.keys && data.keys.length > 0 && data.keys[0].public_key) {
                         keyInput.value = data.keys[0].public_key;
-                    }
-                    if (data.canonical_payload_spec) {
-                        const spec = data.canonical_payload_spec;
-                        const union = new Set([
-                            ...(spec.receipt_fields || []),
-                            ...(spec.override_fields || []),
-                            ...(spec.health_fields || []),
-                        ]);
-                        if (union.size > 0) CANONICAL_FIELDS = Array.from(union);
                     }
                 }
             } catch (e) {
@@ -195,20 +235,19 @@
 
                 const receipt = JSON.parse(receiptText);
 
-                const { signature } = receipt;
-                if (!signature) throw new Error("Receipt is missing 'signature' field.");
+                // Resolve the inner signed object. Works for both:
+                //   (a) a flat wire body with door/note/discovery_url/nested receipt, OR
+                //   (b) the inner receipt object on its own.
+                const inner = extractInnerReceipt(receipt);
 
-                // V5 CANONICALIZATION: Keys sorted alphabetically, no whitespace,
-                // restricted to the canonical_payload_spec allowlist. Matches
-                // signPayload() in the worker. Decoration fields the worker added
-                // to the response after signing (receipt wrapper, discovery_url,
-                // extensions.*) are excluded so the message bytes match what was
-                // actually signed.
-                const sorted = {};
-                for (const key of CANONICAL_FIELDS.slice().sort()) {
-                    if (key in receipt) sorted[key] = receipt[key];
-                }
-                const message = JSON.stringify(sorted);
+                const { signature } = inner;
+                if (!signature) throw new Error("Receipt is missing 'signature' field.");
+                if (!inner.public_key_id) throw new Error("Receipt is missing 'public_key_id' field.");
+
+                // Canonical bytes: drop signature, sort remaining keys, JSON.stringify
+                // with no whitespace. Mirrors signPayload() in the worker. No field
+                // allowlist — the input shape is the contract.
+                const message = canonicalJSON(inner);
                 const msgBuffer = new TextEncoder().encode(message);
 
                 // IMPORT PUBLIC KEY — handles hex (from API) or PEM/SPKI (legacy)
@@ -244,7 +283,7 @@
                     resultArea.className = "rounded-xl p-6 border border-green-500 bg-green-900/20 text-green-200";
                     resultIcon.innerHTML = "✅";
                     resultTitle.innerText = "Signature Valid";
-                    resultDesc.innerText = `Successfully verified against Key: ${receipt.public_key_id}`;
+                    resultDesc.innerText = `Successfully verified against Key: ${inner.public_key_id}`;
                 } else {
                     throw new Error("Signature Mismatch — The data may have been tampered with.");
                 }
