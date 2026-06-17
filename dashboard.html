@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Headless Oracle V5</title>
+    <meta name="description" content="Live cross-venue state across 28 global exchanges plus a working demonstration of the /v1/safe-to-trade circuit breaker. Read-only proof-of-life dashboard for autonomous agents and evaluators.">
+    <meta name="robots" content="index, follow">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://headlessoracle.com/dashboard">
+    <meta property="og:title" content="Dashboard | Headless Oracle V5">
+    <meta property="og:description" content="Live cross-venue state across 28 global exchanges. Working demo of the /v1/safe-to-trade circuit breaker. Read-only proof-of-life.">
+    <meta property="og:image" content="https://headlessoracle.com/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Dashboard | Headless Oracle V5">
+    <meta name="twitter:description" content="Live cross-venue state across 28 global exchanges. Working demo of the /v1/safe-to-trade circuit breaker.">
+    <meta name="twitter:image" content="https://headlessoracle.com/og-image.png">
+    <link rel="canonical" href="https://headlessoracle.com/dashboard">
+    <link rel="alternate" type="application/json" href="/openapi.json" title="OpenAPI 3.1 specification">
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt — machine-readable API summary">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #cbd5e1; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .pill-open    { background: #052e16; color: #4ade80; border: 1px solid #166534; }
+        .pill-closed  { background: #1c1917; color: #94a3b8; border: 1px solid #44403c; }
+        .pill-lunch   { background: #422006; color: #fbbf24; border: 1px solid #78350f; }
+        .pill-halted  { background: #431407; color: #fb923c; border: 1px solid #9a3412; }
+        .pill-unknown { background: #1c1917; color: #fbbf24; border: 1px solid #78350f; }
+        .pill-loading { background: #1e293b; color: #64748b; border: 1px solid #334155; }
+        .dot-green   { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
+        .dot-red     { background: #ef4444; box-shadow: 0 0 6px #ef4444; }
+        .dot-yellow  { background: #eab308; box-shadow: 0 0 6px #eab308; }
+        .dot-grey    { background: #64748b; }
+        @keyframes pulse-dot { 0%,100%{opacity:1}50%{opacity:.4} }
+        .animate-dot { animation: pulse-dot 2s ease-in-out infinite; }
+        .placeholder-block {
+            background:
+                repeating-linear-gradient(
+                    135deg,
+                    rgba(148,163,184,0.04) 0,
+                    rgba(148,163,184,0.04) 8px,
+                    rgba(148,163,184,0.08) 8px,
+                    rgba(148,163,184,0.08) 16px
+                );
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <nav class="w-full border-b border-slate-800 bg-slate-900/80 backdrop-blur-md fixed top-0 z-50">
+        <div class="max-w-5xl mx-auto px-6 h-16 flex justify-between items-center">
+            <a href="/" class="font-bold text-white tracking-wider">HEADLESS<span class="text-blue-500">ORACLE</span></a>
+            <div class="flex items-center gap-4 text-xs">
+                <a href="/docs" class="text-slate-400 hover:text-white transition">Docs</a>
+                <a href="/dashboard" class="text-white font-semibold">Dashboard</a>
+                <a href="/status" class="text-slate-400 hover:text-white transition">Status</a>
+                <a href="/pricing" class="text-slate-400 hover:text-white transition">Pricing</a>
+                <a href="/standards" class="text-slate-400 hover:text-white transition">Standards</a>
+                <a href="/blog" class="text-slate-400 hover:text-white transition">Blog</a>
+                <a href="https://github.com/LembaGang" class="text-slate-400 hover:text-white transition" target="_blank" rel="noopener">GitHub</a>
+                <span id="global-status-badge" class="font-mono px-3 py-1 rounded-full pill-loading">Checking...</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow max-w-5xl mx-auto px-6 py-28 w-full">
+
+        <!-- Header -->
+        <div class="mb-10">
+            <h1 class="text-3xl font-bold text-white mb-2">Proof-of-Life Dashboard</h1>
+            <p class="text-slate-400 text-sm max-w-3xl">Live cross-venue state across 28 global exchanges plus a working demonstration of the <span class="mono text-slate-300">/v1/safe-to-trade</span> circuit breaker. Read-only. No auth required. Refreshes every 60&nbsp;seconds.</p>
+            <p class="text-xs text-slate-600 mono mt-2" id="last-updated">Last refresh: —</p>
+        </div>
+
+        <!-- ────────── Section 1 — Cross-venue grid (live, /v5/briefing) ────────── -->
+        <section class="mb-14">
+            <div class="flex items-baseline justify-between mb-3">
+                <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-widest">Cross-venue state</h2>
+                <span class="text-xs text-slate-600 mono">source: <a href="https://headlessoracle.com/v5/briefing" class="text-blue-400 hover:text-blue-300" target="_blank" rel="noopener">/v5/briefing</a> · public, no auth</span>
+            </div>
+
+            <!-- Summary strip -->
+            <div id="summary-strip" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+                <div class="rounded-lg border border-green-800/40 bg-green-900/10 p-3">
+                    <div class="text-xs text-slate-500 uppercase tracking-wider">Open</div>
+                    <div class="text-2xl font-bold text-green-400 mono" id="cnt-open">—</div>
+                </div>
+                <div class="rounded-lg border border-slate-700 bg-slate-800/40 p-3">
+                    <div class="text-xs text-slate-500 uppercase tracking-wider">Closed</div>
+                    <div class="text-2xl font-bold text-slate-300 mono" id="cnt-closed">—</div>
+                </div>
+                <div class="rounded-lg border border-yellow-800/40 bg-yellow-900/10 p-3">
+                    <div class="text-xs text-slate-500 uppercase tracking-wider">Lunch break</div>
+                    <div class="text-2xl font-bold text-yellow-400 mono" id="cnt-lunch">—</div>
+                </div>
+                <div class="rounded-lg border border-orange-800/40 bg-orange-900/10 p-3">
+                    <div class="text-xs text-slate-500 uppercase tracking-wider">Holiday today</div>
+                    <div class="text-2xl font-bold text-orange-400 mono" id="cnt-holiday">—</div>
+                </div>
+            </div>
+
+            <!-- Region groups -->
+            <div id="venue-grid" class="space-y-6">
+                <!-- Populated by JS -->
+                <div class="text-xs text-slate-600 mono">Fetching cross-venue state…</div>
+            </div>
+
+            <p class="text-xs text-slate-600 mt-4">
+                Single call to <span class="mono">/v5/briefing</span> per refresh — not 28 per-venue calls. Worker computes the cross-venue snapshot. Status reflects schedule only;
+                circuit-breaker halts surface via the <span class="mono">/v1/halts</span> feed (paid; surfaced in <a href="#halts" class="text-blue-400 hover:text-blue-300">Section 3</a> as a planned public follow-up).
+            </p>
+        </section>
+
+        <!-- ────────── Section 2 — safe-to-trade live demo (CALIBRATED) ────────── -->
+        <section class="mb-14">
+            <div class="flex items-baseline justify-between mb-3">
+                <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-widest">safe-to-trade — live demo</h2>
+                <span class="text-xs text-slate-600 mono">XNYS · <span id="demo-timer">—</span></span>
+            </div>
+
+            <!-- Calibration banner — load-bearing -->
+            <div class="rounded-lg border border-amber-900/40 bg-amber-900/10 p-4 mb-5">
+                <p class="text-xs text-amber-200 leading-relaxed">
+                    <span class="font-semibold">This block is a client-side demonstration of the circuit-breaker logic.</span>
+                    It calls the public <span class="mono">/v5/demo</span> endpoint to fetch a signed market-state receipt, then derives the
+                    safe-to-trade decision in your browser using the same rule the worker applies
+                    (<span class="mono">status === 'OPEN'</span> &amp; <span class="mono">expires_at &gt; now()</span> within <span class="mono">max_age</span>).
+                    The <em>authoritative</em> signed safe-to-trade receipt is returned by the paid
+                    <a href="https://headlessoracle.com/v1/safe-to-trade" class="text-blue-400 hover:text-blue-300 mono">/v1/safe-to-trade</a>
+                    endpoint with the <span class="mono">safe</span> field signed into the canonical payload — see
+                    <a href="/v5/keys" class="text-blue-400 hover:text-blue-300 mono">/v5/keys → safe_to_trade_fields</a>.
+                    A sample response from the real endpoint is shown below the demo. Verify any receipt yourself at
+                    <a href="/verify" class="text-blue-400 hover:text-blue-300">/verify</a> — no server needed.
+                </p>
+            </div>
+
+            <!-- Decision pill + signed receipt -->
+            <div class="grid lg:grid-cols-5 gap-5">
+                <!-- Decision side -->
+                <div class="lg:col-span-2">
+                    <div class="rounded-xl border border-slate-700 bg-slate-900/60 p-5">
+                        <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Client-derived decision</div>
+                        <div class="text-xs text-slate-600 mb-4 mono">venue=XNYS · max_age=30s</div>
+                        <div id="decision-pill" class="text-3xl font-bold mono mb-3 text-slate-500">—</div>
+                        <div id="decision-reasons" class="text-xs text-slate-400 leading-relaxed">Loading signed market-state receipt…</div>
+                        <hr class="border-slate-700 my-4">
+                        <div class="text-xs text-slate-500 leading-relaxed">
+                            <div class="mono text-slate-400">
+                                <span class="text-slate-500">status:</span>     <span id="d-status">—</span><br>
+                                <span class="text-slate-500">issued_at:</span>  <span id="d-issued">—</span><br>
+                                <span class="text-slate-500">expires_at:</span> <span id="d-expires">—</span><br>
+                                <span class="text-slate-500">age:</span>        <span id="d-age">—</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Signed receipt side -->
+                <div class="lg:col-span-3">
+                    <div class="bg-slate-900 rounded-xl border border-slate-700 overflow-hidden">
+                        <div class="px-4 py-2 border-b border-slate-700 flex items-center justify-between">
+                            <span class="text-xs mono text-slate-500">GET /v5/demo?mic=XNYS</span>
+                            <a href="/verify" class="text-xs text-blue-400 hover:text-blue-300 transition">Verify →</a>
+                        </div>
+                        <pre id="demo-receipt" class="text-xs mono text-blue-300 p-5 overflow-x-auto leading-relaxed">Loading…</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Authoritative endpoint sample (calibration: this is what the real signed receipt looks like) -->
+            <div class="mt-6">
+                <div class="flex items-baseline justify-between mb-2">
+                    <p class="text-xs text-slate-500 uppercase tracking-widest">Authoritative endpoint &mdash; signed <span class="mono">safe</span> field</p>
+                    <span class="text-xs text-slate-600 mono">paid · $0.001 USDC via x402</span>
+                </div>
+                <div class="bg-slate-900 rounded-xl border border-slate-700 overflow-hidden">
+                    <div class="px-4 py-2 border-b border-slate-700 flex items-center justify-between">
+                        <span class="text-xs mono text-slate-500">GET /v1/safe-to-trade?venue=XNYS&amp;max_age=30</span>
+                        <a href="/docs#safe-to-trade" class="text-xs text-blue-400 hover:text-blue-300 transition">Docs →</a>
+                    </div>
+<pre class="text-xs mono text-slate-400 p-5 overflow-x-auto leading-relaxed">{
+  "receipt_id":     "&lt;uuid&gt;",
+  "issued_at":      "2026-06-16T08:28:36.582Z",
+  "expires_at":     "2026-06-16T08:29:36.582Z",
+  "issuer":         "headlessoracle.com",
+  "venue":          "XNYS",
+  "venue_status":   "CLOSED",
+  "venue_source":   "SCHEDULE",
+  "instrument":     null,
+  "cross_venue":    null,
+  "max_age":        30,
+  "safe":           false,
+  "reasons":        ["VENUE_NOT_OPEN"],
+  "receipt_mode":   "live",
+  "schema_version": "v5.0",
+  "public_key_id":  "key_2026_v1",
+  "signature":      "&lt;ed25519-hex&gt;"
+}</pre>
+                </div>
+                <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                    Fields above are signed into the canonical Ed25519 payload — see
+                    <a href="/v5/keys" class="text-blue-400 hover:text-blue-300 mono">canonical_payload_spec.safe_to_trade_fields</a>.
+                    Consumers reconstruct the canonical payload from these fields, then verify the signature against the public key in
+                    <a href="/.well-known/oracle-keys.json" class="text-blue-400 hover:text-blue-300 mono">/.well-known/oracle-keys.json</a>.
+                </p>
+            </div>
+        </section>
+
+        <!-- ────────── Section 3 — Recent halts (named follow-up, NOT faked) ────────── -->
+        <section id="halts" class="mb-14">
+            <div class="flex items-baseline justify-between mb-3">
+                <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-widest">Recent halts</h2>
+                <span class="text-xs text-slate-600 mono">planned follow-up</span>
+            </div>
+            <div class="placeholder-block rounded-xl border border-slate-700 p-6">
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-slate-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                    <div>
+                        <p class="text-sm font-semibold text-white mb-1">Public read-only halt-history endpoint — not yet shipped</p>
+                        <p class="text-xs text-slate-400 leading-relaxed mb-3">
+                            The signed halt archive is the moat. Surfacing it publicly is high-value but requires a new
+                            unauthenticated worker endpoint that returns the last N halt events with their signed receipts
+                            (the existing <span class="mono">/v5/archive</span> and <span class="mono">/v1/halts</span> are auth-gated).
+                            We do not fake or style-fill this section while that endpoint is being designed —
+                            an invented halt list is worse than no halt list.
+                        </p>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            Named follow-up: <span class="font-mono text-slate-400">add /v1/halts/recent (public, read-only) to the worker</span>,
+                            returning the most recent halt events with their issuer-signed receipts and a Merkle anchor into the daily attestation digest.
+                            This dashboard will populate the block from that endpoint when it ships.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ────────── How an agent would use this ────────── -->
+        <section class="mb-12">
+            <div class="mb-3">
+                <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-widest">How an agent consumes this</h2>
+            </div>
+            <div class="bg-slate-900 rounded-xl border border-slate-700 overflow-hidden">
+                <div class="px-4 py-2 border-b border-slate-700">
+                    <span class="text-xs mono text-slate-500">fail-closed pre-execution gate</span>
+                </div>
+<pre class="text-xs mono text-blue-300 p-5 overflow-x-auto leading-relaxed"># 1. Fetch the authoritative signed safe-to-trade receipt (paid, x402)
+r = client.get("/v1/safe-to-trade", params={"venue":"XNYS","max_age":30})
+
+# 2. Verify the Ed25519 signature against canonical_payload_spec.safe_to_trade_fields
+assert verify_ed25519(r, oracle_public_key)
+
+# 3. Treat anything but safe=true as a halt. UNKNOWN = CLOSED. Always.
+if not r["safe"]:
+    halt(reason=r["reasons"])   # fail-closed
+else:
+    execute_trade()             # only path to execution</pre>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-slate-800 py-10 text-center text-slate-600 text-xs">
+        <div class="flex flex-wrap justify-center gap-6 mb-2">
+            <a href="/" class="hover:text-white transition">Home</a>
+            <a href="/dashboard" class="hover:text-white transition">Dashboard</a>
+            <a href="/status" class="hover:text-white transition">Status</a>
+            <a href="/docs" class="hover:text-white transition">Docs</a>
+            <a href="/pricing" class="hover:text-white transition">Pricing</a>
+            <a href="/standards" class="hover:text-white transition">Standards</a>
+            <a href="/blog" class="hover:text-white transition">Blog</a>
+            <a href="/llms.txt" class="hover:text-white transition">llms.txt</a>
+            <a href="/terms" class="hover:text-white transition">Terms</a>
+            <a href="/privacy" class="hover:text-white transition">Privacy</a>
+            <a href="https://github.com/LembaGang" class="hover:text-white transition" target="_blank" rel="noopener">GitHub</a>
+            <a href="mailto:mike@headlessoracle.com" class="hover:text-white transition">mike@headlessoracle.com</a>
+        </div>
+        <p>Headless Oracle V5 · Ed25519 signed · Fail-closed · 28 exchanges</p>
+    </footer>
+
+    <script>
+    const API = 'https://headlessoracle.com';
+
+    // 28 venues, grouped — same shape as status.html so the labels are consistent.
+    const REGIONS = [
+        {
+            id: 'americas', label: 'Americas',
+            exchanges: [
+                { mic: 'XNYS', name: 'New York Stock Exchange' },
+                { mic: 'XNAS', name: 'NASDAQ' },
+                { mic: 'XCBO', name: 'Cboe Options Exchange' },
+                { mic: 'XCBT', name: 'CME Futures (overnight)' },
+                { mic: 'XNYM', name: 'NYMEX (overnight)' },
+                { mic: 'XBSP', name: 'B3 (Sao Paulo)' },
+            ],
+        },
+        {
+            id: 'europe', label: 'Europe',
+            exchanges: [
+                { mic: 'XLON', name: 'London Stock Exchange' },
+                { mic: 'XPAR', name: 'Euronext Paris' },
+                { mic: 'XSWX', name: 'SIX Swiss Exchange' },
+                { mic: 'XMIL', name: 'Borsa Italiana' },
+                { mic: 'XHEL', name: 'Nasdaq Helsinki' },
+                { mic: 'XSTO', name: 'Nasdaq Stockholm' },
+                { mic: 'XIST', name: 'Borsa Istanbul' },
+            ],
+        },
+        {
+            id: 'middle-east-africa', label: 'Middle East & Africa',
+            exchanges: [
+                { mic: 'XSAU', name: 'Saudi Exchange (Tadawul)' },
+                { mic: 'XDFM', name: 'Dubai Financial Market' },
+                { mic: 'XJSE', name: 'Johannesburg Stock Exchange' },
+            ],
+        },
+        {
+            id: 'asia', label: 'Asia',
+            exchanges: [
+                { mic: 'XSHG', name: 'Shanghai Stock Exchange' },
+                { mic: 'XSHE', name: 'Shenzhen Stock Exchange' },
+                { mic: 'XHKG', name: 'Hong Kong Exchange' },
+                { mic: 'XJPX', name: 'Tokyo (Japan Exchange Group)' },
+                { mic: 'XKRX', name: 'Korea Exchange' },
+                { mic: 'XBOM', name: 'BSE (Bombay)' },
+                { mic: 'XNSE', name: 'National Stock Exchange of India' },
+                { mic: 'XSES', name: 'Singapore Exchange' },
+            ],
+        },
+        {
+            id: 'pacific', label: 'Pacific',
+            exchanges: [
+                { mic: 'XASX', name: 'Australian Securities Exchange' },
+                { mic: 'XNZE', name: 'New Zealand Exchange' },
+            ],
+        },
+        {
+            id: 'crypto', label: 'Crypto (24/7)',
+            exchanges: [
+                { mic: 'XCOI', name: 'Coinbase' },
+                { mic: 'XBIN', name: 'Binance' },
+            ],
+        },
+    ];
+
+    const ALL_MICS = REGIONS.flatMap((r) => r.exchanges.map((e) => e.mic));
+
+    // ───────────── Cross-venue grid via /v5/briefing ─────────────
+    async function refreshBriefing() {
+        try {
+            const t0 = performance.now();
+            const res = await fetch(API + '/v5/briefing', { cache: 'no-store' });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const b = await res.json();
+            const latency = Math.round(performance.now() - t0);
+            renderBriefing(b, latency);
+            return true;
+        } catch (e) {
+            renderBriefingError(e);
+            return false;
+        }
+    }
+
+    function renderBriefing(b, latency) {
+        const openSet  = new Set(b.markets_open_now    || []);
+        const closedSet = new Set(b.markets_closed_now  || []);
+        const lunchSet = new Set(b.markets_in_lunch_break || []);
+        const holidayMics = new Set(
+            (b.holidays_today || []).map((h) => typeof h === 'string' ? h : (h && h.mic))
+        );
+
+        // Summary
+        document.getElementById('cnt-open').textContent     = openSet.size;
+        document.getElementById('cnt-closed').textContent   = closedSet.size + lunchSet.size;
+        document.getElementById('cnt-lunch').textContent    = lunchSet.size;
+        document.getElementById('cnt-holiday').textContent  = holidayMics.size;
+
+        // Build region groups
+        const upcomingOpensByMic = {};
+        for (const u of (b.upcoming_opens || []))  upcomingOpensByMic[u.mic] = u;
+        const upcomingClosesByMic = {};
+        for (const u of (b.upcoming_closes || [])) upcomingClosesByMic[u.mic] = u;
+
+        const grid = document.getElementById('venue-grid');
+        grid.innerHTML = '';
+        for (const region of REGIONS) {
+            const wrap = document.createElement('div');
+            wrap.innerHTML = '<div class="text-xs text-slate-500 uppercase tracking-widest mb-2 mono">' + region.label + '</div>';
+            const cards = document.createElement('div');
+            cards.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2';
+            for (const ex of region.exchanges) {
+                let pillClass = 'pill-closed'; let label = 'CLOSED'; let dotClass = 'dot-grey';
+                if (openSet.has(ex.mic))       { pillClass = 'pill-open';   label = 'OPEN';   dotClass = 'dot-green animate-dot'; }
+                else if (lunchSet.has(ex.mic)) { pillClass = 'pill-lunch';  label = 'LUNCH';  dotClass = 'dot-yellow animate-dot'; }
+                else if (holidayMics.has(ex.mic)){ pillClass = 'pill-unknown'; label='HOLIDAY'; dotClass = 'dot-yellow'; }
+
+                const nextEvent = openSet.has(ex.mic)
+                    ? upcomingClosesByMic[ex.mic]
+                    : upcomingOpensByMic[ex.mic];
+                const nextLabel = nextEvent
+                    ? (openSet.has(ex.mic) ? 'closes' : 'opens') + ' in ' + formatMinutes(nextEvent.in_minutes)
+                    : '';
+
+                const card = document.createElement('div');
+                card.className = 'rounded-lg border border-slate-700 bg-slate-800/30 p-3';
+                card.innerHTML =
+                    '<div class="flex items-center justify-between gap-2">'
+                  +   '<div class="min-w-0">'
+                  +     '<div class="flex items-center gap-2">'
+                  +       '<span class="w-2 h-2 rounded-full ' + dotClass + ' inline-block flex-shrink-0"></span>'
+                  +       '<span class="mono text-xs text-slate-300 truncate">' + ex.mic + '</span>'
+                  +     '</div>'
+                  +     '<div class="text-xs text-slate-500 truncate mt-0.5">' + escapeHtml(ex.name) + '</div>'
+                  +     (nextLabel ? '<div class="text-[10px] text-slate-600 mono mt-0.5 truncate">' + nextLabel + '</div>' : '')
+                  +   '</div>'
+                  +   '<span class="mono text-[10px] px-2 py-0.5 rounded ' + pillClass + ' flex-shrink-0">' + label + '</span>'
+                  + '</div>';
+                cards.appendChild(card);
+            }
+            wrap.appendChild(cards);
+            grid.appendChild(wrap);
+        }
+
+        // Last updated
+        document.getElementById('last-updated').textContent =
+            'Last refresh: ' + new Date(b.briefing_time_utc).toISOString() + ' · ' + latency + ' ms';
+
+        // Global badge
+        const badge = document.getElementById('global-status-badge');
+        if (openSet.size > 0) {
+            badge.className = 'font-mono px-3 py-1 rounded-full pill-open';
+            badge.textContent = openSet.size + ' OPEN';
+        } else {
+            badge.className = 'font-mono px-3 py-1 rounded-full pill-closed';
+            badge.textContent = 'ALL CLOSED';
+        }
+    }
+
+    function renderBriefingError(e) {
+        const grid = document.getElementById('venue-grid');
+        grid.innerHTML = '<div class="rounded-lg border border-red-900/40 bg-red-900/10 p-4 text-xs text-red-300 mono">briefing fetch failed: ' + escapeHtml(String(e && e.message || e)) + '</div>';
+        const badge = document.getElementById('global-status-badge');
+        badge.className = 'font-mono px-3 py-1 rounded-full pill-halted';
+        badge.textContent = 'API ERROR';
+    }
+
+    // ───────────── safe-to-trade DEMO (client-side logic over /v5/demo) ─────────────
+    const MAX_AGE_DEMO_SECONDS = 30;
+
+    async function refreshDemo() {
+        try {
+            const res = await fetch(API + '/v5/demo?mic=XNYS', { cache: 'no-store' });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const r = await res.json();
+            // /v5/demo returns the receipt at the top level AND nested under r.receipt.
+            // Use the top-level fields.
+            renderDemo(r);
+        } catch (e) {
+            renderDemoError(e);
+        }
+    }
+
+    function renderDemo(r) {
+        // Show the signed receipt
+        document.getElementById('demo-receipt').textContent = JSON.stringify(r, null, 2);
+
+        // Derive the safe-to-trade decision client-side using the SAME rule the worker applies.
+        const status = r.status || 'UNKNOWN';
+        const issued = r.issued_at ? new Date(r.issued_at) : null;
+        const expires = r.expires_at ? new Date(r.expires_at) : null;
+        const now = new Date();
+        const ageSeconds = issued ? Math.round((now.getTime() - issued.getTime()) / 1000) : null;
+        const expired   = expires ? (now.getTime() > expires.getTime()) : true;
+        const tooStale  = ageSeconds !== null && ageSeconds > MAX_AGE_DEMO_SECONDS;
+
+        const reasons = [];
+        if (status !== 'OPEN') reasons.push('VENUE_NOT_OPEN');
+        if (expired)           reasons.push('RECEIPT_EXPIRED');
+        if (tooStale)          reasons.push('RECEIPT_TOO_STALE');
+
+        const safe = reasons.length === 0;
+
+        // Decision pill
+        const pill = document.getElementById('decision-pill');
+        if (safe) {
+            pill.textContent = 'safe = true';
+            pill.className = 'text-3xl font-bold mono mb-3 text-green-400';
+        } else {
+            pill.textContent = 'safe = false';
+            pill.className = 'text-3xl font-bold mono mb-3 text-orange-400';
+        }
+
+        // Reasons
+        const reasonsEl = document.getElementById('decision-reasons');
+        if (safe) {
+            reasonsEl.innerHTML = 'XNYS status is OPEN and the signed receipt is fresh (issued < 30s ago, not past <span class="mono">expires_at</span>).';
+        } else {
+            reasonsEl.innerHTML = '<div class="mb-1">Reasons (fail-closed):</div><ul class="list-disc list-inside text-xs text-orange-300 mono">'
+                + reasons.map((r) => '<li>' + r + '</li>').join('')
+                + '</ul>';
+        }
+
+        // Detail fields
+        document.getElementById('d-status').textContent  = status;
+        document.getElementById('d-issued').textContent  = r.issued_at  || '—';
+        document.getElementById('d-expires').textContent = r.expires_at || '—';
+        document.getElementById('d-age').textContent     = ageSeconds === null ? '—' : (ageSeconds + 's');
+
+        document.getElementById('demo-timer').textContent =
+            'fetched ' + new Date().toISOString();
+    }
+
+    function renderDemoError(e) {
+        document.getElementById('demo-receipt').textContent =
+            'demo fetch failed: ' + String(e && e.message || e);
+        const pill = document.getElementById('decision-pill');
+        pill.textContent = 'safe = unknown';
+        pill.className = 'text-3xl font-bold mono mb-3 text-orange-400';
+        document.getElementById('decision-reasons').innerHTML =
+            'Receipt unreachable. UNKNOWN = CLOSED under the fail-closed contract.';
+    }
+
+    // ───────────── helpers ─────────────
+    function formatMinutes(m) {
+        if (m == null || isNaN(m)) return '';
+        if (m < 60) return m + 'm';
+        if (m < 60 * 24) return Math.floor(m / 60) + 'h ' + (m % 60) + 'm';
+        return Math.floor(m / (60 * 24)) + 'd';
+    }
+
+    function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, (c) => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        })[c]);
+    }
+
+    // ───────────── boot + polling ─────────────
+    async function refreshAll() {
+        await Promise.all([refreshBriefing(), refreshDemo()]);
+    }
+
+    refreshAll();
+    setInterval(refreshAll, 60000);
+    </script>
+
+</body>
+</html>

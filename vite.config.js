@@ -17,6 +17,7 @@ export default defineConfig({
         blog: resolve(__dirname, 'blog.html'),
         standards: resolve(__dirname, 'standards.html'),
         haltGate: resolve(__dirname, 'halt-gate.html'),
+        dashboard: resolve(__dirname, 'dashboard.html'),
       },
     },
   },
