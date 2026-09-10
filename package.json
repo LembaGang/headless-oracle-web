@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy": "vite build && npx wrangler pages deploy dist --project-name headless-oracle-web"
+    "check:prices": "node scripts/check-prices.mjs",
+    "deploy": "vite build && npm run check:prices && npx wrangler pages deploy dist --project-name headless-oracle-web"
   },
   "devDependencies": {
     "vite": "^7.3.1"
