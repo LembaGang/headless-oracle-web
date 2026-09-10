@@ -8,15 +8,22 @@
  * The worker is the single source of truth for what a plan actually costs; this script
  * refuses to let a page ship that disagrees with it.
  *
+ * The API serves its offerings in two shapes and this reads both:
+ *   api.tiers[]            {id, price_usd|price_usdc, price_label, calls_per_day}
+ *   api.referee.services[] {plan, name, usd, cycle}   — plus referee.neutrality and
+ *                                                       referee.introductory_until
+ *
  * Three states, three exit codes:
  *   0  MATCH                          — every plan the API knows agrees with the page
  *   1  MISMATCH <field> page=<a> api=<b>  — first disagreement, named
  *   3  REFEREE_SECTION_ABSENT_FROM_API — the six referee services are on the page but
- *                                        the API does not sell them yet. Not a
- *                                        mismatch. Still blocks publish: shipping a
- *                                        page that advertises services the API cannot
+ *                                        the API carries no referee.services[] block.
+ *                                        Not a mismatch. Still blocks publish: shipping
+ *                                        a page that advertises services the API cannot
  *                                        sell is the worse failure. The gate opens by
- *                                        itself once the worker deploys.
+ *                                        itself once the worker deploys. A referee
+ *                                        block that is PRESENT but missing one of the
+ *                                        six is a mismatch, not an absence.
  *   2  usage / fetch / parse error
  *
  * Usage:
@@ -146,6 +153,44 @@ function apiPrice(tier) {
   return null;
 }
 
+/**
+ * The referee services do not ship as tiers. The worker serves them under
+ * `referee.services[]` as {plan, name, usd, cycle}, where `usd` is a decimal string
+ * ("2500.00") and `cycle` is null for a one-time charge or {interval, frequency} for a
+ * subscription. Normalise them onto the same {price, cycle} shape the tier comparison
+ * already uses, so every existing check applies to the six unchanged.
+ *
+ * A frequency other than 1 is deliberately NOT flattened to the bare interval: an API
+ * billing every 3 months yields "3-month", which will not match a page saying "month".
+ * That is a real disagreement and should be loud.
+ */
+function refereeCycle(service) {
+  if (service.cycle === null || service.cycle === undefined) return 'one-time';
+  const { interval, frequency } = service.cycle;
+  if (frequency === undefined || frequency === null || Number(frequency) === 1) {
+    return String(interval);
+  }
+  return `${frequency}-${interval}`;
+}
+
+/** Unified plan -> {price, cycle, source} map across tiers[] and referee.services[]. */
+function buildApiPlans(api, refereeBlock) {
+  const byPlan = new Map();
+  for (const tier of api.tiers) {
+    byPlan.set(tier.id, { price: apiPrice(tier), cycle: apiCycle(tier), source: 'tiers' });
+  }
+  if (refereeBlock) {
+    for (const service of refereeBlock.services) {
+      byPlan.set(service.plan, {
+        price: money(service.usd),
+        cycle: refereeCycle(service),
+        source: 'referee.services',
+      });
+    }
+  }
+  return byPlan;
+}
+
 async function main() {
   const pagePath = resolve(arg('page', DEFAULT_PAGE));
   const apiUrl = arg('api', DEFAULT_API);
@@ -170,6 +215,12 @@ async function main() {
   const tiers = Array.isArray(api.tiers) ? api.tiers : [];
   if (tiers.length === 0) fail(EXIT_ERROR, `ERROR ${apiUrl} carried no tiers`);
 
+  // The referee block is optional by design: its absence is state 3, not an error.
+  const refereeBlock =
+    api.referee && Array.isArray(api.referee.services) && api.referee.services.length > 0
+      ? api.referee
+      : null;
+
   const pageItems = parsePage(html);
   if (pageItems.length === 0) {
     fail(EXIT_ERROR, `ERROR no data-price-item elements found in ${pagePath}`);
@@ -182,13 +233,52 @@ async function main() {
     fail(EXIT_MISMATCH, `MISMATCH price_id_leaked page=${bad} api=<worker holds price ids, page must not>`);
   }
 
+  // The rule is checked against two independent authorities: the constant above (which
+  // catches the API and the page drifting together) and the worker's own
+  // referee.neutrality (which catches the page and the constant drifting together).
+  // Either direction is a mismatch.
   if (!html.includes(NEUTRALITY_RULE)) {
-    fail(EXIT_MISMATCH, 'MISMATCH neutrality_rule page=<altered or absent> api=<canonical string>');
+    fail(EXIT_MISMATCH, 'MISMATCH neutrality_rule page=<altered or absent> api=<canonical constant>');
+  }
+
+  if (refereeBlock) {
+    if (typeof refereeBlock.neutrality !== 'string' || refereeBlock.neutrality.length === 0) {
+      fail(EXIT_MISMATCH, 'MISMATCH neutrality_rule page=<present> api=<referee.neutrality missing>');
+    }
+    if (refereeBlock.neutrality !== NEUTRALITY_RULE) {
+      fail(
+        EXIT_MISMATCH,
+        `MISMATCH neutrality_rule page=<canonical constant> api=<differs from constant, ${refereeBlock.neutrality.length} chars>`,
+      );
+    }
+    if (!html.includes(refereeBlock.neutrality)) {
+      fail(EXIT_MISMATCH, 'MISMATCH neutrality_rule page=<does not carry api referee.neutrality> api=<referee.neutrality>');
+    }
   }
 
   for (const plan of REFEREE_PLANS) {
     if (!pageItems.some((i) => i.plan === plan)) {
       fail(EXIT_MISMATCH, `MISMATCH referee_service_missing page=<absent> api=${plan}`);
+    }
+  }
+
+  // --- Introductory window ------------------------------------------------------------
+  // The page prints "Introductory until 31 December 2026" beside every referee price.
+  // If the worker moves the window and the page does not, the page is selling on a date
+  // that has passed.
+
+  if (refereeBlock) {
+    const apiUntil = refereeBlock.introductory_until;
+    if (!apiUntil) {
+      fail(EXIT_MISMATCH, 'MISMATCH introductory_until page=<present> api=<referee.introductory_until missing>');
+    }
+    for (const item of pageItems.filter((i) => REFEREE_PLANS.includes(i.plan))) {
+      if (item.introductoryUntil !== apiUntil) {
+        fail(
+          EXIT_MISMATCH,
+          `MISMATCH introductory_until page=${item.introductoryUntil || '<missing>'} api=${apiUntil} (plan ${item.plan})`,
+        );
+      }
     }
   }
 
@@ -210,32 +300,45 @@ async function main() {
 
   // --- Page vs API ------------------------------------------------------------------
 
-  const apiByPlan = new Map(tiers.map((t) => [t.id, t]));
+  const apiByPlan = buildApiPlans(api, refereeBlock);
+  const tierById = new Map(tiers.map((t) => [t.id, t]));
   const absentFromApi = [];
 
   for (const item of pageItems) {
-    const tier = apiByPlan.get(item.plan);
-    if (!tier) {
+    const offering = apiByPlan.get(item.plan);
+    if (!offering) {
       absentFromApi.push(item.plan);
       continue;
     }
-    const expectedPrice = apiPrice(tier);
-    if (expectedPrice !== item.price) {
-      fail(EXIT_MISMATCH, `MISMATCH ${item.plan}.price page=${item.price} api=${expectedPrice}`);
+    if (offering.price !== item.price) {
+      fail(EXIT_MISMATCH, `MISMATCH ${item.plan}.price page=${item.price} api=${offering.price}`);
     }
-    const expectedCycle = apiCycle(tier);
-    if (expectedCycle !== item.cycle) {
-      fail(EXIT_MISMATCH, `MISMATCH ${item.plan}.cycle page=${item.cycle} api=${expectedCycle}`);
+    if (offering.cycle !== item.cycle) {
+      fail(EXIT_MISMATCH, `MISMATCH ${item.plan}.cycle page=${item.cycle} api=${offering.cycle}`);
     }
     // B-113: the allowance is a literal on the page; the worker derives it from one
-    // constant. This is what stops the two drifting apart.
-    if (item.callsPerDay !== null && tier.calls_per_day !== undefined && tier.calls_per_day !== null) {
+    // constant. This is what stops the two drifting apart. Tier-only — referee services
+    // carry no per-day allowance.
+    const tier = tierById.get(item.plan);
+    if (tier && item.callsPerDay !== null && tier.calls_per_day !== undefined && tier.calls_per_day !== null) {
       if (Number(item.callsPerDay) !== Number(tier.calls_per_day)) {
         fail(
           EXIT_MISMATCH,
           `MISMATCH ${item.plan}.calls_per_day page=${item.callsPerDay} api=${tier.calls_per_day}`,
         );
       }
+    }
+  }
+
+  // A referee block that is present but incomplete is a disagreement, not an absence.
+  // Only a wholly absent referee block is state 3.
+  if (refereeBlock) {
+    const missing = absentFromApi.filter((p) => REFEREE_PLANS.includes(p));
+    if (missing.length > 0) {
+      fail(
+        EXIT_MISMATCH,
+        `MISMATCH referee_service_missing_from_api page=${missing[0]} api=<referee.services present but does not offer it>`,
+      );
     }
   }
 
@@ -252,9 +355,9 @@ async function main() {
       lines: [
         `REFEREE_SECTION_ABSENT_FROM_API missing=${absentFromApi.join(',')}`,
         `  ${checked.length} API plans checked and in agreement: ${checked.join(', ')}`,
-        `  The six referee services are on the page and priced, but ${apiUrl} does not`,
-        '  offer them yet. Publish stays blocked until the worker deploy lands, so that',
-        '  the page and the API go live together.',
+        `  The six referee services are on the page and priced, but ${apiUrl} carries`,
+        '  no referee.services[] block. Publish stays blocked until the worker deploy',
+        '  lands, so that the page and the API go live together.',
       ],
     };
   }
