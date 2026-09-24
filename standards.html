@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Standards & Compliance | Headless Oracle</title>
-    <meta name="description" content="Headless Oracle is regulatory-aligned infrastructure for the agentic economy — Signed Market-State Attestations (SMAs) meeting SEC/CFTC Technical Framework requirements for cryptographic attestation of tokenized collateral.">
+    <meta name="description" content="Signed Market-State Attestations (SMAs) for autonomous agents: Ed25519-signed, ISO 10383-keyed, fail-closed, verifiable from the bytes. The regulator documents that shaped the design are cited here; none has reviewed the service.">
     <meta name="robots" content="index, follow">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://headlessoracle.com/standards">
     <meta property="og:title" content="Standards & Compliance | Headless Oracle">
-    <meta property="og:description" content="Signed Market-State Attestations — Ed25519, ISO 10383, fail-closed, multi-oracle verifiable. Regulatory-aligned infrastructure for autonomous agents.">
+    <meta property="og:description" content="Signed Market-State Attestations — Ed25519, ISO 10383, fail-closed, multi-oracle verifiable. Open-standards infrastructure for autonomous agents.">
     <meta property="og:image" content="https://headlessoracle.com/og-image.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Standards & Compliance | Headless Oracle">
-    <meta name="twitter:description" content="Regulatory-aligned market attestations for agents — SEC/CFTC framework, Ed25519, multi-oracle consensus.">
+    <meta name="twitter:description" content="Signed market attestations for agents — Ed25519, ISO 10383, multi-oracle consensus, verifiable from the bytes.">
     <meta name="twitter:image" content="https://headlessoracle.com/og-image.png">
     <link rel="canonical" href="https://headlessoracle.com/standards">
     <link rel="alternate" type="application/json" href="/openapi.json" title="OpenAPI 3.1 specification">
@@ -50,13 +50,13 @@
         <!-- Hero -->
         <div class="mb-14">
             <div class="flex flex-wrap gap-2 mb-4">
-                <span class="text-xs font-mono px-2 py-1 rounded-full bg-blue-900/40 border border-blue-500/30 text-blue-400 font-semibold">Regulatory-aligned</span>
+                <span class="text-xs font-mono px-2 py-1 rounded-full bg-blue-900/40 border border-blue-500/30 text-blue-400 font-semibold">Recomputable</span>
                 <span class="text-xs font-mono px-2 py-1 rounded-full bg-indigo-900/40 border border-indigo-500/30 text-indigo-300 font-semibold">Ed25519</span>
                 <span class="text-xs font-mono px-2 py-1 rounded-full bg-slate-700/60 border border-slate-600/40 text-slate-300 font-semibold">ISO 10383</span>
                 <span class="text-xs font-mono px-2 py-1 rounded-full bg-green-900/40 border border-green-500/30 text-green-400 font-semibold">Fail-closed</span>
             </div>
             <h1 class="text-5xl font-bold text-white mb-4 tracking-tight">Standards &amp; Compliance</h1>
-            <p class="text-xl text-slate-400 max-w-3xl">Headless Oracle is cryptographically verifiable market-state infrastructure, built to meet emerging regulatory requirements for autonomous agents and tokenized collateral.</p>
+            <p class="text-xl text-slate-400 max-w-3xl">Headless Oracle is cryptographically verifiable market-state infrastructure, built so that venue state can be checked from the bytes by anyone holding the public key. The regulator documents that shaped its design are cited below.</p>
         </div>
 
         <!-- Table of contents -->
@@ -64,7 +64,7 @@
             <p class="text-xs text-slate-500 font-mono uppercase tracking-wider mb-3">On this page</p>
             <div class="grid sm:grid-cols-2 gap-2">
                 <a href="#sma" class="text-blue-400 hover:text-blue-300 transition">&rarr; What is an SMA?</a>
-                <a href="#regulatory" class="text-blue-400 hover:text-blue-300 transition">&rarr; Regulatory alignment</a>
+                <a href="#regulatory" class="text-blue-400 hover:text-blue-300 transition">&rarr; Regulatory references</a>
                 <a href="#multi-oracle" class="text-blue-400 hover:text-blue-300 transition">&rarr; Multi-oracle verification</a>
                 <a href="#open-standards" class="text-blue-400 hover:text-blue-300 transition">&rarr; Open standards &amp; family specs</a>
                 <a href="#exchanges" class="text-blue-400 hover:text-blue-300 transition">&rarr; 28 global exchanges</a>
@@ -84,10 +84,10 @@
             </div>
         </section>
 
-        <!-- Regulatory alignment -->
+        <!-- Regulatory references -->
         <section id="regulatory" class="mb-16">
-            <h2 class="text-3xl font-bold text-white mb-5 tracking-tight">Regulatory Alignment</h2>
-            <p class="text-slate-300 leading-relaxed mb-6">The SEC/CFTC Technical Framework for tokenized collateral and agent-driven settlement identifies cryptographic attestation of venue state as a core requirement. SMAs are designed to map one-to-one onto that requirement.</p>
+            <h2 class="text-3xl font-bold text-white mb-5 tracking-tight">Regulatory References</h2>
+            <p class="text-slate-300 leading-relaxed mb-6">Two regulator documents shaped this design and are cited here as references, not as approvals: <a href="https://www.cftc.gov/csl/25-39/download" class="text-blue-400 hover:text-blue-300 underline">CFTC Staff Letter 25-39</a> on tokenized collateral (December 2025) and the <a href="https://www.sec.gov/files/project-blueprint-tokenized-collateral-112725.pdf" class="text-blue-400 hover:text-blue-300 underline">SEC Crypto Task Force Project Blueprint on Tokenized Collateral</a> (November 2025). Both discuss cryptographic attestation and multiple independent oracles as architectural building blocks, and this operator took its direction from them. No regulator has reviewed or endorsed this service.</p>
 
             <div class="grid md:grid-cols-2 gap-5">
                 <div class="glass rounded-xl p-5">
@@ -113,7 +113,7 @@
             </div>
 
             <div class="mt-6 border border-slate-700 rounded-xl p-5 bg-slate-900/40 text-sm text-slate-400">
-                <strong class="text-white">Note on regulatory status:</strong> Headless Oracle is infrastructure, not a regulated financial institution. SMAs are a compliance <em>building block</em> — they give regulated parties the cryptographic evidence they need to demonstrate that a trading decision was made with reference to authentic, timely venue state. Consult your compliance counsel for how SMAs fit into your specific regulatory obligations.
+                <strong class="text-white">Note on regulatory status:</strong> Headless Oracle is infrastructure, not a regulated financial institution, and no regulator has reviewed or endorsed it. An SMA is evidence that a trading decision was made with reference to authentic, timely venue state; whether that evidence is useful under a given obligation is for the regulated party and its counsel to judge. Consult your compliance counsel for how SMAs fit into your specific regulatory obligations.
             </div>
         </section>
 
