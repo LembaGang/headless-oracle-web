@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "check:prices": "node scripts/check-prices.mjs",
-    "deploy": "vite build && npm run check:prices && npx wrangler pages deploy dist --project-name headless-oracle-web"
+    "check:banned": "node scripts/check-banned.mjs",
+    "deploy": "vite build && npm run check:banned && npm run check:prices && npx wrangler pages deploy dist --project-name headless-oracle-web"
   },
   "devDependencies": {
     "vite": "^7.3.1"
