@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * check-agent-discovery.mjs — publish gate for the homepage's agent discovery surface.
+ * check-agent-discovery.mjs: publish gate for the homepage's agent discovery surface.
  *
  * WHY THIS EXISTS: the `Link` header lives in public/_headers (static responses) and in
  * lib/agent-discovery.js (the Pages Function response). Two copies drift; this holds the
@@ -14,8 +14,8 @@
  * the page must appear in the Markdown. A page change not mirrored in the Markdown fails.
  *
  * Exit codes (the convention of check-banned.mjs):
- *   0  PASS      — every assertion holds
- *   1  MISMATCH  — every failed assertion is listed, then the gate fails
+ *   0  PASS      : every assertion holds
+ *   1  MISMATCH  : every failed assertion is listed, then the gate fails
  *   2  usage / read / fetch error
  *
  * Usage:
@@ -44,7 +44,7 @@ function read(path) {
   try {
     return readFileSync(path, 'utf8');
   } catch (e) {
-    throw new UsageError(`cannot read ${path} — run \`npm run build\` first (${e.code})`);
+    throw new UsageError(`cannot read ${path}: run \`npm run build\` first (${e.code})`);
   }
 }
 
@@ -235,6 +235,6 @@ try {
   lines.forEach((l) => console.log(l));
   process.exitCode = code;
 } catch (e) {
-  console.log(e instanceof UsageError ? `ERROR ${e.message}` : `ERROR unhandled — ${e.stack || e.message}`);
+  console.log(e instanceof UsageError ? `ERROR ${e.message}` : `ERROR unhandled: ${e.stack || e.message}`);
   process.exitCode = EXIT_ERROR;
 }

@@ -10,7 +10,8 @@
     "check:prices": "node scripts/check-prices.mjs",
     "check:banned": "node scripts/check-banned.mjs",
     "check:agent-discovery": "node scripts/check-agent-discovery.mjs",
-    "deploy": "vite build && npm run check:banned && npm run check:prices && npm run check:agent-discovery && npx wrangler pages deploy dist --project-name headless-oracle-web"
+    "check:live-links": "node scripts/check-live-links.mjs",
+    "deploy": "vite build && npm run check:banned && npm run check:prices && npm run check:agent-discovery && npm run check:live-links && npx wrangler pages deploy dist --project-name headless-oracle-web"
   },
   "devDependencies": {
     "vite": "^7.3.1"
