@@ -1,10 +1,1 @@
-{
-  "version": 1,
-  "include": ["/*"],
-  "exclude": [
-    "/*.xml",
-    "/*.txt",
-    "/*.json",
-    "/.well-known/*"
-  ]
-}
+{ "version": 1, "include": ["/"], "exclude": [] }
