@@ -758,5 +758,41 @@ if (r.status !== 'OPEN') return halt('Market not open — status: ' + r.status);
     </script>
     <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
     <script src="/js/paddle-init.js"></script>
+    <script>
+        // WebMCP: lets an in-browser agent call the public demo endpoint as a tool.
+        // Shape per the WebMCP draft, ModelContextTool dictionary (section 4.2.1).
+        (function registerWebMcpTool() {
+            const mc = document.modelContext || navigator.modelContext;
+            if (!mc || typeof mc.registerTool !== 'function') return;
+            try {
+                mc.registerTool({
+                    name: 'get_demo_market_status',
+                    description: 'Fetches a signed demo receipt (receipt_mode "demo") for one exchange from https://headlessoracle.com/v5/demo. ' +
+                        'The receipt status is OPEN, CLOSED, HALTED or UNKNOWN; treat UNKNOWN and HALTED as CLOSED. ' +
+                        'Error bodies from the API (for example UNKNOWN_MIC) are returned as the result.',
+                    inputSchema: {
+                        type: 'object',
+                        properties: {
+                            mic: {
+                                type: 'string',
+                                pattern: '^[A-Z]{4}$',
+                                description: 'ISO 10383 MIC, for example XNYS. Supported list: https://headlessoracle.com/v5/exchanges',
+                            },
+                        },
+                        required: ['mic'],
+                        additionalProperties: false,
+                    },
+                    // Resolves with the parsed body whatever the HTTP status, so an agent sees the
+                    // API's own error; only a network failure or an unparseable body rejects.
+                    execute: async ({ mic }, options) => {
+                        const res = await fetch(ORACLE_API + '/v5/demo?mic=' + encodeURIComponent(mic), { signal: options && options.signal });
+                        return await res.json();
+                    },
+                }).catch((e) => console.warn('WebMCP registerTool failed', e));
+            } catch (e) {
+                console.warn('WebMCP registerTool failed', e);
+            }
+        })();
+    </script>
 </body>
 </html>
