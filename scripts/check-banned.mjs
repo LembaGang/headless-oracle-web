@@ -11,7 +11,7 @@
  *
  * Matching is case-insensitive over each file's text with whitespace runs collapsed to
  * one space (and dropped after a hyphen), so a phrase wrapped across source lines is
- * still caught.
+ * still caught. Entries marked wholeWord only match when not flanked by a letter or digit.
  *
  * Every text file under dist/ is scanned (not just .html): meta tags, sitemap, robots
  * and JS bundles all reach crawlers and agents.
@@ -50,7 +50,11 @@ const BANNED = [
   ['tamper-proof', 'overclaim; signatures make tampering detectable, not impossible (directive floor)'],
   ['tamperproof', 'overclaim; spelling variant of tamper-proof (directive floor)'],
   ['the only signed receipt', 'uncalibrated exclusivity claim (directive floor)'],
+  // Whole-word: bare "a2a" turns up by chance inside hex hashes and Vite asset names.
+  ['A2A', 'Headless Oracle does not implement A2A; /standards claimed interoperability (3fb6c73)', { wholeWord: true }],
 ];
+
+const WORD_CHAR = /[a-z0-9]/;
 
 /** Binary assets carry no prose. Anything else is scanned. */
 const SKIP_EXT = new Set(['.png', '.jpg', '.jpeg', '.gif', '.webp', '.ico', '.avif', '.woff', '.woff2', '.ttf', '.otf', '.pdf', '.wasm']);
@@ -93,11 +97,12 @@ function findHits(text) {
   }
   const hay = collapsed.join('');
   const hits = [];
-  for (const [phrase, why] of BANNED) {
+  for (const [phrase, why, opts = {}] of BANNED) {
     const needle = phrase.toLowerCase();
     let i = hay.indexOf(needle);
     while (i !== -1) {
-      hits.push({ line: lineOf[i], phrase, why });
+      const bounded = !WORD_CHAR.test(hay[i - 1] ?? '') && !WORD_CHAR.test(hay[i + needle.length] ?? '');
+      if (!opts.wholeWord || bounded) hits.push({ line: lineOf[i], phrase, why });
       i = hay.indexOf(needle, i + 1);
     }
   }
