@@ -422,6 +422,30 @@
 
     </main>
 
+    <!-- Post-payment key dialog. Outside every data-price-item card on purpose:
+         check-prices parses the cards. All dynamic text is set with textContent. -->
+    <a id="ho-claim-reopen" href="#" class="hidden fixed bottom-6 right-6 z-40 px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold text-sm shadow-lg">Reopen your key</a>
+    <div id="ho-claim-overlay" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
+        <div id="ho-claim-dialog" role="dialog" aria-modal="true" aria-labelledby="ho-claim-heading" class="w-full max-w-lg max-h-full overflow-y-auto rounded-xl p-6 bg-slate-900 border border-slate-700 text-left">
+            <div class="flex justify-between items-start gap-4 mb-3">
+                <h2 id="ho-claim-heading" tabindex="-1" class="text-xl font-bold text-white focus:outline-none">Payment received</h2>
+                <button type="button" id="ho-claim-close" aria-label="Close" class="text-slate-400 hover:text-white text-2xl leading-none cursor-pointer">&times;</button>
+            </div>
+            <p id="ho-claim-status" aria-live="polite" class="text-sm text-slate-300 mb-3"></p>
+            <p id="ho-claim-message" class="hidden text-sm text-slate-300 mb-3"><span id="ho-claim-message-text"></span> <a id="ho-claim-mailto" href="mailto:mike@headlessoracle.com" class="text-blue-400 hover:text-blue-300 underline">Email mike@headlessoracle.com</a></p>
+            <div id="ho-claim-ready" class="hidden">
+                <pre id="ho-claim-key" class="text-sm text-green-400 font-mono break-all whitespace-pre-wrap bg-slate-950 border border-green-700/40 rounded-lg p-3 mb-3"></pre>
+                <div class="flex flex-wrap gap-3 mb-4">
+                    <button type="button" id="ho-claim-copy" class="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg font-semibold text-sm transition cursor-pointer">Copy key</button>
+                    <button type="button" id="ho-claim-download" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-semibold text-sm transition cursor-pointer">Download as a text file</button>
+                </div>
+                <pre id="ho-claim-instructions" class="text-xs text-slate-300 font-mono break-all whitespace-pre-wrap bg-slate-950 border border-slate-700 rounded-lg p-3 mb-3"></pre>
+                <p class="text-sm text-amber-400 mb-4">Keep this key private. Save it now: this page shows it for 24 hours.</p>
+                <button type="button" id="ho-claim-saved" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold text-sm transition cursor-pointer">I have saved my key</button>
+            </div>
+        </div>
+    </div>
+
     <footer class="border-t border-slate-800 bg-slate-900/50 mt-auto">
         <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <p class="text-sm text-slate-500">&copy; 2026 Headless Oracle.</p>
@@ -539,10 +563,17 @@
     }
 
     // --- Paddle Checkout ---
+    // The plan last clicked, so checkout.completed can tell a referee purchase (no key)
+    // from a key purchase. Empty on the _ptxn reopen, which is treated as a key purchase.
+    let lastPlan = '';
+    let lastBuyBtn = null;
+
     async function openPaddleCheckout(plan) {
         const btn = document.getElementById(plan + '-btn');
         const fallbackEl = document.getElementById(plan + '-fallback');
         const origText = btn.textContent;
+        lastPlan = plan;
+        lastBuyBtn = btn;
         btn.textContent = 'Loading checkout...';
         btn.disabled = true;
 
@@ -554,6 +585,18 @@
                 body: JSON.stringify({ plan: plan }),
             });
             const data = await res.json();
+
+            // Saved before the overlay or redirect, so the key can still be picked up
+            // if this tab reloads or comes back from the hosted checkout.
+            if (res.ok && typeof data.claim_token === 'string' && CLAIM_TOKEN_RE.test(data.claim_token)) {
+                saveClaim({
+                    claim_token: data.claim_token,
+                    plan: plan,
+                    transaction_id: data.transaction_id,
+                    started_at: Date.now(),
+                    paid: false,
+                });
+            }
 
             if (res.ok && data.transaction_id) {
                 // Use Paddle.js overlay checkout
@@ -574,8 +617,18 @@
             // If we got a SERVICE_UNAVAILABLE or CHECKOUT_FAILED, show fallback
             throw new Error(data.message || data.error || 'Checkout not available');
         } catch (e) {
+            if (plan === 'custody_90d' || plan === 'custody_1y') {
+                // Witness accounts cannot be bought with x402 or replaced by a free API key.
+                fallbackEl.innerHTML =
+                    '<div class="bg-slate-900 rounded-lg p-3 border border-slate-700">' +
+                    '<p>Card checkout did not open. Try again, or write to <a href="mailto:mike@headlessoracle.com" class="text-blue-400 hover:text-blue-300">mike@headlessoracle.com</a>.</p>' +
+                    '</div>';
+                fallbackEl.classList.remove('hidden');
+                btn.textContent = origText;
+                btn.disabled = false;
+                return;
+            }
             // Show fallback with x402 alternative + contact
-            const priceLabel = plan === 'credits' ? '$5' : plan === 'builder' ? '$99/mo' : '$299/mo';
             fallbackEl.innerHTML =
                 '<div class="bg-slate-900 rounded-lg p-3 border border-slate-700">' +
                 '<p class="text-amber-400 font-semibold mb-2">Card checkout loading &mdash; if it doesn\'t open:</p>' +
@@ -590,6 +643,254 @@
             btn.disabled = false;
         }
     }
+
+    // --- Key on screen after payment (POST /v5/claim) ---
+    // Key emails can fail to arrive, so the tab that started the checkout picks the key
+    // up itself. Only the claim token is stored (sessionStorage, this tab only); the key
+    // lives in memory and is fetched again after a reload. Nothing here is logged.
+    const CLAIM_KEY = 'ho_claim';
+    const CLAIM_TOKEN_RE = /^[0-9a-f]{64}$/;
+    const CLAIM_POLL_MS = 2000;
+    const CLAIM_404_GRACE_MS = 60 * 1000;
+    const CLAIM_GIVE_UP_MS = 5 * 60 * 1000;
+    const CLAIM_SILENT_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+    const NO_KEY_PLANS = ['conformance_entry', 'regrade', 'dispute', 'dispute_note'];
+
+    let claimMemo = null;     // used when sessionStorage throws
+    let claimReady = null;    // last ready response, memory only
+    let claimPollRun = 0;     // bumping this cancels any running poll
+    let claimModalShown = false;
+    let claimReturnFocus = null;
+
+    function loadClaim() {
+        try {
+            const raw = sessionStorage.getItem(CLAIM_KEY);
+            if (raw) {
+                const c = JSON.parse(raw);
+                if (c && typeof c.claim_token === 'string' && CLAIM_TOKEN_RE.test(c.claim_token)) return c;
+            }
+            return null;
+        } catch (e) {
+            return claimMemo;
+        }
+    }
+
+    function saveClaim(c) {
+        claimMemo = c;
+        try { sessionStorage.setItem(CLAIM_KEY, JSON.stringify(c)); } catch (e) { /* page variable only */ }
+    }
+
+    function clearClaim() {
+        claimMemo = null;
+        try { sessionStorage.removeItem(CLAIM_KEY); } catch (e) { /* nothing stored */ }
+    }
+
+    function claimEl(id) { return document.getElementById('ho-claim-' + id); }
+
+    // view: 'pending' | 'ready' | 'message'
+    function showClaimView(view, opts) {
+        opts = opts || {};
+        claimEl('heading').textContent = view === 'ready' ? 'Your key' : 'Payment received';
+        claimEl('status').textContent = opts.status || '';
+        claimEl('message').classList.toggle('hidden', view !== 'message');
+        claimEl('ready').classList.toggle('hidden', view !== 'ready');
+        if (view === 'message') {
+            claimEl('message-text').textContent = opts.text;
+            claimEl('mailto').href = 'mailto:mike@headlessoracle.com?subject=' +
+                encodeURIComponent('Key for transaction ' + (opts.txn || 'unknown'));
+        }
+        openClaimModal();
+    }
+
+    function openClaimModal() {
+        const overlay = claimEl('overlay');
+        if (overlay.classList.contains('hidden')) {
+            claimReturnFocus = lastBuyBtn || document.activeElement;
+            overlay.classList.remove('hidden');
+            claimEl('heading').focus();
+        }
+        claimModalShown = true;
+        document.getElementById('ho-claim-reopen').classList.add('hidden');
+    }
+
+    function closeClaimModal() {
+        claimEl('overlay').classList.add('hidden');
+        const reopen = document.getElementById('ho-claim-reopen');
+        // The claim survives a close; only "I have saved my key" clears it.
+        if (loadClaim() && claimModalShown) reopen.classList.remove('hidden');
+        const target = claimReturnFocus && document.body.contains(claimReturnFocus) ? claimReturnFocus
+            : (!reopen.classList.contains('hidden') ? reopen : null);
+        if (target) target.focus();
+    }
+
+    function instructionsText(ins) {
+        if (ins == null) return '';
+        if (typeof ins === 'string') return ins;
+        if (Array.isArray(ins)) return ins.map(instructionsText).join('\n');
+        if (typeof ins === 'object') {
+            return Object.keys(ins).map(function (k) {
+                const v = ins[k];
+                return k + ': ' + (v !== null && typeof v === 'object' ? JSON.stringify(v) : String(v));
+            }).join('\n');
+        }
+        return String(ins);
+    }
+
+    function showClaimReady(data) {
+        claimReady = data;
+        claimEl('key').textContent = data.key;
+        claimEl('instructions').textContent = instructionsText(data.instructions);
+        showClaimView('ready', { status: 'Your key is ready.' });
+    }
+
+    function showClaimTimeout(txn) {
+        showClaimView('message', {
+            txn: txn,
+            text: 'Your payment went through, but the key is taking longer than usual. Write to mike@headlessoracle.com with transaction ' +
+                (txn || 'from your Paddle receipt') + ' and you will get it today.',
+        });
+    }
+
+    // modal=true: the buyer has paid; show progress and the timeout message.
+    // modal=false: payment not confirmed in this tab; stay invisible unless the key is ready.
+    function startClaimPoll(claim, modal) {
+        const run = ++claimPollRun;
+        const startedAt = Date.now();
+        if (modal) showClaimView('pending', { status: 'Payment received. Activating your plan...' });
+
+        function giveUp() {
+            if (run !== claimPollRun) return;
+            if (modal) showClaimTimeout(claim.transaction_id);
+        }
+
+        async function tick() {
+            if (run !== claimPollRun) return;
+            if (Date.now() - startedAt >= CLAIM_GIVE_UP_MS) return giveUp();
+            let delay = CLAIM_POLL_MS;
+            try {
+                const res = await fetch(API + '/v5/claim', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ claim_token: claim.claim_token }),
+                    cache: 'no-store',
+                });
+                let data = {};
+                try { data = await res.json(); } catch (e) { data = {}; }
+                if (run !== claimPollRun) return;
+                if (res.ok && data.state === 'ready' && typeof data.key === 'string' && data.key) {
+                    const c = loadClaim();
+                    if (c && c.claim_token === claim.claim_token && !c.paid) { c.paid = true; saveClaim(c); }
+                    showClaimReady(data);
+                    return;
+                }
+                // 404 right after payment can mean the webhook has not landed yet.
+                if (res.status === 404 && Date.now() - startedAt >= CLAIM_404_GRACE_MS) return giveUp();
+                // Fail closed on anything not listed as retryable (400, 405, other 4xx).
+                if (!res.ok && res.status !== 404 && res.status !== 429 && res.status < 500) return giveUp();
+                if (typeof data.retry_after_seconds === 'number' && data.retry_after_seconds > 0) {
+                    delay = Math.min(data.retry_after_seconds * 1000, 60 * 1000);
+                }
+            } catch (e) {
+                // Network error: pending.
+            }
+            if (run !== claimPollRun) return;
+            setTimeout(tick, delay);
+        }
+        tick();
+    }
+
+    window.hoPaddleEvent = function (e) {
+        if (!e || e.name !== 'checkout.completed') return;
+        try { Paddle.Checkout.close(); } catch (err) { /* overlay already gone */ }
+        const txn = e.data && e.data.transaction_id;
+        const claim = loadClaim();
+        if (claim && txn && claim.transaction_id === txn) {
+            claim.paid = true;
+            saveClaim(claim);
+            startClaimPoll(claim, true);
+            return;
+        }
+        if (lastPlan && NO_KEY_PLANS.indexOf(lastPlan) !== -1) return;
+        showClaimView('message', {
+            txn: txn,
+            text: 'Payment received. If your key does not appear by email within 15 minutes, write to mike@headlessoracle.com with transaction ' +
+                (txn || 'from your Paddle receipt') + '.',
+        });
+    };
+
+    (function initClaimDialog() {
+        const overlay = claimEl('overlay');
+        claimEl('close').addEventListener('click', closeClaimModal);
+        overlay.addEventListener('keydown', function (ev) {
+            if (ev.key === 'Escape') { ev.preventDefault(); closeClaimModal(); return; }
+            if (ev.key !== 'Tab') return;
+            const focusable = Array.prototype.filter.call(
+                claimEl('dialog').querySelectorAll('button, a[href], [tabindex]:not([tabindex="-1"])'),
+                function (el) { return el.offsetParent !== null; }
+            );
+            if (!focusable.length) return;
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (ev.shiftKey && (document.activeElement === first || document.activeElement === claimEl('heading'))) {
+                ev.preventDefault(); last.focus();
+            } else if (!ev.shiftKey && document.activeElement === last) {
+                ev.preventDefault(); first.focus();
+            }
+        });
+        // Focus that escapes the dialog (e.g. a click on the backdrop) is pulled back in.
+        document.addEventListener('focusin', function (ev) {
+            if (!overlay.classList.contains('hidden') && !claimEl('dialog').contains(ev.target)) claimEl('heading').focus();
+        });
+
+        claimEl('copy').addEventListener('click', function () {
+            if (!claimReady) return;
+            navigator.clipboard.writeText(claimReady.key).then(function () {
+                claimEl('status').textContent = 'Key copied.';
+            }).catch(function () {
+                claimEl('status').textContent = 'Copy failed. Select the key and copy it by hand.';
+            });
+        });
+
+        claimEl('download').addEventListener('click', function () {
+            if (!claimReady) return;
+            const text = 'Headless Oracle key (' + (claimReady.plan || '') + ')\n\n' + claimReady.key + '\n\n' +
+                instructionsText(claimReady.instructions) + '\n\nKeep this key private.\n';
+            const url = URL.createObjectURL(new Blob([text], { type: 'text/plain' }));
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'headless-oracle-key.txt';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+        });
+
+        claimEl('saved').addEventListener('click', function () {
+            claimPollRun++;
+            clearClaim();
+            claimReady = null;
+            claimEl('key').textContent = '';
+            claimEl('instructions').textContent = '';
+            claimModalShown = false;
+            closeClaimModal();
+        });
+
+        document.getElementById('ho-claim-reopen').addEventListener('click', function (ev) {
+            ev.preventDefault();
+            const claim = loadClaim();
+            if (claimReady) showClaimReady(claimReady);
+            else if (claim) startClaimPoll(claim, true);
+        });
+
+        // Resume after a reload or a return from the hosted checkout.
+        const claim = loadClaim();
+        if (!claim) return;
+        if (claim.paid) {
+            startClaimPoll(claim, true);
+        } else if (typeof claim.started_at === 'number' && Date.now() - claim.started_at < CLAIM_SILENT_MAX_AGE_MS) {
+            startClaimPoll(claim, false);
+        }
+    }());
 
     // --- Referee intake ---
     // Field order here is the contract with POST /v5/referee/intake. consent_to_be_named
