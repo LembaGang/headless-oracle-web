@@ -48,6 +48,7 @@
         <div class="text-center mb-16">
             <h1 class="text-5xl font-bold text-white mb-4 tracking-tight">Pricing</h1>
             <p class="text-xl text-slate-400 max-w-2xl mx-auto">Simple, transparent pricing for market status verification.</p>
+            <p class="mt-4"><a href="#witness" class="text-sm text-amber-400 hover:text-amber-300 transition">Agent log evidence for audits (Chirindo Witness), from $49/month</a></p>
         </div>
 
         <!-- Pricing Cards -->
@@ -233,6 +234,58 @@
             </div>
         </div>
 
+        <!-- ==================== CHIRINDO WITNESS ==================== -->
+        <section id="witness" class="mt-24 pt-16 border-t border-slate-800">
+
+            <div class="text-center mb-16">
+                <span class="inline-block text-xs font-mono px-3 py-1 rounded-full bg-amber-900/30 border border-amber-500/40 text-amber-300 font-semibold uppercase tracking-wider mb-6">Chirindo Witness</span>
+                <h2 class="text-4xl font-bold text-white mb-4 tracking-tight">Agent logs your auditor can check without trusting you</h2>
+                <p class="text-lg text-slate-400 max-w-3xl mx-auto mb-4">A signed hash chain catches edits to an agent's log, but not the last records being cut off, or a history rewritten by whoever holds the signing key. Witness keeps signed checkpoints of your log outside your control, so both show up when the log is checked against Witness, for everything up to the last checkpoint it signed. Verification is free and open source: anyone can run the check themselves.</p>
+                <p class="text-sm mb-4"><a href="https://github.com/LembaGang/chirindo/tree/main/examples/e015-4-kit" class="text-amber-400 hover:text-amber-300 transition" target="_blank" rel="noopener">See the test kit: five tampering cases and an untouched control, chain alone vs witnessed</a> <span class="text-slate-600 mx-2">&middot;</span> <a href="https://api.headlessoracle.com/v1/witness/spec" class="text-amber-400 hover:text-amber-300 transition" target="_blank" rel="noopener">Read the Witness spec</a></p>
+                <p class="text-xs text-slate-500">Free: anonymous checkpoints from a shared pool, currently 2,000 new checkpoints per UTC day. Paid plans get their own key and quota.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-8 max-w-4xl mx-auto">
+
+                <!-- Evidence Starter (Witness account), plan custody_90d -->
+                <div class="glass rounded-xl p-6 flex flex-col" data-price-item data-plan="custody_90d" data-price-usd="49" data-cycle="month" data-introductory-until="2026-12-31">
+                    <div class="mb-4">
+                        <span class="text-xs font-mono px-2 py-1 rounded-full bg-slate-700/60 border border-slate-600/40 text-slate-400 font-semibold">Subscription</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-1">Evidence Starter</h3>
+                    <p class="text-xs font-mono text-amber-300/80 mb-3">Witness account</p>
+                    <div class="text-4xl font-bold text-white mb-1">$49</div>
+                    <p class="text-xs text-slate-500 mb-2">/month</p>
+                    <p class="text-xs text-amber-300/80 mb-4">Introductory until 31 December 2026</p>
+                    <p class="text-sm text-slate-400 flex-grow mb-6">Your own Witness key, sent by email after payment. Up to 1,000 new checkpoints per UTC day, drawn from your own quota, not the free pool. For one production agent or a pilot.</p>
+                    <button onclick="openPaddleCheckout('custody_90d')" id="custody_90d-btn" class="block w-full text-center px-4 py-2.5 bg-slate-600 hover:bg-slate-500 text-white rounded-lg font-semibold transition text-sm cursor-pointer">Subscribe: $49/mo</button>
+                    <div id="custody_90d-fallback" class="hidden mt-3 text-xs text-slate-400"></div>
+                </div>
+
+                <!-- Evidence (Witness account), plan custody_1y -->
+                <div class="glass rounded-xl p-6 flex flex-col" data-price-item data-plan="custody_1y" data-price-usd="199" data-cycle="month" data-introductory-until="2026-12-31">
+                    <div class="mb-4">
+                        <span class="text-xs font-mono px-2 py-1 rounded-full bg-slate-700/60 border border-slate-600/40 text-slate-400 font-semibold">Subscription</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-1">Evidence</h3>
+                    <p class="text-xs font-mono text-amber-300/80 mb-3">Witness account</p>
+                    <div class="text-4xl font-bold text-white mb-1">$199</div>
+                    <p class="text-xs text-slate-500 mb-2">/month</p>
+                    <p class="text-xs text-amber-300/80 mb-4">Introductory until 31 December 2026</p>
+                    <p class="text-sm text-slate-400 flex-grow mb-6">Your own Witness key, sent by email after payment. Up to 3,000 new checkpoints per UTC day, drawn from your own quota, not the free pool. For teams preparing evidence for AIUC-1 E015.4 log integrity across several agents.</p>
+                    <button onclick="openPaddleCheckout('custody_1y')" id="custody_1y-btn" class="block w-full text-center px-4 py-2.5 bg-slate-600 hover:bg-slate-500 text-white rounded-lg font-semibold transition text-sm cursor-pointer">Subscribe: $199/mo</button>
+                    <div id="custody_1y-fallback" class="hidden mt-3 text-xs text-slate-400"></div>
+                </div>
+
+            </div>
+
+            <div class="max-w-4xl mx-auto text-center">
+                <p class="text-sm text-slate-500 mb-2">Evidence pilot for a team in its audit window: $4,900 fixed price, scope agreed by conversation. Write to <a href="mailto:mike@headlessoracle.com?subject=Evidence%20pilot">mike@headlessoracle.com</a>.</p>
+                <p class="text-xs text-slate-500">Evidence for AIUC-1 E015.4. It does not make anyone compliant or certified; the honest limits are in the spec.</p>
+            </div>
+
+        </section>
+
         <!-- ==================== REFEREE PRACTICE ==================== -->
         <!-- Second half of the page. Prices are literal in the markup, not injected:
              agents and crawlers read HTML. scripts/check-prices.mjs gates publish on
@@ -241,8 +294,8 @@
 
             <div class="text-center mb-16">
                 <span class="inline-block text-xs font-mono px-3 py-1 rounded-full bg-amber-900/30 border border-amber-500/40 text-amber-300 font-semibold uppercase tracking-wider mb-6">Referee practice</span>
-                <h2 class="text-4xl font-bold text-white mb-4 tracking-tight">Conformance, disputes and evidence custody</h2>
-                <p class="text-lg text-slate-400 max-w-3xl mx-auto mb-4">Paid referee work against the published methodology: a graded conformance run, a re-grade after you change your implementation, a dispute package, and custody of the pinned evidence.</p>
+                <h2 class="text-4xl font-bold text-white mb-4 tracking-tight">Conformance and disputes</h2>
+                <p class="text-lg text-slate-400 max-w-3xl mx-auto mb-4">Paid referee work against the published methodology: a graded conformance run, a re-grade after you change your implementation, and a dispute package.</p>
                 <p class="text-sm font-mono text-amber-300/90">Introductory pricing &mdash; held until 31 December 2026.</p>
             </div>
 
@@ -252,7 +305,7 @@
                 <p id="neutrality-rule" class="text-slate-300 leading-relaxed">A paid entry buys the run and the published record, never the verdict. Every entry carries an Interests section: the referee is the author of a competing format; independence is not claimed; recomputability from pinned bytes is claimed; the text and the implementation are scored separately; a finding stands until its author corrects the record, and the correction is published beside it. Verification of any receipt is free, always.</p>
             </div>
 
-            <!-- The six referee services. Exactly six; no price id appears here — the worker holds them. -->
+            <!-- Four referee services here; custody_90d and custody_1y are in #witness. check-prices still requires all six. -->
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
 
                 <!-- Conformance entry -->
@@ -309,34 +362,6 @@
                     <p class="text-sm text-slate-400 flex-grow mb-6">The dispute package, plus a written note recording what was recomputed, what it establishes and what it does not.</p>
                     <button onclick="openPaddleCheckout('dispute_note')" id="dispute_note-btn" class="block w-full text-center px-4 py-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-lg font-semibold transition text-sm cursor-pointer">Buy package + note &mdash; $1,500</button>
                     <div id="dispute_note-fallback" class="hidden mt-3 text-xs text-slate-400"></div>
-                </div>
-
-                <!-- Evidence custody 90 days -->
-                <div class="glass rounded-xl p-6 flex flex-col" data-price-item data-plan="custody_90d" data-price-usd="49" data-cycle="month" data-introductory-until="2026-12-31">
-                    <div class="mb-4">
-                        <span class="text-xs font-mono px-2 py-1 rounded-full bg-slate-700/60 border border-slate-600/40 text-slate-400 font-semibold">Subscription</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-1">Evidence custody 90 days</h3>
-                    <div class="text-4xl font-bold text-white mb-1">$49</div>
-                    <p class="text-xs text-slate-500 mb-2">/month</p>
-                    <p class="text-xs text-amber-300/80 mb-4">Introductory until 31 December 2026</p>
-                    <p class="text-sm text-slate-400 flex-grow mb-6">The pinned bytes behind your entry held and retrievable for a rolling 90 days.</p>
-                    <button onclick="openPaddleCheckout('custody_90d')" id="custody_90d-btn" class="block w-full text-center px-4 py-2.5 bg-slate-600 hover:bg-slate-500 text-white rounded-lg font-semibold transition text-sm cursor-pointer">Subscribe &mdash; $49/mo</button>
-                    <div id="custody_90d-fallback" class="hidden mt-3 text-xs text-slate-400"></div>
-                </div>
-
-                <!-- Evidence custody one year -->
-                <div class="glass rounded-xl p-6 flex flex-col" data-price-item data-plan="custody_1y" data-price-usd="199" data-cycle="month" data-introductory-until="2026-12-31">
-                    <div class="mb-4">
-                        <span class="text-xs font-mono px-2 py-1 rounded-full bg-slate-700/60 border border-slate-600/40 text-slate-400 font-semibold">Subscription</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-1">Evidence custody one year</h3>
-                    <div class="text-4xl font-bold text-white mb-1">$199</div>
-                    <p class="text-xs text-slate-500 mb-2">/month</p>
-                    <p class="text-xs text-amber-300/80 mb-4">Introductory until 31 December 2026</p>
-                    <p class="text-sm text-slate-400 flex-grow mb-6">The pinned bytes behind your entry held and retrievable for a rolling twelve months.</p>
-                    <button onclick="openPaddleCheckout('custody_1y')" id="custody_1y-btn" class="block w-full text-center px-4 py-2.5 bg-slate-600 hover:bg-slate-500 text-white rounded-lg font-semibold transition text-sm cursor-pointer">Subscribe &mdash; $199/mo</button>
-                    <div id="custody_1y-fallback" class="hidden mt-3 text-xs text-slate-400"></div>
                 </div>
 
             </div>
