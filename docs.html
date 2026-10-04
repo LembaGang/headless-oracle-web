@@ -20,6 +20,10 @@
     <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt — machine-readable API summary">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/site.css">
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #cbd5e1; }
         .glass { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(51, 65, 85, 0.5); }
@@ -36,21 +40,36 @@
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <nav class="w-full border-b border-slate-800 bg-slate-900/80 backdrop-blur-md fixed top-0 z-50">
-        <div class="max-w-5xl mx-auto px-6 h-16 flex justify-between items-center">
-            <a href="/" class="font-bold text-white tracking-wider">HEADLESS<span class="text-blue-500">ORACLE</span></a>
-            <div class="flex items-center gap-4 text-xs">
-                <a href="/docs" class="text-white font-semibold">Docs</a>
-                <a href="/status" class="text-slate-400 hover:text-white transition">Status</a>
-                <a href="/pricing" class="text-slate-400 hover:text-white transition">Pricing</a>
-                <a href="/standards" class="text-slate-400 hover:text-white transition">Standards</a>
-                <a href="/blog" class="text-slate-400 hover:text-white transition">Blog</a>
-                <a href="https://github.com/LembaGang" class="text-slate-400 hover:text-white transition" target="_blank" rel="noopener">GitHub</a>
-            </div>
-        </div>
-    </nav>
+    <a class="skip" href="#main">Skip to content</a>
 
-    <main class="flex-grow max-w-5xl mx-auto px-6 py-24 w-full grid grid-cols-1 md:grid-cols-4 gap-12">
+<header class="site-head">
+  <div class="wrap">
+    <a class="wordmark" href="/">Headless Oracle</a>
+    <nav aria-label="Main">
+      <ul class="nav-list nav-wide">
+        <li><a href="C:/Program Files/Git/#how">Witness</a></li>
+        <li><a href="/verify">Verify</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/docs" aria-current="page">Docs</a></li>
+        <li><a href="C:/Program Files/Git/#auditors">For auditors</a></li>
+        <li><a href="https://github.com/LembaGang">GitHub</a></li>
+      </ul>
+      <details class="nav-small">
+        <summary>Menu</summary>
+        <ul>
+          <li><a href="C:/Program Files/Git/#how">Witness</a></li>
+          <li><a href="/verify">Verify</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+          <li><a href="/docs" aria-current="page">Docs</a></li>
+          <li><a href="C:/Program Files/Git/#auditors">For auditors</a></li>
+          <li><a href="https://github.com/LembaGang">GitHub</a></li>
+        </ul>
+      </details>
+    </nav>
+  </div>
+</header>
+
+    <main id="main" class="flex-grow max-w-5xl mx-auto px-6 py-24 w-full grid grid-cols-1 md:grid-cols-4 gap-12">
 
         <aside class="hidden md:block col-span-1 border-r border-slate-800 pr-6 h-[calc(100vh-100px)] sticky top-24">
             <div class="space-y-4 text-sm font-medium text-slate-400">
@@ -789,17 +808,17 @@ function hexToBytes(hex) {
         </div>
     </main>
 
-    <footer class="border-t border-slate-800 py-12 text-center text-slate-500 text-sm">
-        <a href="/" class="hover:text-white">Home</a> &bull;
-        <a href="/docs" class="hover:text-white">Docs</a> &bull;
-        <a href="/pricing" class="hover:text-white">Pricing</a> &bull;
-        <a href="/standards" class="hover:text-white">Standards</a> &bull;
-        <a href="/blog" class="hover:text-white">Blog</a> &bull;
-        <a href="/llms.txt" class="hover:text-white">llms.txt</a> &bull;
-        <a href="/terms" class="hover:text-white">Terms</a> &bull;
-        <a href="/privacy" class="hover:text-white">Privacy</a> &bull;
-        <a href="https://github.com/LembaGang" class="hover:text-white" target="_blank" rel="noopener">GitHub</a>
-    </footer>
+    <footer class="site-foot">
+  <div class="wrap">
+    <span class="mono">Headless Oracle</span>
+    <ul class="foot-links">
+      <li><a href="/terms">Terms</a></li>
+      <li><a href="/privacy">Privacy</a></li>
+      <li><a href="/refund">Refund</a></li>
+      <li><!--email_off--><a href="mailto:mike@headlessoracle.com">mike@headlessoracle.com</a><!--/email_off--></li>
+    </ul>
+  </div>
+</footer>
 
     <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
     <script src="/js/paddle-init.js"></script>

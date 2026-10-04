@@ -4,463 +4,501 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pricing | Headless Oracle</title>
-    <meta name="description" content="Simple, transparent pricing for Headless Oracle — Ed25519-signed market status for AI agents and autonomous trading systems. Free tier: 500 requests/day, no credit card required.">
+    <meta name="description" content="Pricing for Headless Oracle: Chirindo Witness plans for agent-log evidence, the market-state API (free tier: 500 requests/day, no credit card required), and referee services.">
     <meta name="robots" content="index, follow">
+    <meta name="color-scheme" content="light dark">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://headlessoracle.com/pricing">
     <meta property="og:title" content="Pricing | Headless Oracle">
-    <meta property="og:description" content="Simple, transparent pricing for Headless Oracle — Ed25519-signed market status for AI agents and autonomous trading systems. Free tier: 500 req/day, no card required.">
+    <meta property="og:description" content="Chirindo Witness plans for agent-log evidence, the market-state API and referee services. Free tier: 500 req/day, no card required.">
     <meta property="og:image" content="https://headlessoracle.com/og-image.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Pricing | Headless Oracle">
-    <meta name="twitter:description" content="Simple, transparent pricing for Headless Oracle — Ed25519-signed market status for AI agents.">
+    <meta name="twitter:description" content="Chirindo Witness plans for agent-log evidence, the market-state API and referee services.">
     <meta name="twitter:image" content="https://headlessoracle.com/og-image.png">
     <link rel="canonical" href="https://headlessoracle.com/pricing">
     <link rel="alternate" type="application/json" href="/openapi.json" title="OpenAPI 3.1 specification">
     <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt — machine-readable API summary">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; }
-        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .status-dot { height: 8px; width: 8px; background-color: #22c55e; border-radius: 50%; display: inline-block; margin-right: 6px; box-shadow: 0 0 8px #22c55e; }
-    </style>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://headlessoracle.com/#org",
+          "name": "Headless Oracle",
+          "url": "https://headlessoracle.com/",
+          "email": "mike@headlessoracle.com",
+          "sameAs": ["https://github.com/LembaGang"]
+        },
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://headlessoracle.com/#chirindo-witness",
+          "name": "Chirindo Witness",
+          "url": "https://headlessoracle.com/pricing#witness",
+          "applicationCategory": "DeveloperApplication",
+          "operatingSystem": "Any",
+          "provider": { "@id": "https://headlessoracle.com/#org" },
+          "offers": [
+            {
+              "@type": "Offer",
+              "sku": "witness_free",
+              "name": "Free",
+              "price": "0",
+              "priceCurrency": "USD",
+              "description": "Anonymous checkpoints from a shared pool of 2,000 new ones a UTC day",
+              "url": "https://headlessoracle.com/pricing#witness"
+            },
+            {
+              "@type": "Offer",
+              "sku": "evidence_starter",
+              "name": "Evidence Starter",
+              "price": "49",
+              "priceCurrency": "USD",
+              "priceValidUntil": "2026-12-31",
+              "description": "$49/month. Your own Witness key, up to 1,000 new checkpoints a UTC day",
+              "url": "https://headlessoracle.com/pricing#witness"
+            },
+            {
+              "@type": "Offer",
+              "sku": "evidence",
+              "name": "Evidence",
+              "price": "199",
+              "priceCurrency": "USD",
+              "priceValidUntil": "2026-12-31",
+              "description": "$199/month. Your own Witness key, up to 3,000 new checkpoints a UTC day",
+              "url": "https://headlessoracle.com/pricing#witness"
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/site.css">
 </head>
-<body class="text-slate-300 min-h-screen flex flex-col">
+<body>
+<a class="skip" href="#main">Skip to content</a>
 
-    <nav class="w-full max-w-6xl mx-auto p-6 flex justify-between items-center border-b border-slate-800/50">
-        <a href="/" class="flex items-center gap-2 no-underline">
-            <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-            <span class="text-xl font-bold tracking-wider text-white">HEADLESS<span class="text-blue-500">ORACLE</span></span>
-        </a>
-        <div class="flex gap-6 text-sm font-medium">
-            <a href="/docs" class="hover:text-white transition">Docs</a>
-            <a href="/status" class="hover:text-white transition flex items-center gap-1"><span class="status-dot"></span>Status</a>
-            <a href="/pricing" class="text-white font-semibold">Pricing</a>
-            <a href="/standards" class="hover:text-white transition">Standards</a>
-            <a href="/blog" class="hover:text-white transition">Blog</a>
-            <a href="https://github.com/LembaGang" class="hover:text-white transition" target="_blank" rel="noopener">GitHub</a>
-        </div>
+<header class="site-head">
+  <div class="wrap">
+    <a class="wordmark" href="/">Headless Oracle</a>
+    <nav aria-label="Main">
+      <ul class="nav-list nav-wide">
+        <li><a href="/#how">Witness</a></li>
+        <li><a href="/verify">Verify</a></li>
+        <li><a href="/pricing" aria-current="page">Pricing</a></li>
+        <li><a href="/docs">Docs</a></li>
+        <li><a href="/#auditors">For auditors</a></li>
+        <li><a href="https://github.com/LembaGang">GitHub</a></li>
+      </ul>
+      <details class="nav-small">
+        <summary>Menu</summary>
+        <ul>
+          <li><a href="/#how">Witness</a></li>
+          <li><a href="/verify">Verify</a></li>
+          <li><a href="/pricing" aria-current="page">Pricing</a></li>
+          <li><a href="/docs">Docs</a></li>
+          <li><a href="/#auditors">For auditors</a></li>
+          <li><a href="https://github.com/LembaGang">GitHub</a></li>
+        </ul>
+      </details>
     </nav>
+  </div>
+</header>
 
-    <main class="flex-grow max-w-6xl mx-auto w-full px-6 py-20">
+<main id="main">
 
-        <div class="text-center mb-16">
-            <h1 class="text-5xl font-bold text-white mb-4 tracking-tight">Pricing</h1>
-            <p class="text-xl text-slate-400 max-w-2xl mx-auto">Simple, transparent pricing for market status verification.</p>
-            <p class="mt-4"><a href="#witness" class="text-sm text-amber-400 hover:text-amber-300 transition">Agent log evidence for audits (Chirindo Witness), from $49/month</a></p>
+    <div class="wrap page-head">
+        <p class="kicker">Pricing</p>
+        <h1>Pricing</h1>
+        <div class="lede">
+            <p>Three families, in this order: <a href="#witness">Chirindo Witness</a> for agent-log evidence, the <a href="#api">market-state API</a>, and <a href="#referee">referee services and programmes</a>. Prices are in US dollars.</p>
         </div>
+    </div>
 
-        <!-- Pricing Cards -->
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-
-            <!-- Sandbox -->
-            <div class="glass rounded-xl p-6 flex flex-col" data-price-item data-plan="sandbox" data-price-usd="0" data-cycle="free">
-                <div class="mb-4">
-                    <span class="text-xs font-mono px-2 py-1 rounded-full bg-slate-700/60 border border-slate-600/40 text-slate-400 font-semibold">Explore</span>
+    <!-- ==================== CHIRINDO WITNESS ==================== -->
+    <section id="witness" class="section" aria-labelledby="h-witness">
+        <div class="wrap sec-grid">
+            <div class="sec-num">Chirindo Witness</div>
+            <div class="sec-body">
+                <h2 id="h-witness">Agent logs your auditor can check without trusting you</h2>
+                <div class="prose">
+                    <p>A signed hash chain catches edits to an agent's log, but not the last records being cut off, or a history rewritten by whoever holds the signing key. Witness keeps signed checkpoints of your log outside your control, so both show up when the log is checked against Witness, for everything up to the last checkpoint it signed. Verification is free and open source: anyone can run the check themselves.</p>
+                    <p><a href="https://github.com/LembaGang/chirindo/tree/main/examples/e015-4-kit" target="_blank" rel="noopener">See the test kit: five tampering cases and an untouched control, chain alone vs witnessed</a> &middot; <a href="https://api.headlessoracle.com/v1/witness/spec" target="_blank" rel="noopener">Read the Witness spec</a></p>
+                    <p class="muted small">Free: anonymous checkpoints from a shared pool, currently 2,000 new checkpoints per UTC day. Paid plans get their own key and quota.</p>
                 </div>
-                <h2 class="text-xl font-bold text-white mb-1">Sandbox</h2>
-                <div class="text-4xl font-bold text-white mb-1">$0</div>
-                <p class="text-xs text-slate-500 mb-2">forever free</p>
-                <p class="text-xs text-slate-400 mb-6">Demo endpoint, no key needed</p>
-                <ul class="space-y-2 text-sm text-slate-300 flex-grow mb-6">
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> /v5/demo endpoint</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> All 28 exchanges</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> Ed25519 signed receipts</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> No auth required</li>
-                </ul>
-                <button onclick="getInstantKey('sandbox-card')" id="sandbox-card-btn" class="block w-full text-center px-4 py-2.5 bg-slate-600 hover:bg-slate-500 text-white rounded-lg font-semibold transition text-sm cursor-pointer">Get Sandbox Key</button>
-                <div id="sandbox-card-result" class="hidden mt-3"></div>
-                <div id="sandbox-card-error" class="hidden mt-2 text-xs text-red-400"></div>
-            </div>
 
-            <!-- Free Tier -->
-            <div class="glass rounded-xl p-6 flex flex-col" data-price-item data-plan="free" data-price-usd="0" data-cycle="free" data-calls-per-day="500">
-                <div class="mb-4">
-                    <span class="text-xs font-mono px-2 py-1 rounded-full bg-green-900/40 border border-green-500/30 text-green-400 font-semibold">Current</span>
-                </div>
-                <h2 class="text-xl font-bold text-white mb-1">Free Tier</h2>
-                <div class="text-4xl font-bold text-white mb-1">$0</div>
-                <p class="text-xs text-slate-500 mb-2">/month</p>
-                <p class="text-xs text-slate-400 mb-6">Get started instantly, no credit card needed</p>
-                <ul class="space-y-2 text-sm text-slate-300 flex-grow mb-6">
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> 500 API calls/day</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> All 28 exchanges</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> Ed25519 signed receipts</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> Instant provisioning</li>
-                </ul>
-                <button onclick="getInstantKey('free-card')" id="free-card-btn" class="block w-full text-center px-4 py-2.5 bg-green-600 hover:bg-green-500 text-white rounded-lg font-semibold transition text-sm cursor-pointer">Get Free API Key</button>
-                <div id="free-card-result" class="hidden mt-3"></div>
-                <div id="free-card-error" class="hidden mt-2 text-xs text-red-400"></div>
-            </div>
+                <div class="plans">
 
-            <!-- Pay-per-use (x402) -->
-            <div class="rounded-xl p-6 flex flex-col bg-indigo-950/30 border border-indigo-500/40 relative" data-price-item data-plan="x402" data-price-usd="0.001" data-cycle="request">
-                <div class="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span class="text-xs font-bold px-3 py-1 rounded-full bg-indigo-600 text-white tracking-wider uppercase whitespace-nowrap">Agents pay themselves</span>
-                </div>
-                <div class="mb-4">
-                    <span class="text-xs font-mono px-2 py-1 rounded-full bg-indigo-900/40 border border-indigo-500/30 text-indigo-300 font-semibold">x402 &middot; Live</span>
-                </div>
-                <h2 class="text-xl font-bold text-white mb-1">Pay-per-use</h2>
-                <div class="text-4xl font-bold text-white mb-1">$0.001</div>
-                <p class="text-xs text-slate-500 mb-2">/request</p>
-                <p class="text-xs text-slate-400 mb-6">0.001 USDC on Base mainnet — no subscription required</p>
-                <ul class="space-y-2 text-sm text-slate-300 flex-grow mb-6">
-                    <li class="flex items-start gap-2"><span class="text-indigo-400 mt-0.5">&#10003;</span> No API key required</li>
-                    <li class="flex items-start gap-2"><span class="text-indigo-400 mt-0.5">&#10003;</span> All 28 exchanges</li>
-                    <li class="flex items-start gap-2"><span class="text-indigo-400 mt-0.5">&#10003;</span> Ed25519 signed receipts</li>
-                    <li class="flex items-start gap-2"><span class="text-indigo-400 mt-0.5">&#10003;</span> HTTP 402 machine-readable</li>
-                </ul>
-                <button onclick="toggleX402Panel()" id="x402-btn" class="block w-full text-center px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-semibold transition text-sm cursor-pointer">Pay with Crypto</button>
-                <div id="x402-panel" class="hidden mt-3"></div>
-            </div>
-
-            <!-- Credits -->
-            <div class="glass rounded-xl p-6 flex flex-col" data-price-item data-plan="credits" data-price-usd="5" data-cycle="one-time">
-                <div class="mb-4">
-                    <span class="text-xs font-mono px-2 py-1 rounded-full bg-amber-900/40 border border-amber-500/30 text-amber-400 font-semibold">One-time</span>
-                </div>
-                <h2 class="text-xl font-bold text-white mb-1">Credits</h2>
-                <div class="text-4xl font-bold text-white mb-1">$5</div>
-                <p class="text-xs text-slate-500 mb-2">one-time</p>
-                <p class="text-xs text-slate-400 mb-6">1,000 API calls, no expiry</p>
-                <ul class="space-y-2 text-sm text-slate-300 flex-grow mb-6">
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> 1,000 API calls</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> All 28 exchanges</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> No expiry date</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> Pay via card</li>
-                </ul>
-                <button onclick="openPaddleCheckout('credits')" id="credits-btn" class="block w-full text-center px-4 py-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-lg font-semibold transition text-sm cursor-pointer">Buy Credits</button>
-                <div id="credits-fallback" class="hidden mt-3 text-xs text-slate-400"></div>
-            </div>
-
-            <!-- Builder -->
-            <div class="rounded-xl p-6 flex flex-col bg-blue-600/10 border border-blue-500/30 relative" data-price-item data-plan="builder" data-price-usd="99" data-cycle="month" data-calls-per-day="50000">
-                <div class="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span class="text-xs font-bold px-3 py-1 rounded-full bg-blue-600 text-white tracking-wider uppercase">Popular</span>
-                </div>
-                <div class="mb-4">
-                    <span class="text-xs font-mono px-2 py-1 rounded-full bg-blue-900/40 border border-blue-500/30 text-blue-400 font-semibold">Subscription</span>
-                </div>
-                <h2 class="text-xl font-bold text-white mb-1">Builder</h2>
-                <div class="text-4xl font-bold text-white mb-1">$99</div>
-                <p class="text-xs text-slate-500 mb-6">/month</p>
-                <ul class="space-y-2 text-sm text-slate-300 flex-grow mb-6">
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> 50,000 API calls/day</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> All 28 exchanges</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> Webhook subscriptions</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> Receipt audit log</li>
-                </ul>
-                <button onclick="openPaddleCheckout('builder')" id="builder-btn" class="block w-full text-center px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold transition text-sm cursor-pointer">Subscribe &mdash; $99/mo</button>
-                <div id="builder-fallback" class="hidden mt-3 text-xs text-slate-400"></div>
-            </div>
-
-            <!-- Pro -->
-            <div class="glass rounded-xl p-6 flex flex-col" data-price-item data-plan="pro" data-price-usd="299" data-cycle="month" data-calls-per-day="200000">
-                <div class="mb-4">
-                    <span class="text-xs font-mono px-2 py-1 rounded-full bg-purple-900/40 border border-purple-500/30 text-purple-400 font-semibold">Subscription</span>
-                </div>
-                <h2 class="text-xl font-bold text-white mb-1">Pro</h2>
-                <div class="text-4xl font-bold text-white mb-1">$299</div>
-                <p class="text-xs text-slate-500 mb-6">/month</p>
-                <ul class="space-y-2 text-sm text-slate-300 flex-grow mb-6">
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> 200,000 API calls/day</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> All 28 exchanges</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> 25 webhook subscriptions</li>
-                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">&#10003;</span> Priority support</li>
-                </ul>
-                <button onclick="openPaddleCheckout('pro')" id="pro-btn" class="block w-full text-center px-4 py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-semibold transition text-sm cursor-pointer">Subscribe &mdash; $299/mo</button>
-                <div id="pro-fallback" class="hidden mt-3 text-xs text-slate-400"></div>
-            </div>
-
-        </div>
-
-        <!-- Protocol tier -->
-        <div class="border border-slate-700 rounded-xl p-8 mb-12 bg-slate-900/40 flex flex-col sm:flex-row items-center justify-between gap-6" data-price-item data-plan="protocol" data-price-usd="500" data-cycle="month">
-            <div>
-                <h3 class="text-lg font-bold text-white mb-1">Protocol / Enterprise</h3>
-                <p class="text-sm text-slate-400">Unlimited calls, custom SLA, dedicated support, direct engineering access.</p>
-                <p class="text-xs text-slate-500 mt-1">Starting at $500/month. Best for DeFi protocols, RWA platforms, institutional trading.</p>
-            </div>
-            <a href="mailto:mike@headlessoracle.com?subject=Protocol%20tier%20inquiry" class="px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-semibold text-sm transition whitespace-nowrap">Contact Sales</a>
-        </div>
-
-        <!-- Instant API Key Section -->
-        <div id="get-free-key" class="border border-green-700/40 rounded-xl p-8 mb-8 bg-green-900/10">
-            <h3 class="text-lg font-bold text-white mb-2">Get your API key instantly</h3>
-            <p class="text-sm text-slate-400 mb-5">Click the button below. No email, no signup, no credit card. Your key appears in seconds.</p>
-            <div class="flex flex-col sm:flex-row gap-3 mb-3">
-                <input id="instant-agent-id" type="text" placeholder="Agent ID (optional — any unique string)" class="flex-1 bg-slate-900 border border-slate-600 text-white text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-green-500 placeholder-slate-600 font-mono">
-                <button onclick="getInstantKey('section')" id="section-btn" class="px-6 py-2.5 bg-green-600 hover:bg-green-500 text-white rounded-lg font-semibold text-sm transition cursor-pointer whitespace-nowrap">Get Free API Key</button>
-            </div>
-            <div id="section-result" class="hidden mt-4">
-                <div class="bg-slate-900 rounded-lg p-4 border border-slate-700">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs text-slate-500 font-mono">Your API key (500 calls/day)</span>
-                        <button onclick="copyToClipboard(this, document.getElementById('section-key').textContent)" class="text-xs text-green-400 hover:text-green-300 transition cursor-pointer">Copy key</button>
+                    <!-- Evidence Starter (Witness account), plan custody_90d -->
+                    <div class="plan" data-price-item data-plan="custody_90d" data-price-usd="49" data-cycle="month" data-introductory-until="2026-12-31">
+                        <p class="plan-kind">Subscription · Witness account</p>
+                        <h3>Evidence Starter</h3>
+                        <p class="plan-price">$49</p>
+                        <p class="plan-cycle">/month · Introductory until 31 December 2026</p>
+                        <p class="plan-desc grow">Your own Witness key, sent by email after payment. Up to 1,000 new checkpoints per UTC day, drawn from your own quota, not the free pool. For one production agent or a pilot.</p>
+                        <button onclick="openPaddleCheckout('custody_90d')" id="custody_90d-btn" class="btn btn--block">Subscribe: $49/mo</button>
+                        <div id="custody_90d-fallback" class="hidden plan-fallback"></div>
                     </div>
-                    <pre id="section-key" class="text-sm text-green-400 font-mono break-all whitespace-pre-wrap"></pre>
-                    <p class="text-xs text-slate-500 mt-3">Quick test:</p>
-                    <pre id="section-curl" class="text-xs text-blue-300 font-mono mt-1 break-all whitespace-pre-wrap"></pre>
-                    <button onclick="copyToClipboard(this, document.getElementById('section-curl').textContent)" class="mt-2 text-xs text-blue-400 hover:text-blue-300 transition cursor-pointer">Copy curl command</button>
-                </div>
-            </div>
-            <div id="section-error" class="hidden mt-3 text-xs text-red-400"></div>
-            <p class="text-xs text-slate-500 mt-4">Prefer the raw curl? <code class="font-mono text-green-400 bg-slate-800 px-1 py-0.5 rounded">curl -X POST https://headlessoracle.com/v5/keys/instant -H "Content-Type: application/json" -d '{"agent_id":"my-trading-bot"}'</code></p>
-        </div>
 
-        <!-- What's included -->
-        <div class="border border-slate-700 rounded-xl p-8 mb-12 bg-slate-900/40">
-            <h3 class="text-lg font-bold text-white mb-4">All plans include</h3>
-            <div class="grid sm:grid-cols-2 gap-3 text-sm text-slate-400">
-                <div class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">&middot;</span> Ed25519 cryptographic signatures on every response</div>
-                <div class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">&middot;</span> Fail-closed architecture</div>
-                <div class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">&middot;</span> 28 global exchanges across 7 regions (Americas, Europe, Middle East, Africa, Asia, Pacific, Derivatives &amp; Crypto)</div>
+                    <!-- Evidence (Witness account), plan custody_1y -->
+                    <div class="plan" data-price-item data-plan="custody_1y" data-price-usd="199" data-cycle="month" data-introductory-until="2026-12-31">
+                        <p class="plan-kind">Subscription · Witness account</p>
+                        <h3>Evidence</h3>
+                        <p class="plan-price">$199</p>
+                        <p class="plan-cycle">/month · Introductory until 31 December 2026</p>
+                        <p class="plan-desc grow">Your own Witness key, sent by email after payment. Up to 3,000 new checkpoints per UTC day, drawn from your own quota, not the free pool. For teams preparing evidence for AIUC-1 E015.4 log integrity across several agents.</p>
+                        <button onclick="openPaddleCheckout('custody_1y')" id="custody_1y-btn" class="btn btn--block">Subscribe: $199/mo</button>
+                        <div id="custody_1y-fallback" class="hidden plan-fallback"></div>
+                    </div>
+
+                </div>
+
+                <div class="prose">
+                    <p class="small">Evidence pilot for a team in its audit window: $4,900 fixed price, scope agreed by conversation. Write to <!--email_off--><a href="mailto:mike@headlessoracle.com?subject=Evidence%20pilot">mike@headlessoracle.com</a><!--/email_off-->.</p>
+                    <p class="muted small">Evidence for AIUC-1 E015.4. It does not make anyone compliant or certified; the honest limits are in the spec.</p>
+                </div>
             </div>
         </div>
+    </section>
 
-        <!-- Bottom CTA -->
-        <div class="text-center">
-            <p class="text-slate-400 mb-3">All tiers are live. <span class="text-indigo-400">x402 micropayments available now.</span></p>
-            <p class="text-slate-500 text-sm mb-6">Try the API now — no signup needed.</p>
-            <button onclick="testDemo()" id="demo-btn" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold transition text-sm cursor-pointer">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                Try Live Demo
-            </button>
-            <div id="demo-result" class="hidden mt-4 max-w-2xl mx-auto text-left">
-                <pre id="demo-json" class="text-xs text-green-400 font-mono overflow-x-auto rounded-lg p-4 bg-slate-900 border border-slate-700 max-h-72"></pre>
+    <!-- ==================== MARKET-STATE API ==================== -->
+    <section id="api" class="section" aria-labelledby="h-api">
+        <div class="wrap sec-grid">
+            <div class="sec-num">Market-state API</div>
+            <div class="sec-body">
+                <h2 id="h-api">Market-state API</h2>
+
+                <div class="plans">
+
+                    <!-- Sandbox -->
+                    <div class="plan" data-price-item data-plan="sandbox" data-price-usd="0" data-cycle="free">
+                        <p class="plan-kind">Explore</p>
+                        <h3>Sandbox</h3>
+                        <p class="plan-price">$0</p>
+                        <p class="plan-cycle">forever free</p>
+                        <p class="plan-desc">Demo endpoint, no key needed</p>
+                        <ul>
+                            <li>/v5/demo endpoint</li>
+                            <li>All 28 exchanges</li>
+                            <li>Ed25519 signed receipts</li>
+                            <li>No auth required</li>
+                        </ul>
+                        <button onclick="getInstantKey('sandbox-card')" id="sandbox-card-btn" class="btn btn--line btn--block">Get Sandbox Key</button>
+                        <div id="sandbox-card-result" class="hidden plan-result"></div>
+                        <div id="sandbox-card-error" class="hidden err"></div>
+                    </div>
+
+                    <!-- Free Tier -->
+                    <div class="plan" data-price-item data-plan="free" data-price-usd="0" data-cycle="free" data-calls-per-day="500">
+                        <p class="plan-kind">Free</p>
+                        <h3>Free Tier</h3>
+                        <p class="plan-price">$0</p>
+                        <p class="plan-cycle">/month</p>
+                        <p class="plan-desc">Get started instantly, no credit card needed</p>
+                        <ul>
+                            <li>500 API calls/day</li>
+                            <li>All 28 exchanges</li>
+                            <li>Ed25519 signed receipts</li>
+                            <li>Instant provisioning</li>
+                        </ul>
+                        <button onclick="getInstantKey('free-card')" id="free-card-btn" class="btn btn--block">Get Free API Key</button>
+                        <div id="free-card-result" class="hidden plan-result"></div>
+                        <div id="free-card-error" class="hidden err"></div>
+                    </div>
+
+                    <!-- Pay-per-use (x402) -->
+                    <div class="plan" data-price-item data-plan="x402" data-price-usd="0.001" data-cycle="request">
+                        <p class="plan-kind">x402 &middot; Live</p>
+                        <h3>Pay-per-use</h3>
+                        <p class="plan-price">$0.001</p>
+                        <p class="plan-cycle">/request</p>
+                        <p class="plan-desc">0.001 USDC on Base mainnet — no subscription required</p>
+                        <ul>
+                            <li>No API key required</li>
+                            <li>All 28 exchanges</li>
+                            <li>Ed25519 signed receipts</li>
+                            <li>HTTP 402 machine-readable</li>
+                        </ul>
+                        <button onclick="toggleX402Panel()" id="x402-btn" class="btn btn--line btn--block">Pay with Crypto</button>
+                        <div id="x402-panel" class="hidden plan-result"></div>
+                    </div>
+
+                    <!-- Credits -->
+                    <div class="plan" data-price-item data-plan="credits" data-price-usd="5" data-cycle="one-time">
+                        <p class="plan-kind">One-time</p>
+                        <h3>Credits</h3>
+                        <p class="plan-price">$5</p>
+                        <p class="plan-cycle">one-time</p>
+                        <p class="plan-desc">1,000 API calls, no expiry</p>
+                        <ul>
+                            <li>1,000 API calls</li>
+                            <li>All 28 exchanges</li>
+                            <li>No expiry date</li>
+                            <li>Pay via card</li>
+                        </ul>
+                        <button onclick="openPaddleCheckout('credits')" id="credits-btn" class="btn btn--block">Buy Credits</button>
+                        <div id="credits-fallback" class="hidden plan-fallback"></div>
+                    </div>
+
+                    <!-- Builder -->
+                    <div class="plan" data-price-item data-plan="builder" data-price-usd="99" data-cycle="month" data-calls-per-day="50000">
+                        <p class="plan-kind">Subscription</p>
+                        <h3>Builder</h3>
+                        <p class="plan-price">$99</p>
+                        <p class="plan-cycle">/month</p>
+                        <ul>
+                            <li>50,000 API calls/day</li>
+                            <li>All 28 exchanges</li>
+                            <li>Webhook subscriptions</li>
+                            <li>Receipt audit log</li>
+                        </ul>
+                        <button onclick="openPaddleCheckout('builder')" id="builder-btn" class="btn btn--block">Subscribe &mdash; $99/mo</button>
+                        <div id="builder-fallback" class="hidden plan-fallback"></div>
+                    </div>
+
+                    <!-- Pro -->
+                    <div class="plan" data-price-item data-plan="pro" data-price-usd="299" data-cycle="month" data-calls-per-day="200000">
+                        <p class="plan-kind">Subscription</p>
+                        <h3>Pro</h3>
+                        <p class="plan-price">$299</p>
+                        <p class="plan-cycle">/month</p>
+                        <ul>
+                            <li>200,000 API calls/day</li>
+                            <li>All 28 exchanges</li>
+                            <li>25 webhook subscriptions</li>
+                            <li>Priority support</li>
+                        </ul>
+                        <button onclick="openPaddleCheckout('pro')" id="pro-btn" class="btn btn--block">Subscribe &mdash; $299/mo</button>
+                        <div id="pro-fallback" class="hidden plan-fallback"></div>
+                    </div>
+
+                </div>
+
+                <!-- Protocol tier -->
+                <div class="plan plan--wide" data-price-item data-plan="protocol" data-price-usd="500" data-cycle="month">
+                    <div>
+                        <h3>Protocol / Enterprise</h3>
+                        <p class="plan-desc">Unlimited calls, custom SLA, dedicated support, direct engineering access.</p>
+                        <p class="plan-cycle">Starting at $500/month. Best for DeFi protocols, RWA platforms, institutional trading.</p>
+                    </div>
+                    <!--email_off--><a href="mailto:mike@headlessoracle.com?subject=Protocol%20tier%20inquiry" class="btn btn--line">Contact Sales</a><!--/email_off-->
+                </div>
+
+                <!-- Instant API Key Section -->
+                <div id="get-free-key" class="panel" style="margin-top:32px">
+                    <h3>Get your API key instantly</h3>
+                    <p class="small">Click the button below. No email, no signup, no credit card. Your key appears in seconds.</p>
+                    <div class="row">
+                        <div class="field" style="flex:1 1 18rem">
+                            <label for="instant-agent-id" class="visually-hidden">Agent ID (optional)</label>
+                            <input id="instant-agent-id" type="text" placeholder="Agent ID (optional — any unique string)" class="input mono">
+                        </div>
+                        <button onclick="getInstantKey('section')" id="section-btn" class="btn">Get Free API Key</button>
+                    </div>
+                    <div id="section-result" class="hidden" style="margin-top:16px">
+                        <div class="out">
+                            <div class="row row--between">
+                                <span class="label">Your API key (500 calls/day)</span>
+                                <button onclick="copyToClipboard(this, document.getElementById('section-key').textContent)" class="copy">Copy key</button>
+                            </div>
+                            <pre id="section-key"></pre>
+                            <p class="label">Quick test:</p>
+                            <pre id="section-curl"></pre>
+                            <button onclick="copyToClipboard(this, document.getElementById('section-curl').textContent)" class="copy" style="margin-top:8px">Copy curl command</button>
+                        </div>
+                    </div>
+                    <div id="section-error" class="hidden err"></div>
+                    <p class="small muted" style="margin:16px 0 0">Prefer the raw curl? <code>curl -X POST https://headlessoracle.com/v5/keys/instant -H "Content-Type: application/json" -d '{"agent_id":"my-trading-bot"}'</code></p>
+                </div>
+
+                <!-- What's included -->
+                <div class="panel" style="margin-top:16px">
+                    <h3>All plans include</h3>
+                    <ul class="small" style="margin:0;padding-left:1.1em">
+                        <li>Ed25519 cryptographic signatures on every response</li>
+                        <li>Fail-closed architecture</li>
+                        <li>28 global exchanges across 7 regions (Americas, Europe, Middle East, Africa, Asia, Pacific, Derivatives &amp; Crypto)</li>
+                    </ul>
+                </div>
+
+                <!-- Bottom CTA -->
+                <div style="margin-top:32px">
+                    <p class="small" style="margin-bottom:4px">All tiers are live. x402 micropayments available now.</p>
+                    <p class="small muted">Try the API now — no signup needed.</p>
+                    <button onclick="testDemo()" id="demo-btn" class="btn btn--line">Try Live Demo</button>
+                    <div id="demo-result" class="hidden" style="margin-top:16px">
+                        <pre id="demo-json" class="block" style="max-height:18rem"></pre>
+                    </div>
+                </div>
             </div>
         </div>
+    </section>
 
-        <!-- ==================== CHIRINDO WITNESS ==================== -->
-        <section id="witness" class="mt-24 pt-16 border-t border-slate-800">
-
-            <div class="text-center mb-16">
-                <span class="inline-block text-xs font-mono px-3 py-1 rounded-full bg-amber-900/30 border border-amber-500/40 text-amber-300 font-semibold uppercase tracking-wider mb-6">Chirindo Witness</span>
-                <h2 class="text-4xl font-bold text-white mb-4 tracking-tight">Agent logs your auditor can check without trusting you</h2>
-                <p class="text-lg text-slate-400 max-w-3xl mx-auto mb-4">A signed hash chain catches edits to an agent's log, but not the last records being cut off, or a history rewritten by whoever holds the signing key. Witness keeps signed checkpoints of your log outside your control, so both show up when the log is checked against Witness, for everything up to the last checkpoint it signed. Verification is free and open source: anyone can run the check themselves.</p>
-                <p class="text-sm mb-4"><a href="https://github.com/LembaGang/chirindo/tree/main/examples/e015-4-kit" class="text-amber-400 hover:text-amber-300 transition" target="_blank" rel="noopener">See the test kit: five tampering cases and an untouched control, chain alone vs witnessed</a> <span class="text-slate-600 mx-2">&middot;</span> <a href="https://api.headlessoracle.com/v1/witness/spec" class="text-amber-400 hover:text-amber-300 transition" target="_blank" rel="noopener">Read the Witness spec</a></p>
-                <p class="text-xs text-slate-500">Free: anonymous checkpoints from a shared pool, currently 2,000 new checkpoints per UTC day. Paid plans get their own key and quota.</p>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-6 mb-8 max-w-4xl mx-auto">
-
-                <!-- Evidence Starter (Witness account), plan custody_90d -->
-                <div class="glass rounded-xl p-6 flex flex-col" data-price-item data-plan="custody_90d" data-price-usd="49" data-cycle="month" data-introductory-until="2026-12-31">
-                    <div class="mb-4">
-                        <span class="text-xs font-mono px-2 py-1 rounded-full bg-slate-700/60 border border-slate-600/40 text-slate-400 font-semibold">Subscription</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-1">Evidence Starter</h3>
-                    <p class="text-xs font-mono text-amber-300/80 mb-3">Witness account</p>
-                    <div class="text-4xl font-bold text-white mb-1">$49</div>
-                    <p class="text-xs text-slate-500 mb-2">/month</p>
-                    <p class="text-xs text-amber-300/80 mb-4">Introductory until 31 December 2026</p>
-                    <p class="text-sm text-slate-400 flex-grow mb-6">Your own Witness key, sent by email after payment. Up to 1,000 new checkpoints per UTC day, drawn from your own quota, not the free pool. For one production agent or a pilot.</p>
-                    <button onclick="openPaddleCheckout('custody_90d')" id="custody_90d-btn" class="block w-full text-center px-4 py-2.5 bg-slate-600 hover:bg-slate-500 text-white rounded-lg font-semibold transition text-sm cursor-pointer">Subscribe: $49/mo</button>
-                    <div id="custody_90d-fallback" class="hidden mt-3 text-xs text-slate-400"></div>
+    <!-- ==================== REFEREE PRACTICE ==================== -->
+    <!-- Third part of the page. Prices are literal in the markup, not injected:
+         agents and crawlers read HTML. scripts/check-prices.mjs gates publish on
+         agreement between the data-price-item attributes here and live /v5/pricing. -->
+    <section id="referee" class="section" aria-labelledby="h-referee">
+        <div class="wrap sec-grid">
+            <div class="sec-num">Referee practice</div>
+            <div class="sec-body">
+                <h2 id="h-referee">Conformance and disputes</h2>
+                <div class="prose">
+                    <p>Paid referee work against the published methodology: a graded conformance run, a re-grade after you change your implementation, and a dispute package.</p>
+                    <p class="mono small">Introductory pricing &mdash; held until 31 December 2026.</p>
                 </div>
 
-                <!-- Evidence (Witness account), plan custody_1y -->
-                <div class="glass rounded-xl p-6 flex flex-col" data-price-item data-plan="custody_1y" data-price-usd="199" data-cycle="month" data-introductory-until="2026-12-31">
-                    <div class="mb-4">
-                        <span class="text-xs font-mono px-2 py-1 rounded-full bg-slate-700/60 border border-slate-600/40 text-slate-400 font-semibold">Subscription</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-1">Evidence</h3>
-                    <p class="text-xs font-mono text-amber-300/80 mb-3">Witness account</p>
-                    <div class="text-4xl font-bold text-white mb-1">$199</div>
-                    <p class="text-xs text-slate-500 mb-2">/month</p>
-                    <p class="text-xs text-amber-300/80 mb-4">Introductory until 31 December 2026</p>
-                    <p class="text-sm text-slate-400 flex-grow mb-6">Your own Witness key, sent by email after payment. Up to 3,000 new checkpoints per UTC day, drawn from your own quota, not the free pool. For teams preparing evidence for AIUC-1 E015.4 log integrity across several agents.</p>
-                    <button onclick="openPaddleCheckout('custody_1y')" id="custody_1y-btn" class="block w-full text-center px-4 py-2.5 bg-slate-600 hover:bg-slate-500 text-white rounded-lg font-semibold transition text-sm cursor-pointer">Subscribe: $199/mo</button>
-                    <div id="custody_1y-fallback" class="hidden mt-3 text-xs text-slate-400"></div>
+                <!-- The neutrality rule. Verbatim and whole; do not paraphrase, do not split. -->
+                <div class="note">
+                    <h3 class="note-title">The neutrality rule</h3>
+                    <p id="neutrality-rule">A paid entry buys the run and the published record, never the verdict. Every entry carries an Interests section: the referee is the author of a competing format; independence is not claimed; recomputability from pinned bytes is claimed; the text and the implementation are scored separately; a finding stands until its author corrects the record, and the correction is published beside it. Verification of any receipt is free, always.</p>
                 </div>
 
-            </div>
+                <!-- Four referee services here; custody_90d and custody_1y are in #witness. check-prices still requires all six. -->
+                <div class="plans">
 
-            <div class="max-w-4xl mx-auto text-center">
-                <p class="text-sm text-slate-500 mb-2">Evidence pilot for a team in its audit window: $4,900 fixed price, scope agreed by conversation. Write to <a href="mailto:mike@headlessoracle.com?subject=Evidence%20pilot">mike@headlessoracle.com</a>.</p>
-                <p class="text-xs text-slate-500">Evidence for AIUC-1 E015.4. It does not make anyone compliant or certified; the honest limits are in the spec.</p>
-            </div>
-
-        </section>
-
-        <!-- ==================== REFEREE PRACTICE ==================== -->
-        <!-- Second half of the page. Prices are literal in the markup, not injected:
-             agents and crawlers read HTML. scripts/check-prices.mjs gates publish on
-             agreement between the data-price-item attributes here and live /v5/pricing. -->
-        <section id="referee" class="mt-24 pt-16 border-t border-slate-800">
-
-            <div class="text-center mb-16">
-                <span class="inline-block text-xs font-mono px-3 py-1 rounded-full bg-amber-900/30 border border-amber-500/40 text-amber-300 font-semibold uppercase tracking-wider mb-6">Referee practice</span>
-                <h2 class="text-4xl font-bold text-white mb-4 tracking-tight">Conformance and disputes</h2>
-                <p class="text-lg text-slate-400 max-w-3xl mx-auto mb-4">Paid referee work against the published methodology: a graded conformance run, a re-grade after you change your implementation, and a dispute package.</p>
-                <p class="text-sm font-mono text-amber-300/90">Introductory pricing &mdash; held until 31 December 2026.</p>
-            </div>
-
-            <!-- The neutrality rule. Verbatim and whole; do not paraphrase, do not split. -->
-            <div class="border border-amber-500/30 rounded-xl p-6 md:p-8 mb-12 bg-amber-950/10">
-                <h3 class="text-xs font-mono uppercase tracking-wider text-amber-300 mb-4">The neutrality rule</h3>
-                <p id="neutrality-rule" class="text-slate-300 leading-relaxed">A paid entry buys the run and the published record, never the verdict. Every entry carries an Interests section: the referee is the author of a competing format; independence is not claimed; recomputability from pinned bytes is claimed; the text and the implementation are scored separately; a finding stands until its author corrects the record, and the correction is published beside it. Verification of any receipt is free, always.</p>
-            </div>
-
-            <!-- Four referee services here; custody_90d and custody_1y are in #witness. check-prices still requires all six. -->
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-
-                <!-- Conformance entry -->
-                <div class="glass rounded-xl p-6 flex flex-col" data-price-item data-plan="conformance_entry" data-price-usd="2500" data-cycle="one-time" data-introductory-until="2026-12-31">
-                    <div class="mb-4">
-                        <span class="text-xs font-mono px-2 py-1 rounded-full bg-amber-900/40 border border-amber-500/30 text-amber-400 font-semibold">One-time</span>
+                    <!-- Conformance entry -->
+                    <div class="plan" data-price-item data-plan="conformance_entry" data-price-usd="2500" data-cycle="one-time" data-introductory-until="2026-12-31">
+                        <p class="plan-kind">One-time</p>
+                        <h3>Conformance entry</h3>
+                        <p class="plan-price">$2,500</p>
+                        <p class="plan-cycle">one-time · Introductory until 31 December 2026</p>
+                        <p class="plan-desc grow">One implementation graded against the published methodology. The run and the record are published.</p>
+                        <button onclick="openPaddleCheckout('conformance_entry')" id="conformance_entry-btn" class="btn btn--block">Buy entry &mdash; $2,500</button>
+                        <div id="conformance_entry-fallback" class="hidden plan-fallback"></div>
                     </div>
-                    <h3 class="text-xl font-bold text-white mb-1">Conformance entry</h3>
-                    <div class="text-4xl font-bold text-white mb-1">$2,500</div>
-                    <p class="text-xs text-slate-500 mb-2">one-time</p>
-                    <p class="text-xs text-amber-300/80 mb-4">Introductory until 31 December 2026</p>
-                    <p class="text-sm text-slate-400 flex-grow mb-6">One implementation graded against the published methodology. The run and the record are published.</p>
-                    <button onclick="openPaddleCheckout('conformance_entry')" id="conformance_entry-btn" class="block w-full text-center px-4 py-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-lg font-semibold transition text-sm cursor-pointer">Buy entry &mdash; $2,500</button>
-                    <div id="conformance_entry-fallback" class="hidden mt-3 text-xs text-slate-400"></div>
+
+                    <!-- Re-grade -->
+                    <div class="plan" data-price-item data-plan="regrade" data-price-usd="750" data-cycle="one-time" data-introductory-until="2026-12-31">
+                        <p class="plan-kind">One-time</p>
+                        <h3>Re-grade</h3>
+                        <p class="plan-price">$750</p>
+                        <p class="plan-cycle">one-time · Introductory until 31 December 2026</p>
+                        <p class="plan-desc grow">A fresh run of an entry already on the register, after its implementation changed. The correction is published beside the original.</p>
+                        <button onclick="openPaddleCheckout('regrade')" id="regrade-btn" class="btn btn--block">Buy re-grade &mdash; $750</button>
+                        <div id="regrade-fallback" class="hidden plan-fallback"></div>
+                    </div>
+
+                    <!-- Dispute package -->
+                    <div class="plan" data-price-item data-plan="dispute" data-price-usd="500" data-cycle="one-time" data-introductory-until="2026-12-31">
+                        <p class="plan-kind">One-time</p>
+                        <h3>Dispute package</h3>
+                        <p class="plan-price">$500</p>
+                        <p class="plan-cycle">one-time · Introductory until 31 December 2026</p>
+                        <p class="plan-desc grow">The pinned bytes, the recomputation steps and the finding, packaged so a third party can reproduce the result themselves.</p>
+                        <button onclick="openPaddleCheckout('dispute')" id="dispute-btn" class="btn btn--block">Buy package &mdash; $500</button>
+                        <div id="dispute-fallback" class="hidden plan-fallback"></div>
+                    </div>
+
+                    <!-- Dispute package with verification note -->
+                    <div class="plan" data-price-item data-plan="dispute_note" data-price-usd="1500" data-cycle="one-time" data-introductory-until="2026-12-31">
+                        <p class="plan-kind">One-time</p>
+                        <h3>Dispute package with verification note</h3>
+                        <p class="plan-price">$1,500</p>
+                        <p class="plan-cycle">one-time · Introductory until 31 December 2026</p>
+                        <p class="plan-desc grow">The dispute package, plus a written note recording what was recomputed, what it establishes and what it does not.</p>
+                        <button onclick="openPaddleCheckout('dispute_note')" id="dispute_note-btn" class="btn btn--block">Buy package + note &mdash; $1,500</button>
+                        <div id="dispute_note-fallback" class="hidden plan-fallback"></div>
+                    </div>
+
                 </div>
 
-                <!-- Re-grade -->
-                <div class="glass rounded-xl p-6 flex flex-col" data-price-item data-plan="regrade" data-price-usd="750" data-cycle="one-time" data-introductory-until="2026-12-31">
-                    <div class="mb-4">
-                        <span class="text-xs font-mono px-2 py-1 rounded-full bg-amber-900/40 border border-amber-500/30 text-amber-400 font-semibold">One-time</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-1">Re-grade</h3>
-                    <div class="text-4xl font-bold text-white mb-1">$750</div>
-                    <p class="text-xs text-slate-500 mb-2">one-time</p>
-                    <p class="text-xs text-amber-300/80 mb-4">Introductory until 31 December 2026</p>
-                    <p class="text-sm text-slate-400 flex-grow mb-6">A fresh run of an entry already on the register, after its implementation changed. The correction is published beside the original.</p>
-                    <button onclick="openPaddleCheckout('regrade')" id="regrade-btn" class="block w-full text-center px-4 py-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-lg font-semibold transition text-sm cursor-pointer">Buy re-grade &mdash; $750</button>
-                    <div id="regrade-fallback" class="hidden mt-3 text-xs text-slate-400"></div>
+                <!-- Programmes: by invoice after a conversation. Deliberately no checkout button. -->
+                <div class="panel">
+                    <h3>Annual programmes</h3>
+                    <p class="small">Two annual programmes exist, at <strong>$60,000 a year</strong> and <strong>$150,000 a year</strong>. Neither is bought from this page: both are <strong>by invoice after a conversation</strong>. Start with the intake form below and say which programme you are asking about.</p>
+                    <a href="#referee-intake" class="small">Go to the intake form &rarr;</a>
                 </div>
 
-                <!-- Dispute package -->
-                <div class="glass rounded-xl p-6 flex flex-col" data-price-item data-plan="dispute" data-price-usd="500" data-cycle="one-time" data-introductory-until="2026-12-31">
-                    <div class="mb-4">
-                        <span class="text-xs font-mono px-2 py-1 rounded-full bg-amber-900/40 border border-amber-500/30 text-amber-400 font-semibold">One-time</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-1">Dispute package</h3>
-                    <div class="text-4xl font-bold text-white mb-1">$500</div>
-                    <p class="text-xs text-slate-500 mb-2">one-time</p>
-                    <p class="text-xs text-amber-300/80 mb-4">Introductory until 31 December 2026</p>
-                    <p class="text-sm text-slate-400 flex-grow mb-6">The pinned bytes, the recomputation steps and the finding, packaged so a third party can reproduce the result themselves.</p>
-                    <button onclick="openPaddleCheckout('dispute')" id="dispute-btn" class="block w-full text-center px-4 py-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-lg font-semibold transition text-sm cursor-pointer">Buy package &mdash; $500</button>
-                    <div id="dispute-fallback" class="hidden mt-3 text-xs text-slate-400"></div>
+                <!-- Intake form -->
+                <div id="referee-intake" class="panel" style="margin-top:16px">
+                    <h3>Conformance intake</h3>
+                    <p class="small">Submit an implementation for a conformance run. You receive an intake id; the entry is not scheduled until the entry fee is paid.</p>
+
+                    <form id="referee-intake-form" onsubmit="submitRefereeIntake(event)" class="form-grid">
+                        <div class="field">
+                            <label for="ri-implementation">implementation</label>
+                            <input id="ri-implementation" name="implementation" type="text" required placeholder="Name of the implementation" class="input">
+                        </div>
+                        <div class="field">
+                            <label for="ri-repository_or_url">repository_or_url</label>
+                            <input id="ri-repository_or_url" name="repository_or_url" type="text" required placeholder="https://github.com/org/repo" class="input mono">
+                        </div>
+                        <div class="field">
+                            <label for="ri-format">format</label>
+                            <input id="ri-format" name="format" type="text" required placeholder="The format being implemented" class="input">
+                        </div>
+                        <div class="field">
+                            <label for="ri-version">version</label>
+                            <input id="ri-version" name="version" type="text" required placeholder="e.g. v1.2.0" class="input mono">
+                        </div>
+                        <div class="field">
+                            <label for="ri-contact_email">contact_email</label>
+                            <input id="ri-contact_email" name="contact_email" type="email" required placeholder="you@example.com" class="input">
+                        </div>
+                        <div class="field">
+                            <label for="ri-methodology_version_read">methodology_version_read</label>
+                            <input id="ri-methodology_version_read" name="methodology_version_read" type="text" required placeholder="Methodology version you read" class="input mono">
+                        </div>
+                        <div class="full check-field">
+                            <input id="ri-consent_to_be_named" name="consent_to_be_named" type="checkbox">
+                            <label for="ri-consent_to_be_named"><span class="mono small muted">consent_to_be_named</span> &mdash; the implementation and its result may be named in the published register. Leave unticked to be recorded without a name.</label>
+                        </div>
+                        <div class="full">
+                            <button type="submit" id="referee-intake-btn" class="btn">Submit intake</button>
+                        </div>
+                    </form>
+
+                    <div id="referee-intake-error" class="hidden err"></div>
+                    <div id="referee-intake-result" class="hidden" style="margin-top:16px"></div>
+
+                    <p class="small muted" style="margin:20px 0 0">Posts to <code>POST https://headlessoracle.com/v5/referee/intake</code></p>
                 </div>
-
-                <!-- Dispute package with verification note -->
-                <div class="glass rounded-xl p-6 flex flex-col" data-price-item data-plan="dispute_note" data-price-usd="1500" data-cycle="one-time" data-introductory-until="2026-12-31">
-                    <div class="mb-4">
-                        <span class="text-xs font-mono px-2 py-1 rounded-full bg-amber-900/40 border border-amber-500/30 text-amber-400 font-semibold">One-time</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-1">Dispute package with verification note</h3>
-                    <div class="text-4xl font-bold text-white mb-1">$1,500</div>
-                    <p class="text-xs text-slate-500 mb-2">one-time</p>
-                    <p class="text-xs text-amber-300/80 mb-4">Introductory until 31 December 2026</p>
-                    <p class="text-sm text-slate-400 flex-grow mb-6">The dispute package, plus a written note recording what was recomputed, what it establishes and what it does not.</p>
-                    <button onclick="openPaddleCheckout('dispute_note')" id="dispute_note-btn" class="block w-full text-center px-4 py-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-lg font-semibold transition text-sm cursor-pointer">Buy package + note &mdash; $1,500</button>
-                    <div id="dispute_note-fallback" class="hidden mt-3 text-xs text-slate-400"></div>
-                </div>
-
             </div>
+        </div>
+    </section>
 
-            <!-- Programmes: by invoice after a conversation. Deliberately no checkout button. -->
-            <div class="border border-slate-700 rounded-xl p-8 mb-12 bg-slate-900/40">
-                <h3 class="text-lg font-bold text-white mb-2">Annual programmes</h3>
-                <p class="text-sm text-slate-400 mb-4">Two annual programmes exist, at <strong class="text-white">$60,000 a year</strong> and <strong class="text-white">$150,000 a year</strong>. Neither is bought from this page: both are <strong class="text-white">by invoice after a conversation</strong>. Start with the intake form below and say which programme you are asking about.</p>
-                <a href="#referee-intake" class="text-sm text-amber-400 hover:text-amber-300 transition">Go to the intake form &rarr;</a>
-            </div>
-
-            <!-- Intake form -->
-            <div id="referee-intake" class="border border-amber-700/40 rounded-xl p-8 mb-12 bg-amber-950/10">
-                <h3 class="text-lg font-bold text-white mb-2">Conformance intake</h3>
-                <p class="text-sm text-slate-400 mb-6">Submit an implementation for a conformance run. You receive an intake id; the entry is not scheduled until the entry fee is paid.</p>
-
-                <form id="referee-intake-form" onsubmit="submitRefereeIntake(event)" class="grid md:grid-cols-2 gap-4">
-                    <div>
-                        <label for="ri-implementation" class="block text-xs font-mono text-slate-400 mb-1">implementation</label>
-                        <input id="ri-implementation" name="implementation" type="text" required placeholder="Name of the implementation" class="w-full bg-slate-900 border border-slate-600 text-white text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-amber-500 placeholder-slate-600">
-                    </div>
-                    <div>
-                        <label for="ri-repository_or_url" class="block text-xs font-mono text-slate-400 mb-1">repository_or_url</label>
-                        <input id="ri-repository_or_url" name="repository_or_url" type="text" required placeholder="https://github.com/org/repo" class="w-full bg-slate-900 border border-slate-600 text-white text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-amber-500 placeholder-slate-600 font-mono">
-                    </div>
-                    <div>
-                        <label for="ri-format" class="block text-xs font-mono text-slate-400 mb-1">format</label>
-                        <input id="ri-format" name="format" type="text" required placeholder="The format being implemented" class="w-full bg-slate-900 border border-slate-600 text-white text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-amber-500 placeholder-slate-600">
-                    </div>
-                    <div>
-                        <label for="ri-version" class="block text-xs font-mono text-slate-400 mb-1">version</label>
-                        <input id="ri-version" name="version" type="text" required placeholder="e.g. v1.2.0" class="w-full bg-slate-900 border border-slate-600 text-white text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-amber-500 placeholder-slate-600 font-mono">
-                    </div>
-                    <div>
-                        <label for="ri-contact_email" class="block text-xs font-mono text-slate-400 mb-1">contact_email</label>
-                        <input id="ri-contact_email" name="contact_email" type="email" required placeholder="you@example.com" class="w-full bg-slate-900 border border-slate-600 text-white text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-amber-500 placeholder-slate-600">
-                    </div>
-                    <div>
-                        <label for="ri-methodology_version_read" class="block text-xs font-mono text-slate-400 mb-1">methodology_version_read</label>
-                        <input id="ri-methodology_version_read" name="methodology_version_read" type="text" required placeholder="Methodology version you read" class="w-full bg-slate-900 border border-slate-600 text-white text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-amber-500 placeholder-slate-600 font-mono">
-                    </div>
-                    <div class="md:col-span-2 flex items-start gap-3 pt-2">
-                        <input id="ri-consent_to_be_named" name="consent_to_be_named" type="checkbox" class="mt-1 h-4 w-4 rounded border-slate-600 bg-slate-900 accent-amber-600">
-                        <label for="ri-consent_to_be_named" class="text-sm text-slate-400"><span class="font-mono text-xs text-slate-500">consent_to_be_named</span> &mdash; the implementation and its result may be named in the published register. Leave unticked to be recorded without a name.</label>
-                    </div>
-                    <div class="md:col-span-2">
-                        <button type="submit" id="referee-intake-btn" class="px-6 py-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-lg font-semibold text-sm transition cursor-pointer">Submit intake</button>
-                    </div>
-                </form>
-
-                <div id="referee-intake-error" class="hidden mt-4 text-sm text-red-400"></div>
-                <div id="referee-intake-result" class="hidden mt-4"></div>
-
-                <p class="text-xs text-slate-500 mt-6">Posts to <code class="font-mono text-amber-400 bg-slate-800 px-1 py-0.5 rounded">POST https://headlessoracle.com/v5/referee/intake</code></p>
-            </div>
-
-        </section>
-
-    </main>
+</main>
 
     <!-- Post-payment key dialog. Outside every data-price-item card on purpose:
          check-prices parses the cards. All dynamic text is set with textContent. -->
-    <a id="ho-claim-reopen" href="#" class="hidden fixed bottom-6 right-6 z-40 px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold text-sm shadow-lg">Reopen your key</a>
-    <div id="ho-claim-overlay" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
-        <div id="ho-claim-dialog" role="dialog" aria-modal="true" aria-labelledby="ho-claim-heading" class="w-full max-w-lg max-h-full overflow-y-auto rounded-xl p-6 bg-slate-900 border border-slate-700 text-left">
-            <div class="flex justify-between items-start gap-4 mb-3">
-                <h2 id="ho-claim-heading" tabindex="-1" class="text-xl font-bold text-white focus:outline-none">Payment received</h2>
-                <button type="button" id="ho-claim-close" aria-label="Close" class="text-slate-400 hover:text-white text-2xl leading-none cursor-pointer">&times;</button>
+    <a id="ho-claim-reopen" href="#" class="hidden btn float-action">Reopen your key</a>
+    <div id="ho-claim-overlay" class="hidden dialog-overlay">
+        <div id="ho-claim-dialog" role="dialog" aria-modal="true" aria-labelledby="ho-claim-heading" class="dialog">
+            <div class="dialog-head">
+                <h2 id="ho-claim-heading" tabindex="-1">Payment received</h2>
+                <button type="button" id="ho-claim-close" aria-label="Close" class="dialog-close">&times;</button>
             </div>
-            <p id="ho-claim-status" aria-live="polite" class="text-sm text-slate-300 mb-3"></p>
-            <p id="ho-claim-message" role="status" class="hidden text-sm text-slate-300 mb-3"><span id="ho-claim-message-text"></span> <a id="ho-claim-mailto" href="mailto:mike@headlessoracle.com" class="text-blue-400 hover:text-blue-300 underline">Email mike@headlessoracle.com</a></p>
+            <p id="ho-claim-status" aria-live="polite" class="small"></p>
+            <p id="ho-claim-message" role="status" class="hidden small"><span id="ho-claim-message-text"></span> <!--email_off--><a id="ho-claim-mailto" href="mailto:mike@headlessoracle.com">Email mike@headlessoracle.com</a><!--/email_off--></p>
             <div id="ho-claim-ready" class="hidden">
-                <pre id="ho-claim-key" class="text-sm text-green-400 font-mono break-all whitespace-pre-wrap bg-slate-950 border border-green-700/40 rounded-lg p-3 mb-3"></pre>
-                <div class="flex flex-wrap gap-3 mb-4">
-                    <button type="button" id="ho-claim-copy" class="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg font-semibold text-sm transition cursor-pointer">Copy key</button>
-                    <button type="button" id="ho-claim-download" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-semibold text-sm transition cursor-pointer">Download as a text file</button>
+                <pre id="ho-claim-key"></pre>
+                <div class="row" style="margin-bottom:16px">
+                    <button type="button" id="ho-claim-copy" class="btn btn--small">Copy key</button>
+                    <button type="button" id="ho-claim-download" class="btn btn--line btn--small">Download as a text file</button>
                 </div>
-                <pre id="ho-claim-instructions" class="text-xs text-slate-300 font-mono break-all whitespace-pre-wrap bg-slate-950 border border-slate-700 rounded-lg p-3 mb-3"></pre>
-                <p class="text-sm text-amber-400 mb-4">Keep this key private. Save it now: this page shows it for 24 hours.</p>
-                <button type="button" id="ho-claim-saved" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold text-sm transition cursor-pointer">I have saved my key</button>
+                <pre id="ho-claim-instructions"></pre>
+                <p class="small warn">Keep this key private. Save it now: this page shows it for 24 hours.</p>
+                <button type="button" id="ho-claim-saved" class="btn">I have saved my key</button>
             </div>
         </div>
     </div>
 
-    <footer class="border-t border-slate-800 bg-slate-900/50 mt-auto">
-        <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p class="text-sm text-slate-500">&copy; 2026 Headless Oracle.</p>
-            <div class="flex flex-wrap justify-center gap-6 text-xs text-slate-500">
-                <a href="/" class="hover:text-white transition">Home</a>
-                <a href="/docs" class="hover:text-white transition">Docs</a>
-                <a href="/standards" class="hover:text-white transition">Standards</a>
-                <a href="/blog" class="hover:text-white transition">Blog</a>
-                <a href="/llms.txt" class="hover:text-white transition">llms.txt</a>
-                <a href="/terms" class="hover:text-white transition">Terms</a>
-                <a href="/privacy" class="hover:text-white transition">Privacy</a>
-                <a href="/refund" class="hover:text-white transition">Refund Policy</a>
-                <a href="https://github.com/LembaGang" class="hover:text-white transition" target="_blank" rel="noopener">GitHub</a>
-            </div>
-        </div>
-    </footer>
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="mono">Headless Oracle</span>
+    <ul class="foot-links">
+      <li><a href="/terms">Terms</a></li>
+      <li><a href="/privacy">Privacy</a></li>
+      <li><a href="/refund">Refund</a></li>
+      <li><!--email_off--><a href="mailto:mike@headlessoracle.com">mike@headlessoracle.com</a><!--/email_off--></li>
+    </ul>
+  </div>
+</footer>
 
     <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
     <script src="/js/paddle-init.js"></script>
@@ -507,12 +545,12 @@
                 resultEl.classList.remove('hidden');
             } else {
                 // Show inline result on the card (free-card, sandbox-card, etc.)
-                resultEl.innerHTML = '<div class="bg-slate-900 rounded-lg p-3 border border-green-700/40">' +
-                    '<div class="flex justify-between items-center mb-1"><span class="text-xs text-slate-500 font-mono">Your API key (500 calls/day)</span>' +
-                    '<button onclick="copyToClipboard(this, \'' + escapeHtml(data.api_key) + '\')" class="text-xs text-green-400 hover:text-green-300 cursor-pointer">Copy</button></div>' +
-                    '<pre class="text-xs text-green-400 font-mono break-all whitespace-pre-wrap">' + escapeHtml(data.api_key) + '</pre>' +
-                    '<p class="text-xs text-slate-500 mt-2">Quick test:</p>' +
-                    '<pre class="text-xs text-blue-300 font-mono mt-1 break-all whitespace-pre-wrap">curl -H \'X-Oracle-Key: ' + escapeHtml(data.api_key) + '\' \\\n  \'https://headlessoracle.com/v5/status?mic=XNYS\'</pre>' +
+                resultEl.innerHTML = '<div class="out">' +
+                    '<div class="row row--between"><span class="label">Your API key (500 calls/day)</span>' +
+                    '<button onclick="copyToClipboard(this, \'' + escapeHtml(data.api_key) + '\')" class="copy">Copy</button></div>' +
+                    '<pre>' + escapeHtml(data.api_key) + '</pre>' +
+                    '<p class="label">Quick test:</p>' +
+                    '<pre>curl -H \'X-Oracle-Key: ' + escapeHtml(data.api_key) + '\' \\\n  \'https://headlessoracle.com/v5/status?mic=XNYS\'</pre>' +
                     '</div>';
                 resultEl.classList.remove('hidden');
             }
@@ -544,19 +582,19 @@
             return;
         }
         panel.innerHTML =
-            '<div class="bg-slate-900 rounded-lg p-4 border border-indigo-500/30 text-left">' +
-            '<p class="text-xs text-indigo-300 font-semibold mb-2">Pay 0.001 USDC per request on Base mainnet</p>' +
-            '<p class="text-xs text-slate-400 mb-3">Your agent sends an <code class="text-indigo-300">X-Payment</code> header with the USDC transfer proof. No API key needed.</p>' +
-            '<div class="mb-3"><p class="text-xs text-slate-500 mb-1">Payment address (Base mainnet):</p>' +
-            '<pre class="text-xs text-green-400 font-mono break-all">0x26d4ffe98017d2f160e2daae9d119e3d8b860ad3</pre></div>' +
-            '<div class="mb-3"><p class="text-xs text-slate-500 mb-1">Chain:</p>' +
-            '<pre class="text-xs text-slate-300 font-mono">Base (EIP-155: 8453) &middot; USDC &middot; 0.001 per request</pre></div>' +
-            '<div class="mb-3"><p class="text-xs text-slate-500 mb-1">Example curl:</p>' +
-            '<pre class="text-xs text-blue-300 font-mono break-all whitespace-pre-wrap">curl \'https://headlessoracle.com/v5/status?mic=XNYS\' \\\n  -H \'X-Payment: {"tx_hash":"0x...your_tx_hash"}\' </pre>' +
-            '<button onclick="copyToClipboard(this, this.previousElementSibling.textContent)" class="mt-1 text-xs text-blue-400 hover:text-blue-300 cursor-pointer">Copy</button></div>' +
-            '<div class="flex gap-3 mt-3">' +
-            '<a href="/docs/x402-payments" class="text-xs text-indigo-400 hover:text-indigo-300 transition">Full x402 guide &rarr;</a>' +
-            '<a href="/.well-known/x402.json" class="text-xs text-slate-500 hover:text-slate-400 transition">x402 discovery JSON</a></div>' +
+            '<div class="out">' +
+            '<p><strong>Pay 0.001 USDC per request on Base mainnet</strong></p>' +
+            '<p>Your agent sends an <code>X-Payment</code> header with the USDC transfer proof. No API key needed.</p>' +
+            '<div><p class="label">Payment address (Base mainnet):</p>' +
+            '<pre>0x26d4ffe98017d2f160e2daae9d119e3d8b860ad3</pre></div>' +
+            '<div><p class="label">Chain:</p>' +
+            '<pre>Base (EIP-155: 8453) &middot; USDC &middot; 0.001 per request</pre></div>' +
+            '<div><p class="label">Example curl:</p>' +
+            '<pre>curl \'https://headlessoracle.com/v5/status?mic=XNYS\' \\\n  -H \'X-Payment: {"tx_hash":"0x...your_tx_hash"}\' </pre>' +
+            '<button onclick="copyToClipboard(this, this.previousElementSibling.textContent)" class="copy">Copy</button></div>' +
+            '<p class="row">' +
+            '<a href="/docs/x402-payments">Full x402 guide &rarr;</a>' +
+            '<a href="/.well-known/x402.json">x402 discovery JSON</a></p>' +
             '</div>';
         panel.classList.remove('hidden');
     }
@@ -619,8 +657,8 @@
             if (plan === 'custody_90d' || plan === 'custody_1y') {
                 // Witness accounts cannot be bought with x402 or replaced by a free API key.
                 fallbackEl.innerHTML =
-                    '<div class="bg-slate-900 rounded-lg p-3 border border-slate-700">' +
-                    '<p>Card checkout did not open. Try again, or write to <a href="mailto:mike@headlessoracle.com" class="text-blue-400 hover:text-blue-300">mike@headlessoracle.com</a>.</p>' +
+                    '<div class="out">' +
+                    '<p>Card checkout did not open. Try again, or write to <a href="mailto:mike@headlessoracle.com">mike@headlessoracle.com</a>.</p>' +
                     '</div>';
                 fallbackEl.classList.remove('hidden');
                 btn.textContent = origText;
@@ -629,13 +667,13 @@
             }
             // Show fallback with x402 alternative + contact
             fallbackEl.innerHTML =
-                '<div class="bg-slate-900 rounded-lg p-3 border border-slate-700">' +
-                '<p class="text-amber-400 font-semibold mb-2">Card checkout loading &mdash; if it doesn\'t open:</p>' +
-                '<p class="mb-2">&#8226; <strong class="text-white">x402 alternative:</strong> Pay with USDC on Base mainnet. <button onclick="toggleX402Panel()" class="text-indigo-400 hover:text-indigo-300 cursor-pointer underline">Show details</button></p>' +
+                '<div class="out">' +
+                '<p><strong>Card checkout loading &mdash; if it doesn\'t open:</strong></p>' +
+                '<p>&#8226; <strong>x402 alternative:</strong> Pay with USDC on Base mainnet. <button onclick="toggleX402Panel()" class="linkish">Show details</button></p>' +
                 ((plan === 'builder' || plan === 'pro') ?
-                    '<p class="mb-2">&#8226; <strong class="text-white">Mint via x402:</strong> Send ' + (plan === 'builder' ? '99' : '299') + ' USDC to mint a ' + plan + ' key instantly via <code class="text-slate-300">POST /v5/x402/mint</code></p>' : '') +
-                '<p>&#8226; <strong class="text-white">Email:</strong> <a href="mailto:mike@headlessoracle.com?subject=' + encodeURIComponent(plan + ' plan subscription') + '" class="text-blue-400 hover:text-blue-300">mike@headlessoracle.com</a></p>' +
-                '<p class="mt-2 text-slate-500">Meanwhile, <button onclick="getInstantKey(\'free-card\')" class="text-green-400 hover:text-green-300 underline cursor-pointer">get a free key</button> to start using the API immediately.</p>' +
+                    '<p>&#8226; <strong>Mint via x402:</strong> Send ' + (plan === 'builder' ? '99' : '299') + ' USDC to mint a ' + plan + ' key instantly via <code>POST /v5/x402/mint</code></p>' : '') +
+                '<p>&#8226; <strong>Email:</strong> <a href="mailto:mike@headlessoracle.com?subject=' + encodeURIComponent(plan + ' plan subscription') + '">mike@headlessoracle.com</a></p>' +
+                '<p class="muted">Meanwhile, <button onclick="getInstantKey(\'free-card\')" class="linkish">get a free key</button> to start using the API immediately.</p>' +
                 '</div>';
             fallbackEl.classList.remove('hidden');
             btn.textContent = origText;
@@ -919,7 +957,7 @@
         resEl.classList.add('hidden');
         REFEREE_INTAKE_FIELDS.concat(['consent_to_be_named']).forEach(function (f) {
             const el = document.getElementById('ri-' + f);
-            if (el) el.classList.remove('border-red-500');
+            if (el) el.classList.remove('is-invalid');
         });
 
         const payload = {};
@@ -947,11 +985,11 @@
                     (Array.isArray(data.errors) && data.errors.length ? (data.errors[0].field || data.errors[0].path) : null);
                 const detail = data.message || data.error || 'Request rejected.';
                 errEl.innerHTML = field
-                    ? 'Rejected field: <code class="font-mono text-red-300">' + field + '</code> &mdash; ' + detail
+                    ? 'Rejected field: <code>' + field + '</code> &mdash; ' + detail
                     : 'Rejected (400): ' + detail;
                 if (field) {
                     const bad = document.getElementById('ri-' + field);
-                    if (bad) { bad.classList.add('border-red-500'); bad.focus(); }
+                    if (bad) { bad.classList.add('is-invalid'); bad.focus(); }
                 }
                 errEl.classList.remove('hidden');
                 return;
@@ -963,11 +1001,11 @@
 
             const checkoutHref = data.checkout_url || '#referee';
             resEl.innerHTML =
-                '<div class="bg-slate-900 rounded-lg p-4 border border-slate-700">' +
-                '<p class="text-xs text-slate-500 mb-1">Your intake id</p>' +
-                '<pre id="referee-intake-id" class="text-sm text-amber-400 font-mono break-all whitespace-pre-wrap">' + data.intake_id + '</pre>' +
-                '<p class="text-xs text-slate-500 mt-3 mb-2">The entry is scheduled once the entry fee is paid.</p>' +
-                '<a id="referee-checkout-link" href="' + checkoutHref + '" class="inline-block px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg font-semibold text-sm transition">Pay the conformance entry fee &mdash; $2,500</a>' +
+                '<div class="out">' +
+                '<p class="label">Your intake id</p>' +
+                '<pre id="referee-intake-id">' + data.intake_id + '</pre>' +
+                '<p>The entry is scheduled once the entry fee is paid.</p>' +
+                '<p><a id="referee-checkout-link" href="' + checkoutHref + '" class="btn btn--small">Pay the conformance entry fee &mdash; $2,500</a></p>' +
                 '</div>';
             resEl.classList.remove('hidden');
             document.getElementById('referee-intake-form').reset();
@@ -994,7 +1032,7 @@
             document.getElementById('demo-json').textContent = '{ "error": "Network error. Try again." }';
             document.getElementById('demo-result').classList.remove('hidden');
         }
-        btn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg> Try Live Demo';
+        btn.innerHTML = 'Try Live Demo';
         btn.disabled = false;
     }
 
@@ -1003,8 +1041,8 @@
         navigator.clipboard.writeText(text.trim()).then(() => {
             const orig = btn.textContent;
             btn.textContent = 'Copied!';
-            btn.classList.add('text-green-400');
-            setTimeout(() => { btn.textContent = orig; btn.classList.remove('text-green-400'); }, 2000);
+            btn.classList.add('is-copied');
+            setTimeout(() => { btn.textContent = orig; btn.classList.remove('is-copied'); }, 2000);
         }).catch(() => {});
     }
 

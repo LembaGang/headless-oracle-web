@@ -12,6 +12,10 @@
     <meta property="og:description" content="Headless Oracle + Bun: fetch signed receipts, gate webhooks on market status, zero polyfills.">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/site.css">
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #cbd5e1; }
         .glass { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(51, 65, 85, 0.5); }
@@ -24,18 +28,36 @@
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <nav class="w-full border-b border-slate-800 bg-slate-900/80 backdrop-blur-md">
-        <div class="max-w-5xl mx-auto px-6 h-16 flex justify-between items-center">
-            <a href="/" class="font-bold text-white tracking-wider">HEADLESS<span class="text-blue-500">ORACLE</span></a>
-            <div class="flex items-center gap-4 text-sm">
-                <a href="/docs" class="text-slate-400 hover:text-white transition">Docs</a>
-                <a href="/pricing" class="text-slate-400 hover:text-white transition">Pricing</a>
-                <span class="badge">TypeScript SDK</span>
-            </div>
-        </div>
-    </nav>
+    <a class="skip" href="#main">Skip to content</a>
 
-    <main class="flex-grow max-w-5xl mx-auto px-6 py-12 w-full">
+<header class="site-head">
+  <div class="wrap">
+    <a class="wordmark" href="/">Headless Oracle</a>
+    <nav aria-label="Main">
+      <ul class="nav-list nav-wide">
+        <li><a href="C:/Program Files/Git/#how">Witness</a></li>
+        <li><a href="/verify">Verify</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/docs">Docs</a></li>
+        <li><a href="C:/Program Files/Git/#auditors">For auditors</a></li>
+        <li><a href="https://github.com/LembaGang">GitHub</a></li>
+      </ul>
+      <details class="nav-small">
+        <summary>Menu</summary>
+        <ul>
+          <li><a href="C:/Program Files/Git/#how">Witness</a></li>
+          <li><a href="/verify">Verify</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+          <li><a href="/docs">Docs</a></li>
+          <li><a href="C:/Program Files/Git/#auditors">For auditors</a></li>
+          <li><a href="https://github.com/LembaGang">GitHub</a></li>
+        </ul>
+      </details>
+    </nav>
+  </div>
+</header>
+
+    <main id="main" class="flex-grow max-w-5xl mx-auto px-6 py-12 w-full">
 
         <div class="text-xs text-slate-500 mb-8 font-mono">
             <a href="/docs" class="hover:text-slate-300">docs</a>
@@ -232,17 +254,17 @@ setInterval(scheduledMarketCheck, CHECK_INTERVAL_MS);</span></pre>
 
     </main>
 
-    <footer class="border-t border-slate-800 bg-slate-900/50 mt-auto">
-        <div class="max-w-5xl mx-auto px-6 py-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p class="text-xs text-slate-500">&copy; 2026 Headless Oracle.</p>
-            <div class="flex gap-6 text-xs text-slate-500">
-                <a href="/docs" class="hover:text-white transition">Docs</a>
-                <a href="/pricing" class="hover:text-white transition">Pricing</a>
-                <a href="/terms" class="hover:text-white transition">Terms</a>
-                <a href="mailto:hello@headlessoracle.com" class="hover:text-white transition">Contact</a>
-            </div>
-        </div>
-    </footer>
+    <footer class="site-foot">
+  <div class="wrap">
+    <span class="mono">Headless Oracle</span>
+    <ul class="foot-links">
+      <li><a href="/terms">Terms</a></li>
+      <li><a href="/privacy">Privacy</a></li>
+      <li><a href="/refund">Refund</a></li>
+      <li><!--email_off--><a href="mailto:mike@headlessoracle.com">mike@headlessoracle.com</a><!--/email_off--></li>
+    </ul>
+  </div>
+</footer>
 
 </body>
 </html>

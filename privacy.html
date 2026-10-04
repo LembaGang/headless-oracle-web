@@ -16,6 +16,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/site.css">
     <style>
         :root {
             --bg-primary: #0a0e17;
@@ -179,19 +183,44 @@
     </style>
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="wordmark" href="/">Headless Oracle</a>
+    <nav aria-label="Main">
+      <ul class="nav-list nav-wide">
+        <li><a href="C:/Program Files/Git/#how">Witness</a></li>
+        <li><a href="/verify">Verify</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/docs">Docs</a></li>
+        <li><a href="C:/Program Files/Git/#auditors">For auditors</a></li>
+        <li><a href="https://github.com/LembaGang">GitHub</a></li>
+      </ul>
+      <details class="nav-small">
+        <summary>Menu</summary>
+        <ul>
+          <li><a href="C:/Program Files/Git/#how">Witness</a></li>
+          <li><a href="/verify">Verify</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+          <li><a href="/docs">Docs</a></li>
+          <li><a href="C:/Program Files/Git/#auditors">For auditors</a></li>
+          <li><a href="https://github.com/LembaGang">GitHub</a></li>
+        </ul>
+      </details>
+    </nav>
+  </div>
+</header>
+
     <div class="container">
 
-        <a href="/" class="back-link">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
-            Back to Headless Oracle
-        </a>
-
+        
         <header class="header">
             <h1>Privacy Policy</h1>
             <p class="header-meta">Last updated: March 2, 2026</p>
         </header>
 
-        <main>
+        <main id="main">
 
             <section class="section">
                 <h2><span class="section-number">01</span> Overview</h2>
@@ -274,22 +303,17 @@
 
         </main>
 
-        <footer class="legal-footer">
-            <p>Headless Oracle &copy; 2026. All rights reserved.</p>
-            <div class="footer-links">
-                <a href="/">Home</a>
-                <a href="/docs">Docs</a>
-                <a href="/pricing">Pricing</a>
-                <a href="/standards">Standards</a>
-                <a href="/blog">Blog</a>
-                <a href="/privacy">Privacy Policy</a>
-                <a href="/terms">Terms of Service</a>
-                <a href="/refund">Refund Policy</a>
-                <a href="/llms.txt">llms.txt</a>
-                <a href="https://github.com/LembaGang">GitHub</a>
-                <a href="mailto:mike@headlessoracle.com">mike@headlessoracle.com</a>
-            </div>
-        </footer>
+        <footer class="site-foot">
+  <div class="wrap">
+    <span class="mono">Headless Oracle</span>
+    <ul class="foot-links">
+      <li><a href="/terms">Terms</a></li>
+      <li><a href="/privacy">Privacy</a></li>
+      <li><a href="/refund">Refund</a></li>
+      <li><!--email_off--><a href="mailto:mike@headlessoracle.com">mike@headlessoracle.com</a><!--/email_off--></li>
+    </ul>
+  </div>
+</footer>
 
     </div>
     <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>

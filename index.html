@@ -1,725 +1,820 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Headless Oracle | Signed Market-Status API for AI Agents</title>
-    <meta name="description" content="Headless Oracle — cryptographic market state verification for autonomous agents. 28 global exchanges. Ed25519 signed receipts. Fail-closed.">
-    <meta name="robots" content="index, follow">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://headlessoracle.com/">
-    <meta property="og:title" content="Headless Oracle | Signed Market-Status API for AI Agents">
-    <meta property="og:description" content="Ed25519-signed market-status receipts for AI agents. 28 global exchanges. Fail-closed. MCP server included.">
-    <link rel="canonical" href="https://headlessoracle.com/">
-    <link rel="alternate" type="application/json" href="/openapi.json" title="OpenAPI 3.1 specification">
-    <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt — machine-readable API summary">
-    <meta property="og:image" content="https://headlessoracle.com/og-image.png">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Headless Oracle | Signed Market-Status API for AI Agents">
-    <meta name="twitter:description" content="Ed25519-signed market-status receipts for AI agents. 28 global exchanges. Fail-closed. MCP server included.">
-    <meta name="twitter:image" content="https://headlessoracle.com/og-image.png">
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "Headless Oracle",
-      "url": "https://headlessoracle.com",
-      "description": "Ed25519-signed market-status receipts for AI agents and autonomous trading systems. 28 global exchanges. Fail-closed by contract. MCP server included.",
-      "applicationCategory": "FinanceApplication",
-      "operatingSystem": "Any",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD",
-        "description": "Free tier: 500 requests/day, no credit card required"
-      },
-      "featureList": [
-        "Ed25519 cryptographic signing of every response",
-        "28 global exchanges across 7 regions: Americas (XNYS, XNAS, XBSP), Europe (XLON, XPAR, XSWX, XMIL, XHEL, XSTO, XIST), Middle East (XSAU, XDFM), Africa (XJSE), Asia (XSHG, XSHE, XHKG, XJPX, XKRX, XBOM, XNSE, XSES), Pacific (XASX, XNZE), Derivatives & Crypto 24/7 (XCBT, XNYM, XCBO, XCOI, XBIN)",
-        "Fail-closed design: UNKNOWN or error status always halts",
-        "MCP server for Claude and agent frameworks",
-        "REST API with OpenAPI 3.1 schema at /openapi.json",
-        "Real-time circuit breaker and emergency halt detection",
-        "Machine-readable terms at /llms.txt",
-        "Full exchange registry with ISO 3166-1/4217/10383 metadata at /mics.json"
-      ],
-      "about": [
-        { "@type": "Organization", "name": "New York Stock Exchange",          "identifier": "XNYS", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "NASDAQ",                           "identifier": "XNAS", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "B3 (Sao Paulo Stock Exchange)",    "identifier": "XBSP", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "London Stock Exchange",            "identifier": "XLON", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "Euronext Paris",                   "identifier": "XPAR", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "SIX Swiss Exchange",               "identifier": "XSWX", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "Borsa Italiana",                   "identifier": "XMIL", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "Nasdaq Helsinki",                  "identifier": "XHEL", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "Nasdaq Stockholm",                 "identifier": "XSTO", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "Borsa Istanbul",                   "identifier": "XIST", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "Saudi Exchange (Tadawul)",         "identifier": "XSAU", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "Dubai Financial Market",           "identifier": "XDFM", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "Johannesburg Stock Exchange",      "identifier": "XJSE", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "Shanghai Stock Exchange",          "identifier": "XSHG", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "Shenzhen Stock Exchange",          "identifier": "XSHE", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "Hong Kong Stock Exchange",         "identifier": "XHKG", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "Japan Exchange Group",             "identifier": "XJPX", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "Korea Exchange",                   "identifier": "XKRX", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "BSE Ltd (Bombay Stock Exchange)",  "identifier": "XBOM", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "National Stock Exchange of India", "identifier": "XNSE", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "Singapore Exchange",               "identifier": "XSES", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "Australian Securities Exchange",   "identifier": "XASX", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "New Zealand Exchange",             "identifier": "XNZE", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "CME Futures (overnight)",          "identifier": "XCBT", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "NYMEX (overnight)",                "identifier": "XNYM", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "Cboe Options Exchange",            "identifier": "XCBO", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "Coinbase Exchange",                "identifier": "XCOI", "sameAs": "https://www.iso20022.org/market-identifier-codes" },
-        { "@type": "Organization", "name": "Binance",                          "identifier": "XBIN", "sameAs": "https://www.iso20022.org/market-identifier-codes" }
-      ],
-      "provider": {
-        "@type": "Organization",
-        "name": "Headless Oracle",
-        "url": "https://headlessoracle.com"
-      },
-      "sameAs": [
-        "https://github.com/agent-intent/verifiable-intent",
-        "https://github.com/LembaGang/sma-protocol",
-        "https://github.com/LembaGang/mpas-spec",
-        "https://github.com/LembaGang/agent-pretrade-safety-standard",
-        "https://github.com/headlessoracle/demo-agent",
-        "https://github.com/headlessoracle/essays",
-        "https://verify.headlessoracle.com"
-      ],
-      "potentialAction": {
-        "@type": "ConsumeAction",
-        "target": {
-          "@type": "EntryPoint",
-          "urlTemplate": "https://headlessoracle.com/v5/demo?mic={mic}",
-          "actionPlatform": "https://schema.org/DigitalPlatform",
-          "description": "Query live market status. mic values: any of 28 supported MIC codes (XNYS, XNAS, XLON, XJPX, XPAR, XHKG, XSES, XASX, XBOM, XNSE, XSHG, XSHE, XKRX, XJSE, XBSP, XSWX, XMIL, XIST, XSAU, XDFM, XNZE, XHEL, XSTO, XCBT, XNYM, XCBO, XCOI, XBIN). Returns signed JSON receipt."
-        }
-      }
-    }
-    </script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; }
-        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .hero-glow { position: absolute; width: 600px; height: 600px; background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(0, 0, 0, 0) 70%); top: -200px; left: 50%; transform: translateX(-50%); z-index: -1; }
-        pre { background: #1e293b; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; font-size: 0.875rem; border: 1px solid #334155; }
-        .status-dot { height: 8px; width: 8px; background-color: #22c55e; border-radius: 50%; display: inline-block; margin-right: 6px; box-shadow: 0 0 8px #22c55e; }
-    </style>
-</head>
-<body class="text-slate-300 min-h-screen flex flex-col relative overflow-x-hidden">
-
-    <div class="hero-glow"></div>
-
-    <nav class="w-full max-w-6xl mx-auto p-6 flex justify-between items-center border-b border-slate-800/50">
-        <div class="flex items-center gap-2">
-            <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-            <span class="text-xl font-bold tracking-wider text-white">HEADLESS<span class="text-blue-500">ORACLE</span></span>
-        </div>
-        <div class="flex gap-6 text-sm font-medium">
-            <a href="/docs" class="hover:text-white transition">Docs</a>
-            <a href="/dashboard" class="hover:text-white transition">Dashboard</a>
-            <a href="/status" class="hover:text-white transition flex items-center gap-1"><span class="status-dot"></span>Status</a>
-            <a href="/pricing" class="hover:text-white transition">Pricing</a>
-            <a href="/standards" class="hover:text-white transition">Standards</a>
-            <a href="/blog" class="hover:text-white transition">Blog</a>
-            <a href="https://github.com/LembaGang" class="hover:text-white transition" target="_blank" rel="noopener">GitHub</a>
-        </div>
-    </nav>
-
-    <main class="flex-grow flex flex-col items-center justify-center text-center px-4 mt-16 mb-20">
-        <div class="flex flex-wrap justify-center gap-2 mb-6">
-            <a href="/docs/x402-payments" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-900/30 border border-indigo-500/40 text-indigo-300 text-xs font-semibold hover:bg-indigo-900/50 transition">
-                <span class="font-mono font-bold">x402</span>
-                Agents can pay for themselves · 0.001 USDC/req
-            </a>
-        </div>
-
-        <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight max-w-4xl">
-            Ed25519-signed market-state<br />
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">attestations for AI agents.</span>
-        </h1>
-
-        <p class="text-2xl text-slate-400 mb-4 max-w-2xl mx-auto font-mono">
-            28 exchanges. 60-second TTL. Fail-closed.
-        </p>
-
-        <p class="text-lg text-slate-500 mb-2 max-w-2xl mx-auto">
-            Headless Oracle is a <strong class="text-white">fail-closed execution guardrail</strong> for AI agents and RWA bots. Get a cryptographically signed market status receipt before your agent executes. Agents pay 0.001 USDC per request via <a href="/docs/x402-payments" class="text-indigo-400 hover:text-indigo-300">x402</a> on Base mainnet.
-        </p>
-
-        <p class="text-xs font-mono text-slate-600 mb-8 max-w-2xl mx-auto italic">
-            Co-author of the IETF draft family defining environmental constraints for Verifiable Intent.
-        </p>
-
-        <div class="flex flex-wrap justify-center gap-2 mb-6">
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">NYSE · XNYS</span>
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">NASDAQ · XNAS</span>
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">B3 · XBSP</span>
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">LSE · XLON</span>
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">Euronext · XPAR</span>
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">SIX · XSWX</span>
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">Milan · XMIL</span>
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">Helsinki · XHEL</span>
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">Stockholm · XSTO</span>
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">Istanbul · XIST</span>
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">Tadawul · XSAU</span>
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">DFM · XDFM</span>
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">JSE · XJSE</span>
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">Shanghai · XSHG</span>
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">Shenzhen · XSHE</span>
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">HKEX · XHKG</span>
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">Tokyo · XJPX</span>
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">Seoul · XKRX</span>
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">BSE · XBOM</span>
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">NSE · XNSE</span>
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">SGX · XSES</span>
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">Sydney · XASX</span>
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">NZX · XNZE</span>
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">CME · XCBT</span>
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">NYMEX · XNYM</span>
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">Cboe · XCBO</span>
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">Coinbase · XCOI</span>
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400">Binance · XBIN</span>
-        </div>
-
-        <div class="flex flex-col sm:flex-row gap-4 w-full justify-center">
-            <button onclick="getSandboxKey().then(() => document.getElementById('sandbox-result').scrollIntoView({behavior:'smooth'}))" class="px-8 py-4 bg-green-600 hover:bg-green-500 text-white rounded-lg font-bold transition shadow-lg shadow-green-900/20 flex items-center justify-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
-                Get API Key
-            </button>
-            <button onclick="copyDemoCurl()" id="try-demo-btn" class="px-8 py-4 glass hover:bg-white/10 text-white rounded-lg font-bold transition flex items-center justify-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-                Try Demo
-            </button>
-        </div>
-
-        <div class="flex flex-wrap justify-center gap-4 mt-6 text-xs text-slate-500">
-            <span>REST API &nbsp;·&nbsp; <a href="/docs#mcp" class="text-blue-400 hover:text-blue-300">MCP server</a> for Claude &amp; agent frameworks &nbsp;·&nbsp; <a href="/docs/x402-payments" class="text-indigo-400 hover:text-indigo-300">x402 micropayments</a> &nbsp;·&nbsp; <a href="/llms.txt" class="text-slate-400 hover:text-white">llms.txt</a></span>
-        </div>
-    </main>
-
-    <!-- Live Status Widget: the product demonstrating itself -->
-    <section class="w-full max-w-3xl mx-auto px-6 mb-16">
-        <div id="status-widget" class="glass rounded-xl p-5 cursor-pointer border border-slate-700 hover:border-blue-500/40 transition-colors group" onclick="toggleReceipt()">
-            <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-2">
-                    <span id="sw-dot" class="w-2.5 h-2.5 rounded-full bg-slate-600 inline-block transition-all"></span>
-                    <span class="text-xs font-mono text-slate-500 uppercase tracking-wider">NYSE · Live Market Status</span>
-                </div>
-                <div class="flex items-center gap-3">
-                    <span class="text-xs text-blue-400 font-mono flex items-center gap-1">
-                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                        cryptographically verified
-                    </span>
-                    <span class="text-xs text-slate-600 group-hover:text-slate-500 transition">click to inspect ↓</span>
-                </div>
-            </div>
-            <div class="flex items-end justify-between">
-                <div class="flex items-center gap-4">
-                    <span id="sw-label" class="text-3xl font-bold font-mono text-slate-500">—</span>
-                    <div class="text-xs text-slate-500 leading-relaxed">
-                        <div id="sw-time">Fetching live receipt…</div>
-                        <div id="sw-next" class="text-slate-600"></div>
-                    </div>
-                </div>
-                <div class="text-right hidden sm:block">
-                    <div class="text-xs text-slate-600 font-mono">Live — verified by Headless Oracle</div>
-                    <div id="sw-countdown" class="text-xs text-slate-700 font-mono"></div>
-                </div>
-            </div>
-        </div>
-        <div id="receipt-panel" class="hidden mt-1">
-            <div class="flex items-center justify-between px-2 py-1">
-                <span class="text-xs font-mono text-slate-600">Signed receipt JSON</span>
-                <button onclick="copyReceipt(event)" class="text-xs text-slate-500 hover:text-white transition">Copy</button>
-            </div>
-            <pre id="receipt-json" class="text-xs text-green-400 font-mono overflow-x-auto rounded-lg p-4 bg-slate-900 border border-slate-700 max-h-72 m-0">Loading…</pre>
-            <div class="mt-2 text-right">
-                <a href="/verify" class="text-xs text-blue-400 hover:text-blue-300">Verify this receipt yourself (no server needed) →</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Edge Case Counter -->
-    <section class="w-full max-w-5xl mx-auto px-6 mb-20">
-        <div class="text-center mb-10">
-            <h2 class="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">28 exchanges. Global 24/7 coverage.</h2>
-            <p class="text-slate-500 text-sm font-mono">The scheduling complexity a timezone library was not built to solve.</p>
-        </div>
-        <div class="flex flex-wrap justify-center gap-3 mb-8">
-            <div class="glass p-5 rounded-xl text-center w-[calc(50%-6px)] md:w-auto md:flex-1">
-                <div class="text-3xl font-bold text-white mb-2">67</div>
-                <div class="text-xs text-slate-400 leading-snug">exchange-specific<br>holidays<br><span class="text-slate-600 text-xs">different per country, non-overlapping</span></div>
-            </div>
-            <div class="glass p-5 rounded-xl text-center w-[calc(50%-6px)] md:w-auto md:flex-1">
-                <div class="text-3xl font-bold text-white mb-2">18</div>
-                <div class="text-xs text-slate-400 leading-snug">early close<br>days<br><span class="text-slate-600 text-xs">NYSE closes at 1:00 PM, not 4:00 PM</span></div>
-            </div>
-            <div class="glass p-5 rounded-xl text-center w-[calc(50%-6px)] md:w-auto md:flex-1">
-                <div class="text-3xl font-bold text-white mb-2">8</div>
-                <div class="text-xs text-slate-400 leading-snug">DST<br>transitions<br><span class="text-slate-600 text-xs">incl. 3-week US/EU phantom window</span></div>
-            </div>
-            <div class="glass p-5 rounded-xl text-center w-[calc(50%-6px)] md:w-auto md:flex-1">
-                <div class="text-3xl font-bold text-white mb-2">490</div>
-                <div class="text-xs text-slate-400 leading-snug">lunch break<br>sessions<br><span class="text-slate-600 text-xs">Tokyo 11:30–12:30, HK 12:00–13:00</span></div>
-            </div>
-            <div class="glass p-5 rounded-xl text-center w-[calc(50%-6px)] md:w-auto md:flex-1">
-                <div class="text-3xl font-bold text-white mb-2">728</div>
-                <div class="text-xs text-slate-400 leading-snug">weekend days<br>across 28 venues<br><span class="text-slate-600 text-xs">per calendar year</span></div>
-            </div>
-        </div>
-        <div class="border border-slate-700/80 rounded-lg p-5 bg-slate-900/40 text-center">
-            <p class="text-slate-300 font-mono text-sm">A timezone library handles zero of these. Headless Oracle handles all of them.</p>
-        </div>
-    </section>
-
-    <!-- Open Standards -->
-    <section class="w-full max-w-4xl mx-auto px-6 mb-16">
-        <div class="mb-5 text-center">
-            <h2 class="text-xl font-bold text-white mb-1">Open Standards</h2>
-            <p class="text-xs text-slate-500">Apache 2.0 — designed to be implemented by any operator, not just Headless Oracle</p>
-        </div>
-        <div class="grid md:grid-cols-3 gap-4">
-            <a href="https://github.com/LembaGang/sma-protocol" target="_blank" rel="noopener" class="glass rounded-xl p-5 border border-slate-700/60 hover:border-blue-500/40 transition group">
-                <div class="text-xs font-mono text-blue-400 uppercase tracking-wider mb-2">SMA Protocol</div>
-                <div class="text-white font-semibold text-sm mb-1 group-hover:text-blue-300 transition">Signed Market Attestation</div>
-                <div class="text-xs text-slate-400 mb-3">The canonical format for a cryptographically signed market-state receipt. Ed25519, 60s TTL, fail-closed semantics.</div>
-                <div class="text-xs font-mono text-slate-500">github.com/LembaGang/sma-protocol →</div>
-            </a>
-            <a href="https://github.com/LembaGang/mpas-spec" target="_blank" rel="noopener" class="glass rounded-xl p-5 border border-slate-700/60 hover:border-purple-500/40 transition group">
-                <div class="text-xs font-mono text-purple-400 uppercase tracking-wider mb-2">MPAS-1.0</div>
-                <div class="text-white font-semibold text-sm mb-1 group-hover:text-purple-300 transition">Multi-Party Attestation</div>
-                <div class="text-xs text-slate-400 mb-3">Quorum consensus across N independent oracle operators. 2-of-3 means no single compromised operator can forge a result.</div>
-                <div class="text-xs font-mono text-slate-500">github.com/LembaGang/mpas-spec →</div>
-            </a>
-            <a href="https://github.com/LembaGang/agent-pretrade-safety-standard" target="_blank" rel="noopener" class="glass rounded-xl p-5 border border-slate-700/60 hover:border-green-500/40 transition group">
-                <div class="text-xs font-mono text-green-400 uppercase tracking-wider mb-2">APTS-1.0</div>
-                <div class="text-white font-semibold text-sm mb-1 group-hover:text-green-300 transition">Agent Pre-Trade Safety</div>
-                <div class="text-xs text-slate-400 mb-3">6-step checklist every autonomous agent must complete before executing a trade. Vendor-neutral. CI badge included.</div>
-                <div class="text-xs font-mono text-slate-500">github.com/LembaGang/agent-pretrade-safety-standard →</div>
-            </a>
-        </div>
-    </section>
-
-    <!-- Comparison Table -->
-    <section class="w-full max-w-5xl mx-auto px-6 mb-20">
-        <div class="mb-6">
-            <h2 class="text-2xl font-bold text-white mb-2">Think it's simple?</h2>
-            <p class="text-slate-500 text-sm">Common assumptions about market schedules, and what the data actually shows.</p>
-        </div>
-        <div class="overflow-x-auto rounded-xl border border-slate-700">
-            <table class="w-full text-sm">
-                <thead>
-                    <tr class="border-b border-slate-700 bg-slate-900/60">
-                        <th class="text-left py-3 px-5 text-slate-400 font-mono font-medium text-xs uppercase tracking-wider w-2/5">What you assume</th>
-                        <th class="text-left py-3 px-5 text-slate-400 font-mono font-medium text-xs uppercase tracking-wider">What actually happens</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="border-b border-slate-800/60">
-                        <td class="py-4 px-5 text-slate-300 font-mono text-xs align-top leading-relaxed">NYSE closes at 4pm ET</td>
-                        <td class="py-4 px-5 text-slate-400 align-top leading-relaxed">Except Good Friday (1pm), day before July 4th (1pm), Christmas Eve (1pm), and emergency halts at any time</td>
-                    </tr>
-                    <tr class="border-b border-slate-800/60 bg-slate-900/20">
-                        <td class="py-4 px-5 text-slate-300 font-mono text-xs align-top leading-relaxed">Tokyo is open 9am–3pm JST</td>
-                        <td class="py-4 px-5 text-slate-400 align-top leading-relaxed">There's a lunch break 11:30–12:30 every trading day. Your bot thinks it's open. It's not.</td>
-                    </tr>
-                    <tr class="border-b border-slate-800/60">
-                        <td class="py-4 px-5 text-slate-300 font-mono text-xs align-top leading-relaxed">"Just use a timezone library"</td>
-                        <td class="py-4 px-5 text-slate-400 align-top leading-relaxed">pytz handles DST. It doesn't handle that NYSE closes for Juneteenth but LSE doesn't, or that Hong Kong closes for Lunar New Year but Singapore doesn't.</td>
-                    </tr>
-                    <tr class="border-b border-slate-800/60 bg-slate-900/20">
-                        <td class="py-4 px-5 text-slate-300 font-mono text-xs align-top leading-relaxed">"I'll hardcode the holidays"</td>
-                        <td class="py-4 px-5 text-slate-400 align-top leading-relaxed">Which year? 2026 holidays differ from 2027. When a holiday falls on a weekend, some exchanges shift to Friday, others Monday, others don't shift.</td>
-                    </tr>
-                    <tr>
-                        <td class="py-4 px-5 text-slate-300 font-mono text-xs align-top leading-relaxed">"I'll check once at market open"</td>
-                        <td class="py-4 px-5 text-slate-400 align-top leading-relaxed">Circuit breaker at 2:47pm. Your cached "OPEN" is now wrong. Your bot trades into a halted market.</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </section>
-
-    <section class="max-w-4xl mx-auto px-6 mb-24 grid md:grid-cols-2 gap-12 items-center">
-        <div class="text-left">
-            <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
-                <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                The Failure Mode
-            </h2>
-            <p class="text-slate-400 mb-4">A liquidation bot holds OUSG (tokenized US Treasuries) as collateral. At <strong>20:30 UTC on March 9</strong>, a health factor drops below 1.0. The bot fires.</p>
-            <p class="text-slate-400 mb-4">NYSE closed 30 minutes ago. The bot's hardcoded UTC offset was correct yesterday — but DST shifted overnight. It still thinks the market is open. The liquidation executes against a closed market. Settlement fails.</p>
-            <div class="p-4 bg-red-900/20 border border-red-500/30 rounded-lg space-y-2">
-                <p class="text-red-200 font-mono text-sm">At-risk exposure: <span class="text-white font-bold">$13M–$19.5M</span> bad debt per protocol</p>
-                <p class="text-red-300 font-mono text-xs">DST is predictable. Circuit breakers aren't. Both break the same assumption.</p>
-            </div>
-        </div>
-        <div class="glass p-6 rounded-xl border border-slate-700 relative">
-            <div class="absolute -top-3 -right-3 bg-blue-600 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">The Fix</div>
-            <h3 class="text-lg font-bold text-white mb-2">Don't Assume. Verify.</h3>
-            <p class="text-sm text-slate-400 mb-4">Before execution, ask. Every response is <strong>Ed25519 signed</strong>. Verify the signature yourself: it shows the receipt came from Headless Oracle unaltered. If status is anything other than <code class="text-green-400">OPEN</code>, your bot halts.</p>
-            <ul class="space-y-2 text-sm text-slate-300">
-                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Handles DST, circuit breakers &amp; exchange halts</li>
-                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Cryptographic receipt for audit &amp; liability</li>
-                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Fail-closed: UNKNOWN = halt, always</li>
-            </ul>
-            <a href="/verify" class="inline-block mt-4 text-xs text-blue-400 hover:text-blue-300 underline">Verify any receipt yourself — no server needed →</a>
-        </div>
-    </section>
-
-    <!-- Developer Quick-Start: the conversion funnel -->
-    <section class="w-full max-w-3xl mx-auto px-6 mb-24" id="quickstart">
-        <div class="text-center mb-8">
-            <h2 class="text-3xl font-bold text-white mb-2">From zero to verified market status in 60 seconds</h2>
-            <p class="text-slate-500 text-sm">No signup required for the demo. Free key unlocks 500 req/day.</p>
-        </div>
-        <div class="space-y-3">
-            <!-- Step 1 -->
-            <div class="glass rounded-xl p-5 border border-slate-700">
-                <div class="flex items-center gap-3 mb-3">
-                    <span class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">1</span>
-                    <span class="text-white font-semibold text-sm">Query the demo endpoint — no signup</span>
-                </div>
-                <pre class="m-0 text-xs sm:text-sm text-green-400">curl https://headlessoracle.com/v5/demo?mic=XNYS</pre>
-                <p class="text-xs text-slate-500 mt-2">Returns a signed JSON receipt instantly. Swap <code class="text-slate-400">XNYS</code> for any supported MIC code.</p>
-            </div>
-            <!-- Step 2 -->
-            <div class="glass rounded-xl p-5 border border-slate-700">
-                <div class="flex items-center gap-3 mb-3">
-                    <span class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">2</span>
-                    <span class="text-white font-semibold text-sm">Get a free API key (instant, no card)</span>
-                </div>
-                <pre class="m-0 text-xs sm:text-sm text-blue-300">curl -X POST https://headlessoracle.com/v5/keys/instant \
-  -H "Content-Type: application/json" \
-  -d '{"agent_id":"my-trading-bot"}'</pre>
-                <p class="text-xs text-slate-500 mt-2">Returns a key instantly in the response. 500 calls/day, all 28 exchanges. Or <a href="#quickstart" onclick="getSandboxKey();return false;" class="text-green-400 hover:text-green-300">click here to get one now</a>.</p>
-            </div>
-            <!-- Step 3 -->
-            <div class="glass rounded-xl p-5 border border-slate-700">
-                <div class="flex items-center gap-3 mb-3">
-                    <span class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">3</span>
-                    <span class="text-white font-semibold text-sm">Add 3 lines to your agent</span>
-                </div>
-                <pre class="m-0 text-xs sm:text-sm text-blue-300">const r = await fetch('https://headlessoracle.com/v5/status?mic=XNYS',
-  { headers: { 'X-Oracle-Key': process.env.ORACLE_KEY } }).then(r => r.json());
-if (r.status !== 'OPEN') return halt('Market not open — status: ' + r.status);</pre>
-                <p class="text-xs text-slate-500 mt-2">Fail-closed by design. Anything other than <code class="text-green-400">OPEN</code> halts your agent. Receipt is Ed25519-signed for audit.</p>
-            </div>
-        </div>
-        <!-- Inline sandbox key generator -->
-        <div class="mt-8 glass rounded-xl p-6 border border-slate-700">
-            <h3 class="text-white font-semibold text-sm mb-1">Get a free API key instantly — no email required</h3>
-            <p class="text-xs text-slate-500 mb-4">500 calls/day. No signup. No credit card. Key appears in seconds.</p>
-            <div class="flex flex-col sm:flex-row gap-3 mb-3">
-                <button onclick="getSandboxKey()" id="sandbox-btn" class="px-6 py-2.5 bg-green-600 hover:bg-green-500 text-white rounded-lg font-semibold text-sm transition flex items-center gap-2 justify-center cursor-pointer">
-                    Get Free API Key
-                </button>
-            </div>
-            <div id="sandbox-result" class="hidden mt-4">
-                <div class="bg-slate-900 rounded-lg p-4 border border-slate-700">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs text-slate-500 font-mono">Your sandbox key</span>
-                        <button onclick="copySandboxKey()" class="text-xs text-blue-400 hover:text-blue-300 transition">Copy key</button>
-                    </div>
-                    <pre id="sandbox-key-display" class="text-sm text-green-400 font-mono break-all"></pre>
-                    <p class="text-xs text-slate-500 mt-3">Quick test:</p>
-                    <pre id="sandbox-curl" class="text-xs text-blue-300 font-mono mt-1 break-all whitespace-pre-wrap"></pre>
-                </div>
-                <p class="text-xs text-slate-500 mt-3 text-center">Ready to go further? <a href="/pricing" class="text-blue-400 hover:text-blue-300">View plans →</a></p>
-            </div>
-            <div id="sandbox-error" class="hidden mt-3 text-xs text-red-400"></div>
-        </div>
-        <div class="flex flex-col sm:flex-row gap-3 mt-6 justify-center">
-            <button onclick="getSandboxKey().then(() => document.getElementById('sandbox-result').scrollIntoView({behavior:'smooth'}))" class="px-6 py-3 bg-green-600 hover:bg-green-500 text-white rounded-lg font-semibold text-sm text-center transition shadow-lg shadow-green-900/20 cursor-pointer">Get Free API Key</button>
-            <a href="/docs" class="px-6 py-3 glass hover:bg-white/10 text-white rounded-lg font-semibold text-sm text-center transition">Full API Docs</a>
-        </div>
-    </section>
-
-    <section class="w-full max-w-3xl mx-auto px-6 mb-24">
-        <div class="flex items-center justify-between mb-2 px-2">
-            <span class="text-xs font-mono text-slate-500">GET /v5/demo</span>
-            <div class="flex gap-3">
-                <button onclick="copyCommand(this)" class="text-xs text-slate-500 hover:text-white transition cursor-pointer">Copy JSON</button>
-                <a id="verify-link" href="/verify" class="text-xs text-blue-500 hover:text-blue-400 transition cursor-pointer hidden">Verify This Receipt</a>
-            </div>
-        </div>
-        <div class="glass p-0 rounded-lg overflow-hidden border border-slate-700 shadow-2xl">
-            <div class="bg-slate-900/50 px-4 py-2 border-b border-slate-700 flex gap-2">
-                <div class="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/50"></div>
-                <div class="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/50"></div>
-                <div class="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50"></div>
-            </div>
-            <pre id="api-response" class="text-xs sm:text-sm text-blue-300 font-mono p-6 overflow-x-auto">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chirindo Witness · Headless Oracle</title>
+<meta name="description" content="Chirindo signs each agent action into a hash-chained log. Witness signs a receipt saying when it saw each checkpoint, so a log later cut short or rewritten, up to the last witnessed checkpoint, fails the check.">
+<meta name="robots" content="index, follow">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="https://headlessoracle.com/">
+<link rel="alternate" type="text/markdown" href="/index.md" title="This page in Markdown">
+<link rel="alternate" type="application/json" href="/openapi.json" title="OpenAPI 3.1 specification">
+<link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt, machine-readable summary">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://headlessoracle.com/">
+<meta property="og:title" content="Chirindo Witness · Headless Oracle">
+<meta property="og:description" content="Agent logs your auditor can check without trusting you. Witness signs a receipt for each checkpoint of a signed, hash-chained agent log; checking is free and offline.">
+<meta property="og:image" content="https://headlessoracle.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Chirindo Witness · Headless Oracle">
+<meta name="twitter:description" content="Agent logs your auditor can check without trusting you. Witness signs a receipt for each checkpoint of a signed, hash-chained agent log.">
+<meta name="twitter:image" content="https://headlessoracle.com/og-image.png">
+<script type="application/ld+json">
 {
-  "receipt_id": "...",
-  "status": "WAITING_FOR_TEST..."
-}</pre>
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://headlessoracle.com/#org",
+      "name": "Headless Oracle",
+      "url": "https://headlessoracle.com/",
+      "email": "mike@headlessoracle.com",
+      "founder": { "@type": "Person", "name": "Mike Msebenzi" },
+      "sameAs": ["https://github.com/LembaGang"]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://headlessoracle.com/#chirindo-witness",
+      "name": "Chirindo Witness",
+      "url": "https://headlessoracle.com/",
+      "description": "Chirindo signs each agent action into a hash-chained log. Witness signs a receipt saying when it saw each checkpoint of that log, so a log later cut short or rewritten by the key holder, up to the last witnessed checkpoint, fails the check. A witness receipt is Headless Oracle's signed statement of what it was shown and when; it does not prove the records are true or who controls the key.",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Any",
+      "provider": { "@id": "https://headlessoracle.com/#org" },
+      "softwareHelp": "https://api.headlessoracle.com/v1/witness/spec",
+      "offers": [
+        {
+          "@type": "Offer",
+          "sku": "witness_free",
+          "name": "Free",
+          "price": "0",
+          "priceCurrency": "USD",
+          "description": "Anonymous checkpoints from a shared pool of 2,000 new ones a UTC day",
+          "url": "https://headlessoracle.com/#start"
+        },
+        {
+          "@type": "Offer",
+          "sku": "evidence_starter",
+          "name": "Evidence Starter",
+          "price": "49",
+          "priceCurrency": "USD",
+          "priceValidUntil": "2026-12-31",
+          "description": "$49/month. Your own Witness key, up to 1,000 new checkpoints a UTC day",
+          "url": "https://headlessoracle.com/pricing#witness"
+        },
+        {
+          "@type": "Offer",
+          "sku": "evidence",
+          "name": "Evidence",
+          "price": "199",
+          "priceCurrency": "USD",
+          "priceValidUntil": "2026-12-31",
+          "description": "$199/month. Your own Witness key, up to 3,000 new checkpoints a UTC day",
+          "url": "https://headlessoracle.com/pricing#witness"
+        }
+      ]
+    }
+  ]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="wordmark" href="/">Headless Oracle</a>
+    <nav aria-label="Main">
+      <ul class="nav-list nav-wide">
+        <li><a href="/#how">Witness</a></li>
+        <li><a href="/verify">Verify</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/docs">Docs</a></li>
+        <li><a href="/#auditors">For auditors</a></li>
+        <li><a href="https://github.com/LembaGang">GitHub</a></li>
+      </ul>
+      <details class="nav-small">
+        <summary>Menu</summary>
+        <ul>
+          <li><a href="/#how">Witness</a></li>
+          <li><a href="/verify">Verify</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+          <li><a href="/docs">Docs</a></li>
+          <li><a href="/#auditors">For auditors</a></li>
+          <li><a href="https://github.com/LembaGang">GitHub</a></li>
+        </ul>
+      </details>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="hero" aria-labelledby="h1">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="hero-kicker">Chirindo Witness</p>
+      <h1 id="h1">Agent logs your auditor can check without trusting you.</h1>
+      <div class="sub">
+        <p>Chirindo signs each agent action into a hash-chained log. Witness signs a receipt saying when it saw each checkpoint of that log. If the log is later cut short, or rewritten by whoever holds the key, anywhere up to the last witnessed checkpoint, comparing it with the witness receipts shows it.</p>
+        <p>Checking is free, with open-source tools, and an auditor can fetch the receipts from Witness directly instead of taking them from the operator.</p>
+      </div>
+      <div class="ctas">
+        <a class="btn" href="#start">Get a free checkpoint</a>
+        <a class="btn btn--line" href="/pricing#witness">Evidence Starter, $49/month</a>
+      </div>
+      <p class="hero-note">Free checkpoints need no account and come from a shared pool of 2,000 a UTC day. Paid plans get their own key and quota.</p>
+    </div>
+
+    <article class="card" id="receipt" aria-labelledby="receipt-title">
+      <div class="card-head">
+        <h2 id="receipt-title">A real witness receipt, checked in this page</h2>
+        <p>Demo log of a purchasing agent: five tool calls through the Chirindo gate.</p>
+      </div>
+      <div class="card-sec">
+        <p class="sec-label">Log entries, each signed and linked to the one before</p>
+        <ol class="entries" id="entries" aria-live="off"></ol>
+        <p class="sec-label" style="margin:8px 0 0">Arguments and results are stored as hashes. The summaries are for reading.</p>
+      </div>
+      <div class="card-sec">
+        <dl class="kv" id="kv"></dl>
+      </div>
+      <div class="unsupported" id="unsupported" hidden>
+        <p style="margin:0">This browser cannot check Ed25519 signatures with WebCrypto, so the receipt has not been checked here. Check the log offline with <a href="https://www.npmjs.com/package/@headlessoracle/receipt-verify">@headlessoracle/receipt-verify</a> on npm, and the witness receipt with <code>chirindo verify</code> from <a href="https://github.com/LembaGang/chirindo">the Chirindo repository</a>.</p>
+      </div>
+      <div class="card-sec" id="checks-sec">
+        <p class="sec-label">Checks run by this page</p>
+        <ol class="checks" id="checks">
+          <li class="check" data-state="pending" data-check="1"><span aria-hidden="true"><svg class="mark-wait" viewBox="0 0 16 16"><circle class="mk-wait" cx="8" cy="8" r="5.5"/></svg><svg class="mark-run" viewBox="0 0 16 16"><circle class="mk-track" cx="8" cy="8" r="5.5"/><path class="mk-arc" d="M8 2.5a5.5 5.5 0 0 1 5.5 5.5"/></svg><svg class="mark-pass" viewBox="0 0 16 16"><circle class="mk-pass" cx="8" cy="8" r="7"/><path class="mk-pass" d="M4.8 8.3l2.2 2.2 4.3-4.7"/></svg><svg class="mark-fail" viewBox="0 0 16 16"><circle class="mk-fail" cx="8" cy="8" r="7"/><path class="mk-fail" d="M5.6 5.6l4.8 4.8M10.4 5.6l-4.8 4.8"/></svg></span><span><span class="check-text">Entries signed by the operator key and hash-linked</span><span class="check-detail"></span></span></li>
+          <li class="check" data-state="pending" data-check="2"><span aria-hidden="true"><svg class="mark-wait" viewBox="0 0 16 16"><circle class="mk-wait" cx="8" cy="8" r="5.5"/></svg><svg class="mark-run" viewBox="0 0 16 16"><circle class="mk-track" cx="8" cy="8" r="5.5"/><path class="mk-arc" d="M8 2.5a5.5 5.5 0 0 1 5.5 5.5"/></svg><svg class="mark-pass" viewBox="0 0 16 16"><circle class="mk-pass" cx="8" cy="8" r="7"/><path class="mk-pass" d="M4.8 8.3l2.2 2.2 4.3-4.7"/></svg><svg class="mark-fail" viewBox="0 0 16 16"><circle class="mk-fail" cx="8" cy="8" r="7"/><path class="mk-fail" d="M5.6 5.6l4.8 4.8M10.4 5.6l-4.8 4.8"/></svg></span><span><span class="check-text">Checkpoint signed by the operator key</span><span class="check-detail"></span></span></li>
+          <li class="check" data-state="pending" data-check="3"><span aria-hidden="true"><svg class="mark-wait" viewBox="0 0 16 16"><circle class="mk-wait" cx="8" cy="8" r="5.5"/></svg><svg class="mark-run" viewBox="0 0 16 16"><circle class="mk-track" cx="8" cy="8" r="5.5"/><path class="mk-arc" d="M8 2.5a5.5 5.5 0 0 1 5.5 5.5"/></svg><svg class="mark-pass" viewBox="0 0 16 16"><circle class="mk-pass" cx="8" cy="8" r="7"/><path class="mk-pass" d="M4.8 8.3l2.2 2.2 4.3-4.7"/></svg><svg class="mark-fail" viewBox="0 0 16 16"><circle class="mk-fail" cx="8" cy="8" r="7"/><path class="mk-fail" d="M5.6 5.6l4.8 4.8M10.4 5.6l-4.8 4.8"/></svg></span><span><span class="check-text">Receipt signed by Witness, naming this checkpoint</span><span class="check-detail"></span></span></li>
+          <li class="check" data-state="pending" data-check="4"><span aria-hidden="true"><svg class="mark-wait" viewBox="0 0 16 16"><circle class="mk-wait" cx="8" cy="8" r="5.5"/></svg><svg class="mark-run" viewBox="0 0 16 16"><circle class="mk-track" cx="8" cy="8" r="5.5"/><path class="mk-arc" d="M8 2.5a5.5 5.5 0 0 1 5.5 5.5"/></svg><svg class="mark-pass" viewBox="0 0 16 16"><circle class="mk-pass" cx="8" cy="8" r="7"/><path class="mk-pass" d="M4.8 8.3l2.2 2.2 4.3-4.7"/></svg><svg class="mark-fail" viewBox="0 0 16 16"><circle class="mk-fail" cx="8" cy="8" r="7"/><path class="mk-fail" d="M5.6 5.6l4.8 4.8M10.4 5.6l-4.8 4.8"/></svg></span><span><span class="check-text">Log at the witnessed count matches what Witness saw</span><span class="check-detail"></span></span></li>
+        </ol>
+      </div>
+      <div class="verdict" id="verdict" data-state="checking" aria-live="polite">
+        <p class="verdict-word" id="verdict-word">CHECKING</p>
+        <p class="verdict-text" id="verdict-text">Running the four checks in your browser.</p>
+      </div>
+      <div class="card-sec">
+        <div class="controls" id="controls">
+          <button type="button" class="btn btn--line btn--small" id="btn-cut">Cut the last entry</button>
+          <button type="button" class="btn btn--line btn--small" id="btn-edit">Edit an entry</button>
+          <button type="button" class="btn btn--line btn--small" id="btn-resign" hidden>Re-sign it, as the key holder could</button>
+          <button type="button" class="btn btn--line btn--small" id="btn-restore" hidden>Restore</button>
         </div>
-    </section>
+        <p class="controls-note" id="controls-note"></p>
+      </div>
+      <div class="card-sec">
+        <details class="raw">
+          <summary>Show the data being checked</summary>
+          <pre id="raw" tabindex="0"></pre>
+        </details>
+      </div>
+    </article>
+  </div>
+</section>
 
-    <footer class="border-t border-slate-800 bg-slate-900/50 mt-auto">
-        <div class="max-w-6xl mx-auto px-6 py-12 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="text-center md:text-left">
-                <p class="text-sm text-slate-500">&copy; 2026 Headless Oracle. Designed for autonomous DeFi agents and tokenized equity protocols.</p>
-                <p class="text-xs text-slate-600 mt-2 max-w-md">Headless Oracle provides verifiable data attestations, not legal or financial advice. The cryptographic receipt evidences the observation of market status based on configured sources.</p>
-            </div>
-            <div class="flex flex-wrap gap-6 text-xs text-slate-500">
-                <a href="/" class="hover:text-white transition">Home</a>
-                <a href="/docs" class="hover:text-white transition">Docs</a>
-                <a href="/pricing" class="hover:text-white transition">Pricing</a>
-                <a href="/standards" class="hover:text-white transition">Standards</a>
-                <a href="/blog" class="hover:text-white transition">Blog</a>
-                <a href="/llms.txt" class="hover:text-white transition">llms.txt</a>
-                <a href="/terms" class="hover:text-white transition">Terms</a>
-                <a href="/privacy" class="hover:text-white transition">Privacy</a>
-                <a href="/refund" class="hover:text-white transition">Refund Policy</a>
-                <a href="/status" class="hover:text-white transition">Status</a>
-                <a href="/verify" class="hover:text-white transition">Verify</a>
-                <a href="https://github.com/LembaGang" class="hover:text-white transition" target="_blank" rel="noopener">GitHub</a>
-                <a href="mailto:mike@headlessoracle.com" class="hover:text-white transition">mike@headlessoracle.com</a>
-            </div>
+<section class="section" id="problem" aria-labelledby="h-problem">
+  <div class="wrap sec-grid">
+    <div class="sec-num">1</div>
+    <div class="sec-body">
+      <h2 id="h-problem">The problem</h2>
+      <p class="statement">An agent's log is kept by the team that runs the agent. Signing each entry and chaining the hashes catches an edit in the middle, but not the last entries being cut off, and not a history rewritten and re-signed by whoever holds the key. An auditor handed the file cannot tell what it looked like before.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="how" aria-labelledby="h-how">
+  <div class="wrap sec-grid">
+    <div class="sec-num">2</div>
+    <div class="sec-body">
+      <h2 id="h-how">How it works</h2>
+      <div class="how-grid">
+        <svg class="diagram" viewBox="0 0 440 552" role="img" aria-labelledby="dg-t dg-d" xmlns="http://www.w3.org/2000/svg">
+          <title id="dg-t">How a witnessed log is checked</title>
+          <desc id="dg-d">An agent tool call becomes the newest of five signed log entries, each carrying the hash of the one before. A checkpoint with the count, 5, and the hash of the last entry is signed with the operator key and sent to Witness, which returns a receipt with the time it received it, signed by Headless Oracle. Anyone then compares the log with the receipt offline: the log as kept matches and is valid; a log with its last entry cut off has 4 entries where Witness saw 5, and fails.</desc>
+          <defs>
+            <marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="arrowhead" d="M0,0 L8,4 L0,8 z"/></marker>
+          </defs>
+          <rect class="box-soft" x="264" y="0.5" width="175.5" height="36" rx="2"/>
+          <text x="276" y="23.5" font-size="15">Agent tool call</text>
+          <line class="ln" x1="404" y1="37" x2="404" y2="77" marker-end="url(#ah)"/>
+          <text x="0" y="66" font-size="15" font-weight="600">Signed, hash-chained log</text>
+          <g>
+            <rect class="box" x="0.5" y="80.5" width="72" height="56" rx="2"/>
+            <rect class="box" x="92.5" y="80.5" width="72" height="56" rx="2"/>
+            <rect class="box" x="184.5" y="80.5" width="72" height="56" rx="2"/>
+            <rect class="box" x="276.5" y="80.5" width="72" height="56" rx="2"/>
+            <rect class="box" x="367.5" y="80.5" width="72" height="56" rx="2"/>
+            <text class="mono" x="11" y="104" font-size="15">e1</text>
+            <text class="mono" x="103" y="104" font-size="15">e2</text>
+            <text class="mono" x="195" y="104" font-size="15">e3</text>
+            <text class="mono" x="287" y="104" font-size="15">e4</text>
+            <text class="mono" x="378" y="104" font-size="15">e5</text>
+            <text class="t-muted" x="11" y="125" font-size="13">signed</text>
+            <text class="t-muted" x="103" y="125" font-size="13">signed</text>
+            <text class="t-muted" x="195" y="125" font-size="13">signed</text>
+            <text class="t-muted" x="287" y="125" font-size="13">signed</text>
+            <text class="t-muted" x="378" y="125" font-size="13">signed</text>
+            <line class="ln" x1="92" y1="108.5" x2="75" y2="108.5" marker-end="url(#ah)"/>
+            <line class="ln" x1="184" y1="108.5" x2="167" y2="108.5" marker-end="url(#ah)"/>
+            <line class="ln" x1="276" y1="108.5" x2="259" y2="108.5" marker-end="url(#ah)"/>
+            <line class="ln" x1="367" y1="108.5" x2="351" y2="108.5" marker-end="url(#ah)"/>
+          </g>
+          <text class="t-muted" x="0" y="158" font-size="13">each entry carries the hash of the one before</text>
+          <line class="ln" x1="404" y1="137" x2="404" y2="186" marker-end="url(#ah)"/>
+          <text class="t-muted" x="394" y="176" font-size="13" text-anchor="end">every N entries</text>
+          <rect class="box" x="120.5" y="188.5" width="319" height="68" rx="2"/>
+          <text x="132" y="211" font-size="15" font-weight="600">Checkpoint</text>
+          <text class="mono" x="132" y="230" font-size="13">count 5 · head = hash(e5)</text>
+          <text class="t-muted" x="132" y="248" font-size="13">signed with the operator key</text>
+          <line class="ln" x1="404" y1="257" x2="404" y2="298" marker-end="url(#ah)"/>
+          <text class="t-muted" x="394" y="283" font-size="13" text-anchor="end">sent to Witness</text>
+          <rect class="box" x="120.5" y="300.5" width="319" height="68" rx="2"/>
+          <text x="132" y="323" font-size="15" font-weight="600">Witness receipt</text>
+          <text class="mono" x="132" y="342" font-size="13">received_at · count 5 · head</text>
+          <text class="t-muted" x="132" y="360" font-size="13">signed by Headless Oracle</text>
+          <line class="ln" x1="280" y1="369" x2="280" y2="384"/>
+          <line class="ln" x1="106" y1="384" x2="334" y2="384"/>
+          <line class="ln" x1="106" y1="384" x2="106" y2="414" marker-end="url(#ah)"/>
+          <line class="ln" x1="334" y1="384" x2="334" y2="414" marker-end="url(#ah)"/>
+          <text class="t-muted" x="0" y="404" font-size="13">anyone, offline:</text>
+          <rect class="box-ok" x="0.75" y="416.75" width="211" height="133" rx="2"/>
+          <text x="12" y="441" font-size="15" font-weight="600">Log as kept</text>
+          <rect class="cell" x="12.5" y="454.5" width="28" height="20" rx="1"/>
+          <rect class="cell" x="46.5" y="454.5" width="28" height="20" rx="1"/>
+          <rect class="cell" x="80.5" y="454.5" width="28" height="20" rx="1"/>
+          <rect class="cell" x="114.5" y="454.5" width="28" height="20" rx="1"/>
+          <rect class="cell" x="148.5" y="454.5" width="28" height="20" rx="1"/>
+          <text class="mono" x="12" y="500" font-size="13">head at 5 = receipt</text>
+          <text class="mono t-ok" x="12" y="530" font-size="16" font-weight="500" letter-spacing="1.5">VALID</text>
+          <rect class="box-bad" x="228.75" y="416.75" width="210.5" height="133" rx="2"/>
+          <text x="240" y="441" font-size="15" font-weight="600">Tail cut off</text>
+          <rect class="cell" x="240.5" y="454.5" width="28" height="20" rx="1"/>
+          <rect class="cell" x="274.5" y="454.5" width="28" height="20" rx="1"/>
+          <rect class="cell" x="308.5" y="454.5" width="28" height="20" rx="1"/>
+          <rect class="cell" x="342.5" y="454.5" width="28" height="20" rx="1"/>
+          <rect class="gone" x="376.5" y="454.5" width="28" height="20" rx="1"/>
+          <text class="mono" x="240" y="500" font-size="12.5">4 entries; Witness saw 5</text>
+          <text class="mono t-bad" x="240" y="530" font-size="16" font-weight="500" letter-spacing="1.5">FAIL</text>
+        </svg>
+        <ol class="steps">
+          <li>
+            <h3>Every tool call becomes a signed entry</h3>
+            <p>The Chirindo gate sits in front of your MCP server. Each call it allows or denies is written as an entry signed with your key, carrying the hash of the entry before it. Change one in the middle and the signature and the next link no longer match.</p>
+          </li>
+          <li>
+            <h3>Checkpoints go to Witness</h3>
+            <p>Every so often the gate signs a checkpoint, the entry count and the hash at the head of the log, and sends it to Witness. Witness keeps it and signs a receipt with the time it received it. Only the checkpoint is sent: never arguments, results or records.</p>
+          </li>
+          <li>
+            <h3>Anyone compares, offline</h3>
+            <p>An auditor checks the log against the witness receipts with open-source tools. A log shorter than a witnessed count, or different from what Witness saw at that count, fails, and the check names the count where it fails.</p>
+          </li>
+        </ol>
+      </div>
+
+      <div class="limits" id="limits">
+        <h3>What a witness receipt is, and what it is not</h3>
+        <p>A witness receipt is Headless Oracle's signed statement of what it was shown and when: at <code>received_at</code>, a checkpoint signed by the key with that thumbprint. It is only as reliable as Headless Oracle and its signing key. It does not prove that the records are true, who controls the key, or that the records were written at the times they carry.</p>
+        <ul>
+          <li>Entries after the last witnessed checkpoint can still be cut off or rewritten without detection.</li>
+          <li>A history rewritten before it was first witnessed is not detected. The gap between an entry's time and <code>received_at</code> is that exposure window.</li>
+          <li>A session the operator never presents, or one restarted under a new key or session ID, starts with no receipts.</li>
+          <li>Witness is independent of the operator, not of Headless Oracle, which also publishes the gate.</li>
+        </ul>
+        <p class="small">The full list is in the <a href="https://api.headlessoracle.com/v1/witness/spec">Witness spec</a>, under <code>honest_limits</code>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="start" aria-labelledby="h-start">
+  <div class="wrap sec-grid">
+    <div class="sec-num">3</div>
+    <div class="sec-body">
+      <h2 id="h-start">Start in a minute</h2>
+      <div class="prose">
+        <p>Witness accepts only a checkpoint signed with an Ed25519 key, so the request reads its body from a file. This script makes a key and a one-entry checkpoint and writes <code>checkpoint.json</code>. It needs Node 20 or later and nothing else.</p>
+      </div>
+      <div class="code-block">
+        <div class="code-head"><span>checkpoint.mjs</span><button type="button" class="copy" data-copy="code-node">Copy</button></div>
+<pre id="code-node"><code>import { generateKeyPairSync, sign, createHash } from "node:crypto"; import { writeFileSync } from "node:fs";
+const { privateKey, publicKey } = generateKeyPairSync("ed25519"), x = publicKey.export({ format: "jwk" }).x;
+const sha = (s, enc) =&gt; createHash("sha256").update(s).digest(enc), kid = sha(`{"crv":"Ed25519","kty":"OKP","x":"${x}"}`, "base64url");
+const cp = { count: 1, kid, last_entry_hash: "sha256:" + sha("first entry", "hex"), session_id: "try-" + Date.now(), ts: new Date().toISOString(), type: "checkpoint", v: "evidence.action/1" };
+cp.sig = sign(null, Buffer.from(JSON.stringify(cp)), privateKey).toString("base64url");
+writeFileSync("checkpoint.json", JSON.stringify({ checkpoint: cp, public_key_jwk: { kty: "OKP", crv: "Ed25519", x } }));</code></pre>
+      </div>
+      <div class="code-block">
+        <div class="code-head"><span>shell</span><button type="button" class="copy" data-copy="code-curl">Copy</button></div>
+<pre id="code-curl"><code>node checkpoint.mjs
+curl -sS https://api.headlessoracle.com/v1/witness/checkpoints \
+  -H 'Content-Type: application/json' \
+  --data-binary @checkpoint.json</code></pre>
+      </div>
+      <div class="prose">
+        <p>Witness answers <code>201</code> with a receipt signed by Headless Oracle. The checkpoint's keys are written in sorted order, so <code>JSON.stringify</code> gives the exact bytes the spec signs. With the gate, the count and the head hash come from your log; here they stand in for one placeholder entry. Free checkpoints share a pool of 2,000 new ones a UTC day.</p>
+      </div>
+
+      <h3 class="step-title" style="margin-top:40px">Put the gate in front of your MCP server</h3>
+      <div class="code-block">
+        <div class="code-head"><span>shell</span><button type="button" class="copy" data-copy="code-npm">Copy</button></div>
+<pre id="code-npm"><code>npx -y @headlessoracle/chirindo init
+npx -y @headlessoracle/chirindo proxy --policy policy.json --server-label my-server -- &lt;your MCP server command&gt;
+npx -y @headlessoracle/chirindo verify .gate/sessions/&lt;session-id&gt;.jsonl --key .gate/identity.json</code></pre>
+      </div>
+      <div class="prose small">
+        <p><code>init</code> makes the signing key. The second line is the command your MCP client launches in place of your server; <code>policy.json</code> lists the tools to deny, and <code>{"deny": []}</code> records everything and blocks nothing. <code>verify</code> checks every signature and link offline.</p>
+        <p>Sending checkpoints to Witness from the gate (<code>chirindo checkpoint</code>, <code>proxy --checkpoint-every</code>) is on the main branch of the <a href="https://github.com/LembaGang/chirindo">Chirindo repository</a>; the current npm release, 0.4.0, does not include it yet.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="auditors" aria-labelledby="h-auditors">
+  <div class="wrap sec-grid">
+    <div class="sec-num">4</div>
+    <div class="sec-body">
+      <h2 id="h-auditors">For auditors and insurers</h2>
+      <ol class="alist">
+        <li>Ask for the complete session log, then fetch its receipts from Witness yourself. A receipt file supplied by the operator relies on the operator; a query to <code>api.headlessoracle.com</code> does not.</li>
+        <li>Run the open-source verifier offline. A log cut short, or rewritten before a witnessed checkpoint, fails and names the lowest failing count.</li>
+        <li>Compare each <code>received_at</code> with the entries' times. That gap is the window in which history could have been rewritten before anyone witnessed it.</li>
+      </ol>
+      <p><a href="https://github.com/LembaGang/chirindo/tree/main/examples/e015-4-kit">Test kit: five tampering cases and an untouched control, chain alone against witnessed</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="pricing" aria-labelledby="h-pricing">
+  <div class="wrap sec-grid">
+    <div class="sec-num">5</div>
+    <div class="sec-body">
+      <h2 id="h-pricing">Pricing</h2>
+      <table class="price-table">
+        <thead><tr><th scope="col">Plan</th><th scope="col">Price</th><th scope="col">What you get</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Free</th><td class="price">$0</td><td>Anonymous checkpoints from a shared pool of 2,000 new ones a UTC day</td></tr>
+          <tr><th scope="row">Evidence Starter</th><td class="price">$49/month</td><td>Your own Witness key, up to 1,000 new checkpoints a UTC day</td></tr>
+          <tr><th scope="row">Evidence</th><td class="price">$199/month</td><td>Your own Witness key, up to 3,000 new checkpoints a UTC day</td></tr>
+          <tr><th scope="row">Evidence pilot</th><td class="price">$4,900 fixed</td><td>For a team in its audit window, scope agreed by conversation</td></tr>
+          <tr><th scope="row">Annual programmes</th><td class="price">$60,000 or $150,000 a year</td><td>By invoice, after a conversation</td></tr>
+        </tbody>
+      </table>
+      <p class="foot-note">Evidence Starter and Evidence prices are introductory until 31 December 2026. Checking receipts is always free. <a href="/pricing">All plans and terms</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="check" aria-labelledby="h-check">
+  <div class="wrap sec-grid">
+    <div class="sec-num">6</div>
+    <div class="sec-body">
+      <h2 id="h-check">Check our work</h2>
+      <dl class="facts">
+        <div>
+          <dt>Source</dt>
+          <dd><p><a href="https://github.com/LembaGang/chirindo">github.com/LembaGang/chirindo</a>, the gate and the witness client. <a href="https://github.com/LembaGang/receipt-verify">github.com/LembaGang/receipt-verify</a>, the verifier. Both Apache-2.0.</p></dd>
         </div>
-    </footer>
+        <div>
+          <dt>Signed commits</dt>
+          <dd><p>Every commit in receipt-verify is SSH-signed. <code>sh tools/verify-history.sh</code> checks the whole history against the key in <code>SIGNING_KEYS</code>, fingerprint <code class="mono">SHA256:KFZr0BiXIrvl/hsri0vzciGsj+suWiBqHYBwdnnyJXg</code>.</p><p>Chirindo commits since 24 July 2026 are signed with the same key.</p></dd>
+        </div>
+        <div>
+          <dt>Packages</dt>
+          <dd><p><a href="https://www.npmjs.com/package/@headlessoracle/chirindo">@headlessoracle/chirindo</a> and <a href="https://www.npmjs.com/package/@headlessoracle/receipt-verify">@headlessoracle/receipt-verify</a> on npm.</p></dd>
+        </div>
+        <div>
+          <dt>Specification</dt>
+          <dd><p>The <a href="https://api.headlessoracle.com/v1/witness/spec">Witness spec</a> is machine-readable: request format, every check in order, receipt format, signing and its limits.</p></dd>
+        </div>
+        <div>
+          <dt>Standards</dt>
+          <dd><p>Headless Oracle co-authors the IETF draft family defining environmental constraints for Verifiable Intent.</p></dd>
+        </div>
+        <div>
+          <dt>Who</dt>
+          <dd><p>Mike Msebenzi, founder. <!--email_off--><a href="mailto:mike@headlessoracle.com">mike@headlessoracle.com</a><!--/email_off--></p></dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</section>
 
-    <script>
-        const ORACLE_API = 'https://headlessoracle.com';
+<section class="section" id="agents" aria-labelledby="h-agents">
+  <div class="wrap sec-grid">
+    <div class="sec-num">7</div>
+    <div class="sec-body">
+      <h2 id="h-agents">For agents</h2>
+      <dl class="agent-block">
+        <div><dt>llms.txt</dt><dd><a href="https://headlessoracle.com/llms.txt">https://headlessoracle.com/llms.txt</a></dd></div>
+        <div><dt>OpenAPI</dt><dd><a href="https://headlessoracle.com/openapi.json">https://headlessoracle.com/openapi.json</a></dd></div>
+        <div><dt>Pricing (JSON)</dt><dd><a href="https://headlessoracle.com/v5/pricing">https://headlessoracle.com/v5/pricing</a></dd></div>
+        <div><dt>MCP</dt><dd><a href="https://headlessoracle.com/mcp">https://headlessoracle.com/mcp</a></dd></div>
+        <div><dt>x402</dt><dd><a href="https://headlessoracle.com/.well-known/x402.json">https://headlessoracle.com/.well-known/x402.json</a></dd></div>
+        <div><dt>Witness spec</dt><dd><a href="https://api.headlessoracle.com/v1/witness/spec">https://api.headlessoracle.com/v1/witness/spec</a></dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
 
-        // --- Sandbox Key Generator ---
-        let _sandboxKey = null;
+<section class="section" id="market" aria-labelledby="h-market">
+  <div class="wrap sec-grid">
+    <div class="sec-num">8</div>
+    <div class="sec-body">
+      <h2 id="h-market">Also from Headless Oracle</h2>
+      <div class="also">
+        <p>Signed market-state receipts for 28 venues: whether an exchange is open, closed or halted, signed with Ed25519, for agents that trade.</p>
+        <a href="/docs">Market-state docs</a>
+      </div>
+    </div>
+  </div>
+</section>
 
-        async function getSandboxKey() {
-            const btn = document.getElementById('sandbox-btn');
-            const errEl = document.getElementById('sandbox-error');
-            const resultEl = document.getElementById('sandbox-result');
-            errEl.classList.add('hidden');
-            resultEl.classList.add('hidden');
-            btn.textContent = 'Getting key...';
-            btn.disabled = true;
-            try {
-                const agentId = 'web-' + crypto.randomUUID().slice(0, 12);
-                const res = await fetch(ORACLE_API + '/v5/keys/instant', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ agent_id: agentId }),
-                });
-                const data = await res.json();
-                if (!res.ok || !data.api_key) {
-                    errEl.textContent = data.message || data.error || 'Failed to get key. Try again.';
-                    errEl.classList.remove('hidden');
-                } else {
-                    _sandboxKey = data.api_key;
-                    document.getElementById('sandbox-key-display').textContent = data.api_key;
-                    document.getElementById('sandbox-curl').textContent =
-                        `curl 'https://headlessoracle.com/v5/status?mic=XNYS' \\\n  -H 'X-Oracle-Key: ${data.api_key}'`;
-                    resultEl.classList.remove('hidden');
-                    btn.textContent = 'Key created!';
-                    btn.disabled = false;
-                    setTimeout(() => { btn.textContent = 'Get Free API Key'; btn.disabled = false; }, 3000);
-                    return;
-                }
-            } catch (e) {
-                errEl.textContent = 'Network error. Check your connection and try again.';
-                errEl.classList.remove('hidden');
-            }
-            btn.textContent = 'Get Free API Key';
-            btn.disabled = false;
-        }
+</main>
 
-        function copySandboxKey() {
-            if (_sandboxKey) {
-                navigator.clipboard.writeText(_sandboxKey).catch(() => {});
-                const btn = event.target;
-                btn.textContent = 'Copied!';
-                setTimeout(() => { btn.textContent = 'Copy key'; }, 2000);
-            }
-        }
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="mono">Headless Oracle</span>
+    <ul class="foot-links">
+      <li><a href="/terms">Terms</a></li>
+      <li><a href="/privacy">Privacy</a></li>
+      <li><a href="/refund">Refund</a></li>
+      <li><!--email_off--><a href="mailto:mike@headlessoracle.com">mike@headlessoracle.com</a><!--/email_off--></li>
+    </ul>
+  </div>
+</footer>
 
-        // --- Live Status Widget ---
-        let _swReceipt = null;
-        let _swCountdown = 60;
-        let _swTimer = null;
+<script type="application/json" id="ho-demo-data">{"note":"Demo data. Entries, checkpoint and operator key were made for this page; the witness receipt is the real reply of POST https://api.headlessoracle.com/v1/witness/checkpoints.","entries":[{"v":"evidence.action/1","seq":0,"session_id":"demo-purchasing-agent-76f75512-dfca-4385-8ad0-16117144c933","ts":"2026-10-04T13:59:54.635Z","agent":{"vendor":"chirindo","version":"0.0.1"},"event":{"type":"mcp_call","outcome":"executed","server":"procurement","tool_name":"search_suppliers","args_hash":"sha256:65eef1ef3141d2a5f15dd3ac07b860448ef4e036cedf2e5b94675bb5463c4be6","decision":"allow","decision_source":"config","result_hash":"sha256:21350ad95e91fa82ad09bc05f2cc2c5d266153b20186ef44b883e4a710c94516"},"request_commitment":"sha256:0995edc368e820d3be96bcffd2cef762bf71d143d21b958bf14edd292c0eee2a","gate":{"request_commitment":"sha256:0995edc368e820d3be96bcffd2cef762bf71d143d21b958bf14edd292c0eee2a","gate_receipt":"sha256:f607c4f63700a269af33937379dfd18fb2c8e40ed17ab7d46e0d14c93decd293","gate_family":"permit","result":"act"},"key_thumbprint":"jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","iss":"urn:chirindo:key:jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","prev_hash":"sha256:ebbe942b67842676c7c21949ab0a3a77fb24c9e2cc5b2e60a24eb465c8aa0de9","kid":"jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","sig":"QL2iT7MwwxVO2HzBJcuZ1TyzmI_4d5uwQ2m8KN--lRNKeOCDfC5BDT2cipd0zvWKocJEnt0oPoNUUa9C61rkBw"},{"v":"evidence.action/1","seq":1,"session_id":"demo-purchasing-agent-76f75512-dfca-4385-8ad0-16117144c933","ts":"2026-10-04T13:59:56.975Z","agent":{"vendor":"chirindo","version":"0.0.1"},"event":{"type":"mcp_call","outcome":"executed","server":"procurement","tool_name":"get_quote","args_hash":"sha256:97970a011f17f9c790b22862461a392d1da00b4db9fa0cb254122829fb0c7383","decision":"allow","decision_source":"config","result_hash":"sha256:a82b8cdaee67360ca32807af224892242bf67002e20fc101b978195d0fee3ff4"},"request_commitment":"sha256:4d02104aad0dbf144a1ffefbc1ae2a4f349621cb830f04c270508d44d52b64af","gate":{"request_commitment":"sha256:4d02104aad0dbf144a1ffefbc1ae2a4f349621cb830f04c270508d44d52b64af","gate_receipt":"sha256:8025e6258186379e636939a036243dd206bd0ee81ba4a611054ec2683cbe6aee","gate_family":"permit","result":"act"},"key_thumbprint":"jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","iss":"urn:chirindo:key:jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","prev_hash":"sha256:059b82f3a157dede2b7a40e63f9b4ee50f65fc7f155b3b8a98193d6558d1ecd5","kid":"jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","sig":"eTxywkURaCIom_k2SavFDH-9dpBBzxJ4D9vzEzxOLhuhbQxol7lYhKRkPUkji635E7tOhhBTNqyoYGP5mQ1AAg"},{"v":"evidence.action/1","seq":2,"session_id":"demo-purchasing-agent-76f75512-dfca-4385-8ad0-16117144c933","ts":"2026-10-04T13:59:59.545Z","agent":{"vendor":"chirindo","version":"0.0.1"},"event":{"type":"mcp_call","outcome":"denied","server":"procurement","tool_name":"send_payment","args_hash":"sha256:86b519dd1950da96b52d6968ccdc395048e9f9638d5919bec94a660cdb4c34f0","decision":"deny","decision_source":"config"},"request_commitment":"sha256:975de8c3590ec41a6973d6e3f18f5a97f5551f33e2b42c84bd1e24fc1e471693","gate":{"request_commitment":"sha256:975de8c3590ec41a6973d6e3f18f5a97f5551f33e2b42c84bd1e24fc1e471693","gate_receipt":"sha256:f253bc0c54b8de99e257e3d46851c518d5fb2193a1f65e11c1df9ff8a352ddf9","gate_family":"permit","result":"halt"},"key_thumbprint":"jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","iss":"urn:chirindo:key:jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","prev_hash":"sha256:dd3a95219229636c3a467d3e82a58ced02ece860248b8c06886111433c1aaf99","kid":"jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","sig":"-hSq9YkGCtYsLqj6wIOgQu_HR7KbNrSFhHJkRyeD9Nm2ZfXZGUwmwiduzyMDlaTF-IZnldLVfNj-YEf9W3kpCA"},{"v":"evidence.action/1","seq":3,"session_id":"demo-purchasing-agent-76f75512-dfca-4385-8ad0-16117144c933","ts":"2026-10-04T14:00:02.115Z","agent":{"vendor":"chirindo","version":"0.0.1"},"event":{"type":"mcp_call","outcome":"executed","server":"procurement","tool_name":"create_purchase_order","args_hash":"sha256:6caf009cd45f79b23d1fd0a3bb52715072d5e457873ce04837746c778deb9adc","decision":"allow","decision_source":"config","result_hash":"sha256:cafe3e68c75aec066c7eb497fdd6ab00839c78c9d807f0a6278641a54b1217e2"},"request_commitment":"sha256:147b11a5678bd827706d755cb9726e22b6343c69a62e3a20298572da7e647267","gate":{"request_commitment":"sha256:147b11a5678bd827706d755cb9726e22b6343c69a62e3a20298572da7e647267","gate_receipt":"sha256:44c32e77eee33cc6bca3c538f812aedeebc4a69d1291c6ea893fe6fb9e818de4","gate_family":"permit","result":"act"},"key_thumbprint":"jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","iss":"urn:chirindo:key:jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","prev_hash":"sha256:3a258f5999002b995e3196b28c06ac58b94c4a6d6ef01fe6e005dae473403b9a","kid":"jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","sig":"4a1ez8pyuApPaNciLLG_clf4VJ3NvSUaCWxrUZwuK7IUSzPZXhDj_WqopUtqRVB3o0jDwxhTD8vCSWAZKt9rCA"},{"v":"evidence.action/1","seq":4,"session_id":"demo-purchasing-agent-76f75512-dfca-4385-8ad0-16117144c933","ts":"2026-10-04T14:00:03.755Z","agent":{"vendor":"chirindo","version":"0.0.1"},"event":{"type":"mcp_call","outcome":"executed","server":"procurement","tool_name":"notify_approver","args_hash":"sha256:ae7921979298c0449f98f2bd27a96f16b9b501de41ae08a4982964287867e306","decision":"allow","decision_source":"config","result_hash":"sha256:e2b168eb564516a10ff8220919b08e0e13712f958a20b56c88e274799204d9ea"},"request_commitment":"sha256:14580f93f9486ae0d30ba826516198613ff65f8d6ab24c331c998ce5d7ccff5f","gate":{"request_commitment":"sha256:14580f93f9486ae0d30ba826516198613ff65f8d6ab24c331c998ce5d7ccff5f","gate_receipt":"sha256:b94ef5d9d64d3c4b308246104b67cb4678350acf37d7913139dca11bfefb64d1","gate_family":"permit","result":"act"},"key_thumbprint":"jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","iss":"urn:chirindo:key:jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","prev_hash":"sha256:7d4c1d06d9db26b5cc7822ae9260a79fe49e24026f282da0c805ab33383c5299","kid":"jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","sig":"grm-OSVUvgSyTtytMbIAuyCJfIyEtENQJpBzLs37M2LB_7YXBA23WiXnaTc2CHU2bWyc3J-rOm2pNRZgslnCCA"}],"checkpoint":{"v":"evidence.action/1","type":"checkpoint","session_id":"demo-purchasing-agent-76f75512-dfca-4385-8ad0-16117144c933","count":5,"last_entry_hash":"sha256:6298962b6665ce4734a25b881248a6c0551c158051f7d5a11664ced9e7897f06","ts":"2026-10-04T14:00:04.835Z","kid":"jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","sig":"MmiPbL1qPG6HcpZIsVmzg8X0QaY0-_s7rf1trXt5xou1kotowU_o25nBrg5k1YeNy7XeTOVAZaJB7EkLqA6HBg"},"operator_public_key_jwk":{"kty":"OKP","crv":"Ed25519","x":"orwHIAT1iik2iq7Iylklv39yJleiiaOsub_-AUzGgzE"},"witness_receipt":{"type":"witness.checkpoint/1","witness":"headlessoracle.com","received_at":"2026-10-04T14:01:07.785Z","kid":"jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","session_id":"demo-purchasing-agent-76f75512-dfca-4385-8ad0-16117144c933","count":"5","last_entry_hash":"sha256:6298962b6665ce4734a25b881248a6c0551c158051f7d5a11664ced9e7897f06","checkpoint_ts":"2026-10-04T14:00:04.835Z","checkpoint_sha256":"sha256:aa3c975343b94fed6c7003495ea94eb7be8ff5662eb85a11ac18a40c5ead4f95","fork":"false","public_key_id":"key_2026_v1","signature":"1760ed122b7276c4760f0f2d45d2955fdf03b65cf3424a360a3f42d4e33dc39af9895b898746a1719d33ef7ae749a4d7787da60d1a8496188a4279c0ac427e0c"},"witness_key":{"key_id":"key_2026_v1","public_key_hex":"03dc27993a2c90856cdeb45e228ac065f18f69f0933c917b2336c1e75712f178","source":"https://api.headlessoracle.com/v5/keys"},"rewritten_entries":[{"v":"evidence.action/1","seq":0,"session_id":"demo-purchasing-agent-76f75512-dfca-4385-8ad0-16117144c933","ts":"2026-10-04T13:59:54.635Z","agent":{"vendor":"chirindo","version":"0.0.1"},"event":{"type":"mcp_call","outcome":"executed","server":"procurement","tool_name":"search_suppliers","args_hash":"sha256:65eef1ef3141d2a5f15dd3ac07b860448ef4e036cedf2e5b94675bb5463c4be6","decision":"allow","decision_source":"config","result_hash":"sha256:21350ad95e91fa82ad09bc05f2cc2c5d266153b20186ef44b883e4a710c94516"},"request_commitment":"sha256:0995edc368e820d3be96bcffd2cef762bf71d143d21b958bf14edd292c0eee2a","gate":{"request_commitment":"sha256:0995edc368e820d3be96bcffd2cef762bf71d143d21b958bf14edd292c0eee2a","gate_receipt":"sha256:f607c4f63700a269af33937379dfd18fb2c8e40ed17ab7d46e0d14c93decd293","gate_family":"permit","result":"act"},"key_thumbprint":"jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","iss":"urn:chirindo:key:jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","prev_hash":"sha256:ebbe942b67842676c7c21949ab0a3a77fb24c9e2cc5b2e60a24eb465c8aa0de9","kid":"jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","sig":"QL2iT7MwwxVO2HzBJcuZ1TyzmI_4d5uwQ2m8KN--lRNKeOCDfC5BDT2cipd0zvWKocJEnt0oPoNUUa9C61rkBw"},{"v":"evidence.action/1","seq":1,"session_id":"demo-purchasing-agent-76f75512-dfca-4385-8ad0-16117144c933","ts":"2026-10-04T13:59:56.975Z","agent":{"vendor":"chirindo","version":"0.0.1"},"event":{"type":"mcp_call","outcome":"executed","server":"procurement","tool_name":"get_quote","args_hash":"sha256:97970a011f17f9c790b22862461a392d1da00b4db9fa0cb254122829fb0c7383","decision":"allow","decision_source":"config","result_hash":"sha256:a82b8cdaee67360ca32807af224892242bf67002e20fc101b978195d0fee3ff4"},"request_commitment":"sha256:4d02104aad0dbf144a1ffefbc1ae2a4f349621cb830f04c270508d44d52b64af","gate":{"request_commitment":"sha256:4d02104aad0dbf144a1ffefbc1ae2a4f349621cb830f04c270508d44d52b64af","gate_receipt":"sha256:8025e6258186379e636939a036243dd206bd0ee81ba4a611054ec2683cbe6aee","gate_family":"permit","result":"act"},"key_thumbprint":"jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","iss":"urn:chirindo:key:jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","prev_hash":"sha256:059b82f3a157dede2b7a40e63f9b4ee50f65fc7f155b3b8a98193d6558d1ecd5","kid":"jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","sig":"eTxywkURaCIom_k2SavFDH-9dpBBzxJ4D9vzEzxOLhuhbQxol7lYhKRkPUkji635E7tOhhBTNqyoYGP5mQ1AAg"},{"v":"evidence.action/1","seq":2,"session_id":"demo-purchasing-agent-76f75512-dfca-4385-8ad0-16117144c933","ts":"2026-10-04T13:59:59.545Z","agent":{"vendor":"chirindo","version":"0.0.1"},"event":{"type":"mcp_call","outcome":"executed","server":"procurement","tool_name":"send_payment","args_hash":"sha256:86b519dd1950da96b52d6968ccdc395048e9f9638d5919bec94a660cdb4c34f0","decision":"allow","decision_source":"config","result_hash":"sha256:f4f5d6473d036022c7f64251a6befb476f2b3e548d32beb26bb5c36684fc66a5"},"request_commitment":"sha256:975de8c3590ec41a6973d6e3f18f5a97f5551f33e2b42c84bd1e24fc1e471693","gate":{"request_commitment":"sha256:975de8c3590ec41a6973d6e3f18f5a97f5551f33e2b42c84bd1e24fc1e471693","gate_receipt":"sha256:f6eabc8fd68cbbeb0ac5cfc8ef94a643b6839060f1e5655bd456c4685b76fe2f","gate_family":"permit","result":"act"},"key_thumbprint":"jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","iss":"urn:chirindo:key:jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","prev_hash":"sha256:dd3a95219229636c3a467d3e82a58ced02ece860248b8c06886111433c1aaf99","kid":"jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","sig":"UoRGvRJ5W8t3t0uPvwUk9R30uYjUJwFLFBlRbEieoVvQ2dzHONzbRnRS-_tRF5rW2y8iwpt02bG90vcD3qK6Bw"},{"v":"evidence.action/1","seq":3,"session_id":"demo-purchasing-agent-76f75512-dfca-4385-8ad0-16117144c933","ts":"2026-10-04T14:00:02.115Z","agent":{"vendor":"chirindo","version":"0.0.1"},"event":{"type":"mcp_call","outcome":"executed","server":"procurement","tool_name":"create_purchase_order","args_hash":"sha256:6caf009cd45f79b23d1fd0a3bb52715072d5e457873ce04837746c778deb9adc","decision":"allow","decision_source":"config","result_hash":"sha256:cafe3e68c75aec066c7eb497fdd6ab00839c78c9d807f0a6278641a54b1217e2"},"request_commitment":"sha256:147b11a5678bd827706d755cb9726e22b6343c69a62e3a20298572da7e647267","gate":{"request_commitment":"sha256:147b11a5678bd827706d755cb9726e22b6343c69a62e3a20298572da7e647267","gate_receipt":"sha256:666ab27a6a2338ec98ff8c3269f01328a511d521d0da1412d42325bdc5719646","gate_family":"permit","result":"act"},"key_thumbprint":"jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","iss":"urn:chirindo:key:jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","prev_hash":"sha256:aacfe0aa2a2240feee253d3c8d8a5d162dd142961513947b158a81cd7542ed64","kid":"jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","sig":"esjeVlILFa0E4_dj-3KDKV5x4kZm2rFTA5ru2sS6LdfydH2m8opK5BJy3rKGWAzYt3RSJy8PJg38jmsb1KMXAA"},{"v":"evidence.action/1","seq":4,"session_id":"demo-purchasing-agent-76f75512-dfca-4385-8ad0-16117144c933","ts":"2026-10-04T14:00:03.755Z","agent":{"vendor":"chirindo","version":"0.0.1"},"event":{"type":"mcp_call","outcome":"executed","server":"procurement","tool_name":"notify_approver","args_hash":"sha256:ae7921979298c0449f98f2bd27a96f16b9b501de41ae08a4982964287867e306","decision":"allow","decision_source":"config","result_hash":"sha256:e2b168eb564516a10ff8220919b08e0e13712f958a20b56c88e274799204d9ea"},"request_commitment":"sha256:14580f93f9486ae0d30ba826516198613ff65f8d6ab24c331c998ce5d7ccff5f","gate":{"request_commitment":"sha256:14580f93f9486ae0d30ba826516198613ff65f8d6ab24c331c998ce5d7ccff5f","gate_receipt":"sha256:b47cfb78616f37df5a92cda677867fde95a07b2646b654968ce7ce167a60c7b6","gate_family":"permit","result":"act"},"key_thumbprint":"jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","iss":"urn:chirindo:key:jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","prev_hash":"sha256:e0c8cc3d6bb270bbd65cd1b401b0afcc47abcba712f8b34682bc7f312330627c","kid":"jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo","sig":"8gVmw7gQ8GtoBQ0XOsaJhIa3BV6VjDThAYEVCCkP9jIplMKK6HrPUk8jW5m9S-8bIXIEG7XdsfmhNx4mhZyyAw"}]}</script>
 
-        async function fetchNYSEStatus() {
-            try {
-                const res = await fetch(ORACLE_API + '/v5/demo?mic=XNYS');
-                if (!res.ok) throw new Error(res.status);
-                const data = await res.json();
-                _swReceipt = data;
-                renderStatusWidget(data);
-            } catch (e) {
-                renderStatusWidget(null, e.message);
-            }
-            _swCountdown = 60;
-        }
+<script id="ho-verify">
+/* Verification core. Plain WebCrypto, no libraries. The same text is run in Node
+   against the embedded data and the tampered variants before publishing. */
+var HOV = (function () {
+  "use strict";
+  var te = new TextEncoder();
+  var subtle = crypto.subtle;
 
-        function renderStatusWidget(data, errMsg) {
-            const dot = document.getElementById('sw-dot');
-            const label = document.getElementById('sw-label');
-            const timeEl = document.getElementById('sw-time');
-            const nextEl = document.getElementById('sw-next');
+  // RFC 8785 (JCS) for the values these records use: objects, arrays, strings,
+  // integers, booleans, null. Keys sort by UTF-16 code units (default sort).
+  function jcs(v) {
+    if (v === null) return "null";
+    if (typeof v === "boolean") return v ? "true" : "false";
+    if (typeof v === "number") {
+      if (!isFinite(v)) throw new Error("non-finite number");
+      return JSON.stringify(v);
+    }
+    if (typeof v === "string") return JSON.stringify(v);
+    if (Array.isArray(v)) return "[" + v.map(jcs).join(",") + "]";
+    if (typeof v === "object") {
+      return "{" + Object.keys(v).filter(function (k) { return v[k] !== undefined; }).sort()
+        .map(function (k) { return JSON.stringify(k) + ":" + jcs(v[k]); }).join(",") + "}";
+    }
+    throw new Error("unsupported JSON value");
+  }
+  function without(o, key) {
+    var c = {};
+    Object.keys(o).forEach(function (k) { if (k !== key) c[k] = o[k]; });
+    return c;
+  }
+  function b64uToBytes(s) {
+    if (!/^[A-Za-z0-9_-]*$/.test(s)) throw new Error("not base64url");
+    var b64 = s.replace(/-/g, "+").replace(/_/g, "/");
+    while (b64.length % 4) b64 += "=";
+    var bin = atob(b64), out = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+  function bytesToB64u(b) {
+    var s = "";
+    for (var i = 0; i < b.length; i++) s += String.fromCharCode(b[i]);
+    return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  function hexToBytes(h) {
+    if (!/^([0-9a-f]{2})*$/.test(h)) throw new Error("not lowercase hex");
+    var out = new Uint8Array(h.length / 2);
+    for (var i = 0; i < out.length; i++) out[i] = parseInt(h.substr(i * 2, 2), 16);
+    return out;
+  }
+  function bytesToHex(b) {
+    var s = "";
+    for (var i = 0; i < b.length; i++) s += (b[i] < 16 ? "0" : "") + b[i].toString(16);
+    return s;
+  }
+  async function sha256(str) {
+    return new Uint8Array(await subtle.digest("SHA-256", te.encode(str)));
+  }
+  async function sha256Tag(str) { return "sha256:" + bytesToHex(await sha256(str)); }
+  async function importEd(raw) {
+    return subtle.importKey("raw", raw, { name: "Ed25519" }, false, ["verify"]);
+  }
+  async function edVerify(key, sigBytes, str) {
+    try { return await subtle.verify({ name: "Ed25519" }, key, sigBytes, te.encode(str)); }
+    catch (e) { return false; }
+  }
+  async function supported(d) {
+    try { await importEd(hexToBytes(d.witness_key.public_key_hex)); return true; }
+    catch (e) { return false; }
+  }
+  function short(h) { return h.replace(/^sha256:/, "").slice(0, 8) + "…"; }
 
-            if (!data) {
-                dot.style.cssText = 'background:#ef4444';
-                label.textContent = 'ERROR';
-                label.style.color = '#f87171';
-                timeEl.textContent = 'Could not reach Oracle' + (errMsg ? ': ' + errMsg : '');
-                nextEl.textContent = '';
-                return;
-            }
+  // Runs the four checks. Returns { checks: [{ok, detail}], ok, reason, entryHashes }.
+  async function verifyAll(d, entries) {
+    var cp = d.checkpoint, rc = d.witness_receipt, jwk = d.operator_public_key_jwk;
+    var checks = [];
+    var kid = bytesToB64u(await sha256('{"crv":"Ed25519","kty":"OKP","x":"' + jwk.x + '"}'));
+    var opKey = await importEd(b64uToBytes(jwk.x));
+    var hoKey = await importEd(hexToBytes(d.witness_key.public_key_hex));
 
-            const status = data.status || 'UNKNOWN';
-            const ts = data.timestamp ? new Date(data.timestamp).toUTCString() : '—';
+    // 1. Entries: key binding, order, signature, link to the previous entry.
+    var problems = [], hashes = [];
+    if (!entries.length) problems.push("The log is empty.");
+    for (var i = 0; i < entries.length; i++) {
+      var r = entries[i], content = without(r, "sig"), canon = jcs(content);
+      hashes.push(await sha256Tag(canon));
+      var n = i + 1;
+      if (r.kid !== kid || r.key_thumbprint !== kid) problems.push("Entry " + n + " names a different key.");
+      if (r.seq !== i) problems.push("Entry " + n + " is out of order.");
+      if (r.session_id !== entries[0].session_id) problems.push("Entry " + n + " belongs to another session.");
+      var expectPrev = i === 0
+        ? await sha256Tag(jcs({ marker: "genesis", session_id: r.session_id, v: r.v }))
+        : hashes[i - 1];
+      if (r.prev_hash !== expectPrev) {
+        problems.push(i === 0 ? "Entry 1 does not start the chain." : "Entry " + n + " no longer links to entry " + i + ".");
+      }
+      var sigOk = false;
+      try { sigOk = await edVerify(opKey, b64uToBytes(r.sig), canon); } catch (e) { sigOk = false; }
+      if (!sigOk) problems.push("Entry " + n + "'s signature does not match its contents.");
+    }
+    checks.push({ ok: problems.length === 0, detail: problems.slice(0, 2).join(" ") });
 
-            if (status === 'OPEN') {
-                dot.style.cssText = 'background:#22c55e;box-shadow:0 0 8px #22c55e';
-                dot.classList.add('animate-pulse');
-                label.textContent = 'OPEN';
-                label.style.color = '#4ade80';
-            } else if (status === 'HALTED') {
-                dot.style.cssText = 'background:#f59e0b;box-shadow:0 0 8px #f59e0b';
-                dot.classList.add('animate-pulse');
-                label.textContent = 'HALTED';
-                label.style.color = '#fbbf24';
-            } else {
-                dot.style.cssText = 'background:#475569';
-                dot.classList.remove('animate-pulse');
-                label.textContent = status;
-                label.style.color = '#94a3b8';
-            }
+    // 2. Checkpoint: thumbprint and operator signature over JCS without sig.
+    var cpOk = cp.kid === kid && entries.length > 0 && cp.session_id === entries[0].session_id;
+    if (cpOk) { try { cpOk = await edVerify(opKey, b64uToBytes(cp.sig), jcs(without(cp, "sig"))); } catch (e) { cpOk = false; } }
+    checks.push({ ok: cpOk, detail: cpOk ? "" : "The checkpoint's signature or key does not match this log." });
 
-            timeEl.textContent = ts;
-            nextEl.textContent = data.next_open ? 'Next open: ' + data.next_open : '';
+    // 3. Witness receipt: signature (hex) over sorted-key JSON of all fields
+    //    except signature, and that it names exactly this checkpoint.
+    var rcOk = typeof rc.signature === "string" && /^[0-9a-f]{128}$/.test(rc.signature);
+    if (rcOk) rcOk = await edVerify(hoKey, hexToBytes(rc.signature), jcs(without(rc, "signature")));
+    var names = rcOk &&
+      rc.type === "witness.checkpoint/1" && rc.witness === "headlessoracle.com" &&
+      rc.public_key_id === d.witness_key.key_id && rc.fork === "false" &&
+      rc.kid === cp.kid && rc.session_id === cp.session_id && rc.count === String(cp.count) &&
+      rc.last_entry_hash === cp.last_entry_hash && rc.checkpoint_ts === cp.ts &&
+      rc.checkpoint_sha256 === (await sha256Tag(jcs(cp)));
+    checks.push({ ok: !!names, detail: names ? "" : (rcOk ? "The receipt does not name this checkpoint." : "The receipt's signature does not verify under the Witness key.") });
 
-            // Refresh receipt panel if open
-            const panel = document.getElementById('receipt-panel');
-            if (!panel.classList.contains('hidden') && _swReceipt) {
-                document.getElementById('receipt-json').textContent = JSON.stringify(_swReceipt, null, 2);
-            }
-        }
+    // 4. The log at the witnessed count equals the witnessed head.
+    var count = Number(rc.count), headOk, headDetail = "";
+    if (!(count >= 1)) { headOk = false; headDetail = "The receipt has no count."; }
+    else if (count > entries.length) {
+      headOk = false;
+      headDetail = "The log has " + entries.length + " " + (entries.length === 1 ? "entry" : "entries") +
+        "; Witness saw a checkpoint over " + count + " at " + rc.received_at + ".";
+    } else {
+      headOk = hashes[count - 1] === rc.last_entry_hash && hashes[count - 1] === cp.last_entry_hash;
+      if (!headOk) headDetail = "Entry " + count + " now hashes to " + short(hashes[count - 1]) +
+        "; Witness saw " + short(rc.last_entry_hash) + " at " + rc.received_at + ".";
+    }
+    checks.push({ ok: headOk, detail: headDetail });
 
-        function toggleReceipt() {
-            const panel = document.getElementById('receipt-panel');
-            const jsonEl = document.getElementById('receipt-json');
-            if (panel.classList.contains('hidden')) {
-                panel.classList.remove('hidden');
-                jsonEl.textContent = _swReceipt ? JSON.stringify(_swReceipt, null, 2) : 'Loading…';
-            } else {
-                panel.classList.add('hidden');
-            }
-        }
+    var ok = checks.every(function (c) { return c.ok; });
+    var reason = "";
+    if (!ok) {
+      if (!checks[0].ok) reason = "An entry was changed after it was signed. The chain catches this on its own; no witness is needed.";
+      else if (count > entries.length) reason = headDetail;
+      else if (!headOk) reason = "The log checks out on its own, because the key holder re-signed it. It no longer matches the head Witness saw at " + rc.received_at + ".";
+      else reason = checks.filter(function (c) { return !c.ok; })[0].detail;
+    }
+    return { checks: checks, ok: ok, reason: reason, entryHashes: hashes };
+  }
 
-        function copyReceipt(e) {
-            e.stopPropagation();
-            const text = _swReceipt ? JSON.stringify(_swReceipt, null, 2) : '';
-            navigator.clipboard.writeText(text).then(() => {
-                const btn = e.target;
-                const orig = btn.textContent;
-                btn.textContent = 'Copied!';
-                btn.classList.add('text-green-400');
-                setTimeout(() => { btn.textContent = orig; btn.classList.remove('text-green-400'); }, 2000);
-            });
-        }
+  // The in-page "edit": what someone without the key can do to entry 3.
+  function editEntry(entries) {
+    var out = JSON.parse(JSON.stringify(entries));
+    var r = out[2];
+    r.event.outcome = "executed";
+    r.event.decision = "allow";
+    r.gate.result = "act";
+    return out;
+  }
 
-        (function startStatusPolling() {
-            fetchNYSEStatus();
-            _swTimer = setInterval(() => {
-                _swCountdown--;
-                const el = document.getElementById('sw-countdown');
-                if (el) el.textContent = 'Refreshes in ' + _swCountdown + 's';
-                if (_swCountdown <= 0) fetchNYSEStatus();
-            }, 1000);
-        })();
-        // --- End Live Status Widget ---
+  return { jcs: jcs, verifyAll: verifyAll, editEntry: editEntry, supported: supported, short: short };
+})();
+</script>
 
-        function copyDemoCurl() {
-            const cmd = "curl https://headlessoracle.com/v5/demo?mic=XNYS";
-            navigator.clipboard.writeText(cmd).then(() => {
-                const btn = document.getElementById('try-demo-btn');
-                const orig = btn.innerHTML;
-                btn.textContent = 'Copied to clipboard!';
-                setTimeout(() => { btn.innerHTML = orig; }, 2000);
-            }).catch(() => {});
-        }
+<script>
+(function () {
+  "use strict";
+  var d = JSON.parse(document.getElementById("ho-demo-data").textContent);
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var GLOSS = [
+    "Find suppliers for 40 boxes of A4 copy paper",
+    "Quote from Northwind Paper Co.: 1,180.00 USD",
+    "Pay Northwind 1,180.00 USD. Denied: payments need human approval",
+    "Purchase order PO-4471, awaiting approval",
+    "Ask finance-approvals to approve PO-4471"
+  ];
+  var GLOSS_EDITED = "Pay Northwind 1,180.00 USD. Executed";
+  var mode = "original";
+  var current = d.entries;
 
-        async function testLiveAPI() {
-            const pre = document.getElementById('api-response');
-            pre.innerText = '{ "status": "QUERYING_ORACLE..." }';
+  var $ = function (id) { return document.getElementById(id); };
+  var entriesEl = $("entries"), checksEl = $("checks"), verdict = $("verdict");
+  var btnCut = $("btn-cut"), btnEdit = $("btn-edit"), btnResign = $("btn-resign"), btnRestore = $("btn-restore");
+  var note = $("controls-note");
 
-            try {
-                const response = await fetch(ORACLE_API + '/v5/demo');
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function hhmmss(ts) { return ts.slice(11, 19); }
 
-                if (!response.ok) {
-                    const errData = await response.json();
-                    throw new Error(errData.message || response.statusText);
-                }
+  function renderEntries(hashes) {
+    entriesEl.textContent = "";
+    var showCut = mode === "cut";
+    var list = showCut ? d.entries : current;
+    list.forEach(function (r, i) {
+      var li = el("li", "entry");
+      var edited = (mode === "edit" || mode === "resign") && i === 2;
+      if (showCut && i === 4) li.classList.add("is-cut");
+      if (edited) li.classList.add("is-edited");
+      var line = el("div", "entry-line");
+      line.appendChild(el("span", "n", String(i + 1)));
+      line.appendChild(el("span", "t", hhmmss(r.ts)));
+      line.appendChild(el("span", "tool", r.event.tool_name));
+      var dec = el("span", "dec " + r.event.decision, r.event.decision);
+      line.appendChild(dec);
+      li.appendChild(line);
+      var g = el("div", "entry-gloss");
+      var gt = el("span", "gloss-text", edited ? GLOSS_EDITED : GLOSS[i]);
+      g.appendChild(gt);
+      var h = hashes && hashes[i] ? HOV.short(hashes[i]) : "";
+      if (showCut && i === 4) g.appendChild(el("span", "tag-note", "removed"));
+      else if (edited) g.appendChild(el("span", "tag-note", mode === "resign" ? "edited, re-signed" : "edited"));
+      else if (h) g.appendChild(el("span", "h", h));
+      li.appendChild(g);
+      entriesEl.appendChild(li);
+    });
+  }
 
-                const data = await response.json();
-                pre.innerText = JSON.stringify(data, null, 2);
-                pre.className = "text-xs sm:text-sm text-green-400 font-mono p-6 overflow-x-auto";
+  function renderKV() {
+    var kv = $("kv"), cp = d.checkpoint, rc = d.witness_receipt;
+    kv.textContent = "";
+    function row(k, v, sub) {
+      kv.appendChild(el("dt", null, k));
+      var dd = el("dd");
+      dd.appendChild(document.createTextNode(v));
+      if (sub) { dd.appendChild(document.createElement("br")); dd.appendChild(el("span", "muted", sub)); }
+      kv.appendChild(dd);
+    }
+    row("checkpoint", "count " + cp.count + " · head " + HOV.short(cp.last_entry_hash), "signed by the operator key");
+    row("witness", rc.received_at, "received_at, signed by Headless Oracle (" + rc.public_key_id + ")");
+  }
 
-                // Show "Verify This Receipt" link
-                document.getElementById('verify-link').classList.remove('hidden');
-            } catch (e) {
-                pre.innerText = JSON.stringify({ error: "Could not reach Oracle", details: e.message }, null, 2);
-                pre.className = "text-xs sm:text-sm text-red-400 font-mono p-6 overflow-x-auto";
-            }
-        }
+  function renderRaw() {
+    var view = {
+      entries: current,
+      checkpoint: d.checkpoint,
+      operator_public_key_jwk: d.operator_public_key_jwk,
+      witness_receipt: d.witness_receipt,
+      witness_public_key: d.witness_key
+    };
+    $("raw").textContent = JSON.stringify(view, null, 2);
+  }
 
-        function copyCommand(btn) {
-            const textToCopy = document.getElementById('api-response').innerText;
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                const originalText = btn.innerText;
-                btn.innerText = "Copied!";
-                btn.classList.add("text-green-500");
-                setTimeout(() => {
-                    btn.innerText = originalText;
-                    btn.classList.remove("text-green-500");
-                }, 2000);
-            });
-        }
+  function setBusy(b) {
+    [btnCut, btnEdit, btnResign, btnRestore].forEach(function (x) { x.disabled = b; });
+  }
 
-        // Auto-load live demo receipt on page load
-        testLiveAPI();
-    </script>
-    <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
-    <script src="/js/paddle-init.js"></script>
-    <script>
-        // WebMCP: lets an in-browser agent call the public demo endpoint as a tool.
-        // Shape per the WebMCP draft, ModelContextTool dictionary (section 4.2.1).
-        (function registerWebMcpTool() {
-            const mc = document.modelContext || navigator.modelContext;
-            if (!mc || typeof mc.registerTool !== 'function') return;
-            try {
-                mc.registerTool({
-                    name: 'get_demo_market_status',
-                    description: 'Fetches a signed demo receipt (receipt_mode "demo") for one exchange from https://headlessoracle.com/v5/demo. ' +
-                        'The receipt status is OPEN, CLOSED, HALTED or UNKNOWN; treat UNKNOWN and HALTED as CLOSED. ' +
-                        'Error bodies from the API (for example UNKNOWN_MIC) are returned as the result.',
-                    inputSchema: {
-                        type: 'object',
-                        properties: {
-                            mic: {
-                                type: 'string',
-                                pattern: '^[A-Z]{4}$',
-                                description: 'ISO 10383 MIC, for example XNYS. Supported list: https://headlessoracle.com/v5/exchanges',
-                            },
-                        },
-                        required: ['mic'],
-                        additionalProperties: false,
-                    },
-                    // Resolves with the parsed body whatever the HTTP status, so an agent sees the
-                    // API's own error; only a network failure or an unparseable body rejects.
-                    execute: async ({ mic }, options) => {
-                        const res = await fetch(ORACLE_API + '/v5/demo?mic=' + encodeURIComponent(mic), { signal: options && options.signal });
-                        return await res.json();
-                    },
-                }).catch((e) => console.warn('WebMCP registerTool failed', e));
-            } catch (e) {
-                console.warn('WebMCP registerTool failed', e);
-            }
-        })();
-    </script>
+  var runId = 0;
+  async function run() {
+    var my = ++runId;
+    setBusy(true);
+    var items = checksEl.querySelectorAll(".check");
+    items.forEach(function (li) { li.dataset.state = "pending"; li.querySelector(".check-detail").textContent = ""; });
+    verdict.dataset.state = "checking";
+    $("verdict-word").textContent = "CHECKING";
+    $("verdict-text").textContent = "Running the four checks in your browser.";
+    renderRaw();
+    var res;
+    try { res = await HOV.verifyAll(d, current); }
+    catch (e) {
+      res = { ok: false, checks: [0, 1, 2, 3].map(function () { return { ok: false, detail: "" }; }), reason: "The checks could not run: " + e.message, entryHashes: [] };
+    }
+    renderEntries(res.entryHashes);
+    for (var i = 0; i < items.length; i++) {
+      if (my !== runId) return;
+      if (!reduce) {
+        items[i].dataset.state = "running";
+        await new Promise(function (r) { setTimeout(r, 380); });
+        if (my !== runId) return;
+      }
+      items[i].dataset.state = res.checks[i].ok ? "pass" : "fail";
+      items[i].querySelector(".check-detail").textContent = res.checks[i].ok ? "" : res.checks[i].detail;
+    }
+    if (my !== runId) return;
+    var vt = $("verdict-text");
+    vt.textContent = "";
+    if (res.ok) {
+      verdict.dataset.state = "valid";
+      $("verdict-word").textContent = "VALID";
+      vt.appendChild(document.createTextNode("Checked in your browser just now. Receipt issued "));
+      var t = el("time", null, d.witness_receipt.received_at);
+      t.setAttribute("datetime", d.witness_receipt.received_at);
+      vt.appendChild(t);
+      vt.appendChild(document.createTextNode(" by Witness."));
+    } else {
+      verdict.dataset.state = "fail";
+      $("verdict-word").textContent = "FAIL";
+      vt.textContent = res.reason;
+    }
+    setBusy(false);
+    btnCut.hidden = mode !== "original";
+    btnEdit.hidden = mode !== "original";
+    btnResign.hidden = mode !== "edit";
+    btnRestore.hidden = mode === "original";
+  }
+
+  function setMode(m) {
+    mode = m;
+    if (m === "original") { current = d.entries; note.textContent = ""; }
+    if (m === "cut") { current = d.entries.slice(0, 4); note.textContent = "The last entry is gone. Every remaining signature and link still checks out, so the chain alone cannot tell."; }
+    if (m === "edit") { current = HOV.editEntry(d.entries); note.textContent = "Entry 3 now says the payment was allowed. Whoever holds the operator key could re-sign the edit and every entry after it."; }
+    if (m === "resign") { current = d.rewritten_entries; note.textContent = "Entries 3 to 5 were re-signed and re-linked with the operator key when this page was built. The private key is not in this page."; }
+    run();
+  }
+
+  btnCut.addEventListener("click", function () { setMode("cut"); });
+  btnEdit.addEventListener("click", function () { setMode("edit"); });
+  btnResign.addEventListener("click", function () { setMode("resign"); });
+  btnRestore.addEventListener("click", function () { setMode("original"); btnCut.focus(); });
+
+  document.querySelectorAll(".copy").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var text = document.getElementById(b.dataset.copy).textContent;
+      var done = function () { b.textContent = "Copied"; setTimeout(function () { b.textContent = "Copy"; }, 1600); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, function () {});
+    });
+  });
+
+  renderKV();
+  renderEntries(null);
+  HOV.supported(d).then(function (ok) {
+    if (ok) { run(); return; }
+    $("unsupported").hidden = false;
+    $("checks-sec").hidden = true;
+    verdict.hidden = true;
+    $("controls").parentNode.hidden = true;
+    renderRaw();
+  });
+})();
+</script>
+<script src="/js/ptxn-redirect.js"></script>
+<script>
+// WebMCP: lets an in-browser agent call the public market-state demo endpoint as a tool.
+// Shape per the WebMCP draft, ModelContextTool dictionary (section 4.2.1).
+(function registerWebMcpTool() {
+  var mc = document.modelContext || navigator.modelContext;
+  if (!mc || typeof mc.registerTool !== 'function') return;
+  try {
+    mc.registerTool({
+      name: 'get_demo_market_status',
+      description: 'Fetches a signed demo receipt (receipt_mode "demo") for one exchange from https://headlessoracle.com/v5/demo. ' +
+        'The receipt status is OPEN, CLOSED, HALTED or UNKNOWN; treat UNKNOWN and HALTED as CLOSED. ' +
+        'Error bodies from the API (for example UNKNOWN_MIC) are returned as the result.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          mic: {
+            type: 'string',
+            pattern: '^[A-Z]{4}$',
+            description: 'ISO 10383 MIC, for example XNYS. Supported list: https://headlessoracle.com/v5/exchanges',
+          },
+        },
+        required: ['mic'],
+        additionalProperties: false,
+      },
+      // Resolves with the parsed body whatever the HTTP status, so an agent sees the
+      // API's own error; only a network failure or an unparseable body rejects.
+      execute: async function ({ mic }, options) {
+        var res = await fetch('https://headlessoracle.com/v5/demo?mic=' + encodeURIComponent(mic), { signal: options && options.signal });
+        return await res.json();
+      },
+    }).catch(function (e) { console.warn('WebMCP registerTool failed', e); });
+  } catch (e) {
+    console.warn('WebMCP registerTool failed', e);
+  }
+})();
+</script>
 </body>
 </html>

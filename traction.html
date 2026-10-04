@@ -20,6 +20,10 @@
     <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt — machine-readable API summary">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/site.css">
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #cbd5e1; }
         .mono { font-family: 'JetBrains Mono', monospace; }
@@ -41,22 +45,34 @@
 <body class="min-h-screen flex flex-col">
 
     <!-- Nav -->
-    <nav class="border-b border-slate-800 bg-slate-900/80 sticky top-0 z-50 backdrop-blur">
-        <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-            <a href="/" class="flex items-center gap-3">
-                <span class="text-white font-semibold text-lg">Headless Oracle</span>
-                <span class="badge badge-green">Live</span>
-            </a>
-            <div class="flex items-center gap-6 text-sm text-slate-400">
-                <a href="/docs" class="hover:text-white transition">Docs</a>
-                <a href="/status" class="hover:text-white transition">Status</a>
-                <a href="/pricing" class="hover:text-white transition">Pricing</a>
-                <a href="/standards" class="hover:text-white transition">Standards</a>
-                <a href="/blog" class="hover:text-white transition">Blog</a>
-                <a href="https://github.com/LembaGang" class="hover:text-white transition" target="_blank" rel="noopener">GitHub</a>
-            </div>
-        </div>
+    <a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="wordmark" href="/">Headless Oracle</a>
+    <nav aria-label="Main">
+      <ul class="nav-list nav-wide">
+        <li><a href="C:/Program Files/Git/#how">Witness</a></li>
+        <li><a href="/verify">Verify</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/docs">Docs</a></li>
+        <li><a href="C:/Program Files/Git/#auditors">For auditors</a></li>
+        <li><a href="https://github.com/LembaGang">GitHub</a></li>
+      </ul>
+      <details class="nav-small">
+        <summary>Menu</summary>
+        <ul>
+          <li><a href="C:/Program Files/Git/#how">Witness</a></li>
+          <li><a href="/verify">Verify</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+          <li><a href="/docs">Docs</a></li>
+          <li><a href="C:/Program Files/Git/#auditors">For auditors</a></li>
+          <li><a href="https://github.com/LembaGang">GitHub</a></li>
+        </ul>
+      </details>
     </nav>
+  </div>
+</header>
 
     <!-- Header -->
     <div class="max-w-5xl mx-auto px-6 pt-16 pb-8 w-full">
@@ -74,7 +90,7 @@
     </div>
 
     <!-- Metrics grid -->
-    <main class="max-w-5xl mx-auto px-6 pb-16 w-full flex-1">
+    <main id="main" class="max-w-5xl mx-auto px-6 pb-16 w-full flex-1">
 
         <!-- Primary metrics -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" id="primary-metrics">
@@ -168,23 +184,17 @@
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-slate-800 bg-slate-900/50">
-        <div class="max-w-5xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p class="text-xs text-slate-600">&copy; 2026 Headless Oracle. Verification layer for autonomous agent commerce.</p>
-            <div class="flex gap-6 text-xs text-slate-500">
-                <a href="/" class="hover:text-white transition">Home</a>
-                <a href="/docs" class="hover:text-white transition">Docs</a>
-                <a href="/pricing" class="hover:text-white transition">Pricing</a>
-                <a href="/standards" class="hover:text-white transition">Standards</a>
-                <a href="/blog" class="hover:text-white transition">Blog</a>
-                <a href="/llms.txt" class="hover:text-white transition">llms.txt</a>
-                <a href="/terms" class="hover:text-white transition">Terms</a>
-                <a href="/privacy" class="hover:text-white transition">Privacy</a>
-                <a href="https://github.com/LembaGang" class="hover:text-white transition" target="_blank" rel="noopener">GitHub</a>
-                <a href="mailto:mike@headlessoracle.com" class="hover:text-white transition">mike@headlessoracle.com</a>
-            </div>
-        </div>
-    </footer>
+    <footer class="site-foot">
+  <div class="wrap">
+    <span class="mono">Headless Oracle</span>
+    <ul class="foot-links">
+      <li><a href="/terms">Terms</a></li>
+      <li><a href="/privacy">Privacy</a></li>
+      <li><a href="/refund">Refund</a></li>
+      <li><!--email_off--><a href="mailto:mike@headlessoracle.com">mike@headlessoracle.com</a><!--/email_off--></li>
+    </ul>
+  </div>
+</footer>
 
     <script>
         const API_BASE = 'https://headlessoracle.com';

@@ -28,6 +28,7 @@
  *
  * Usage:
  *   node scripts/check-prices.mjs [--page=dist/pricing.html] [--api=https://headlessoracle.com/v5/pricing]
+ *     [--offer-pages=dist/index.html,dist/pricing.html]   JSON-LD Offers held to the API too
  */
 
 import { readFileSync } from 'node:fs';
@@ -194,6 +195,7 @@ function buildApiPlans(api, refereeBlock) {
 async function main() {
   const pagePath = resolve(arg('page', DEFAULT_PAGE));
   const apiUrl = arg('api', DEFAULT_API);
+  const offerPages = arg('offer-pages', DEFAULT_OFFER_PAGES.join(',')).split(',').filter(Boolean);
 
   let html;
   try {
@@ -349,6 +351,9 @@ async function main() {
 
   const checked = pageItems.filter((i) => apiByPlan.has(i.plan)).map((i) => i.plan);
 
+  // --- JSON-LD offers on the other pages -----------------------------------------------
+  const offerLines = checkOfferPages(offerPages, tiers);
+
   if (absentFromApi.length > 0) {
     return {
       code: EXIT_REFEREE_ABSENT,
@@ -367,8 +372,85 @@ async function main() {
     lines: [
       `MATCH ${checked.length} plans agree between ${pagePath} and ${apiUrl}`,
       `  ${checked.join(', ')}`,
+      ...offerLines,
     ],
   };
+}
+
+/**
+ * Pages whose JSON-LD Offers are held to the API. Agents and answer engines read these
+ * prices without ever opening /pricing, so a stale literal there misleads exactly them.
+ * Every Offer must carry a `sku` naming an API tier id; a listed page with no Offers fails.
+ */
+const DEFAULT_OFFER_PAGES = ['dist/index.html', 'dist/pricing.html'];
+
+function jsonLdBlocks(html, page) {
+  const out = [];
+  for (const m of html.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi)) {
+    try {
+      out.push(JSON.parse(m[1]));
+    } catch (e) {
+      fail(EXIT_MISMATCH, `MISMATCH jsonld_unparseable page=${page} api=<n/a> (${e.message})`);
+    }
+  }
+  return out;
+}
+
+function collectOffers(node, out) {
+  if (Array.isArray(node)) node.forEach((n) => collectOffers(n, out));
+  else if (node && typeof node === 'object') {
+    if (node['@type'] === 'Offer') out.push(node);
+    Object.values(node).forEach((v) => collectOffers(v, out));
+  }
+  return out;
+}
+
+/** What a reader sees: no scripts, styles, comments or tags; entities left as written. */
+function pageText(html) {
+  return html
+    .replace(/<script\b[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style\b[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<!--[\s\S]*?-->/g, ' ')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ');
+}
+
+function checkOfferPages(pages, tiers) {
+  const lines = [];
+  const tierById = new Map(tiers.map((t) => [t.id, t]));
+  for (const page of pages) {
+    let html;
+    try {
+      html = readFileSync(resolve(page), 'utf8');
+    } catch (e) {
+      fail(EXIT_ERROR, `ERROR cannot read ${page} for its JSON-LD offers (${e.code})`);
+    }
+    const offers = collectOffers(jsonLdBlocks(html, page), []);
+    if (offers.length === 0) fail(EXIT_MISMATCH, `MISMATCH jsonld_offers page=${page}:<none> api=<at least one Offer expected>`);
+    const text = pageText(html);
+    for (const o of offers) {
+      const tier = tierById.get(o.sku);
+      if (!tier) fail(EXIT_MISMATCH, `MISMATCH jsonld_offer_sku page=${page}:${o.sku ?? '<missing>'} api=<no tier with that id>`);
+      const price = money(o.price);
+      if (price !== apiPrice(tier)) fail(EXIT_MISMATCH, `MISMATCH ${o.sku}.jsonld_price page=${page}:${o.price} api=${apiPrice(tier)}`);
+      if (o.priceCurrency !== 'USD') fail(EXIT_MISMATCH, `MISMATCH ${o.sku}.jsonld_currency page=${page}:${o.priceCurrency} api=USD`);
+      if ((o.priceValidUntil ?? null) !== (tier.introductory_until ?? null)) {
+        fail(EXIT_MISMATCH, `MISMATCH ${o.sku}.jsonld_priceValidUntil page=${page}:${o.priceValidUntil ?? '<none>'} api=${tier.introductory_until ?? '<none>'}`);
+      }
+      // A daily checkpoint figure in the offer must be the API's.
+      const n = String(o.description || '').match(/(?:pool of|up to) (\d[\d,]*)/);
+      if (tier.checkpoints_per_day !== undefined && (!n || money(n[1]) !== tier.checkpoints_per_day)) {
+        fail(EXIT_MISMATCH, `MISMATCH ${o.sku}.jsonld_checkpoints_per_day page=${page}:${n ? n[1] : '<none>'} api=${tier.checkpoints_per_day}`);
+      }
+      // A paid monthly offer must also be what the page shows a human.
+      // Tags between the figure and the cycle ("$49</p><p>/month") read as a space.
+      if (price > 0 && tier.interval === 'month' && !new RegExp(`\\$${price}\\s*/\\s*month\\b`).test(text)) {
+        fail(EXIT_MISMATCH, `MISMATCH ${o.sku}.visible_price page=${page}:<no "$${price}/month" in the text> api=${price}`);
+      }
+    }
+    lines.push(`  JSON-LD offers agree on ${page}: ${offers.map((o) => `${o.sku}=${o.price}`).join(', ')}`);
+  }
+  return lines;
 }
 
 try {

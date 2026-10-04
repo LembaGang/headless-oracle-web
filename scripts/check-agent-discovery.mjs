@@ -9,9 +9,10 @@
  *
  * It also keeps public/index.md (served to `Accept: text/markdown`) in step with
  * index.html. The Markdown is hand-written, so it drifts unless something compares them.
- * Nothing here is hardcoded: the price, daily allowance and exchange count are extracted
- * from both files with the same patterns and must agree, and every same-origin link on
- * the page must appear in the Markdown. A page change not mirrored in the Markdown fails.
+ * Nothing here is hardcoded: the free pool, the paid quotas, the prices and the venue
+ * count are extracted from both files with the same patterns and must agree, the page's
+ * H1 must appear verbatim in the Markdown, and every same-origin link on the page must
+ * appear in the Markdown. A page change not mirrored in the Markdown fails.
  *
  * Exit codes (the convention of check-banned.mjs):
  *   0  PASS      : every assertion holds
@@ -122,7 +123,24 @@ function visibleText(html) {
   return decodeEntities(noCode.replace(/<!--[\s\S]*?-->/g, ' ').replace(/<[^>]*>/g, '')).replace(/\s+/g, ' ').trim();
 }
 
+/**
+ * Facts the homepage must state and the Markdown must state identically. The homepage
+ * leads with Chirindo Witness since W4 (2026-10-04), so these are its facts: the free
+ * pool, the paid quotas, every dollar amount, the monthly prices, the venue count.
+ */
 const FACTS = {
+  pool: /pool of (\d[\d,]*)/g,
+  quota: /up to (\d[\d,]*) new checkpoints a UTC day/g,
+  dollars: /\$(\d[\d,]*(?:\.\d+)?)/g,
+  monthly: /\$(\d[\d,]*(?:\.\d+)?)\/month/g,
+  venues: /(\d+)\s+venues/g,
+};
+
+/**
+ * The market-state facts the homepage carried before W4. It no longer states them, so
+ * they are not required; if either file states one, both must state the same values.
+ */
+const FACTS_IF_PRESENT = {
   price: /(\d+(?:\.\d+)?)\s*USDC/g,
   allowance: /(\d[\d,]*)\s*(?:calls|requests|req)\s*\/\s*day/g,
   exchanges: /(\d+)\s+(?:global\s+)?exchanges/g,
@@ -132,10 +150,27 @@ function factSet(text, re) {
   return new Set([...text.matchAll(re)].map((m) => m[1]));
 }
 
-/** Same-origin hrefs on the page as absolute URLs; fragments dropped, pure fragments skipped. */
+/** The text of the page's first <h1>, as a reader sees it. */
+function firstH1(html) {
+  const m = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i);
+  return m ? visibleText(m[1]) : null;
+}
+
+/**
+ * Same-origin links on the page as absolute URLs; fragments dropped, pure fragments
+ * skipped. A link is an <a href> or a <link rel="alternate"> (the machine-readable
+ * alternates an agent follows); the Markdown alternate is the Markdown itself, and
+ * stylesheets and fonts are not links a reader follows.
+ */
 function sameOriginHrefs(html) {
   const out = new Set();
-  for (const m of html.matchAll(/\bhref\s*=\s*["']([^"']*)["']/gi)) {
+  const tags = [...html.matchAll(/<a\b[^>]*>/gi), ...html.matchAll(/<link\b[^>]*>/gi)].map((m) => m[0]).filter((tag) => {
+    if (!/^<link/i.test(tag)) return true;
+    return /\brel\s*=\s*["']alternate["']/i.test(tag) && !/\btype\s*=\s*["']text\/markdown["']/i.test(tag);
+  });
+  for (const tag of tags) {
+    const m = tag.match(/\bhref\s*=\s*["']([^"']*)["']/i);
+    if (!m) continue;
     let v = m[1].trim().split('#')[0];
     if (!v) continue;
     if (v.startsWith(ORIGIN)) v = v.slice(ORIGIN.length) || '/';
@@ -165,9 +200,17 @@ function splitMarkdown(md) {
   return { prose, code: code.join('\n') };
 }
 
-/** Every site URL in prose: [text](url), <url>, a bare URL in a list item or a sentence. */
+/**
+ * Every site URL in prose: [text](url), <url>, a bare URL in a list item or a sentence.
+ * Fragments are dropped, as on the page side: /#start and / are the same document.
+ */
 function proseLinks(prose) {
-  return new Set([...prose.matchAll(SITE_URL)].map((m) => m[0].replace(/[.,;:!?]+$/, '')));
+  return new Set(
+    [...prose.matchAll(SITE_URL)].map((m) => {
+      const u = m[0].replace(/[.,;:!?]+$/, '').split('#')[0];
+      return u === ORIGIN ? ORIGIN + '/' : u;
+    }),
+  );
 }
 
 /** A whole token: delimited by whitespace, a backtick, a quote, or the ends of the text. */
@@ -188,16 +231,25 @@ function checkMarkdownSync(htmlPath, mdPath, fails, lines) {
   if (firstLine !== '# Headless Oracle') fails.push(`Markdown first line is "${firstLine}", must be "# Headless Oracle"`);
   else lines.push('ok   Markdown first line is "# Headless Oracle"');
 
-  for (const [name, re] of Object.entries(FACTS)) {
+  for (const [name, re] of [...Object.entries(FACTS), ...Object.entries(FACTS_IF_PRESENT)]) {
+    const required = name in FACTS;
     const a = factSet(text, re);
     const b = factSet(md, re);
     const onlyHtml = [...a].filter((v) => !b.has(v));
     const onlyMd = [...b].filter((v) => !a.has(v));
-    if (a.size === 0) fails.push(`${name}: no value found on the page (pattern ${re})`);
+    if (a.size === 0 && required) fails.push(`${name}: no value found on the page (pattern ${re})`);
     else if (onlyHtml.length || onlyMd.length) {
       fails.push(`${name}: page has {${[...a].join(', ')}}, Markdown has {${[...b].join(', ')}}`);
-    } else lines.push(`ok   ${name} {${[...a].join(', ')}} agrees between page and Markdown`);
+    } else if (a.size === 0) lines.push(`ok   ${name}: stated in neither file (optional since W4)`);
+    else lines.push(`ok   ${name} {${[...a].join(', ')}} agrees between page and Markdown`);
   }
+
+  // The hero line is the page's claim; the Markdown must make the same one, verbatim.
+  const h1 = firstH1(html);
+  const mdText = md.replace(/\s+/g, ' ');
+  if (!h1) fails.push('the page has no <h1>');
+  else if (!mdText.includes(h1)) fails.push(`the page's H1 "${h1}" does not appear verbatim in the Markdown`);
+  else lines.push(`ok   the page's H1 "${h1}" appears verbatim in the Markdown`);
 
   const { prose, code } = splitMarkdown(md);
   const pageLinks = sameOriginHrefs(html);

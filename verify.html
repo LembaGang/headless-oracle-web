@@ -20,6 +20,10 @@
     <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt — machine-readable API summary">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/site.css">
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #0f172a; }
         .glass {
@@ -31,21 +35,36 @@
 </head>
 <body class="bg-slate-900 text-slate-300 min-h-screen flex flex-col">
 
-    <nav class="w-full max-w-6xl mx-auto p-6 flex justify-between items-center border-b border-slate-800/50">
-        <div class="flex items-center gap-2">
-            <span class="text-xl font-bold tracking-wider text-white">HEADLESS<span class="text-blue-500">ORACLE</span></span>
-        </div>
-        <div class="flex gap-6 text-sm font-medium">
-            <a href="/docs" class="hover:text-white transition">Docs</a>
-            <a href="/status" class="hover:text-white transition">Status</a>
-            <a href="/pricing" class="hover:text-white transition">Pricing</a>
-            <a href="/standards" class="hover:text-white transition">Standards</a>
-            <a href="/blog" class="hover:text-white transition">Blog</a>
-            <a href="https://github.com/LembaGang" class="hover:text-white transition" target="_blank" rel="noopener">GitHub</a>
-        </div>
-    </nav>
+    <a class="skip" href="#main">Skip to content</a>
 
-    <main class="flex-grow flex flex-col items-center justify-center p-4">
+<header class="site-head">
+  <div class="wrap">
+    <a class="wordmark" href="/">Headless Oracle</a>
+    <nav aria-label="Main">
+      <ul class="nav-list nav-wide">
+        <li><a href="C:/Program Files/Git/#how">Witness</a></li>
+        <li><a href="/verify" aria-current="page">Verify</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/docs">Docs</a></li>
+        <li><a href="C:/Program Files/Git/#auditors">For auditors</a></li>
+        <li><a href="https://github.com/LembaGang">GitHub</a></li>
+      </ul>
+      <details class="nav-small">
+        <summary>Menu</summary>
+        <ul>
+          <li><a href="C:/Program Files/Git/#how">Witness</a></li>
+          <li><a href="/verify" aria-current="page">Verify</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+          <li><a href="/docs">Docs</a></li>
+          <li><a href="C:/Program Files/Git/#auditors">For auditors</a></li>
+          <li><a href="https://github.com/LembaGang">GitHub</a></li>
+        </ul>
+      </details>
+    </nav>
+  </div>
+</header>
+
+    <main id="main" class="flex-grow flex flex-col items-center justify-center p-4">
         <div class="max-w-3xl w-full">
 
             <div class="mb-6 p-4 rounded-lg border border-blue-500/40 bg-blue-900/20 text-blue-100 text-sm">
@@ -102,21 +121,17 @@
         </div>
     </main>
 
-    <footer class="p-8 text-center text-slate-600 text-xs border-t border-slate-800">
-        <div class="flex flex-wrap justify-center gap-6 mb-3">
-            <a href="/" class="hover:text-white transition">Home</a>
-            <a href="/docs" class="hover:text-white transition">Docs</a>
-            <a href="/pricing" class="hover:text-white transition">Pricing</a>
-            <a href="/standards" class="hover:text-white transition">Standards</a>
-            <a href="/blog" class="hover:text-white transition">Blog</a>
-            <a href="/llms.txt" class="hover:text-white transition">llms.txt</a>
-            <a href="/terms" class="hover:text-white transition">Terms</a>
-            <a href="/privacy" class="hover:text-white transition">Privacy</a>
-            <a href="https://github.com/LembaGang" class="hover:text-white transition" target="_blank" rel="noopener">GitHub</a>
-            <a href="mailto:mike@headlessoracle.com" class="hover:text-white transition">mike@headlessoracle.com</a>
-        </div>
-        &copy; 2026 Headless Oracle. Verification runs locally via <a href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto" class="underline">window.crypto.subtle</a>.
-    </footer>
+    <footer class="site-foot">
+  <div class="wrap">
+    <span class="mono">Headless Oracle</span>
+    <ul class="foot-links">
+      <li><a href="/terms">Terms</a></li>
+      <li><a href="/privacy">Privacy</a></li>
+      <li><a href="/refund">Refund</a></li>
+      <li><!--email_off--><a href="mailto:mike@headlessoracle.com">mike@headlessoracle.com</a><!--/email_off--></li>
+    </ul>
+  </div>
+</footer>
 
     <script>
         const ORACLE_API = "https://headlessoracle.com";
