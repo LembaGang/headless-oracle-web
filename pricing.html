@@ -432,7 +432,7 @@
                 <button type="button" id="ho-claim-close" aria-label="Close" class="text-slate-400 hover:text-white text-2xl leading-none cursor-pointer">&times;</button>
             </div>
             <p id="ho-claim-status" aria-live="polite" class="text-sm text-slate-300 mb-3"></p>
-            <p id="ho-claim-message" class="hidden text-sm text-slate-300 mb-3"><span id="ho-claim-message-text"></span> <a id="ho-claim-mailto" href="mailto:mike@headlessoracle.com" class="text-blue-400 hover:text-blue-300 underline">Email mike@headlessoracle.com</a></p>
+            <p id="ho-claim-message" role="status" class="hidden text-sm text-slate-300 mb-3"><span id="ho-claim-message-text"></span> <a id="ho-claim-mailto" href="mailto:mike@headlessoracle.com" class="text-blue-400 hover:text-blue-300 underline">Email mike@headlessoracle.com</a></p>
             <div id="ho-claim-ready" class="hidden">
                 <pre id="ho-claim-key" class="text-sm text-green-400 font-mono break-all whitespace-pre-wrap bg-slate-950 border border-green-700/40 rounded-lg p-3 mb-3"></pre>
                 <div class="flex flex-wrap gap-3 mb-4">
@@ -564,7 +564,7 @@
 
     // --- Paddle Checkout ---
     // The plan last clicked, so checkout.completed can tell a referee purchase (no key)
-    // from a key purchase. Empty on the _ptxn reopen, which is treated as a key purchase.
+    // from a key purchase. Empty on the _ptxn reopen, where the plan is unknown.
     let lastPlan = '';
     let lastBuyBtn = null;
 
@@ -705,7 +705,7 @@
     function openClaimModal() {
         const overlay = claimEl('overlay');
         if (overlay.classList.contains('hidden')) {
-            claimReturnFocus = lastBuyBtn || document.activeElement;
+            claimReturnFocus = lastBuyBtn || null;
             overlay.classList.remove('hidden');
             claimEl('heading').focus();
         }
@@ -746,8 +746,8 @@
     function showClaimTimeout(txn) {
         showClaimView('message', {
             txn: txn,
-            text: 'Your payment went through, but the key is taking longer than usual. Write to mike@headlessoracle.com with transaction ' +
-                (txn || 'from your Paddle receipt') + ' and you will get it today.',
+            text: 'Your payment went through, but the key is taking longer than usual. Write to mike@headlessoracle.com with ' +
+                (txn ? 'transaction ' + txn : 'the transaction ID from your Paddle receipt') + ' and you will get it today.',
         });
     }
 
@@ -773,6 +773,8 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ claim_token: claim.claim_token }),
                     cache: 'no-store',
+                    // A stalled request aborts and is retried like any network error.
+                    signal: AbortSignal.timeout(15000),
                 });
                 let data = {};
                 try { data = await res.json(); } catch (e) { data = {}; }
@@ -791,7 +793,7 @@
                     delay = Math.min(data.retry_after_seconds * 1000, 60 * 1000);
                 }
             } catch (e) {
-                // Network error: pending.
+                // Network error or timeout: pending.
             }
             if (run !== claimPollRun) return;
             setTimeout(tick, delay);
@@ -810,12 +812,16 @@
             startClaimPoll(claim, true);
             return;
         }
-        if (lastPlan && NO_KEY_PLANS.indexOf(lastPlan) !== -1) return;
-        showClaimView('message', {
-            txn: txn,
-            text: 'Payment received. If your key does not appear by email within 15 minutes, write to mike@headlessoracle.com with transaction ' +
-                (txn || 'from your Paddle receipt') + '.',
-        });
+        let text;
+        if (lastPlan && NO_KEY_PLANS.indexOf(lastPlan) !== -1) {
+            text = 'Payment received. Paddle emails your receipt, and we will be in touch within one business day at the address you used.';
+        } else if (!lastPlan) {
+            text = 'Payment received. If you bought a plan with a key, it appears here or by email; otherwise Paddle emails your receipt and we will be in touch within one business day.';
+        } else {
+            text = 'Payment received. If your key does not appear by email within 15 minutes, write to mike@headlessoracle.com with ' +
+                (txn ? 'transaction ' + txn : 'the transaction ID from your Paddle receipt') + '.';
+        }
+        showClaimView('message', { txn: txn, text: text });
     };
 
     (function initClaimDialog() {
@@ -883,13 +889,11 @@
         });
 
         // Resume after a reload or a return from the hosted checkout.
+        // A claim older than 24 hours is past the key's on-screen window, paid or not.
         const claim = loadClaim();
         if (!claim) return;
-        if (claim.paid) {
-            startClaimPoll(claim, true);
-        } else if (typeof claim.started_at === 'number' && Date.now() - claim.started_at < CLAIM_SILENT_MAX_AGE_MS) {
-            startClaimPoll(claim, false);
-        }
+        if (!(typeof claim.started_at === 'number' && Date.now() - claim.started_at < CLAIM_SILENT_MAX_AGE_MS)) return;
+        startClaimPoll(claim, !!claim.paid);
     }());
 
     // --- Referee intake ---
