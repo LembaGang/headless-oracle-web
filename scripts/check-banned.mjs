@@ -52,6 +52,15 @@ const BANNED = [
   ['the only signed receipt', 'uncalibrated exclusivity claim (directive floor)'],
   // Whole-word: bare "a2a" turns up by chance inside hex hashes and Vite asset names.
   ['A2A', 'Headless Oracle does not implement A2A; /standards claimed interoperability (3fb6c73)', { wholeWord: true }],
+  // W3 honesty hotfix (site audit 2026-10-04, rows #23 #25 #26 #29 #17).
+  ['no trust required', 'a signature shows origin and integrity, not that the observation is true (W3 #26)'],
+  ['proof the market was open', 'overclaim; a receipt records an observation, it does not prove the market state (W3 #25)'],
+  ['Standards & Compliance', 'nothing on the site makes anyone compliant (W3 #29)'],
+  // Files are matched raw, without entity decoding; the old H1 was written this way.
+  ['Standards &amp; Compliance', 'entity-encoded form of the same label (W3 #29)'],
+  ['V5 Beta', 'stale launch badge (W3 #17)'],
+  // Not banned: "Mastercard's Verifiable Intent". Removed from the human pages in W3 (#23),
+  // but two published essays under public/essays/ still use it and are not edited here.
 ];
 
 const WORD_CHAR = /[a-z0-9]/;

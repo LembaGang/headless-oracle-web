@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Standards & Compliance | Headless Oracle</title>
+    <title>Standards | Headless Oracle</title>
     <meta name="description" content="Signed Market-State Attestations (SMAs) for autonomous agents: Ed25519-signed, ISO 10383-keyed, fail-closed, verifiable from the bytes. The regulator documents that shaped the design are cited here; none has reviewed the service.">
     <meta name="robots" content="index, follow">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://headlessoracle.com/standards">
-    <meta property="og:title" content="Standards & Compliance | Headless Oracle">
+    <meta property="og:title" content="Standards | Headless Oracle">
     <meta property="og:description" content="Signed Market-State Attestations — Ed25519, ISO 10383, fail-closed, multi-oracle verifiable. Open-standards infrastructure for autonomous agents.">
     <meta property="og:image" content="https://headlessoracle.com/og-image.png">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Standards & Compliance | Headless Oracle">
+    <meta name="twitter:title" content="Standards | Headless Oracle">
     <meta name="twitter:description" content="Signed market attestations for agents — Ed25519, ISO 10383, multi-oracle consensus, verifiable from the bytes.">
     <meta name="twitter:image" content="https://headlessoracle.com/og-image.png">
     <link rel="canonical" href="https://headlessoracle.com/standards">
@@ -55,7 +55,7 @@
                 <span class="text-xs font-mono px-2 py-1 rounded-full bg-slate-700/60 border border-slate-600/40 text-slate-300 font-semibold">ISO 10383</span>
                 <span class="text-xs font-mono px-2 py-1 rounded-full bg-green-900/40 border border-green-500/30 text-green-400 font-semibold">Fail-closed</span>
             </div>
-            <h1 class="text-5xl font-bold text-white mb-4 tracking-tight">Standards &amp; Compliance</h1>
+            <h1 class="text-5xl font-bold text-white mb-4 tracking-tight">Standards</h1>
             <p class="text-xl text-slate-400 max-w-3xl">Headless Oracle is cryptographically verifiable market-state infrastructure, built so that venue state can be checked from the bytes by anyone holding the public key. The regulator documents that shaped its design are cited below.</p>
         </div>
 
@@ -78,9 +78,9 @@
             <h2 class="text-3xl font-bold text-white mb-5 tracking-tight">What is a Signed Market-State Attestation (SMA)?</h2>
             <div class="space-y-4 text-slate-300 leading-relaxed">
                 <p>A <strong class="text-white">Signed Market-State Attestation</strong> (SMA) is a cryptographically signed claim about the current trading state of a regulated venue at a specific moment in time. Every response from Headless Oracle is an SMA: a structured payload describing whether a market is open, closed, in pre-auction, in lunch break, or on an early-close schedule, together with the exchange's ISO 10383 MIC code, an RFC 3339 timestamp, and an Ed25519 signature over the canonical form of the payload.</p>
-                <p>The design goal is simple: make market state a <em>verifiable fact</em> rather than a trusted claim. A smart contract, trading agent, or compliance process can independently validate an SMA against Headless Oracle's published Ed25519 public key, without ever calling back to our service. The signature is the source of truth. If the public key verifies the signature, the payload is authentic; if it doesn't, the payload is rejected. There is no middle state.</p>
+                <p>The design goal is simple: make market state a signed, checkable record rather than an unsigned claim. A smart contract, trading agent, or compliance process can independently validate an SMA against Headless Oracle's published Ed25519 public key, without ever calling back to our service. If the public key verifies the signature, the payload is exactly what Headless Oracle signed. It records Headless Oracle's observation, not a guarantee of fact.</p>
                 <p>SMAs are short-lived by design. Each attestation carries a <strong class="text-white">60-second time-to-live</strong>, after which downstream consumers must refuse to act on it. This bounds the window in which a stale reading can drive an incorrect decision — a critical property for autonomous systems handling real capital.</p>
-                <p class="text-xs italic text-slate-500 pt-2">Headless Oracle is the proposed reference implementation of <code class="not-italic text-slate-400 font-mono">environment.market_state</code> (open PR #9 on Mastercard's Verifiable Intent repo). Operational since 2026-02-18.</p>
+                <p class="text-xs italic text-slate-500 pt-2">Co-author of the IETF draft family defining environmental constraints for Verifiable Intent.</p>
             </div>
         </section>
 
@@ -149,7 +149,7 @@
         <!-- Open Standards & Family Specs -->
         <section id="open-standards" class="mb-16">
             <h2 class="text-3xl font-bold text-white mb-5 tracking-tight">Open Standards &amp; Family Specs</h2>
-            <p class="text-slate-300 leading-relaxed mb-6"><code class="font-mono text-slate-400">environment.market_state</code> is a proposed member of the <code class="font-mono text-slate-400">environment.*</code> constraint family — open as PR #9 on Mastercard's Verifiable Intent repo. Headless Oracle operates the reference implementation of the proposed constraint; sibling implementations cover adjacent constraint surfaces, and an <a href="https://datatracker.ietf.org/doc/draft-borthwick-msebenzi-environment-state/" target="_blank" rel="noopener" class="text-blue-400 hover:text-blue-300">IETF Internet-Draft</a> filed May 11, 2026 formalises the family and vocabulary layer. <a href="/essays/environment-internet-draft" class="text-blue-400 hover:text-blue-300">Read the announcement &rarr;</a></p>
+            <p class="text-slate-300 leading-relaxed mb-6"><code class="font-mono text-slate-400">environment.market_state</code> is a proposed member of the <code class="font-mono text-slate-400">environment.*</code> constraint family. Sibling implementations cover adjacent constraint surfaces, and an <a href="https://datatracker.ietf.org/doc/draft-borthwick-msebenzi-environment-state/" target="_blank" rel="noopener" class="text-blue-400 hover:text-blue-300">IETF Internet-Draft</a> filed May 11, 2026 formalises the family and vocabulary layer. <a href="/essays/environment-internet-draft" class="text-blue-400 hover:text-blue-300">Read the announcement &rarr;</a></p>
 
             <div class="grid md:grid-cols-2 gap-5">
                 <a href="https://github.com/agent-intent/verifiable-intent/pull/22" target="_blank" rel="noopener" class="glass rounded-xl p-5 hover:bg-white/[0.08] transition block">
@@ -266,7 +266,7 @@
                 </div>
             </div>
 
-            <p class="text-xs text-slate-500 mt-4">Total: 28 venues. ~1,300 schedule edge cases handled annually (holidays, DST, lunch breaks, early closes, circuit breakers).</p>
+            <p class="text-xs text-slate-500 mt-4">Total: 28 venues.</p>
         </section>
 
         <!-- Agentic Economy -->

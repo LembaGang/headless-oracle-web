@@ -474,7 +474,7 @@ Query:  mics=XNYS,XNAS,XLON  (comma-separated, deduplicated)</pre>
 
                 <h3 class="mt-6">Status Values</h3>
                 <ul class="list-disc pl-5 space-y-2 text-slate-400 text-sm">
-                    <li><strong class="text-green-400">OPEN:</strong> Market is in an active trading session. Safe to execute.</li>
+                    <li><strong class="text-green-400">OPEN:</strong> The venue is in an active trading session. Single-name halts do not change venue status; see <a href="/halt-gate">/halt-gate</a>.</li>
                     <li><strong class="text-red-400">CLOSED:</strong> Market is outside trading hours — weekend, holiday, or after close.</li>
                     <li><strong class="text-orange-400">HALTED:</strong> Market has been manually halted (circuit breaker or emergency override). Treat identically to CLOSED.</li>
                     <li><strong class="text-yellow-400">UNKNOWN:</strong> Oracle cannot determine status. <strong>Treat as CLOSED. Halt all execution.</strong></li>
@@ -694,7 +694,7 @@ function hexToBytes(hex) {
                 </p>
 
                 <h3>Get an API Key</h3>
-                <p class="text-sm mb-4 text-slate-400">Subscribe via anonymous Paddle checkout — no account creation required. Your API key is emailed to you after payment and is shown once.</p>
+                <p class="text-sm mb-4 text-slate-400">Subscribe via anonymous Paddle checkout — no account creation required. After payment your key appears on the pricing page and is also sent by email.</p>
                 <pre class="text-blue-300">curl -X POST https://headlessoracle.com/v5/checkout
 # Returns: { "url": "https://checkout.paddle.com/..." }
 # Redirect the user (or open the URL) to complete payment.</pre>
@@ -729,7 +729,6 @@ function hexToBytes(hex) {
                         </div>
                         <p class="text-sm text-slate-400 mb-2">Defines the canonical JSON schema for a cryptographically signed market-state receipt: fields, Ed25519 signing algorithm, canonical payload serialisation (alphabetical key sort), 60-second TTL, and fail-closed UNKNOWN semantics.</p>
                         <div class="flex gap-3 flex-wrap">
-                            <a href="https://headlessoracle.com/v5/compliance" class="text-xs text-slate-400 hover:text-white font-mono">/v5/compliance →</a>
                             <a href="https://headlessoracle.com/v5/conformance-vectors" class="text-xs text-slate-400 hover:text-white font-mono">/v5/conformance-vectors →</a>
                         </div>
                     </div>
@@ -757,9 +756,6 @@ function hexToBytes(hex) {
                             <a href="https://github.com/LembaGang/agent-pretrade-safety-standard" target="_blank" rel="noopener" class="text-xs font-mono text-green-400 hover:text-green-300 whitespace-nowrap">GitHub →</a>
                         </div>
                         <p class="text-sm text-slate-400 mb-2">A vendor-neutral 6-step checklist every autonomous trading agent must complete before executing: fetch signed attestation → verify circuit breakers → verify settlement window → verify TTL → verify Ed25519 signature → halt on any failure. Includes CI badge, CHECKLIST.yaml, and conformance table.</p>
-                        <div class="flex gap-3 flex-wrap">
-                            <a href="https://headlessoracle.com/v5/compliance" class="text-xs text-slate-400 hover:text-white font-mono">/v5/compliance →</a>
-                        </div>
                     </div>
                 </div>
             </section>

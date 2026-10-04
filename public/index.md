@@ -10,7 +10,7 @@ Headless Oracle is a fail-closed execution guardrail for AI agents and RWA bots.
 
 - x402: agents can pay for themselves, 0.001 USDC/req.
 - Free API key: 500 calls/day, all 28 exchanges. No signup. No credit card.
-- Every response is Ed25519 signed. Verify the signature yourself, no trust required.
+- Every response is Ed25519 signed. Verify the signature yourself: it shows the receipt came from Headless Oracle unaltered.
 - Fail-closed by design. Anything other than `OPEN` halts your agent. UNKNOWN = halt, always.
 
 ## Start here
@@ -60,10 +60,6 @@ Apache 2.0, designed to be implemented by any operator, not just Headless Oracle
 - [Verify a receipt](https://headlessoracle.com/verify)
 - [Standards](https://headlessoracle.com/standards)
 - [Blog](https://headlessoracle.com/blog)
-- [Essay: x402 delivery integrity](https://headlessoracle.com/essays/x402-delivery-integrity)
-- [Essay: environment Internet-Draft](https://headlessoracle.com/essays/environment-internet-draft)
-- [/v5/compliance](https://headlessoracle.com/v5/compliance)
-- [/v5/stack](https://headlessoracle.com/v5/stack)
 - [Terms](https://headlessoracle.com/terms)
 - [Privacy](https://headlessoracle.com/privacy)
 - [Refund Policy](https://headlessoracle.com/refund)
