@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
     <title>DataCamp Workspace Integration | Headless Oracle</title>
     <meta name="description" content="Use Headless Oracle in a DataCamp workspace or Jupyter notebook. Install the Python SDK, fetch signed market receipts, and gate trade execution with cryptographic verification.">
     <meta name="robots" content="index, follow">
@@ -10,24 +11,18 @@
     <meta property="og:url" content="https://headlessoracle.com/docs/integrations/datacamp-workspace">
     <meta property="og:title" content="DataCamp Workspace Integration | Headless Oracle">
     <meta property="og:description" content="Use Headless Oracle in a DataCamp workspace or Jupyter notebook.">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/site.css">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #cbd5e1; }
-        .glass { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(51, 65, 85, 0.5); }
-        pre { background: #1e293b; padding: 1.25rem; border-radius: 0.5rem; overflow-x: auto; font-family: 'Menlo', 'Consolas', monospace; font-size: 0.82rem; border: 1px solid #334155; line-height: 1.6; }
-        code { color: #60a5fa; font-family: 'Menlo', 'Consolas', monospace; font-size: 0.85em; }
-        .note { background: #1e2a1e; border: 1px solid #365a36; border-left: 3px solid #4ade80; padding: 0.75rem 1rem; border-radius: 0 0.375rem 0.375rem 0; }
-        .warn { background: #2a1e1e; border: 1px solid #5a3636; border-left: 3px solid #f87171; padding: 0.75rem 1rem; border-radius: 0 0.375rem 0.375rem 0; }
-        .step-num { display: inline-flex; align-items: center; justify-content: center; width: 1.5rem; height: 1.5rem; border-radius: 50%; background: #2563eb; color: white; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
-        .badge { background: #1e293b; color: #60a5fa; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; border: 1px solid #334155; font-family: monospace; }
+.doc .code-block pre { margin: 0; }
+        .doc .plain { list-style: none; padding-left: 0; }
+        .step-n { font-family: var(--font-mono); font-size: var(--step-0); font-weight: 400; color: var(--muted); margin-right: 10px; }
+        .kicker span + span::before { content: "· "; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body>
 
     <a class="skip" href="#main">Skip to content</a>
 
@@ -36,21 +31,21 @@
     <a class="wordmark" href="/">Headless Oracle</a>
     <nav aria-label="Main">
       <ul class="nav-list nav-wide">
-        <li><a href="C:/Program Files/Git/#how">Witness</a></li>
+        <li><a href="/witness">Witness</a></li>
         <li><a href="/verify">Verify</a></li>
         <li><a href="/pricing">Pricing</a></li>
         <li><a href="/docs">Docs</a></li>
-        <li><a href="C:/Program Files/Git/#auditors">For auditors</a></li>
+        <li><a href="/auditors">For auditors</a></li>
         <li><a href="https://github.com/LembaGang">GitHub</a></li>
       </ul>
       <details class="nav-small">
         <summary>Menu</summary>
         <ul>
-          <li><a href="C:/Program Files/Git/#how">Witness</a></li>
+          <li><a href="/witness">Witness</a></li>
           <li><a href="/verify">Verify</a></li>
           <li><a href="/pricing">Pricing</a></li>
           <li><a href="/docs">Docs</a></li>
-          <li><a href="C:/Program Files/Git/#auditors">For auditors</a></li>
+          <li><a href="/auditors">For auditors</a></li>
           <li><a href="https://github.com/LembaGang">GitHub</a></li>
         </ul>
       </details>
@@ -58,96 +53,76 @@
   </div>
 </header>
 
-    <main id="main" class="flex-grow max-w-5xl mx-auto px-6 py-12 w-full">
+<div class="crosslink">
+  <div class="wrap">
+    <span>Market-state receipts: <a href="/docs">Docs</a> · <a href="/status">Status</a> · <a href="/dashboard">Dashboard</a> · <a href="/halt-gate">Halt gate</a> · <a href="/standards">Standards</a></span>
+    <span>For agent logs your auditor can check, see <a href="/witness">Chirindo Witness</a>.</span>
+  </div>
+</div>
 
-        <!-- Breadcrumb -->
-        <div class="text-xs text-slate-500 mb-8 font-mono">
-            <a href="/docs" class="hover:text-slate-300">docs</a>
-            <span class="mx-2">/</span>
-            <span>integrations</span>
-            <span class="mx-2">/</span>
-            <span class="text-slate-300">datacamp-workspace</span>
+<main id="main">
+
+        <div class="wrap page-head">
+            <p class="breadcrumb"><a href="/docs">docs</a> / integrations / datacamp-workspace <span aria-hidden="true">🏕️</span></p>
+            <h1>DataCamp Workspace</h1>
+            <div class="lede">
+                <p>Use Headless Oracle in a DataCamp workspace or any Jupyter notebook environment. Install the Python SDK with a single <code>pip install</code>, fetch cryptographically signed market status receipts, and gate any execution logic on verified market state.</p>
+                <p class="muted small">Works in DataCamp workspaces, Jupyter Lab, Jupyter Notebook, Google Colab, and any standard Python environment.</p>
+            </div>
         </div>
 
-        <!-- Header -->
-        <div class="mb-10">
-            <div class="flex items-center gap-3 mb-4">
-                <span class="text-3xl">🏕️</span>
-                <h1 class="text-4xl font-bold text-white">DataCamp Workspace</h1>
-            </div>
-            <p class="text-lg text-slate-400 max-w-3xl">
-                Use Headless Oracle in a DataCamp workspace or any Jupyter notebook environment. Install the Python SDK with a single <code>pip install</code>, fetch cryptographically signed market status receipts, and gate any execution logic on verified market state.
-            </p>
-            <p class="text-sm text-slate-500 mt-3">
-                Works in DataCamp workspaces, Jupyter Lab, Jupyter Notebook, Google Colab, and any standard Python environment.
-            </p>
-        </div>
+        <div class="wrap page-body">
+            <div class="doc">
 
-        <!-- Step 1: Install -->
-        <section class="mb-10">
-            <div class="flex items-center gap-3 mb-4">
-                <span class="step-num">1</span>
-                <h2 class="text-xl font-bold text-white">Install the SDK</h2>
-            </div>
-            <p class="text-sm text-slate-400 mb-3">Run in a DataCamp workspace terminal or notebook cell:</p>
-            <pre><span style="color:#94a3b8"># In a notebook cell (the ! prefix runs shell commands in Jupyter)</span>
-<span style="color:#4ade80">!pip install headless-oracle</span>
+                <section>
+                    <h2><span class="step-n">1</span> Install the SDK</h2>
+                    <p>Run in a DataCamp workspace terminal or notebook cell:</p>
+                    <pre><span class="muted"># In a notebook cell (the ! prefix runs shell commands in Jupyter)</span>
+<span>!pip install headless-oracle</span>
 
-<span style="color:#94a3b8"># Or in the workspace terminal:</span>
-<span style="color:#4ade80">pip install headless-oracle</span></pre>
-            <p class="text-xs text-slate-500 mt-2">The package includes <code>verify()</code>, <code>OracleClient</code>, and optional LangChain/CrewAI tools. No extra dependencies required for basic use.</p>
-        </section>
+<span class="muted"># Or in the workspace terminal:</span>
+<span>pip install headless-oracle</span></pre>
+                    <p class="muted small">The package includes <code>verify()</code>, <code>OracleClient</code>, and optional LangChain/CrewAI tools. No extra dependencies required for basic use.</p>
+                </section>
 
-        <!-- Step 2: Get a key -->
-        <section class="mb-10">
-            <div class="flex items-center gap-3 mb-4">
-                <span class="step-num">2</span>
-                <h2 class="text-xl font-bold text-white">Get a free API key</h2>
-            </div>
-            <p class="text-sm text-slate-400 mb-3">Request a key from a notebook cell. It arrives in the response immediately:</p>
-            <pre><span style="color:#f8fafc">import requests
+                <section>
+                    <h2><span class="step-n">2</span> Get a free API key</h2>
+                    <p>Request a key from a notebook cell. It arrives in the response immediately:</p>
+                    <pre><span>import requests
 
 resp = requests.post(
     "https://headlessoracle.com/v5/keys/instant",
     json={"agent_id": "my-datacamp-notebook"}
 )
 print(resp.json())
-<span style="color:#94a3b8"># {"key": "ho_free_...", "plan": "free", "requests_per_day": 500}</span></span></pre>
-            <p class="text-xs text-slate-500 mt-2">Free keys allow 500 requests/day across all 28 exchanges. No credit card required. Store your key as an environment variable, not in the notebook itself.</p>
-        </section>
+<span class="muted"># {"key": "ho_free_...", "plan": "free", "requests_per_day": 500}</span></span></pre>
+                    <p class="muted small">Free keys allow 500 requests/day across all 28 exchanges. No credit card required. Store your key as an environment variable, not in the notebook itself.</p>
+                </section>
 
-        <!-- Step 3: Basic usage -->
-        <section class="mb-10">
-            <div class="flex items-center gap-3 mb-4">
-                <span class="step-num">3</span>
-                <h2 class="text-xl font-bold text-white">Check market status</h2>
-            </div>
-            <p class="text-sm text-slate-400 mb-3">Fetch a signed receipt and verify it in 3 lines:</p>
-            <pre><span style="color:#f8fafc">import os
+                <section>
+                    <h2><span class="step-n">3</span> Check market status</h2>
+                    <p>Fetch a signed receipt and verify it in 3 lines:</p>
+                    <pre><span>import os
 from headless_oracle import OracleClient, verify, VerificationError
 
-<span style="color:#94a3b8"># In DataCamp workspaces, use environment variables for secrets</span>
+<span class="muted"># In DataCamp workspaces, use environment variables for secrets</span>
 oracle = OracleClient(api_key=os.environ["ORACLE_KEY"])
 
-receipt = oracle.get_status("XNYS")   <span style="color:#94a3b8"># NYSE</span>
-print(f"NYSE is: {receipt['status']}")  <span style="color:#94a3b8"># OPEN or CLOSED</span>
+receipt = oracle.get_status("XNYS")   <span class="muted"># NYSE</span>
+print(f"NYSE is: {receipt['status']}")  <span class="muted"># OPEN or CLOSED</span>
 
-<span style="color:#94a3b8"># Verify the Ed25519 signature — don't skip this</span>
+<span class="muted"># Verify the Ed25519 signature — don't skip this</span>
 verify(receipt)
 print("✓ Receipt signature verified")</span></pre>
-            <div class="note mt-3 text-sm text-green-300">
-                <strong>Supported MIC codes:</strong> XNYS (NYSE) · XNAS (NASDAQ) · XLON (London) · XJPX (Tokyo) · XPAR (Euronext Paris) · XHKG (Hong Kong) · XSES (Singapore)
-            </div>
-        </section>
+                    <div class="note">
+                        <p><strong>Supported MIC codes:</strong> XNYS (NYSE) · XNAS (NASDAQ) · XLON (London) · XJPX (Tokyo) · XPAR (Euronext Paris) · XHKG (Hong Kong) · XSES (Singapore)</p>
+                    </div>
+                </section>
 
-        <!-- Step 4: Full notebook pattern -->
-        <section class="mb-10">
-            <div class="flex items-center gap-3 mb-4">
-                <span class="step-num">4</span>
-                <h2 class="text-xl font-bold text-white">Safe market analysis notebook</h2>
-            </div>
-            <p class="text-sm text-slate-400 mb-3">A complete notebook pattern — check status first, run analysis only if market is confirmed OPEN:</p>
-            <pre><span style="color:#f8fafc">import os
+                <section>
+                    <h2><span class="step-n">4</span> Safe market analysis notebook</h2>
+                    <p>A complete notebook pattern — check status first, run analysis only if market is confirmed OPEN:</p>
+                    <pre><span>import os
 import pandas as pd
 from headless_oracle import OracleClient, verify, VerificationError
 
@@ -166,7 +141,7 @@ def safe_market_check(mic: str) -> dict:
     """
     try:
         receipt = oracle.get_status(mic)
-        verify(receipt)                   <span style="color:#94a3b8"># raises VerificationError if invalid</span>
+        verify(receipt)                   <span class="muted"># raises VerificationError if invalid</span>
         is_open = receipt["status"] == "OPEN"
         return {
             "mic": mic,
@@ -183,7 +158,7 @@ def safe_market_check(mic: str) -> dict:
                 "reason": f"Oracle error: {e}", "expires_at": None}
 
 
-<span style="color:#94a3b8"># ── Check all exchanges ────────────────────────────────────────────────────</span>
+<span class="muted"># ── Check all exchanges ────────────────────────────────────────────────────</span>
 
 results = [safe_market_check(mic) for mic in EXCHANGES]
 df = pd.DataFrame(results)
@@ -194,7 +169,7 @@ display(df[["mic", "status", "safe", "reason"]].style.applymap(
 ))
 
 
-<span style="color:#94a3b8"># ── Gate your analysis on verified OPEN markets ───────────────────────────</span>
+<span class="muted"># ── Gate your analysis on verified OPEN markets ───────────────────────────</span>
 
 open_markets = [r["mic"] for r in results if r["safe"]]
 
@@ -202,19 +177,15 @@ if not open_markets:
     print("⛔ No markets currently open. Analysis halted.")
 else:
     print(f"✓ Running analysis for open markets: {', '.join(open_markets)}")
-    <span style="color:#94a3b8"># --- your analysis code goes here ---</span>
+    <span class="muted"># --- your analysis code goes here ---</span>
     for mic in open_markets:
         print(f"  → Fetching data for {mic}...")</span></pre>
-        </section>
+                </section>
 
-        <!-- Step 5: Schedule check -->
-        <section class="mb-10">
-            <div class="flex items-center gap-3 mb-4">
-                <span class="step-num">5</span>
-                <h2 class="text-xl font-bold text-white">Get the market schedule</h2>
-            </div>
-            <p class="text-sm text-slate-400 mb-3">No auth required for schedule queries — useful for planning notebook runs:</p>
-            <pre><span style="color:#f8fafc">import requests
+                <section>
+                    <h2><span class="step-n">5</span> Get the market schedule</h2>
+                    <p>No auth required for schedule queries — useful for planning notebook runs:</p>
+                    <pre><span>import requests
 from datetime import datetime, timezone
 
 def get_schedule(mic: str) -> dict:
@@ -230,66 +201,50 @@ print(f"NYSE next open:  {nyse.get('next_open', 'already open')}")
 print(f"NYSE next close: {nyse.get('next_close', 'N/A')}")
 print(f"Timezone:        {nyse['timezone']}")
 print(f"Holiday?         {nyse.get('is_holiday', False)}")</span></pre>
-        </section>
+                </section>
 
-        <!-- x402 section -->
-        <section class="mb-10">
-            <h2 class="text-xl font-bold text-white mb-4">x402 Micropayments (autonomous agents)</h2>
-            <p class="text-sm text-slate-400 mb-4">
-                If you're building autonomous agent notebooks that need to make API calls without a pre-provisioned key, Headless Oracle supports <a href="/docs/x402-payments" class="text-blue-400 hover:text-blue-300">x402 micropayments</a>. Free tier keys automatically handle 402 responses — or agents can pay 0.001 USDC per request on Base mainnet.
-            </p>
-            <pre><span style="color:#f8fafc"><span style="color:#94a3b8"># Free tier: 500 req/day, no payment needed</span>
-<span style="color:#94a3b8"># After the limit: agent pays per-request via x402 (0.001 USDC on Base)</span>
+                <section>
+                    <h2>x402 Micropayments (autonomous agents)</h2>
+                    <p>If you're building autonomous agent notebooks that need to make API calls without a pre-provisioned key, Headless Oracle supports <a href="/docs/x402-payments">x402 micropayments</a>. Free tier keys automatically handle 402 responses — or agents can pay 0.001 USDC per request on Base mainnet.</p>
+                    <pre><span><span class="muted"># Free tier: 500 req/day, no payment needed</span>
+<span class="muted"># After the limit: agent pays per-request via x402 (0.001 USDC on Base)</span>
 
 oracle = OracleClient(api_key="ho_free_your_key_here")
-receipt = oracle.get_status("XNYS")   <span style="color:#94a3b8"># auto-handles 429 / 402 if configured</span></span></pre>
-        </section>
+receipt = oracle.get_status("XNYS")   <span class="muted"># auto-handles 429 / 402 if configured</span></span></pre>
+                </section>
 
-        <!-- Important notes -->
-        <section class="mb-10">
-            <h2 class="text-xl font-bold text-white mb-4">Important</h2>
-            <div class="space-y-3 text-sm">
-                <div class="warn">
-                    <strong class="text-red-300">Always call <code>verify(receipt)</code>.</strong>
-                    <span class="text-slate-300 ml-1">The receipt is Ed25519-signed by the Oracle. Calling <code>verify()</code> confirms the signature and checks the 60-second TTL. A receipt that arrived over HTTP but fails verification must be treated as untrusted.</span>
-                </div>
-                <div class="warn">
-                    <strong class="text-red-300">Never store receipts across notebook runs.</strong>
-                    <span class="text-slate-300 ml-1">Receipts expire after 60 seconds. Fetch a fresh receipt at the start of each execution — do not pickle or cache them between sessions.</span>
-                </div>
-                <div class="note">
-                    <strong class="text-green-300">UNKNOWN = CLOSED.</strong>
-                    <span class="text-slate-300 ml-1">If <code>status == "UNKNOWN"</code>, the Oracle's signing infrastructure detected an internal error. Always treat UNKNOWN as CLOSED. The <code>safe_market_check()</code> function above handles this correctly.</span>
-                </div>
-                <div class="note">
-                    <strong class="text-green-300">Store keys in environment variables.</strong>
-                    <span class="text-slate-300 ml-1">In DataCamp workspaces, use the Workspace environment variables panel to set <code>ORACLE_KEY</code>. Never hardcode keys in notebook cells.</span>
-                </div>
-            </div>
-        </section>
+                <section>
+                    <h2>Important</h2>
+                    <div class="note">
+                        <p><strong>Always call <code>verify(receipt)</code>.</strong>
+                        The receipt is Ed25519-signed by the Oracle. Calling <code>verify()</code> confirms the signature and checks the 60-second TTL. A receipt that arrived over HTTP but fails verification must be treated as untrusted.</p>
+                    </div>
+                    <div class="note">
+                        <p><strong>Never store receipts across notebook runs.</strong>
+                        Receipts expire after 60 seconds. Fetch a fresh receipt at the start of each execution — do not pickle or cache them between sessions.</p>
+                    </div>
+                    <div class="note">
+                        <p><strong>UNKNOWN = CLOSED.</strong>
+                        If <code>status == "UNKNOWN"</code>, the Oracle's signing infrastructure detected an internal error. Always treat UNKNOWN as CLOSED. The <code>safe_market_check()</code> function above handles this correctly.</p>
+                    </div>
+                    <div class="note">
+                        <p><strong>Store keys in environment variables.</strong>
+                        In DataCamp workspaces, use the Workspace environment variables panel to set <code>ORACLE_KEY</code>. Never hardcode keys in notebook cells.</p>
+                    </div>
+                </section>
 
-        <!-- Resources -->
-        <section class="mb-10 border-t border-slate-800 pt-8">
-            <h2 class="text-xl font-bold text-white mb-4">Resources</h2>
-            <div class="grid sm:grid-cols-2 gap-3 text-sm">
-                <a href="/docs" class="glass rounded-lg p-4 hover:bg-white/5 transition">
-                    <div class="text-white font-semibold mb-1">API Reference</div>
-                    <div class="text-slate-400 text-xs">All endpoints, response schemas, authentication</div>
-                </a>
-                <a href="/docs/x402-payments" class="glass rounded-lg p-4 hover:bg-white/5 transition">
-                    <div class="text-white font-semibold mb-1">x402 Payments Guide</div>
-                    <div class="text-xs text-slate-400">Agent-native micropayments on Base mainnet</div>
-                </a>
-                <a href="https://pypi.org/project/headless-oracle/" target="_blank" rel="noopener" class="glass rounded-lg p-4 hover:bg-white/5 transition">
-                    <div class="text-white font-semibold mb-1">PyPI: headless-oracle</div>
-                    <div class="text-xs text-slate-400">Python SDK — <code>pip install headless-oracle</code></div>
-                </a>
-                <a href="/pricing" class="glass rounded-lg p-4 hover:bg-white/5 transition">
-                    <div class="text-white font-semibold mb-1">Pricing</div>
-                    <div class="text-xs text-slate-400">Free tier: 500 req/day. No credit card required.</div>
-                </a>
+                <section>
+                    <h2>Resources</h2>
+                    <ul class="links">
+                        <li><a href="/docs">API Reference</a><br><span class="muted small">All endpoints, response schemas, authentication</span></li>
+                        <li><a href="/docs/x402-payments">x402 Payments Guide</a><br><span class="muted small">Agent-native micropayments on Base mainnet</span></li>
+                        <li><a href="https://pypi.org/project/headless-oracle/" target="_blank" rel="noopener">PyPI: headless-oracle</a><br><span class="muted small">Python SDK — <code>pip install headless-oracle</code></span></li>
+                        <li><a href="/pricing">Pricing</a><br><span class="muted small">Free tier: 500 req/day. No credit card required.</span></li>
+                    </ul>
+                </section>
+
             </div>
-        </section>
+        </div>
 
     </main>
 

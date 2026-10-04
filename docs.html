@@ -18,27 +18,31 @@
     <link rel="canonical" href="https://headlessoracle.com/docs">
     <link rel="alternate" type="application/json" href="/openapi.json" title="OpenAPI 3.1 specification">
     <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt — machine-readable API summary">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <meta name="color-scheme" content="light dark">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/site.css">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #cbd5e1; }
-        .glass { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(51, 65, 85, 0.5); }
-        pre { background: #1e293b; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; font-family: 'Menlo', monospace; font-size: 0.85rem; border: 1px solid #334155; }
-        code { color: #60a5fa; }
-        h2 { color: white; font-weight: 700; margin-top: 2rem; margin-bottom: 1rem; font-size: 1.5rem; }
-        h3 { color: #e2e8f0; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.1rem; }
-        .badge { background: #1e293b; color: #60a5fa; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; border: 1px solid #334155; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        th { text-align: left; padding: 8px 12px; color: #94a3b8; font-weight: 600; border-bottom: 1px solid #334155; }
-        td { padding: 8px 12px; border-bottom: 1px solid #1e293b; }
-        tr:hover td { background: #1e293b; }
+        /* The contents column comes first in the source (it did before the restyle);
+           on wide screens it spans the head and the text, on narrow ones it sits under the H1. */
+        .docs-grid { padding-top: clamp(40px, 6vw, 72px); }
+        .docs-grid > .docs-head { padding: 0 0 8px; }
+        .docs-grid > .docs-head, .docs-grid > .doc { grid-column: 2; }
+        .docs-grid > .toc { grid-row: 1 / span 2; }
+        @media (max-width: 860px) {
+            .docs-grid > .docs-head, .docs-grid > .doc, .docs-grid > .toc { grid-column: 1; grid-row: auto; }
+            .docs-grid > .docs-head { order: -1; }
+        }
+        .prompt-list { list-style: none; padding-left: 0 !important; }
+        .nowrap { white-space: nowrap; }
+        .doc .grid, .doc .stack { margin: 16px 0 24px; }
+        .panel p { margin: 0 0 6px; }
+        .wrap-any { overflow-wrap: anywhere; }
+        .label.tight { margin: 0; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body>
 
     <a class="skip" href="#main">Skip to content</a>
 
@@ -47,93 +51,110 @@
     <a class="wordmark" href="/">Headless Oracle</a>
     <nav aria-label="Main">
       <ul class="nav-list nav-wide">
-        <li><a href="C:/Program Files/Git/#how">Witness</a></li>
+        <li><a href="/witness">Witness</a></li>
         <li><a href="/verify">Verify</a></li>
         <li><a href="/pricing">Pricing</a></li>
         <li><a href="/docs" aria-current="page">Docs</a></li>
-        <li><a href="C:/Program Files/Git/#auditors">For auditors</a></li>
+        <li><a href="/auditors">For auditors</a></li>
         <li><a href="https://github.com/LembaGang">GitHub</a></li>
       </ul>
       <details class="nav-small">
         <summary>Menu</summary>
         <ul>
-          <li><a href="C:/Program Files/Git/#how">Witness</a></li>
+          <li><a href="/witness">Witness</a></li>
           <li><a href="/verify">Verify</a></li>
           <li><a href="/pricing">Pricing</a></li>
           <li><a href="/docs" aria-current="page">Docs</a></li>
-          <li><a href="C:/Program Files/Git/#auditors">For auditors</a></li>
+          <li><a href="/auditors">For auditors</a></li>
           <li><a href="https://github.com/LembaGang">GitHub</a></li>
         </ul>
       </details>
     </nav>
   </div>
 </header>
+<div class="crosslink">
+  <div class="wrap">
+    <span>Market-state receipts: <a href="/docs">Docs</a> · <a href="/status">Status</a> · <a href="/dashboard">Dashboard</a> · <a href="/halt-gate">Halt gate</a> · <a href="/standards">Standards</a></span>
+    <span>For agent logs your auditor can check, see <a href="/witness">Chirindo Witness</a>.</span>
+  </div>
+</div>
 
-    <main id="main" class="flex-grow max-w-5xl mx-auto px-6 py-24 w-full grid grid-cols-1 md:grid-cols-4 gap-12">
 
-        <aside class="hidden md:block col-span-1 border-r border-slate-800 pr-6 h-[calc(100vh-100px)] sticky top-24">
-            <div class="space-y-4 text-sm font-medium text-slate-400">
-                <a href="#complexity"   class="block hover:text-white transition">Edge Cases</a>
-                <a href="#quickstart"   class="block hover:text-white transition">Quick Start</a>
-                <a href="#exchanges"    class="block hover:text-white transition">Supported Exchanges</a>
-                <a href="#endpoints"    class="block hover:text-white transition">Endpoints</a>
-                <a href="#health"       class="block pl-4 hover:text-white transition text-xs">↳ /v5/health</a>
-                <a href="#batch"        class="block pl-4 hover:text-white transition text-xs">↳ /v5/batch</a>
-                <a href="#schema"       class="block hover:text-white transition">Response Schema</a>
-                <a href="#verification" class="block hover:text-white transition">Verification Logic</a>
-                <a href="#fail-closed"  class="block hover:text-white transition">Fail-Closed Architecture</a>
-                <a href="#overrides"    class="block hover:text-white transition">Circuit Breaker Overrides</a>
-                <a href="#mcp"          class="block hover:text-white transition">MCP Integration</a>
-                <a href="#billing"      class="block hover:text-white transition">API Keys &amp; Billing</a>
-                <a href="#standards"   class="block hover:text-white transition">Open Standards</a>
-                <a href="/docs/quickstart" class="block hover:text-white transition text-blue-400">MCP Setup →</a>
-                <a href="/docs/x402-payments" class="block hover:text-white transition text-blue-400">x402 Payments →</a>
+    <main id="main">
+
+    <div class="wrap page-body">
+      <div class="doc-grid docs-grid">
+
+        <nav class="toc" aria-label="On this page">
+            <ul>
+                <li><a href="#complexity">Edge Cases</a></li>
+                <li><a href="#quickstart">Quick Start</a></li>
+                <li><a href="#exchanges">Supported Exchanges</a></li>
+                <li><a href="#endpoints">Endpoints</a></li>
+                <li class="toc-sub"><a href="#health">↳ /v5/health</a></li>
+                <li class="toc-sub"><a href="#batch">↳ /v5/batch</a></li>
+                <li><a href="#schema">Response Schema</a></li>
+                <li><a href="#verification">Verification Logic</a></li>
+                <li><a href="#fail-closed">Fail-Closed Architecture</a></li>
+                <li><a href="#overrides">Circuit Breaker Overrides</a></li>
+                <li><a href="#mcp">MCP Integration</a></li>
+                <li><a href="#billing">API Keys &amp; Billing</a></li>
+                <li><a href="#standards">Open Standards</a></li>
+                <li><a href="/docs/quickstart">MCP Setup →</a></li>
+                <li><a href="/docs/x402-payments">x402 Payments →</a></li>
+            </ul>
+        </nav>
+
+        <div class="page-head docs-head">
+            <h1>Integration Guide</h1>
+            <div class="lede">
+                <p>Headless Oracle provides a cryptographically verifiable defensive execution layer for autonomous agents operating across global markets.</p>
             </div>
-        </aside>
+        </div>
 
-        <div class="col-span-1 md:col-span-3">
-
-            <h1 class="text-4xl font-bold text-white mb-6">Integration Guide</h1>
-            <p class="text-lg text-slate-400 mb-8">
-                Headless Oracle provides a cryptographically verifiable defensive execution layer for autonomous agents operating across global markets.
-            </p>
+        <div class="doc">
 
             <!-- EDGE CASES -->
-            <section id="complexity" class="mb-12 border-b border-slate-800 pb-12">
+            <section id="complexity">
                 <h2>28 exchanges. Global 24/7 coverage.</h2>
-                <p class="text-sm text-slate-400 mb-6">The scheduling complexity a timezone library was not built to solve.</p>
+                <p class="muted">The scheduling complexity a timezone library was not built to solve.</p>
 
-                <div class="flex flex-wrap justify-center gap-3 mb-6">
-                    <div class="glass p-5 rounded-xl text-center w-[calc(50%-6px)] md:w-auto md:flex-1">
-                        <div class="text-3xl font-bold text-white mb-2">67</div>
-                        <div class="text-xs text-slate-400 leading-snug">exchange-specific<br>holidays<br><span class="text-slate-600 text-xs">different per country, non-overlapping</span></div>
+                <div class="grid grid--3">
+                    <div class="panel">
+                        <p class="stat">67</p>
+                        <p class="small">exchange-specific holidays</p>
+                        <p class="small muted">different per country, non-overlapping</p>
                     </div>
-                    <div class="glass p-5 rounded-xl text-center w-[calc(50%-6px)] md:w-auto md:flex-1">
-                        <div class="text-3xl font-bold text-white mb-2">18</div>
-                        <div class="text-xs text-slate-400 leading-snug">early close<br>days<br><span class="text-slate-600 text-xs">NYSE closes at 1:00 PM, not 4:00 PM</span></div>
+                    <div class="panel">
+                        <p class="stat">18</p>
+                        <p class="small">early close days</p>
+                        <p class="small muted">NYSE closes at 1:00 PM, not 4:00 PM</p>
                     </div>
-                    <div class="glass p-5 rounded-xl text-center w-[calc(50%-6px)] md:w-auto md:flex-1">
-                        <div class="text-3xl font-bold text-white mb-2">8</div>
-                        <div class="text-xs text-slate-400 leading-snug">DST<br>transitions<br><span class="text-slate-600 text-xs">incl. 3-week US/EU phantom window</span></div>
+                    <div class="panel">
+                        <p class="stat">8</p>
+                        <p class="small">DST transitions</p>
+                        <p class="small muted">incl. 3-week US/EU phantom window</p>
                     </div>
-                    <div class="glass p-5 rounded-xl text-center w-[calc(50%-6px)] md:w-auto md:flex-1">
-                        <div class="text-3xl font-bold text-white mb-2">490</div>
-                        <div class="text-xs text-slate-400 leading-snug">lunch break<br>sessions<br><span class="text-slate-600 text-xs">Tokyo 11:30–12:30, HK 12:00–13:00</span></div>
+                    <div class="panel">
+                        <p class="stat">490</p>
+                        <p class="small">lunch break sessions</p>
+                        <p class="small muted">Tokyo 11:30–12:30, HK 12:00–13:00</p>
                     </div>
-                    <div class="glass p-5 rounded-xl text-center w-[calc(50%-6px)] md:w-auto md:flex-1">
-                        <div class="text-3xl font-bold text-white mb-2">728</div>
-                        <div class="text-xs text-slate-400 leading-snug">weekend days<br>across 28 venues<br><span class="text-slate-600 text-xs">per calendar year</span></div>
+                    <div class="panel">
+                        <p class="stat">728</p>
+                        <p class="small">weekend days across 28 venues</p>
+                        <p class="small muted">per calendar year</p>
                     </div>
                 </div>
 
-                <div class="p-4 bg-slate-800/40 border border-slate-700/80 rounded-lg mb-8 text-center">
-                    <p class="text-sm font-mono text-slate-300">A timezone library handles zero of these. Headless Oracle handles all of them.</p>
+                <div class="note">
+                    <p class="mono">A timezone library handles zero of these. Headless Oracle handles all of them.</p>
                 </div>
 
                 <h3>Think it's simple?</h3>
-                <p class="text-sm text-slate-500 mb-4">Common assumptions about market schedules, and what the data actually shows.</p>
-                <div class="overflow-x-auto">
-                    <table>
+                <p class="muted">Common assumptions about market schedules, and what the data actually shows.</p>
+                <div class="table-wrap">
+                    <table class="table">
                         <thead>
                             <tr>
                                 <th style="width:38%">What you assume</th>
@@ -142,24 +163,24 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="font-mono text-xs align-top text-slate-300">NYSE closes at 4pm ET</td>
-                                <td class="align-top">Except Good Friday (1pm), day before July 4th (1pm), Christmas Eve (1pm), and emergency halts at any time</td>
+                                <td class="mono">NYSE closes at 4pm ET</td>
+                                <td>Except Good Friday (1pm), day before July 4th (1pm), Christmas Eve (1pm), and emergency halts at any time</td>
                             </tr>
                             <tr>
-                                <td class="font-mono text-xs align-top text-slate-300">Tokyo is open 9am–3pm JST</td>
-                                <td class="align-top">There's a lunch break 11:30–12:30 every trading day. Your bot thinks it's open. It's not.</td>
+                                <td class="mono">Tokyo is open 9am–3pm JST</td>
+                                <td>There's a lunch break 11:30–12:30 every trading day. Your bot thinks it's open. It's not.</td>
                             </tr>
                             <tr>
-                                <td class="font-mono text-xs align-top text-slate-300">"Just use a timezone library"</td>
-                                <td class="align-top">pytz handles DST. It doesn't handle that NYSE closes for Juneteenth but LSE doesn't, or that Hong Kong closes for Lunar New Year but Singapore doesn't.</td>
+                                <td class="mono">"Just use a timezone library"</td>
+                                <td>pytz handles DST. It doesn't handle that NYSE closes for Juneteenth but LSE doesn't, or that Hong Kong closes for Lunar New Year but Singapore doesn't.</td>
                             </tr>
                             <tr>
-                                <td class="font-mono text-xs align-top text-slate-300">"I'll hardcode the holidays"</td>
-                                <td class="align-top">Which year? 2026 holidays differ from 2027. When a holiday falls on a weekend, some exchanges shift to Friday, others Monday, others don't shift.</td>
+                                <td class="mono">"I'll hardcode the holidays"</td>
+                                <td>Which year? 2026 holidays differ from 2027. When a holiday falls on a weekend, some exchanges shift to Friday, others Monday, others don't shift.</td>
                             </tr>
                             <tr>
-                                <td class="font-mono text-xs align-top text-slate-300">"I'll check once at market open"</td>
-                                <td class="align-top">Circuit breaker at 2:47pm. Your cached "OPEN" is now wrong. Your bot trades into a halted market.</td>
+                                <td class="mono">"I'll check once at market open"</td>
+                                <td>Circuit breaker at 2:47pm. Your cached "OPEN" is now wrong. Your bot trades into a halted market.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -167,35 +188,35 @@
             </section>
 
             <!-- QUICK START -->
-            <section id="quickstart" class="mb-12 border-b border-slate-800 pb-12">
+            <section id="quickstart">
                 <h2>Quick Start</h2>
-                <p class="mb-4 text-sm">
-                    Using Claude Code? <a href="/docs/quickstart" class="text-blue-400 hover:text-blue-300 underline">Add Headless Oracle to Claude Code in 3 steps →</a>
-                    Copy one <code class="text-xs bg-slate-800 px-1 rounded">.mcp.json</code> file and your agent has pre-trade verification instantly.
+                <p>
+                    Using Claude Code? <a href="/docs/quickstart">Add Headless Oracle to Claude Code in 3 steps →</a>
+                    Copy one <code>.mcp.json</code> file and your agent has pre-trade verification instantly.
                 </p>
-                <p class="mb-4 text-sm">Try the public demo endpoint instantly — no API key needed:</p>
-                <pre class="text-blue-300">curl https://headlessoracle.com/v5/demo
+                <p>Try the public demo endpoint instantly — no API key needed:</p>
+                <pre>curl https://headlessoracle.com/v5/demo
 
 # Any supported exchange:
 curl "https://headlessoracle.com/v5/demo?mic=XLON"
 curl "https://headlessoracle.com/v5/demo?mic=XJPX"</pre>
-                <p class="mt-4 mb-4 text-sm">For production use, fetch a signed attestation with your API key:</p>
-                <pre class="text-blue-300">curl -X GET "https://headlessoracle.com/v5/status?mic=XNYS" \
+                <p>For production use, fetch a signed attestation with your API key:</p>
+                <pre>curl -X GET "https://headlessoracle.com/v5/status?mic=XNYS" \
      -H "X-Oracle-Key: YOUR_API_KEY"</pre>
-                <p class="mt-4 mb-4 text-sm">Check when the next session opens (no auth required):</p>
-                <pre class="text-blue-300">curl "https://headlessoracle.com/v5/schedule?mic=XNYS"</pre>
-                <p class="mt-4 mb-4 text-sm">Verify Oracle's signing infrastructure is live:</p>
-                <pre class="text-blue-300">curl "https://headlessoracle.com/v5/health"</pre>
+                <p>Check when the next session opens (no auth required):</p>
+                <pre>curl "https://headlessoracle.com/v5/schedule?mic=XNYS"</pre>
+                <p>Verify Oracle's signing infrastructure is live:</p>
+                <pre>curl "https://headlessoracle.com/v5/health"</pre>
             </section>
 
             <!-- SUPPORTED EXCHANGES -->
-            <section id="exchanges" class="mb-12 border-b border-slate-800 pb-12">
+            <section id="exchanges">
                 <h2>Supported Exchanges</h2>
-                <p class="text-sm text-slate-400 mb-4">
+                <p>
                     28 exchanges across 7 regions (including derivatives and 24/7 crypto). All DST transitions are handled server-side using IANA timezone data — no hardcoded UTC offsets.
                 </p>
-                <div class="overflow-x-auto">
-                    <table>
+                <div class="table-wrap">
+                    <table class="table">
                         <thead>
                             <tr>
                                 <th>MIC</th>
@@ -207,206 +228,205 @@ curl "https://headlessoracle.com/v5/demo?mic=XJPX"</pre>
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="font-mono text-blue-400">XNYS</td>
+                                <td class="mono">XNYS</td>
                                 <td>New York Stock Exchange</td>
-                                <td class="font-mono text-xs">09:30 – 16:00</td>
-                                <td class="text-xs text-slate-500">America/New_York</td>
-                                <td class="text-xs text-yellow-500">Mar 8</td>
+                                <td class="mono">09:30 – 16:00</td>
+                                <td class="muted">America/New_York</td>
+                                <td>Mar 8</td>
                             </tr>
                             <tr>
-                                <td class="font-mono text-blue-400">XNAS</td>
+                                <td class="mono">XNAS</td>
                                 <td>NASDAQ</td>
-                                <td class="font-mono text-xs">09:30 – 16:00</td>
-                                <td class="text-xs text-slate-500">America/New_York</td>
-                                <td class="text-xs text-yellow-500">Mar 8</td>
+                                <td class="mono">09:30 – 16:00</td>
+                                <td class="muted">America/New_York</td>
+                                <td>Mar 8</td>
                             </tr>
                             <tr>
-                                <td class="font-mono text-blue-400">XBSP</td>
+                                <td class="mono">XBSP</td>
                                 <td>B3 (São Paulo Stock Exchange)</td>
-                                <td class="font-mono text-xs">10:00 – 17:00</td>
-                                <td class="text-xs text-slate-500">America/Sao_Paulo</td>
-                                <td class="text-xs text-yellow-500">Brazil (Nov)</td>
+                                <td class="mono">10:00 – 17:00</td>
+                                <td class="muted">America/Sao_Paulo</td>
+                                <td>Brazil (Nov)</td>
                             </tr>
                             <tr>
-                                <td class="font-mono text-blue-400">XLON</td>
+                                <td class="mono">XLON</td>
                                 <td>London Stock Exchange</td>
-                                <td class="font-mono text-xs">08:00 – 16:30</td>
-                                <td class="text-xs text-slate-500">Europe/London</td>
-                                <td class="text-xs text-yellow-500">Mar 29</td>
+                                <td class="mono">08:00 – 16:30</td>
+                                <td class="muted">Europe/London</td>
+                                <td>Mar 29</td>
                             </tr>
                             <tr>
-                                <td class="font-mono text-blue-400">XPAR</td>
+                                <td class="mono">XPAR</td>
                                 <td>Euronext Paris</td>
-                                <td class="font-mono text-xs">09:00 – 17:30</td>
-                                <td class="text-xs text-slate-500">Europe/Paris</td>
-                                <td class="text-xs text-yellow-500">Mar 29</td>
+                                <td class="mono">09:00 – 17:30</td>
+                                <td class="muted">Europe/Paris</td>
+                                <td>Mar 29</td>
                             </tr>
                             <tr>
-                                <td class="font-mono text-blue-400">XSWX</td>
+                                <td class="mono">XSWX</td>
                                 <td>SIX Swiss Exchange</td>
-                                <td class="font-mono text-xs">09:00 – 17:30</td>
-                                <td class="text-xs text-slate-500">Europe/Zurich</td>
-                                <td class="text-xs text-yellow-500">Mar 29</td>
+                                <td class="mono">09:00 – 17:30</td>
+                                <td class="muted">Europe/Zurich</td>
+                                <td>Mar 29</td>
                             </tr>
                             <tr>
-                                <td class="font-mono text-blue-400">XMIL</td>
+                                <td class="mono">XMIL</td>
                                 <td>Borsa Italiana (Milan)</td>
-                                <td class="font-mono text-xs">09:00 – 17:30</td>
-                                <td class="text-xs text-slate-500">Europe/Rome</td>
-                                <td class="text-xs text-yellow-500">Mar 29</td>
+                                <td class="mono">09:00 – 17:30</td>
+                                <td class="muted">Europe/Rome</td>
+                                <td>Mar 29</td>
                             </tr>
                             <tr>
-                                <td class="font-mono text-blue-400">XHEL</td>
+                                <td class="mono">XHEL</td>
                                 <td>Nasdaq Helsinki</td>
-                                <td class="font-mono text-xs">10:00 – 18:30</td>
-                                <td class="text-xs text-slate-500">Europe/Helsinki</td>
-                                <td class="text-xs text-yellow-500">Mar 29</td>
+                                <td class="mono">10:00 – 18:30</td>
+                                <td class="muted">Europe/Helsinki</td>
+                                <td>Mar 29</td>
                             </tr>
                             <tr>
-                                <td class="font-mono text-blue-400">XSTO</td>
+                                <td class="mono">XSTO</td>
                                 <td>Nasdaq Stockholm</td>
-                                <td class="font-mono text-xs">09:00 – 17:30</td>
-                                <td class="text-xs text-slate-500">Europe/Stockholm</td>
-                                <td class="text-xs text-yellow-500">Mar 29</td>
+                                <td class="mono">09:00 – 17:30</td>
+                                <td class="muted">Europe/Stockholm</td>
+                                <td>Mar 29</td>
                             </tr>
                             <tr>
-                                <td class="font-mono text-blue-400">XIST</td>
+                                <td class="mono">XIST</td>
                                 <td>Borsa Istanbul</td>
-                                <td class="font-mono text-xs">10:00 – 18:00</td>
-                                <td class="text-xs text-slate-500">Europe/Istanbul</td>
-                                <td class="text-xs text-yellow-500">Mar 29</td>
+                                <td class="mono">10:00 – 18:00</td>
+                                <td class="muted">Europe/Istanbul</td>
+                                <td>Mar 29</td>
                             </tr>
                             <tr>
-                                <td class="font-mono text-blue-400">XSAU</td>
-                                <td>Saudi Exchange (Tadawul) <span class="text-slate-500 text-xs">Sun–Thu</span></td>
-                                <td class="font-mono text-xs">10:00 – 15:00</td>
-                                <td class="text-xs text-slate-500">Asia/Riyadh</td>
-                                <td class="text-xs text-slate-500">None</td>
+                                <td class="mono">XSAU</td>
+                                <td>Saudi Exchange (Tadawul) <span class="muted">Sun–Thu</span></td>
+                                <td class="mono">10:00 – 15:00</td>
+                                <td class="muted">Asia/Riyadh</td>
+                                <td class="muted">None</td>
                             </tr>
                             <tr>
-                                <td class="font-mono text-blue-400">XDFM</td>
-                                <td>Dubai Financial Market <span class="text-slate-500 text-xs">Sun–Thu</span></td>
-                                <td class="font-mono text-xs">10:00 – 14:00</td>
-                                <td class="text-xs text-slate-500">Asia/Dubai</td>
-                                <td class="text-xs text-slate-500">None</td>
+                                <td class="mono">XDFM</td>
+                                <td>Dubai Financial Market <span class="muted">Sun–Thu</span></td>
+                                <td class="mono">10:00 – 14:00</td>
+                                <td class="muted">Asia/Dubai</td>
+                                <td class="muted">None</td>
                             </tr>
                             <tr>
-                                <td class="font-mono text-blue-400">XJSE</td>
+                                <td class="mono">XJSE</td>
                                 <td>Johannesburg Stock Exchange</td>
-                                <td class="font-mono text-xs">09:00 – 17:00</td>
-                                <td class="text-xs text-slate-500">Africa/Johannesburg</td>
-                                <td class="text-xs text-slate-500">None</td>
+                                <td class="mono">09:00 – 17:00</td>
+                                <td class="muted">Africa/Johannesburg</td>
+                                <td class="muted">None</td>
                             </tr>
                             <tr>
-                                <td class="font-mono text-blue-400">XSHG</td>
+                                <td class="mono">XSHG</td>
                                 <td>Shanghai Stock Exchange</td>
-                                <td class="font-mono text-xs">09:30 – 15:00 <span class="text-slate-500">(lunch 11:30–13:00)</span></td>
-                                <td class="text-xs text-slate-500">Asia/Shanghai</td>
-                                <td class="text-xs text-slate-500">None</td>
+                                <td class="mono">09:30 – 15:00 <span class="muted">(lunch 11:30–13:00)</span></td>
+                                <td class="muted">Asia/Shanghai</td>
+                                <td class="muted">None</td>
                             </tr>
                             <tr>
-                                <td class="font-mono text-blue-400">XSHE</td>
+                                <td class="mono">XSHE</td>
                                 <td>Shenzhen Stock Exchange</td>
-                                <td class="font-mono text-xs">09:30 – 15:00 <span class="text-slate-500">(lunch 11:30–13:00)</span></td>
-                                <td class="text-xs text-slate-500">Asia/Shanghai</td>
-                                <td class="text-xs text-slate-500">None</td>
+                                <td class="mono">09:30 – 15:00 <span class="muted">(lunch 11:30–13:00)</span></td>
+                                <td class="muted">Asia/Shanghai</td>
+                                <td class="muted">None</td>
                             </tr>
                             <tr>
-                                <td class="font-mono text-blue-400">XHKG</td>
+                                <td class="mono">XHKG</td>
                                 <td>Hong Kong Exchanges and Clearing</td>
-                                <td class="font-mono text-xs">09:30 – 16:00 <span class="text-slate-500">(lunch 12:00–13:00)</span></td>
-                                <td class="text-xs text-slate-500">Asia/Hong_Kong</td>
-                                <td class="text-xs text-slate-500">None</td>
+                                <td class="mono">09:30 – 16:00 <span class="muted">(lunch 12:00–13:00)</span></td>
+                                <td class="muted">Asia/Hong_Kong</td>
+                                <td class="muted">None</td>
                             </tr>
                             <tr>
-                                <td class="font-mono text-blue-400">XJPX</td>
+                                <td class="mono">XJPX</td>
                                 <td>Japan Exchange Group (Tokyo)</td>
-                                <td class="font-mono text-xs">09:00 – 15:30 <span class="text-slate-500">(lunch 11:30–12:30)</span></td>
-                                <td class="text-xs text-slate-500">Asia/Tokyo</td>
-                                <td class="text-xs text-slate-500">None</td>
+                                <td class="mono">09:00 – 15:30 <span class="muted">(lunch 11:30–12:30)</span></td>
+                                <td class="muted">Asia/Tokyo</td>
+                                <td class="muted">None</td>
                             </tr>
                             <tr>
-                                <td class="font-mono text-blue-400">XKRX</td>
+                                <td class="mono">XKRX</td>
                                 <td>Korea Exchange (Seoul)</td>
-                                <td class="font-mono text-xs">09:00 – 15:30</td>
-                                <td class="text-xs text-slate-500">Asia/Seoul</td>
-                                <td class="text-xs text-slate-500">None</td>
+                                <td class="mono">09:00 – 15:30</td>
+                                <td class="muted">Asia/Seoul</td>
+                                <td class="muted">None</td>
                             </tr>
                             <tr>
-                                <td class="font-mono text-blue-400">XBOM</td>
+                                <td class="mono">XBOM</td>
                                 <td>BSE Ltd (Bombay Stock Exchange)</td>
-                                <td class="font-mono text-xs">09:15 – 15:30</td>
-                                <td class="text-xs text-slate-500">Asia/Kolkata</td>
-                                <td class="text-xs text-slate-500">None</td>
+                                <td class="mono">09:15 – 15:30</td>
+                                <td class="muted">Asia/Kolkata</td>
+                                <td class="muted">None</td>
                             </tr>
                             <tr>
-                                <td class="font-mono text-blue-400">XNSE</td>
+                                <td class="mono">XNSE</td>
                                 <td>National Stock Exchange of India</td>
-                                <td class="font-mono text-xs">09:15 – 15:30</td>
-                                <td class="text-xs text-slate-500">Asia/Kolkata</td>
-                                <td class="text-xs text-slate-500">None</td>
+                                <td class="mono">09:15 – 15:30</td>
+                                <td class="muted">Asia/Kolkata</td>
+                                <td class="muted">None</td>
                             </tr>
                             <tr>
-                                <td class="font-mono text-blue-400">XSES</td>
+                                <td class="mono">XSES</td>
                                 <td>Singapore Exchange</td>
-                                <td class="font-mono text-xs">09:00 – 17:00</td>
-                                <td class="text-xs text-slate-500">Asia/Singapore</td>
-                                <td class="text-xs text-slate-500">None</td>
+                                <td class="mono">09:00 – 17:00</td>
+                                <td class="muted">Asia/Singapore</td>
+                                <td class="muted">None</td>
                             </tr>
                             <tr>
-                                <td class="font-mono text-blue-400">XASX</td>
+                                <td class="mono">XASX</td>
                                 <td>Australian Securities Exchange (Sydney)</td>
-                                <td class="font-mono text-xs">10:00 – 16:00</td>
-                                <td class="text-xs text-slate-500">Australia/Sydney</td>
-                                <td class="text-xs text-yellow-500">Oct (AU)</td>
+                                <td class="mono">10:00 – 16:00</td>
+                                <td class="muted">Australia/Sydney</td>
+                                <td>Oct (AU)</td>
                             </tr>
                             <tr>
-                                <td class="font-mono text-blue-400">XNZE</td>
+                                <td class="mono">XNZE</td>
                                 <td>New Zealand Exchange (Auckland)</td>
-                                <td class="font-mono text-xs">10:00 – 16:45</td>
-                                <td class="text-xs text-slate-500">Pacific/Auckland</td>
-                                <td class="text-xs text-yellow-500">Oct (NZ)</td>
+                                <td class="mono">10:00 – 16:45</td>
+                                <td class="muted">Pacific/Auckland</td>
+                                <td>Oct (NZ)</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <p class="text-xs text-slate-500 mt-3">All times are local to the exchange. Retrieve the full exchange directory programmatically at <code>/v5/exchanges</code>.</p>
+                <p class="small muted">All times are local to the exchange. Retrieve the full exchange directory programmatically at <code>/v5/exchanges</code>.</p>
 
-                <div class="mt-6 p-4 bg-yellow-900/20 border border-yellow-800/40 rounded-lg">
-                    <p class="text-sm text-yellow-300 font-semibold mb-1">2026 DST Risk Events</p>
-                    <p class="text-xs text-slate-400">Any bot using hardcoded UTC offsets will compute incorrect hours after these dates:</p>
-                    <ul class="text-xs text-slate-400 mt-2 space-y-1">
-                        <li><span class="text-yellow-400 font-mono">Mar 8</span> — US clocks spring forward (EST → EDT). Affects XNYS, XNAS.</li>
-                        <li><span class="text-yellow-400 font-mono">Mar 29</span> — UK/EU clocks spring forward (GMT/CET → BST/CEST). Affects XLON, XPAR.</li>
-                        <li><span class="text-yellow-400 font-mono">Oct 25</span> — UK/EU clocks fall back. Affects XLON, XPAR.</li>
-                        <li><span class="text-yellow-400 font-mono">Nov 1</span> — US clocks fall back. Affects XNYS, XNAS.</li>
+                <div class="note">
+                    <p class="note-title">2026 DST Risk Events</p>
+                    <p>Any bot using hardcoded UTC offsets will compute incorrect hours after these dates:</p>
+                    <ul>
+                        <li><span class="mono">Mar 8</span> — US clocks spring forward (EST → EDT). Affects XNYS, XNAS.</li>
+                        <li><span class="mono">Mar 29</span> — UK/EU clocks spring forward (GMT/CET → BST/CEST). Affects XLON, XPAR.</li>
+                        <li><span class="mono">Oct 25</span> — UK/EU clocks fall back. Affects XLON, XPAR.</li>
+                        <li><span class="mono">Nov 1</span> — US clocks fall back. Affects XNYS, XNAS.</li>
                     </ul>
-                    <p class="text-xs text-slate-500 mt-2">Headless Oracle handles all transitions automatically.</p>
+                    <p class="muted">Headless Oracle handles all transitions automatically.</p>
                 </div>
             </section>
 
             <!-- ENDPOINTS -->
-            <section id="endpoints" class="mb-12 border-b border-slate-800 pb-12">
+            <section id="endpoints">
                 <h2>Available Endpoints</h2>
-                <div class="space-y-8">
 
                     <div>
-                        <h3 class="text-blue-400">GET /v5/status <span class="text-xs text-slate-500 ml-2">Authenticated</span></h3>
-                        <p class="text-sm mb-2">Primary endpoint for production market status checks.</p>
+                        <h3><code>GET /v5/status</code> <span class="label">Authenticated</span></h3>
+                        <p>Primary endpoint for production market status checks.</p>
                         <pre>Header: X-Oracle-Key: YOUR_API_KEY
 Query:  mic=XNYS  (or any of the 28 supported MIC codes — see /v5/exchanges)</pre>
                     </div>
 
                     <div>
-                        <h3 class="text-blue-400">GET /v5/demo <span class="text-xs text-slate-500 ml-2">Public</span></h3>
-                        <p class="text-sm mb-2">Returns a signed receipt for any exchange. No auth required. Use this for integration testing and verification development.</p>
+                        <h3><code>GET /v5/demo</code> <span class="label">Public</span></h3>
+                        <p>Returns a signed receipt for any exchange. No auth required. Use this for integration testing and verification development.</p>
                         <pre>Query: mic=XNYS  (optional, defaults to XNYS)</pre>
                     </div>
 
                     <div>
-                        <h3 class="text-blue-400">GET /v5/schedule <span class="text-xs text-slate-500 ml-2">Public</span></h3>
-                        <p class="text-sm mb-2">Returns the next scheduled open and close times for any exchange. Includes <code>lunch_break</code> for exchanges with midday breaks (XJPX, XHKG). Does not reflect real-time halts or manual overrides.</p>
-                        <pre class="text-xs">{
+                        <h3><code>GET /v5/schedule</code> <span class="label">Public</span></h3>
+                        <p>Returns the next scheduled open and close times for any exchange. Includes <code>lunch_break</code> for exchanges with midday breaks (XJPX, XHKG). Does not reflect real-time halts or manual overrides.</p>
+                        <pre>{
   "mic": "XJPX",
   "name": "Japan Exchange Group (Tokyo)",
   "timezone": "Asia/Tokyo",
@@ -423,14 +443,14 @@ Query:  mic=XNYS  (or any of the 28 supported MIC codes — see /v5/exchanges)</
                     </div>
 
                     <div>
-                        <h3 class="text-blue-400">GET /v5/exchanges <span class="text-xs text-slate-500 ml-2">Public</span></h3>
-                        <p class="text-sm mb-2">Returns the full directory of supported exchanges with MIC codes, names, and timezones.</p>
+                        <h3><code>GET /v5/exchanges</code> <span class="label">Public</span></h3>
+                        <p>Returns the full directory of supported exchanges with MIC codes, names, and timezones.</p>
                     </div>
 
                     <div>
-                        <h3 class="text-blue-400">GET /v5/keys <span class="text-xs text-slate-500 ml-2">Public</span></h3>
-                        <p class="text-sm mb-2">Returns the current Ed25519 public key registry and the canonical payload specification for independent signature verification.</p>
-                        <pre class="text-xs">{
+                        <h3><code>GET /v5/keys</code> <span class="label">Public</span></h3>
+                        <p>Returns the current Ed25519 public key registry and the canonical payload specification for independent signature verification.</p>
+                        <pre>{
   "keys": [{
     "key_id":      "key_2026_v1",
     "algorithm":   "Ed25519",
@@ -447,17 +467,17 @@ Query:  mic=XNYS  (or any of the 28 supported MIC codes — see /v5/exchanges)</
                     </div>
 
                     <div id="batch">
-                        <h3 class="text-blue-400">GET /v5/batch <span class="text-xs text-slate-500 ml-2">Authenticated</span></h3>
-                        <p class="text-sm mb-2">Fetch signed status receipts for multiple exchanges in one request. Each receipt is independently signed and verifiable in isolation.</p>
+                        <h3><code>GET /v5/batch</code> <span class="label">Authenticated</span></h3>
+                        <p>Fetch signed status receipts for multiple exchanges in one request. Each receipt is independently signed and verifiable in isolation.</p>
                         <pre>Header: X-Oracle-Key: YOUR_API_KEY
 Query:  mics=XNYS,XNAS,XLON  (comma-separated, deduplicated)</pre>
-                        <p class="text-xs text-slate-500 mt-2">All MICs are validated up front — one invalid MIC returns 400 for the whole request. Tier 3 signing failure fails the whole batch.</p>
+                        <p class="small muted">All MICs are validated up front — one invalid MIC returns 400 for the whole request. Tier 3 signing failure fails the whole batch.</p>
                     </div>
 
                     <div id="health">
-                        <h3 class="text-blue-400">GET /v5/health <span class="text-xs text-slate-500 ml-2">Public</span></h3>
-                        <p class="text-sm mb-2">Signed liveness probe. Use this to distinguish <em>Oracle is down</em> from <em>market is genuinely UNKNOWN</em>. A valid signed response means the signing infrastructure is alive.</p>
-                        <pre class="text-xs">{
+                        <h3><code>GET /v5/health</code> <span class="label">Public</span></h3>
+                        <p>Signed liveness probe. Use this to distinguish <em>Oracle is down</em> from <em>market is genuinely UNKNOWN</em>. A valid signed response means the signing infrastructure is alive.</p>
+                        <pre>{
   "receipt_id":    "uuid-v4",
   "issued_at":     "2026-03-10T13:00:00.000Z",
   "expires_at":    "2026-03-10T13:01:00.000Z",
@@ -471,11 +491,10 @@ Query:  mics=XNYS,XNAS,XLON  (comma-separated, deduplicated)</pre>
 // 500 CRITICAL_FAILURE = signing system offline</pre>
                     </div>
 
-                </div>
             </section>
 
             <!-- SCHEMA -->
-            <section id="schema" class="mb-12 border-b border-slate-800 pb-12">
+            <section id="schema">
                 <h2>Response Schema</h2>
                 <pre>{
   "receipt_id":     "uuid-v4",
@@ -491,30 +510,30 @@ Query:  mics=XNYS,XNAS,XLON  (comma-separated, deduplicated)</pre>
 
 // Do not act on a receipt whose expires_at has passed.</pre>
 
-                <h3 class="mt-6">Status Values</h3>
-                <ul class="list-disc pl-5 space-y-2 text-slate-400 text-sm">
-                    <li><strong class="text-green-400">OPEN:</strong> The venue is in an active trading session. Single-name halts do not change venue status; see <a href="/halt-gate">/halt-gate</a>.</li>
-                    <li><strong class="text-red-400">CLOSED:</strong> Market is outside trading hours — weekend, holiday, or after close.</li>
-                    <li><strong class="text-orange-400">HALTED:</strong> Market has been manually halted (circuit breaker or emergency override). Treat identically to CLOSED.</li>
-                    <li><strong class="text-yellow-400">UNKNOWN:</strong> Oracle cannot determine status. <strong>Treat as CLOSED. Halt all execution.</strong></li>
+                <h3>Status Values</h3>
+                <ul>
+                    <li><strong>OPEN:</strong> The venue is in an active trading session. Single-name halts do not change venue status; see <a href="/halt-gate">/halt-gate</a>.</li>
+                    <li><strong>CLOSED:</strong> Market is outside trading hours — weekend, holiday, or after close.</li>
+                    <li><strong>HALTED:</strong> Market has been manually halted (circuit breaker or emergency override). Treat identically to CLOSED.</li>
+                    <li><strong>UNKNOWN:</strong> Oracle cannot determine status. <strong>Treat as CLOSED. Halt all execution.</strong></li>
                 </ul>
 
-                <h3 class="mt-6">Source Values</h3>
-                <ul class="list-disc pl-5 space-y-2 text-slate-400 text-sm">
-                    <li><strong class="text-slate-200">SCHEDULE:</strong> Status derived from the exchange holiday/hours calendar.</li>
-                    <li><strong class="text-orange-300">OVERRIDE:</strong> Status set manually. Active during circuit breakers or emergency halts. Includes a <code>reason</code> field.</li>
-                    <li><strong class="text-slate-500">SYSTEM:</strong> Internal fallback — returned when an error occurred in the primary logic. Always paired with UNKNOWN.</li>
+                <h3>Source Values</h3>
+                <ul>
+                    <li><strong>SCHEDULE:</strong> Status derived from the exchange holiday/hours calendar.</li>
+                    <li><strong>OVERRIDE:</strong> Status set manually. Active during circuit breakers or emergency halts. Includes a <code>reason</code> field.</li>
+                    <li><strong>SYSTEM:</strong> Internal fallback — returned when an error occurred in the primary logic. Always paired with UNKNOWN.</li>
                 </ul>
             </section>
 
             <!-- VERIFICATION -->
-            <section id="verification" class="mb-12 border-b border-slate-800 pb-12">
+            <section id="verification">
                 <h2>Verification Logic</h2>
-                <p class="mb-4">To confirm a receipt is authentic, reconstruct the signed payload and verify the Ed25519 signature against the <a href="/ed25519-public-key.txt" class="text-blue-400 underline">published public key</a>.</p>
+                <p>To confirm a receipt is authentic, reconstruct the signed payload and verify the Ed25519 signature against the <a href="/ed25519-public-key.txt">published public key</a>.</p>
 
-                <h3 class="text-xs text-slate-500 uppercase tracking-widest mb-2">1. Reconstruct the Payload</h3>
-                <p class="text-sm mb-4">The signature covers a fixed allowlist of receipt fields enumerated in <code>canonical_payload_spec</code> at <a href="/v5/keys" class="text-blue-400 underline">/v5/keys</a> (union of <code>receipt_fields</code>, <code>override_fields</code>, <code>health_fields</code>). Filter the response to that allowlist, sort the keys alphabetically, then minify with no whitespace. Decoration the worker added to the response after signing — <code>extensions</code>, a duplicated <code>receipt</code> wrapper, <code>discovery_url</code> — must be excluded so the message bytes match what was signed.</p>
-                <pre class="text-blue-300">// 1. Fetch the canonical field spec from /v5/keys
+                <h3>1. Reconstruct the Payload</h3>
+                <p>The signature covers a fixed allowlist of receipt fields enumerated in <code>canonical_payload_spec</code> at <a href="/v5/keys">/v5/keys</a> (union of <code>receipt_fields</code>, <code>override_fields</code>, <code>health_fields</code>). Filter the response to that allowlist, sort the keys alphabetically, then minify with no whitespace. Decoration the worker added to the response after signing — <code>extensions</code>, a duplicated <code>receipt</code> wrapper, <code>discovery_url</code> — must be excluded so the message bytes match what was signed.</p>
+                <pre>// 1. Fetch the canonical field spec from /v5/keys
 const { keys, canonical_payload_spec: spec } =
   await fetch("https://headlessoracle.com/v5/keys").then(r =&gt; r.json());
 
@@ -532,12 +551,11 @@ for (const key of canonicalFields) {
 }
 const canonical = JSON.stringify(filtered); // no spaces, alphabetical keys</pre>
 
-                <h3 class="text-xs text-slate-500 uppercase tracking-widest mt-8 mb-2">2. Implementation Samples</h3>
+                <h3>2. Implementation Samples</h3>
 
-                <div class="space-y-6">
                     <div>
-                        <p class="text-xs font-mono text-slate-500 mb-1">Python (PyNaCl)</p>
-                        <pre class="text-xs">import json, requests
+                        <p class="label">Python (PyNaCl)</p>
+                        <pre>import json, requests
 from nacl.signing import VerifyKey
 from nacl.exceptions import BadSignatureError
 
@@ -578,8 +596,8 @@ def verify_and_check(mic="XNYS"):
                     </div>
 
                     <div>
-                        <p class="text-xs font-mono text-slate-500 mb-1">JavaScript (Web Crypto API)</p>
-                        <pre class="text-xs">const ORACLE_BASE = "https://headlessoracle.com";
+                        <p class="label">JavaScript (Web Crypto API)</p>
+                        <pre>const ORACLE_BASE = "https://headlessoracle.com";
 
 async function verifyReceipt(receipt) {
   // Fetch the public key + canonical field spec
@@ -613,168 +631,167 @@ function hexToBytes(hex) {
   return new Uint8Array(hex.match(/.{2}/g).map(b =&gt; parseInt(b, 16)));
 }</pre>
                     </div>
-                </div>
 
-                <p class="text-sm mt-4 text-slate-400">
-                    Or use the <a href="/verify" class="text-blue-400 underline">browser-based verifier</a> — paste any receipt and verify the Ed25519 signature instantly with zero server calls. An independent client-side verifier on a separate trust boundary is also live at <a href="https://verify.headlessoracle.com" target="_blank" rel="noopener" class="text-blue-400 underline">verify.headlessoracle.com</a>.
+                <p>
+                    Or use the <a href="/verify">browser-based verifier</a> — paste any receipt and verify the Ed25519 signature instantly with zero server calls. An independent client-side verifier on a separate trust boundary is also live at <a href="https://verify.headlessoracle.com" target="_blank" rel="noopener">verify.headlessoracle.com</a>.
                 </p>
-                <p class="text-sm mt-4 text-slate-400">
+                <p>
                     Reference implementations:
-                    <a href="https://github.com/headlessoracle/demo-agent" target="_blank" rel="noopener" class="text-blue-400 underline">github.com/headlessoracle/demo-agent</a> — ~100-line Node.js reference verifier (MIT). Architectural context:
-                    <a href="https://github.com/headlessoracle/essays" target="_blank" rel="noopener" class="text-blue-400 underline">github.com/headlessoracle/essays</a> — including <em>The Trust Primitive: Why Agent Commerce Needs Environment-State Attestation</em> (v1.6.4, April 2026, CC BY 4.0).
+                    <a href="https://github.com/headlessoracle/demo-agent" target="_blank" rel="noopener">github.com/headlessoracle/demo-agent</a> — ~100-line Node.js reference verifier (MIT). Architectural context:
+                    <a href="https://github.com/headlessoracle/essays" target="_blank" rel="noopener">github.com/headlessoracle/essays</a> — including <em>The Trust Primitive: Why Agent Commerce Needs Environment-State Attestation</em> (v1.6.4, April 2026, CC BY 4.0).
                 </p>
             </section>
 
             <!-- FAIL-CLOSED -->
-            <section id="fail-closed" class="mb-12 border-b border-slate-800 pb-12">
+            <section id="fail-closed">
                 <h2>Fail-Closed Architecture</h2>
-                <p class="text-slate-400 mb-4">
+                <p>
                     The oracle uses a three-tier safety cascade. If anything fails at any tier, the response always defaults to <code>UNKNOWN</code> — never a false <code>OPEN</code>.
                 </p>
-                <div class="space-y-2 text-sm mb-6">
-                    <div class="flex gap-3 items-start"><span class="text-orange-400 font-mono font-bold w-16 shrink-0">TIER 0</span><span>Manual override active — returns HALTED or CLOSED with signed reason.</span></div>
-                    <div class="flex gap-3 items-start"><span class="text-blue-400 font-mono font-bold w-16 shrink-0">TIER 1</span><span>Schedule-based calculation — checks holidays, weekends, trading hours, half-days, lunch breaks.</span></div>
-                    <div class="flex gap-3 items-start"><span class="text-yellow-400 font-mono font-bold w-16 shrink-0">TIER 2</span><span>Fail-closed safety net — any Tier 1 error returns a signed UNKNOWN receipt.</span></div>
-                    <div class="flex gap-3 items-start"><span class="text-red-400 font-mono font-bold w-16 shrink-0">TIER 3</span><span>Catastrophic — signing system offline. Returns unsigned CRITICAL_FAILURE with HTTP 500.</span></div>
+                <div class="table-wrap">
+                    <table class="table">
+                        <tbody>
+                            <tr><td class="mono nowrap">TIER 0</td><td>Manual override active — returns HALTED or CLOSED with signed reason.</td></tr>
+                            <tr><td class="mono nowrap">TIER 1</td><td>Schedule-based calculation — checks holidays, weekends, trading hours, half-days, lunch breaks.</td></tr>
+                            <tr><td class="mono nowrap">TIER 2</td><td>Fail-closed safety net — any Tier 1 error returns a signed UNKNOWN receipt.</td></tr>
+                            <tr><td class="mono nowrap">TIER 3</td><td>Catastrophic — signing system offline. Returns unsigned CRITICAL_FAILURE with HTTP 500.</td></tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="p-4 bg-red-900/20 border border-red-800/40 rounded-lg">
-                    <p class="text-sm text-red-300 font-semibold">Integrator Rule (Binding)</p>
-                    <p class="text-sm text-slate-400 mt-1">Execute <em>only</em> if <code>status === 'OPEN'</code> AND the Ed25519 signature is valid. Any other result — CLOSED, HALTED, UNKNOWN, timeout, network error, or invalid signature — must halt execution. This is a contractual obligation under the <a href="/terms" class="text-blue-400 underline">Terms of Service</a>.</p>
+                <div class="note note--fail">
+                    <p class="note-title">Integrator Rule (Binding)</p>
+                    <p>Execute <em>only</em> if <code>status === 'OPEN'</code> AND the Ed25519 signature is valid. Any other result — CLOSED, HALTED, UNKNOWN, timeout, network error, or invalid signature — must halt execution. This is a contractual obligation under the <a href="/terms">Terms of Service</a>.</p>
                 </div>
             </section>
 
             <!-- MCP -->
-            <section id="mcp" class="mb-12 border-b border-slate-800 pb-12">
+            <section id="mcp">
                 <h2>MCP Integration</h2>
-                <p class="text-slate-400 mb-4">
+                <p>
                     Headless Oracle exposes an MCP (Model Context Protocol) server at <code>POST /mcp</code>. Any agent framework that supports MCP tool calling — Claude Desktop, Cursor, or custom agents built on the MCP spec — can call Oracle directly without writing HTTP client code.
                 </p>
 
-                <h3 class="text-blue-400">POST /mcp <span class="text-xs text-slate-500 ml-2">Public · JSON-RPC 2.0</span></h3>
-                <p class="text-sm mb-4">Protocol version: <code>2024-11-05</code> (MCP Streamable HTTP transport). No authentication required for MCP tool calls.</p>
+                <h3><code>POST /mcp</code> <span class="label">Public · JSON-RPC 2.0</span></h3>
+                <p>Protocol version: <code>2024-11-05</code> (MCP Streamable HTTP transport). No authentication required for MCP tool calls.</p>
 
                 <h3>Available MCP Tools</h3>
-                <div class="space-y-4 text-sm mb-6">
-                    <div class="p-4 bg-slate-800/50 rounded-lg border border-slate-700">
-                        <p class="font-semibold text-white mb-1"><code>get_market_status</code></p>
-                        <p class="text-slate-400 mb-2">Check whether a stock exchange is currently open or closed. Returns a cryptographically signed receipt. MANDATORY: treat UNKNOWN or HALTED as CLOSED and halt execution.</p>
-                        <p class="text-xs text-slate-500">Input: <code>{ "mic": "XNYS" }</code> — any of the 28 supported MIC codes.</p>
+                <div class="stack">
+                    <div class="panel">
+                        <p><strong><code>get_market_status</code></strong></p>
+                        <p class="small">Check whether a stock exchange is currently open or closed. Returns a cryptographically signed receipt. MANDATORY: treat UNKNOWN or HALTED as CLOSED and halt execution.</p>
+                        <p class="small muted">Input: <code>{ "mic": "XNYS" }</code> — any of the 28 supported MIC codes.</p>
                     </div>
-                    <div class="p-4 bg-slate-800/50 rounded-lg border border-slate-700">
-                        <p class="font-semibold text-white mb-1"><code>get_market_schedule</code></p>
-                        <p class="text-slate-400 mb-2">Get next open and close times for an exchange. Includes lunch break windows for XJPX and XHKG. Not cryptographically signed — does not reflect real-time halts.</p>
-                        <p class="text-xs text-slate-500">Input: <code>{ "mic": "XJPX" }</code></p>
+                    <div class="panel">
+                        <p><strong><code>get_market_schedule</code></strong></p>
+                        <p class="small">Get next open and close times for an exchange. Includes lunch break windows for XJPX and XHKG. Not cryptographically signed — does not reflect real-time halts.</p>
+                        <p class="small muted">Input: <code>{ "mic": "XJPX" }</code></p>
                     </div>
-                    <div class="p-4 bg-slate-800/50 rounded-lg border border-slate-700">
-                        <p class="font-semibold text-white mb-1"><code>list_exchanges</code></p>
-                        <p class="text-slate-400 mb-2">Returns all 28 supported exchanges with MIC codes, names, and timezones.</p>
-                        <p class="text-xs text-slate-500">No input required.</p>
+                    <div class="panel">
+                        <p><strong><code>list_exchanges</code></strong></p>
+                        <p class="small">Returns all 28 supported exchanges with MIC codes, names, and timezones.</p>
+                        <p class="small muted">No input required.</p>
                     </div>
                 </div>
 
-                <h3>Setup: Claude Desktop <span class="text-xs text-slate-500 font-normal ml-2">~30 seconds</span></h3>
-                <p class="text-sm text-slate-400 mb-2">Add this to your Claude Desktop config file, then restart Claude Desktop:</p>
-                <p class="text-xs text-slate-500 mb-1">
-                    <strong class="text-slate-400">macOS:</strong>
-                    <code>~/Library/Application Support/Claude/claude_desktop_config.json</code>
+                <h3>Setup: Claude Desktop <span class="label">~30 seconds</span></h3>
+                <p>Add this to your Claude Desktop config file, then restart Claude Desktop:</p>
+                <p class="small">
+                    <strong>macOS:</strong>
+                    <code class="wrap-any">~/Library/Application Support/Claude/claude_desktop_config.json</code>
                 </p>
-                <p class="text-xs text-slate-500 mb-2">
-                    <strong class="text-slate-400">Windows:</strong>
-                    <code>%APPDATA%\Claude\claude_desktop_config.json</code>
+                <p class="small">
+                    <strong>Windows:</strong>
+                    <code class="wrap-any">%APPDATA%\Claude\claude_desktop_config.json</code>
                 </p>
-                <pre class="text-xs">{
+                <pre>{
   "mcpServers": {
     "headless-oracle": {
       "url": "https://headlessoracle.com/mcp"
     }
   }
 }</pre>
-                <p class="text-xs text-slate-500 mt-2">After restarting Claude Desktop, Headless Oracle tools will appear automatically. No API key required for the demo tools.</p>
+                <p class="small muted">After restarting Claude Desktop, Headless Oracle tools will appear automatically. No API key required for the demo tools.</p>
 
-                <h3 class="mt-6">Example Prompts</h3>
-                <p class="text-sm text-slate-400 mb-3">Try these after setup:</p>
-                <ul class="list-none space-y-2 text-sm text-slate-400">
-                    <li><span class="text-slate-600 mr-2">›</span><em>"Is the NYSE open right now?"</em></li>
-                    <li><span class="text-slate-600 mr-2">›</span><em>"Check if any Asian markets are currently in their lunch break"</em></li>
-                    <li><span class="text-slate-600 mr-2">›</span><em>"What time does the London Stock Exchange close today?"</em></li>
-                    <li><span class="text-slate-600 mr-2">›</span><em>"Are there any market holidays this week across all exchanges?"</em></li>
-                    <li><span class="text-slate-600 mr-2">›</span><em>"Before I execute this trade — verify XNYS is open and give me the signed receipt"</em></li>
+                <h3>Example Prompts</h3>
+                <p>Try these after setup:</p>
+                <ul class="prompt-list">
+                    <li><span class="muted">›</span> <em>"Is the NYSE open right now?"</em></li>
+                    <li><span class="muted">›</span> <em>"Check if any Asian markets are currently in their lunch break"</em></li>
+                    <li><span class="muted">›</span> <em>"What time does the London Stock Exchange close today?"</em></li>
+                    <li><span class="muted">›</span> <em>"Are there any market holidays this week across all exchanges?"</em></li>
+                    <li><span class="muted">›</span> <em>"Before I execute this trade — verify XNYS is open and give me the signed receipt"</em></li>
                 </ul>
 
-                <h3 class="mt-6">Key Provenance</h3>
-                <p class="text-sm text-slate-400">The Ed25519 public key for verifying receipts returned by MCP tools is published at <a href="/.well-known/oracle-keys.json" class="text-blue-400 underline">/.well-known/oracle-keys.json</a> (RFC 8615 standard).</p>
+                <h3>Key Provenance</h3>
+                <p>The Ed25519 public key for verifying receipts returned by MCP tools is published at <a href="/.well-known/oracle-keys.json">/.well-known/oracle-keys.json</a> (RFC 8615 standard).</p>
             </section>
 
             <!-- API KEYS & BILLING -->
-            <section id="billing" class="mb-12 border-b border-slate-800 pb-12">
+            <section id="billing">
                 <h2>API Keys &amp; Billing</h2>
-                <p class="text-slate-400 mb-4">
+                <p>
                     Production access to <code>/v5/status</code>, <code>/v5/batch</code>, and <code>/v5/account</code> requires an API key passed in the <code>X-Oracle-Key</code> header. All other endpoints are public.
                 </p>
 
                 <h3>Get an API Key</h3>
-                <p class="text-sm mb-4 text-slate-400">Subscribe via anonymous Paddle checkout — no account creation required. After payment your key appears on the pricing page and is also sent by email.</p>
-                <pre class="text-blue-300">curl -X POST https://headlessoracle.com/v5/checkout
+                <p>Subscribe via anonymous Paddle checkout — no account creation required. After payment your key appears on the pricing page and is also sent by email.</p>
+                <pre>curl -X POST https://headlessoracle.com/v5/checkout
 # Returns: { "url": "https://checkout.paddle.com/..." }
 # Redirect the user (or open the URL) to complete payment.</pre>
-                <p class="text-xs text-slate-500 mt-2">Keys are prefixed <code>ok_live_</code> for easy identification in logs and environment variables.</p>
+                <p class="small muted">Keys are prefixed <code>ok_live_</code> for easy identification in logs and environment variables.</p>
 
-                <h3 class="mt-6">Check Your Account</h3>
-                <pre class="text-blue-300">curl https://headlessoracle.com/v5/account \
+                <h3>Check Your Account</h3>
+                <pre>curl https://headlessoracle.com/v5/account \
      -H "X-Oracle-Key: YOUR_API_KEY"
 # Returns: { "plan": "pro", "status": "active", "key_prefix": "ok_live_..." }</pre>
 
-                <h3 class="mt-6">Error Codes</h3>
-                <ul class="list-disc pl-5 space-y-2 text-slate-400 text-sm">
-                    <li><strong class="text-red-400">401 API_KEY_REQUIRED:</strong> No key in header.</li>
-                    <li><strong class="text-red-400">403 INVALID_API_KEY:</strong> Key not found. Check for typos or use <code>/v5/account</code> to confirm it's active.</li>
-                    <li><strong class="text-yellow-400">402 PAYMENT_REQUIRED:</strong> Subscription is suspended or cancelled. Update billing to restore access.</li>
+                <h3>Error Codes</h3>
+                <ul>
+                    <li><strong>401 API_KEY_REQUIRED:</strong> No key in header.</li>
+                    <li><strong>403 INVALID_API_KEY:</strong> Key not found. Check for typos or use <code>/v5/account</code> to confirm it's active.</li>
+                    <li><strong>402 PAYMENT_REQUIRED:</strong> Subscription is suspended or cancelled. Update billing to restore access.</li>
                 </ul>
             </section>
 
             <!-- OPEN STANDARDS -->
-            <section id="standards" class="mb-12 border-b border-slate-800 pb-12">
+            <section id="standards">
                 <h2>Open Standards</h2>
-                <p class="text-slate-400 text-sm mb-6">Headless Oracle publishes the protocols it implements as Apache 2.0 open standards. Any operator can implement these independently — the value is in the interoperability, not the lock-in.</p>
+                <p>Headless Oracle publishes the protocols it implements as Apache 2.0 open standards. Any operator can implement these independently — the value is in the interoperability, not the lock-in.</p>
 
-                <div class="space-y-4">
-                    <div class="glass rounded-xl p-5 border border-blue-500/20">
-                        <div class="flex items-start justify-between gap-4 mb-2">
+                <div class="stack">
+                    <div class="panel">
+                        <div class="row row--between">
                             <div>
-                                <span class="text-xs font-mono text-blue-400 uppercase tracking-wider">SMA Protocol</span>
-                                <h3 class="text-white font-semibold mt-1 mb-0">Signed Market Attestation</h3>
+                                <p class="label tight">SMA Protocol</p>
+                                <h3>Signed Market Attestation</h3>
                             </div>
-                            <a href="https://github.com/LembaGang/sma-protocol" target="_blank" rel="noopener" class="text-xs font-mono text-blue-400 hover:text-blue-300 whitespace-nowrap">GitHub →</a>
+                            <a href="https://github.com/LembaGang/sma-protocol" target="_blank" rel="noopener" class="small mono">GitHub →</a>
                         </div>
-                        <p class="text-sm text-slate-400 mb-2">Defines the canonical JSON schema for a cryptographically signed market-state receipt: fields, Ed25519 signing algorithm, canonical payload serialisation (alphabetical key sort), 60-second TTL, and fail-closed UNKNOWN semantics.</p>
-                        <div class="flex gap-3 flex-wrap">
-                            <a href="https://headlessoracle.com/v5/conformance-vectors" class="text-xs text-slate-400 hover:text-white font-mono">/v5/conformance-vectors →</a>
-                        </div>
+                        <p class="small">Defines the canonical JSON schema for a cryptographically signed market-state receipt: fields, Ed25519 signing algorithm, canonical payload serialisation (alphabetical key sort), 60-second TTL, and fail-closed UNKNOWN semantics.</p>
+                        <p class="small"><a href="https://headlessoracle.com/v5/conformance-vectors" class="mono">/v5/conformance-vectors →</a></p>
                     </div>
 
-                    <div class="glass rounded-xl p-5 border border-purple-500/20">
-                        <div class="flex items-start justify-between gap-4 mb-2">
+                    <div class="panel">
+                        <div class="row row--between">
                             <div>
-                                <span class="text-xs font-mono text-purple-400 uppercase tracking-wider">MPAS-1.0</span>
-                                <h3 class="text-white font-semibold mt-1 mb-0">Multi-Party Attestation Aggregation</h3>
+                                <p class="label tight">MPAS-1.0</p>
+                                <h3>Multi-Party Attestation Aggregation</h3>
                             </div>
-                            <a href="https://github.com/LembaGang/mpas-spec" target="_blank" rel="noopener" class="text-xs font-mono text-purple-400 hover:text-purple-300 whitespace-nowrap">GitHub →</a>
+                            <a href="https://github.com/LembaGang/mpas-spec" target="_blank" rel="noopener" class="small mono">GitHub →</a>
                         </div>
-                        <p class="text-sm text-slate-400 mb-2">Defines how N independent oracle operators' SMA receipts are aggregated into a single <code>AggregatedAttestation</code> with quorum consensus. A 2-of-3 quorum means no single compromised operator can produce a forged result. Includes consumer verification algorithm, operator registration conventions, and on-chain verification sketch.</p>
-                        <div class="flex gap-3 flex-wrap">
-                            <a href="https://github.com/LembaGang/mpas-spec/blob/main/IMPLEMENTATIONS.md" target="_blank" rel="noopener" class="text-xs text-slate-400 hover:text-white">IMPLEMENTATIONS.md →</a>
-                        </div>
+                        <p class="small">Defines how N independent oracle operators' SMA receipts are aggregated into a single <code>AggregatedAttestation</code> with quorum consensus. A 2-of-3 quorum means no single compromised operator can produce a forged result. Includes consumer verification algorithm, operator registration conventions, and on-chain verification sketch.</p>
+                        <p class="small"><a href="https://github.com/LembaGang/mpas-spec/blob/main/IMPLEMENTATIONS.md" target="_blank" rel="noopener">IMPLEMENTATIONS.md →</a></p>
                     </div>
 
-                    <div class="glass rounded-xl p-5 border border-green-500/20">
-                        <div class="flex items-start justify-between gap-4 mb-2">
+                    <div class="panel">
+                        <div class="row row--between">
                             <div>
-                                <span class="text-xs font-mono text-green-400 uppercase tracking-wider">APTS-1.0</span>
-                                <h3 class="text-white font-semibold mt-1 mb-0">Agent Pre-Trade Safety Standard</h3>
+                                <p class="label tight">APTS-1.0</p>
+                                <h3>Agent Pre-Trade Safety Standard</h3>
                             </div>
-                            <a href="https://github.com/LembaGang/agent-pretrade-safety-standard" target="_blank" rel="noopener" class="text-xs font-mono text-green-400 hover:text-green-300 whitespace-nowrap">GitHub →</a>
+                            <a href="https://github.com/LembaGang/agent-pretrade-safety-standard" target="_blank" rel="noopener" class="small mono">GitHub →</a>
                         </div>
-                        <p class="text-sm text-slate-400 mb-2">A vendor-neutral 6-step checklist every autonomous trading agent must complete before executing: fetch signed attestation → verify circuit breakers → verify settlement window → verify TTL → verify Ed25519 signature → halt on any failure. Includes CI badge, CHECKLIST.yaml, and conformance table.</p>
+                        <p class="small">A vendor-neutral 6-step checklist every autonomous trading agent must complete before executing: fetch signed attestation → verify circuit breakers → verify settlement window → verify TTL → verify Ed25519 signature → halt on any failure. Includes CI badge, CHECKLIST.yaml, and conformance table.</p>
                     </div>
                 </div>
             </section>
@@ -782,13 +799,13 @@ function hexToBytes(hex) {
             <!-- OVERRIDES -->
             <section id="overrides">
                 <h2>Circuit Breaker Overrides</h2>
-                <p class="text-slate-400 mb-4">
+                <p>
                     The <code>OVERRIDE</code> source tier allows manual status injection — used to broadcast HALTED during exchange circuit breakers, emergency closures, or scheduled maintenance windows.
                 </p>
-                <p class="text-sm text-slate-400 mb-4">
+                <p>
                     When an override is active, the receipt includes a <code>reason</code> field explaining the override:
                 </p>
-                <pre class="text-xs">{
+                <pre>{
   "receipt_id":     "uuid-v4",
   "issued_at":      "2026-03-09T19:30:00.000Z",
   "expires_at":     "2026-03-09T19:31:00.000Z",
@@ -800,12 +817,14 @@ function hexToBytes(hex) {
   "public_key_id":  "key_2026_v1",
   "signature":      "hex_string"
 }</pre>
-                <p class="text-sm text-slate-500 mt-4">
+                <p class="muted">
                     Override receipts are signed with the same Ed25519 key as schedule-based receipts. Verification logic is identical. Your bot does not need to handle overrides differently — treat HALTED identically to CLOSED.
                 </p>
             </section>
 
         </div>
+      </div>
+    </div>
     </main>
 
     <footer class="site-foot">
@@ -820,7 +839,6 @@ function hexToBytes(hex) {
   </div>
 </footer>
 
-    <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
-    <script src="/js/paddle-init.js"></script>
+    <script src="/js/ptxn-redirect.js"></script>
 </body>
 </html>

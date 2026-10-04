@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>For auditors and insurers: checking an agent log · Headless Oracle</title>
+<meta name="description" content="How an auditor or insurer checks a Chirindo agent log against Witness receipts without relying on the operator: what a receipt shows and does not, fetching receipts from Witness directly, checking signatures offline, and a test kit with five tampering cases.">
+<meta name="robots" content="index, follow">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="https://headlessoracle.com/auditors">
+<link rel="alternate" type="text/markdown" href="/auditors.md" title="This page in Markdown">
+<link rel="alternate" type="application/json" href="https://api.headlessoracle.com/v1/witness/spec" title="Witness spec (machine-readable)">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://headlessoracle.com/auditors">
+<meta property="og:title" content="For auditors and insurers · Headless Oracle">
+<meta property="og:description" content="Check an agent log against Witness receipts yourself, offline, without relying on the operator.">
+<meta property="og:image" content="https://headlessoracle.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="For auditors and insurers · Headless Oracle">
+<meta name="twitter:description" content="Check an agent log against Witness receipts yourself, offline, without relying on the operator.">
+<meta name="twitter:image" content="https://headlessoracle.com/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://headlessoracle.com/#org",
+      "name": "Headless Oracle",
+      "url": "https://headlessoracle.com/",
+      "email": "mike@headlessoracle.com",
+      "sameAs": ["https://github.com/LembaGang"]
+    },
+    {
+      "@type": "HowTo",
+      "name": "Check an agent log against Witness receipts without relying on the operator",
+      "url": "https://headlessoracle.com/auditors",
+      "publisher": { "@id": "https://headlessoracle.com/#org" },
+      "step": [
+        { "@type": "HowToStep", "position": 1, "name": "Get the complete log and fetch its receipts from Witness yourself", "text": "Ask for the complete session log, then fetch its receipts from Witness yourself with GET https://api.headlessoracle.com/v1/witness/checkpoints?kid=<kid>&session_id=<session_id>, following next_after until it is absent." },
+        { "@type": "HowToStep", "position": 2, "name": "Run the open-source verifier offline", "text": "A log cut short, or rewritten before a witnessed checkpoint, fails and names the lowest failing count." },
+        { "@type": "HowToStep", "position": 3, "name": "Compare each received_at with the entries' times", "text": "That gap is the window in which history could have been rewritten before anyone witnessed it." }
+      ]
+    }
+  ]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="wordmark" href="/">Headless Oracle</a>
+    <nav aria-label="Main">
+      <ul class="nav-list nav-wide">
+        <li><a href="/witness">Witness</a></li>
+        <li><a href="/verify">Verify</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/docs">Docs</a></li>
+        <li><a href="/auditors" aria-current="page">For auditors</a></li>
+        <li><a href="https://github.com/LembaGang">GitHub</a></li>
+      </ul>
+      <details class="nav-small">
+        <summary>Menu</summary>
+        <ul>
+          <li><a href="/witness">Witness</a></li>
+          <li><a href="/verify">Verify</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+          <li><a href="/docs">Docs</a></li>
+          <li><a href="/auditors" aria-current="page">For auditors</a></li>
+          <li><a href="https://github.com/LembaGang">GitHub</a></li>
+        </ul>
+      </details>
+    </nav>
+  </div>
+</header>
+<main id="main">
+
+<div class="wrap page-head">
+  <p class="kicker">For auditors and insurers</p>
+  <h1>Check an agent's log without taking the operator's word for it.</h1>
+  <div class="lede">
+    <p>An agent's log is kept by the team that runs the agent. Chirindo signs and hash-chains each entry; Witness signs a receipt saying when it saw each checkpoint of that log. This page is how you check one against the other yourself, offline, with open-source tools.</p>
+  </div>
+</div>
+
+<section class="section" id="limits" aria-labelledby="h-limits">
+  <div class="wrap sec-grid">
+    <div class="sec-num">1</div>
+    <div class="sec-body">
+      <h2 id="h-limits">What a witness receipt is, and what it is not</h2>
+      <div class="prose">
+        <p>A witness receipt is Headless Oracle's signed statement of what it was shown and when: at <code>received_at</code>, a checkpoint signed by the key with that thumbprint. It is only as reliable as Headless Oracle and its signing key. It does not prove that the records are true, who controls the key, or that the records were written at the times they carry.</p>
+        <ul>
+          <li>Entries after the last witnessed checkpoint can still be cut off or rewritten without detection.</li>
+          <li>A history rewritten before it was first witnessed is not detected. The gap between an entry's time and <code>received_at</code> is that exposure window.</li>
+          <li>A session the operator never presents, or one restarted under a new key or session ID, starts with no receipts.</li>
+          <li>Witness is independent of the operator, not of Headless Oracle, which also publishes the gate.</li>
+          <li>Receipts are signed one by one, but the list of them is not: a mirror, proxy or modified client can leave receipts out. Query Witness directly.</li>
+        </ul>
+        <p class="small">The full list is in the <a href="https://api.headlessoracle.com/v1/witness/spec">Witness spec</a>, under <code>honest_limits</code>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="steps" aria-labelledby="h-steps">
+  <div class="wrap sec-grid">
+    <div class="sec-num">2</div>
+    <div class="sec-body">
+      <h2 id="h-steps">Three steps</h2>
+      <ol class="alist">
+        <li>Ask for the complete session log, then fetch its receipts from Witness yourself. A receipt file supplied by the operator relies on the operator; a query to <code>api.headlessoracle.com</code> does not.</li>
+        <li>Run the open-source verifier offline. A log cut short, or rewritten before a witnessed checkpoint, fails and names the lowest failing count.</li>
+        <li>Compare each <code>received_at</code> with the entries' times. That gap is the window in which history could have been rewritten before anyone witnessed it.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="fetch" aria-labelledby="h-fetch">
+  <div class="wrap sec-grid">
+    <div class="sec-num">3</div>
+    <div class="sec-body">
+      <h2 id="h-fetch">Fetch the receipts from Witness yourself</h2>
+      <div class="prose">
+        <p>Every entry in a Chirindo log carries the operator key's thumbprint (<code>kid</code>) and the <code>session_id</code>. Ask Witness for every receipt it holds for that pair. The query is public, needs no account, and answers any origin.</p>
+      </div>
+      <div class="code-block">
+        <div class="code-head"><span>shell</span><button type="button" class="copy" data-copy="code-query">Copy</button></div>
+<pre id="code-query"><code>curl -sS 'https://api.headlessoracle.com/v1/witness/checkpoints?kid=&lt;kid&gt;&amp;session_id=&lt;session_id&gt;'</code></pre>
+      </div>
+      <div class="prose">
+        <p>The answer is <code>{ "kid", "session_id", "receipts": [...], "next_after" }</code>: at most 500 receipts ordered by count. If <code>next_after</code> is present, ask again with <code>&amp;after=</code> set to it, and keep going until it is absent. A pair Witness has never seen returns an empty list, not an error.</p>
+        <p>To try it on the demo log from the homepage:</p>
+      </div>
+      <div class="code-block">
+        <div class="code-head"><span>shell</span><button type="button" class="copy" data-copy="code-demo">Copy</button></div>
+<pre id="code-demo"><code>curl -sS 'https://api.headlessoracle.com/v1/witness/checkpoints?kid=jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo&amp;session_id=demo-purchasing-agent-76f75512-dfca-4385-8ad0-16117144c933'</code></pre>
+      </div>
+      <div class="prose">
+        <h3 class="step-title">Check each receipt's signature</h3>
+        <p>A receipt is signed by Headless Oracle with Ed25519 over all its fields except <code>signature</code>, keys sorted, as JSON with no whitespace; the signature is lowercase hex. Take the public key from <a href="https://api.headlessoracle.com/v5/keys">api.headlessoracle.com/v5/keys</a>: the <code>keys[]</code> entry whose <code>key_id</code> equals the receipt's <code>public_key_id</code> (currently <code>key_2026_v1</code>). Pin it: after a key rotation, the endpoint lists only the new key.</p>
+        <p>Then check the receipt names the checkpoint: the same <code>kid</code>, <code>session_id</code>, <code>count</code> and <code>last_entry_hash</code>, and <code>checkpoint_sha256</code> equal to the SHA-256 of the signed checkpoint. Finally, the log's entry at that count must hash to that <code>last_entry_hash</code>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="run" aria-labelledby="h-run">
+  <div class="wrap sec-grid">
+    <div class="sec-num">4</div>
+    <div class="sec-body">
+      <h2 id="h-run">Run the check</h2>
+      <ul class="links prose">
+        <li><a href="/verify">In your browser</a>: paste or drop a bundle of entries, checkpoint, operator key and witness receipt. Nothing is uploaded; the checks run on your machine.</li>
+        <li>Offline: <a href="https://www.npmjs.com/package/@headlessoracle/receipt-verify">@headlessoracle/receipt-verify</a> checks the log's signatures and links; <code>chirindo verify</code> from the <a href="https://github.com/LembaGang/chirindo">Chirindo repository</a> checks the log against witness receipts.</li>
+        <li><a href="https://github.com/LembaGang/chirindo/tree/main/examples/e015-4-kit">Test kit: five tampering cases and an untouched control, chain alone against witnessed</a>. Run it before you rely on the tools: each tampered case should fail and the control should pass.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="ask" aria-labelledby="h-ask">
+  <div class="wrap sec-grid">
+    <div class="sec-num">5</div>
+    <div class="sec-body">
+      <h2 id="h-ask">Questions</h2>
+      <p class="prose">Write to Mike Msebenzi, founder: <!--email_off--><a href="mailto:mike@headlessoracle.com">mike@headlessoracle.com</a><!--/email_off-->. What Witness is and how its plans work: <a href="/witness">Chirindo Witness</a>.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="mono">Headless Oracle</span>
+    <ul class="foot-links">
+      <li><a href="/terms">Terms</a></li>
+      <li><a href="/privacy">Privacy</a></li>
+      <li><a href="/refund">Refund</a></li>
+      <li><!--email_off--><a href="mailto:mike@headlessoracle.com">mike@headlessoracle.com</a><!--/email_off--></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll(".copy").forEach(function (b) {
+  b.addEventListener("click", function () {
+    var text = document.getElementById(b.dataset.copy).textContent;
+    var done = function () { b.textContent = "Copied"; setTimeout(function () { b.textContent = "Copy"; }, 1600); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, function () {});
+  });
+});
+</script>
+<script src="/js/ptxn-redirect.js"></script>
+</body>
+</html>

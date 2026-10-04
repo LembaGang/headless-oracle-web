@@ -18,58 +18,26 @@
     <link rel="canonical" href="https://headlessoracle.com/halt-gate">
     <link rel="alternate" type="application/json" href="/openapi.json" title="OpenAPI 3.1 specification">
     <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt — machine-readable API summary">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <meta name="color-scheme" content="light dark">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/site.css">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; }
-        pre, code { font-family: 'JetBrains Mono', monospace; }
-        pre {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 0.5rem;
-            padding: 1rem;
-            overflow-x: auto;
-            font-size: 0.8125rem;
-            line-height: 1.5;
-        }
-        .step-num {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 1.75rem;
-            height: 1.75rem;
-            border-radius: 9999px;
-            background: rgba(59, 130, 246, 0.15);
-            color: #60a5fa;
-            font-weight: 600;
-            font-size: 0.875rem;
-            border: 1px solid rgba(59, 130, 246, 0.3);
-        }
-        .glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .copy-btn {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            font-size: 0.7rem;
-            background: rgba(30, 41, 59, 0.9);
-            color: #cbd5e1;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            cursor: pointer;
-        }
-        .copy-btn:hover { color: white; background: rgba(51, 65, 85, 0.9); }
+        .step-list { list-style: none; padding-left: 0 !important; }
+        .step-list > li { margin: 0 0 32px; }
+        .step-list h4 { margin-top: 24px; }
+        .step-list h4 .mono { margin-right: 8px; }
+        .doc .code-block pre { margin: 0; }
+        .code-head { justify-content: flex-end; }
+        .doc h3.statement { font-family: var(--font-serif); font-weight: 400; font-size: var(--step-2); margin-top: 0; }
+        .mark-list { list-style: none; padding-left: 0 !important; margin: 0; }
+        .mark-list li { position: relative; padding-left: 1.5em; margin-bottom: 8px; }
+        .mark-list li > span:first-child { position: absolute; left: 0; color: var(--muted); }
+        .links code { overflow-wrap: anywhere; }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-300 min-h-screen flex flex-col">
+<body>
 
     <a class="skip" href="#main">Skip to content</a>
 
@@ -78,50 +46,54 @@
     <a class="wordmark" href="/">Headless Oracle</a>
     <nav aria-label="Main">
       <ul class="nav-list nav-wide">
-        <li><a href="C:/Program Files/Git/#how">Witness</a></li>
+        <li><a href="/witness">Witness</a></li>
         <li><a href="/verify">Verify</a></li>
         <li><a href="/pricing">Pricing</a></li>
         <li><a href="/docs">Docs</a></li>
-        <li><a href="C:/Program Files/Git/#auditors">For auditors</a></li>
+        <li><a href="/auditors">For auditors</a></li>
         <li><a href="https://github.com/LembaGang">GitHub</a></li>
       </ul>
       <details class="nav-small">
         <summary>Menu</summary>
         <ul>
-          <li><a href="C:/Program Files/Git/#how">Witness</a></li>
+          <li><a href="/witness">Witness</a></li>
           <li><a href="/verify">Verify</a></li>
           <li><a href="/pricing">Pricing</a></li>
           <li><a href="/docs">Docs</a></li>
-          <li><a href="C:/Program Files/Git/#auditors">For auditors</a></li>
+          <li><a href="/auditors">For auditors</a></li>
           <li><a href="https://github.com/LembaGang">GitHub</a></li>
         </ul>
       </details>
     </nav>
   </div>
 </header>
+<div class="crosslink">
+  <div class="wrap">
+    <span>Market-state receipts: <a href="/docs">Docs</a> · <a href="/status">Status</a> · <a href="/dashboard">Dashboard</a> · <a href="/halt-gate">Halt gate</a> · <a href="/standards">Standards</a></span>
+    <span>For agent logs your auditor can check, see <a href="/witness">Chirindo Witness</a>.</span>
+  </div>
+</div>
 
-    <main id="main" class="flex-grow w-full max-w-4xl mx-auto px-6 py-12">
 
-        <!-- ── Hero ───────────────────────────────────────────────────────── -->
-        <header class="mb-12 text-center">
-            <p class="text-xs font-semibold tracking-widest text-blue-400 uppercase mb-3">Halt Gate · free signed door</p>
-            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
-                Is the market open?<br>
-                <span class="text-blue-400">Signed.</span> <span class="text-slate-400">No signup.</span>
-            </h1>
-            <p class="text-lg text-slate-400 max-w-2xl mx-auto">
-                One signed attestation per call. Your agent loop cannot trade into a halted
-                venue. The receipt itself is the audit trail.
-            </p>
-        </header>
+    <main id="main">
 
-        <!-- ── Worked use case (lead with one) ────────────────────────────── -->
-        <section class="mb-16 glass rounded-xl p-8">
-            <h2 class="text-xs font-semibold tracking-widest text-slate-500 uppercase mb-2">The one use case</h2>
-            <h3 class="text-2xl font-semibold text-white mb-3">
-                Don't let my agent trade into a halted venue.
-            </h3>
-            <p class="text-slate-400 mb-6">
+    <div class="wrap page-head">
+        <p class="kicker">Halt Gate · free signed door</p>
+        <h1>Is the market open?<br> Signed. No signup.</h1>
+        <div class="lede">
+            <p>One signed attestation per call. Your agent loop cannot trade into a halted
+            venue. The receipt itself is the audit trail.</p>
+        </div>
+    </div>
+
+    <div class="wrap page-body">
+      <div class="doc">
+
+        <!-- Worked use case (lead with one) -->
+        <section>
+            <h2>The one use case</h2>
+            <h3 class="statement">Don't let my agent trade into a halted venue.</h3>
+            <p>
                 Your loop is autonomous. It picks a trade. Before it acts, you want a
                 cryptographic check that the venue is actually open. If anything is
                 unclear — the API is unreachable, the receipt is stale, the signature
@@ -130,14 +102,12 @@
                 contract.
             </p>
 
-            <ol class="space-y-6 text-slate-300">
-                <li class="flex gap-4">
-                    <span class="step-num shrink-0">1</span>
-                    <div>
-                        <p class="font-medium text-white mb-2">Fetch a signed receipt (free, no key)</p>
-                        <p class="text-sm text-slate-400 mb-3">Unauthenticated. Rate-limited at the edge. Returns the same authoritative receipt as the paid <code class="text-blue-300">/v5/status</code> — byte-equivalent canonical bytes for the same MIC at the same instant.</p>
-                        <div class="relative">
-                            <button class="copy-btn" data-copy='curl https://headlessoracle.com/v1/status/XNYS'>copy</button>
+            <ol class="step-list">
+                <li>
+                    <h4><span class="mono muted">1</span> Fetch a signed receipt (free, no key)</h4>
+                    <p>Unauthenticated. Rate-limited at the edge. Returns the same authoritative receipt as the paid <code>/v5/status</code> — byte-equivalent canonical bytes for the same MIC at the same instant.</p>
+                    <div class="code-block">
+                        <div class="code-head"><span></span><button class="copy copy-btn" data-copy='curl https://headlessoracle.com/v1/status/XNYS'>copy</button></div>
 <pre>$ curl https://headlessoracle.com/v1/status/XNYS
 
 {
@@ -156,28 +126,25 @@
   "receipt":        { …same flat fields above… },    // unsigned wrapper — mirror, do not include in canonical bytes
   "discovery_url":  "…/.well-known/mcp/server-card.json"   // unsigned wrapper — discovery only
 }</pre>
-                        </div>
-                        <p class="text-xs text-slate-500 mt-3">
-                            <strong class="text-slate-400">Signed canonical payload</strong> is the
-                            flat field set above (everything except <code class="text-blue-300">signature</code>,
-                            <code class="text-blue-300">receipt</code>, and <code class="text-blue-300">discovery_url</code>),
-                            sorted alphabetically and JSON-stringified with no whitespace. <code class="text-blue-300">receipt</code>
-                            and <code class="text-blue-300">discovery_url</code> are <em>unsigned</em> wrapper fields —
-                            exclude them before verifying or you will get
-                            <code class="text-rose-300">INVALID_SIGNATURE</code>. The
-                            <a href="https://github.com/LembaGang/headless-oracle-verify" target="_blank" rel="noopener" class="text-blue-400 hover:text-blue-300">@headlessoracle/verify</a>
-                            SDK strips them automatically via its <code>UNSIGNED_WRAPPER_FIELDS</code> allowlist.
-                        </p>
                     </div>
+                    <p class="small muted">
+                        <strong>Signed canonical payload</strong> is the
+                        flat field set above (everything except <code>signature</code>,
+                        <code>receipt</code>, and <code>discovery_url</code>),
+                        sorted alphabetically and JSON-stringified with no whitespace. <code>receipt</code>
+                        and <code>discovery_url</code> are <em>unsigned</em> wrapper fields —
+                        exclude them before verifying or you will get
+                        <code>INVALID_SIGNATURE</code>. The
+                        <a href="https://github.com/LembaGang/headless-oracle-verify" target="_blank" rel="noopener">@headlessoracle/verify</a>
+                        SDK strips them automatically via its <code>UNSIGNED_WRAPPER_FIELDS</code> allowlist.
+                    </p>
                 </li>
 
-                <li class="flex gap-4">
-                    <span class="step-num shrink-0">2</span>
-                    <div>
-                        <p class="font-medium text-white mb-2">Drop the guard into your loop (npm)</p>
-                        <p class="text-sm text-slate-400 mb-3">Five lines. <code class="text-blue-300">safeToExecute()</code> fetches the receipt, verifies the signature, enforces your freshness policy, checks the MIC, checks the venue is OPEN. Any failure mode → <code class="text-rose-300">safe: false</code> with a machine-readable reason. The receipt is returned either way — log it.</p>
-                        <div class="relative">
-                            <button class="copy-btn" data-copy="npm install @headlessoracle/verify">copy</button>
+                <li>
+                    <h4><span class="mono muted">2</span> Drop the guard into your loop (npm)</h4>
+                    <p>Five lines. <code>safeToExecute()</code> fetches the receipt, verifies the signature, enforces your freshness policy, checks the MIC, checks the venue is OPEN. Any failure mode → <code>safe: false</code> with a machine-readable reason. The receipt is returned either way — log it.</p>
+                    <div class="code-block">
+                        <div class="code-head"><span></span><button class="copy copy-btn" data-copy="npm install @headlessoracle/verify">copy</button></div>
 <pre>$ npm install @headlessoracle/verify
 
 import { safeToExecute } from '@headlessoracle/verify';
@@ -191,29 +158,26 @@ logEvent({ kind: 'pretrade-gate', safe, reason, receipt });
 
 if (!safe) return;          // fail-closed: do nothing
 await placeOrder(/* ... */);</pre>
-                        </div>
-                        <p class="text-xs text-slate-500 mt-3">
-                            <code class="text-blue-300">max_attestation_age</code> is required. There is no default —
-                            the IETF <a href="https://datatracker.ietf.org/doc/draft-borthwick-msebenzi-environment-state/" class="text-blue-400 hover:text-blue-300" target="_blank" rel="noopener">environment.* family</a> rule
-                            is that the relying party declares its own freshness policy. Tight is safe — your relying-party policy should typically be shorter than HO's TTL.
-                        </p>
                     </div>
+                    <p class="small muted">
+                        <code>max_attestation_age</code> is required. There is no default —
+                        the IETF <a href="https://datatracker.ietf.org/doc/draft-borthwick-msebenzi-environment-state/" target="_blank" rel="noopener">environment.* family</a> rule
+                        is that the relying party declares its own freshness policy. Tight is safe — your relying-party policy should typically be shorter than HO's TTL.
+                    </p>
                 </li>
 
-                <li class="flex gap-4">
-                    <span class="step-num shrink-0">3</span>
-                    <div>
-                        <p class="font-medium text-white mb-2">Gate on-chain too — receipt-or-revert (Solidity)</p>
-                        <p class="text-sm text-slate-400 mb-3">
-                            A Solidity reference implementation of the same pattern:
-                            <a href="https://github.com/LembaGang/headless-oracle-v5/blob/main/contracts/HaltGuard.sol" class="text-blue-400 hover:text-blue-300" target="_blank" rel="noopener">contracts/HaltGuard.sol</a>.
-                            Pass the canonical signed bytes; the contract verifies the Ed25519
-                            signature against HO's published public key, binds your freshness
-                            window to the signed <code class="text-blue-300">issued_at</code>, and reverts unless the
-                            venue is OPEN. Reference code — not audited for production.
-                        </p>
-                        <div class="relative">
-                            <button class="copy-btn" data-copy="haltGuard.checkSafe(canonicalReceiptBytes, signature, issuedAtIso);">copy</button>
+                <li>
+                    <h4><span class="mono muted">3</span> Gate on-chain too — receipt-or-revert (Solidity)</h4>
+                    <p>
+                        A Solidity reference implementation of the same pattern:
+                        <a href="https://github.com/LembaGang/headless-oracle-v5/blob/main/contracts/HaltGuard.sol" target="_blank" rel="noopener">contracts/HaltGuard.sol</a>.
+                        Pass the canonical signed bytes; the contract verifies the Ed25519
+                        signature against HO's published public key, binds your freshness
+                        window to the signed <code>issued_at</code>, and reverts unless the
+                        venue is OPEN. Reference code — not audited for production.
+                    </p>
+                    <div class="code-block">
+                        <div class="code-head"><span></span><button class="copy copy-btn" data-copy="haltGuard.checkSafe(canonicalReceiptBytes, signature, issuedAtIso);">copy</button></div>
 <pre>// In your trading contract, before any state-changing action:
 haltGuard.checkSafe(
     canonicalReceiptBytes,   // alpha-sorted JSON form of receipt minus signature
@@ -222,99 +186,100 @@ haltGuard.checkSafe(
 );
 // If checkSafe() returns, the venue is OPEN, the receipt is fresh, and the
 // signature is valid. If anything fails — the call reverts.</pre>
-                        </div>
-                        <p class="text-xs text-slate-500 mt-3">
-                            Ed25519 on EVM is non-trivial. The reference contract abstracts the
-                            verifier via <code class="text-blue-300">IEd25519Verifier</code>; plug in a chain-native
-                            precompile (Solana, Aptos, Sui, some L2s) or a Solidity library where
-                            no precompile exists.
-                        </p>
                     </div>
+                    <p class="small muted">
+                        Ed25519 on EVM is non-trivial. The reference contract abstracts the
+                        verifier via <code>IEd25519Verifier</code>; plug in a chain-native
+                        precompile (Solana, Aptos, Sui, some L2s) or a Solidity library where
+                        no precompile exists.
+                    </p>
                 </li>
             </ol>
         </section>
 
-        <!-- ── What this is, and isn't (calibrated claims) ────────────────── -->
-        <section class="mb-16">
-            <h2 class="text-2xl font-semibold text-white mb-6">What this is, and isn't.</h2>
-            <div class="grid md:grid-cols-2 gap-6">
-                <div class="glass rounded-xl p-6">
-                    <h3 class="text-sm font-semibold tracking-wide text-emerald-400 uppercase mb-3">What the receipt is</h3>
-                    <ul class="space-y-2 text-sm text-slate-300">
-                        <li class="flex gap-2"><span class="text-emerald-400">✓</span> A signed attestation of the venue's session-state as <em>observed by HO</em> at <code class="text-blue-300">issued_at</code>.</li>
-                        <li class="flex gap-2"><span class="text-emerald-400">✓</span> Cryptographically verifiable offline using HO's published Ed25519 key.</li>
-                        <li class="flex gap-2"><span class="text-emerald-400">✓</span> An audit artifact: the bytes that justified your decision, retained as long as you choose.</li>
-                        <li class="flex gap-2"><span class="text-emerald-400">✓</span> Byte-equivalent across the free <code class="text-blue-300">/v1/status</code> door and the paid <code class="text-blue-300">/v5/status</code> door. Same truth, two doors.</li>
+        <!-- What this is, and isn't (calibrated claims) -->
+        <section>
+            <h2>What this is, and isn't.</h2>
+            <div class="grid grid--2">
+                <div class="panel">
+                    <h3>What the receipt is</h3>
+                    <ul class="mark-list small">
+                        <li><span class="mono">✓</span> A signed attestation of the venue's session-state as <em>observed by HO</em> at <code>issued_at</code>.</li>
+                        <li><span class="mono">✓</span> Cryptographically verifiable offline using HO's published Ed25519 key.</li>
+                        <li><span class="mono">✓</span> An audit artifact: the bytes that justified your decision, retained as long as you choose.</li>
+                        <li><span class="mono">✓</span> Byte-equivalent across the free <code>/v1/status</code> door and the paid <code>/v5/status</code> door. Same truth, two doors.</li>
                     </ul>
                 </div>
-                <div class="glass rounded-xl p-6">
-                    <h3 class="text-sm font-semibold tracking-wide text-rose-400 uppercase mb-3">What it is not</h3>
-                    <ul class="space-y-2 text-sm text-slate-300">
-                        <li class="flex gap-2"><span class="text-rose-400">✗</span> Ground truth. It is HO's observation; the relying contract enforces freshness at action-time.</li>
-                        <li class="flex gap-2"><span class="text-rose-400">✗</span> A liveness guarantee. A receipt with status OPEN at <code class="text-blue-300">issued_at</code> = T does not promise the venue is open at T+Δ.</li>
-                        <li class="flex gap-2"><span class="text-rose-400">✗</span> Per-symbol halt coverage at the MIC layer. Single-name halts (LULD pauses, T1 news pauses) do not flip a whole-venue status. For per-symbol detail see the <a href="/v1/halts/digest/" class="text-blue-300 hover:text-white underline">halt archive</a>.</li>
-                        <li class="flex gap-2"><span class="text-rose-400">✗</span> A replacement for legal compliance. The receipt anchors decisions; it does not waive them.</li>
+                <div class="panel">
+                    <h3>What it is not</h3>
+                    <ul class="mark-list small">
+                        <li><span class="mono">✗</span> Ground truth. It is HO's observation; the relying contract enforces freshness at action-time.</li>
+                        <li><span class="mono">✗</span> A liveness guarantee. A receipt with status OPEN at <code>issued_at</code> = T does not promise the venue is open at T+Δ.</li>
+                        <li><span class="mono">✗</span> Per-symbol halt coverage at the MIC layer. Single-name halts (LULD pauses, T1 news pauses) do not flip a whole-venue status. For per-symbol detail see the <a href="/v1/halts/digest/">halt archive</a>.</li>
+                        <li><span class="mono">✗</span> A replacement for legal compliance. The receipt anchors decisions; it does not waive them.</li>
                     </ul>
                 </div>
             </div>
         </section>
 
-        <!-- ── Failure-mode reference ─────────────────────────────────────── -->
-        <section class="mb-16">
-            <h2 class="text-2xl font-semibold text-white mb-2">Every fail-closed branch.</h2>
-            <p class="text-sm text-slate-400 mb-6">
-                <code class="text-blue-300">safeToExecute()</code> returns a machine-readable
-                <code class="text-blue-300">reason</code> on failure. Match on it; do not parse
+        <!-- Failure-mode reference -->
+        <section>
+            <h2>Every fail-closed branch.</h2>
+            <p>
+                <code>safeToExecute()</code> returns a machine-readable
+                <code>reason</code> on failure. Match on it; do not parse
                 free text.
             </p>
-            <div class="glass rounded-xl overflow-hidden">
-                <table class="w-full text-sm">
-                    <thead class="bg-slate-800/40 text-xs uppercase tracking-wide text-slate-400">
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
                         <tr>
-                            <th class="text-left p-3 font-medium">reason</th>
-                            <th class="text-left p-3 font-medium">meaning</th>
+                            <th>reason</th>
+                            <th>meaning</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-800/50">
-                        <tr><td class="p-3 font-mono text-rose-300">NETWORK_ERROR</td><td class="p-3 text-slate-300">fetch to /v1/status threw — network or DNS failure</td></tr>
-                        <tr><td class="p-3 font-mono text-rose-300">BAD_RESPONSE</td><td class="p-3 text-slate-300">non-2xx status or unparseable JSON</td></tr>
-                        <tr><td class="p-3 font-mono text-rose-300">MISSING_FIELDS</td><td class="p-3 text-slate-300">receipt missing signature / public_key_id / issued_at / expires_at</td></tr>
-                        <tr><td class="p-3 font-mono text-rose-300">STALE_RECEIPT</td><td class="p-3 text-slate-300">(now − issued_at) &gt; your <code class="text-blue-300">max_attestation_age</code></td></tr>
-                        <tr><td class="p-3 font-mono text-rose-300">EXPIRED</td><td class="p-3 text-slate-300">receipt's own <code class="text-blue-300">expires_at</code> has passed (HO's 60-s TTL)</td></tr>
-                        <tr><td class="p-3 font-mono text-rose-300">INVALID_SIGNATURE</td><td class="p-3 text-slate-300">Ed25519 signature does not match the canonical payload</td></tr>
-                        <tr><td class="p-3 font-mono text-rose-300">INVALID_KEY_FORMAT</td><td class="p-3 text-slate-300">public key or signature is not valid hex (Web Crypto rejected the bytes)</td></tr>
-                        <tr><td class="p-3 font-mono text-rose-300">UNKNOWN_KEY</td><td class="p-3 text-slate-300"><code class="text-blue-300">public_key_id</code> not in HO's published registry</td></tr>
-                        <tr><td class="p-3 font-mono text-rose-300">KEY_FETCH_FAILED</td><td class="p-3 text-slate-300">/v5/keys request failed</td></tr>
-                        <tr><td class="p-3 font-mono text-rose-300">SPEC_UNAVAILABLE</td><td class="p-3 text-slate-300">/v5/keys returned no <code class="text-blue-300">canonical_payload_spec</code> — cannot determine signed-field allowlist</td></tr>
-                        <tr><td class="p-3 font-mono text-rose-300">WRONG_MIC</td><td class="p-3 text-slate-300">receipt MIC does not match the one you asked for (proxy / CDN misroute)</td></tr>
-                        <tr><td class="p-3 font-mono text-rose-300">NOT_OPEN</td><td class="p-3 text-slate-300">venue status is CLOSED, HALTED, or UNKNOWN. UNKNOWN is treated as CLOSED — the fail-closed contract.</td></tr>
+                    <tbody>
+                        <tr><td class="mono">NETWORK_ERROR</td><td>fetch to /v1/status threw — network or DNS failure</td></tr>
+                        <tr><td class="mono">BAD_RESPONSE</td><td>non-2xx status or unparseable JSON</td></tr>
+                        <tr><td class="mono">MISSING_FIELDS</td><td>receipt missing signature / public_key_id / issued_at / expires_at</td></tr>
+                        <tr><td class="mono">STALE_RECEIPT</td><td>(now − issued_at) &gt; your <code>max_attestation_age</code></td></tr>
+                        <tr><td class="mono">EXPIRED</td><td>receipt's own <code>expires_at</code> has passed (HO's 60-s TTL)</td></tr>
+                        <tr><td class="mono">INVALID_SIGNATURE</td><td>Ed25519 signature does not match the canonical payload</td></tr>
+                        <tr><td class="mono">INVALID_KEY_FORMAT</td><td>public key or signature is not valid hex (Web Crypto rejected the bytes)</td></tr>
+                        <tr><td class="mono">UNKNOWN_KEY</td><td><code>public_key_id</code> not in HO's published registry</td></tr>
+                        <tr><td class="mono">KEY_FETCH_FAILED</td><td>/v5/keys request failed</td></tr>
+                        <tr><td class="mono">SPEC_UNAVAILABLE</td><td>/v5/keys returned no <code>canonical_payload_spec</code> — cannot determine signed-field allowlist</td></tr>
+                        <tr><td class="mono">WRONG_MIC</td><td>receipt MIC does not match the one you asked for (proxy / CDN misroute)</td></tr>
+                        <tr><td class="mono">NOT_OPEN</td><td>venue status is CLOSED, HALTED, or UNKNOWN. UNKNOWN is treated as CLOSED — the fail-closed contract.</td></tr>
                     </tbody>
                 </table>
             </div>
         </section>
 
-        <!-- ── Further reading ────────────────────────────────────────────── -->
-        <section class="mb-16">
-            <h2 class="text-2xl font-semibold text-white mb-6">Further reading</h2>
-            <ul class="space-y-3 text-slate-300 text-sm">
+        <!-- Further reading -->
+        <section>
+            <h2>Further reading</h2>
+            <ul class="links">
                 <li>
-                    <a href="https://github.com/LembaGang/headless-oracle-v5/blob/main/contracts/HaltGuard.sol" target="_blank" rel="noopener" class="text-blue-400 hover:text-blue-300 underline">HaltGuard.sol reference contract</a> — receipt-or-revert pattern with honest trust-model comments.
+                    <a href="https://github.com/LembaGang/headless-oracle-v5/blob/main/contracts/HaltGuard.sol" target="_blank" rel="noopener">HaltGuard.sol reference contract</a> — receipt-or-revert pattern with honest trust-model comments.
                 </li>
                 <li>
-                    <a href="https://github.com/LembaGang/headless-oracle-verify" target="_blank" rel="noopener" class="text-blue-400 hover:text-blue-300 underline">@headlessoracle/verify on GitHub</a> — zero-dependency Web Crypto Ed25519 verifier, source of <code>safeToExecute()</code>.
+                    <a href="https://github.com/LembaGang/headless-oracle-verify" target="_blank" rel="noopener">@headlessoracle/verify on GitHub</a> — zero-dependency Web Crypto Ed25519 verifier, source of <code>safeToExecute()</code>.
                 </li>
                 <li>
-                    <a href="https://datatracker.ietf.org/doc/draft-borthwick-msebenzi-environment-state/" target="_blank" rel="noopener" class="text-blue-400 hover:text-blue-300 underline">IETF Internet-Draft: environment.* constraint family</a> — the standard the freshness policy implements.
+                    <a href="https://datatracker.ietf.org/doc/draft-borthwick-msebenzi-environment-state/" target="_blank" rel="noopener">IETF Internet-Draft: environment.* constraint family</a> — the standard the freshness policy implements.
                 </li>
                 <li>
-                    <a href="/verify" class="text-blue-400 hover:text-blue-300 underline">Browser receipt verifier</a> — paste a signed receipt; verify in the browser via Web Crypto.
+                    <a href="/verify">Browser receipt verifier</a> — paste a signed receipt; verify in the browser via Web Crypto.
                 </li>
                 <li>
-                    <a href="/standards" class="text-blue-400 hover:text-blue-300 underline">Standards page</a> — Signed Market-State Attestation concept, regulatory references, multi-oracle consensus, <code>environment.market_state</code> positioning.
+                    <a href="/standards">Standards page</a> — Signed Market-State Attestation concept, regulatory references, multi-oracle consensus, <code>environment.market_state</code> positioning.
                 </li>
             </ul>
         </section>
 
+      </div>
+    </div>
     </main>
 
     <footer class="site-foot">

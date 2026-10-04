@@ -1,6 +1,6 @@
-# Headless Oracle
+# Chirindo Witness
 
-## Chirindo Witness
+Headless Oracle · https://headlessoracle.com/witness
 
 Agent logs your auditor can check without trusting you.
 
@@ -8,13 +8,8 @@ Chirindo signs each agent action into a hash-chained log. Witness signs a receip
 
 Checking is free, with open-source tools, and an auditor can fetch the receipts from Witness directly instead of taking them from the operator.
 
-- [Get a free checkpoint](https://headlessoracle.com/#start): free checkpoints need no account and come from a shared pool of 2,000 a UTC day.
+- [Get a free checkpoint](https://headlessoracle.com/witness#start): free checkpoints need no account and come from a shared pool of 2,000 a UTC day.
 - [Evidence Starter, $49/month](https://headlessoracle.com/pricing#witness): paid plans get their own key and quota.
-- [Verify a receipt in your browser](https://headlessoracle.com/verify).
-
-## The problem
-
-An agent's log is kept by the team that runs the agent. Signing each entry and chaining the hashes catches an edit in the middle, but not the last entries being cut off, and not a history rewritten and re-signed by whoever holds the key. An auditor handed the file cannot tell what it looked like before.
 
 ## How it works
 
@@ -69,17 +64,14 @@ npx -y @headlessoracle/chirindo verify .gate/sessions/<session-id>.jsonl --key .
 
 Sending checkpoints to Witness from the gate (`chirindo checkpoint`, `proxy --checkpoint-every`) is on the main branch of the [Chirindo repository](https://github.com/LembaGang/chirindo); the current npm release, 0.4.0, does not include it yet.
 
-## For auditors and insurers
+## Test kit and spec
 
-1. Ask for the complete session log, then fetch its receipts from Witness yourself. A receipt file supplied by the operator relies on the operator; a query to `api.headlessoracle.com` does not.
-2. Run the open-source verifier offline. A log cut short, or rewritten before a witnessed checkpoint, fails and names the lowest failing count.
-3. Compare each `received_at` with the entries' times. That gap is the window in which history could have been rewritten before anyone witnessed it.
+- [Test kit: five tampering cases and an untouched control, chain alone against witnessed](https://github.com/LembaGang/chirindo/tree/main/examples/e015-4-kit)
+- The [Witness spec](https://api.headlessoracle.com/v1/witness/spec) is machine-readable: request format, every check in order, receipt format, signing and its limits.
+- [Check a log against its witness receipt in your browser](https://headlessoracle.com/verify), or offline with [@headlessoracle/receipt-verify](https://www.npmjs.com/package/@headlessoracle/receipt-verify) and `chirindo verify`.
+- [For auditors and insurers: checking a log without relying on the operator](https://headlessoracle.com/auditors)
 
-[Test kit: five tampering cases and an untouched control, chain alone against witnessed](https://github.com/LembaGang/chirindo/tree/main/examples/e015-4-kit)
-
-[Step by step, including how to fetch receipts from Witness yourself](https://headlessoracle.com/auditors)
-
-## Pricing
+## Plans
 
 | Plan | Price | What you get |
 |---|---|---|
@@ -89,38 +81,4 @@ Sending checkpoints to Witness from the gate (`chirindo checkpoint`, `proxy --ch
 | Evidence pilot | $4,900 fixed | For a team in its audit window, scope agreed by conversation |
 | Annual programmes | $60,000 or $150,000 a year | By invoice, after a conversation |
 
-Evidence Starter and Evidence prices are introductory until 31 December 2026. Checking receipts is always free. [All plans and terms](https://headlessoracle.com/pricing)
-
-## Check our work
-
-- **Source:** [github.com/LembaGang/chirindo](https://github.com/LembaGang/chirindo), the gate and the witness client. [github.com/LembaGang/receipt-verify](https://github.com/LembaGang/receipt-verify), the verifier. Both Apache-2.0.
-- **Signed commits:** Every commit in receipt-verify is SSH-signed. `sh tools/verify-history.sh` checks the whole history against the key in `SIGNING_KEYS`, fingerprint `SHA256:KFZr0BiXIrvl/hsri0vzciGsj+suWiBqHYBwdnnyJXg`. Chirindo commits since 24 July 2026 are signed with the same key.
-- **Packages:** [@headlessoracle/chirindo](https://www.npmjs.com/package/@headlessoracle/chirindo) and [@headlessoracle/receipt-verify](https://www.npmjs.com/package/@headlessoracle/receipt-verify) on npm.
-- **Specification:** The [Witness spec](https://api.headlessoracle.com/v1/witness/spec) is machine-readable: request format, every check in order, receipt format, signing and its limits.
-- **Standards:** Headless Oracle co-authors the IETF draft family defining environmental constraints for Verifiable Intent.
-- **Who:** [Mike Msebenzi, founder](https://headlessoracle.com/about). mike@headlessoracle.com
-
-## For agents
-
-- llms.txt: [https://headlessoracle.com/llms.txt](https://headlessoracle.com/llms.txt)
-- OpenAPI: [https://headlessoracle.com/openapi.json](https://headlessoracle.com/openapi.json)
-- Pricing (JSON): [https://headlessoracle.com/v5/pricing](https://headlessoracle.com/v5/pricing)
-- MCP: [https://headlessoracle.com/mcp](https://headlessoracle.com/mcp)
-- x402: [https://headlessoracle.com/.well-known/x402.json](https://headlessoracle.com/.well-known/x402.json)
-- Witness spec: [https://api.headlessoracle.com/v1/witness/spec](https://api.headlessoracle.com/v1/witness/spec)
-
-## Also from Headless Oracle
-
-Signed market-state receipts for 28 venues: whether an exchange is open, closed or halted, signed with Ed25519, for agents that trade. [Market-state docs](https://headlessoracle.com/docs)
-
-## Site
-
-- [Home](https://headlessoracle.com/)
-- [Chirindo Witness](https://headlessoracle.com/witness)
-- [Verify](https://headlessoracle.com/verify)
-- [For auditors](https://headlessoracle.com/auditors)
-- [Pricing](https://headlessoracle.com/pricing)
-- [Docs](https://headlessoracle.com/docs)
-- [Terms](https://headlessoracle.com/terms)
-- [Privacy](https://headlessoracle.com/privacy)
-- [Refund](https://headlessoracle.com/refund)
+Evidence Starter and Evidence prices are introductory until 31 December 2026. Checking receipts is always free. [All plans and terms](https://headlessoracle.com/pricing#witness)

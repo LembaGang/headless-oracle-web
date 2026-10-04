@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
     <title>Essays | Headless Oracle</title>
     <meta name="description" content="Long-form architectural arguments published by Headless Oracle. The delivery-integrity gap above x402, environment-state attestation, the Trust Primitive, and the constraint family for autonomous agent commerce.">
     <meta name="robots" content="index, follow">
@@ -17,19 +18,21 @@
     <meta name="twitter:description" content="Architectural arguments on the delivery-integrity gap above x402, environment-state attestation, and autonomous agent commerce.">
     <meta name="twitter:image" content="https://headlessoracle.com/og-image.png">
     <link rel="canonical" href="https://headlessoracle.com/essays/">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/site.css">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; }
-        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .serif { font-family: 'Source Serif 4', Georgia, serif; }
+        .doc .essay-list { list-style: none; margin: 0; padding: 0; }
+        .doc .essay-list > li { margin: 0; }
+        .doc .essay-list > li + li { margin-top: 16px; }
+        .essay-list h2 { font-size: var(--step-2); font-weight: 600; line-height: 1.3; margin: 0 0 6px; }
+        .essay-list .kicker { margin-bottom: 10px; }
+        .essay-list .byline { margin: 0 0 10px; }
+        .essays-note { margin-top: 40px; }
     </style>
 </head>
-<body class="text-slate-300 min-h-screen flex flex-col">
+<body>
 
     <a class="skip" href="#main">Skip to content</a>
 
@@ -38,21 +41,21 @@
     <a class="wordmark" href="/">Headless Oracle</a>
     <nav aria-label="Main">
       <ul class="nav-list nav-wide">
-        <li><a href="C:/Program Files/Git/#how">Witness</a></li>
+        <li><a href="/witness">Witness</a></li>
         <li><a href="/verify">Verify</a></li>
         <li><a href="/pricing">Pricing</a></li>
         <li><a href="/docs">Docs</a></li>
-        <li><a href="C:/Program Files/Git/#auditors">For auditors</a></li>
+        <li><a href="/auditors">For auditors</a></li>
         <li><a href="https://github.com/LembaGang">GitHub</a></li>
       </ul>
       <details class="nav-small">
         <summary>Menu</summary>
         <ul>
-          <li><a href="C:/Program Files/Git/#how">Witness</a></li>
+          <li><a href="/witness">Witness</a></li>
           <li><a href="/verify">Verify</a></li>
           <li><a href="/pricing">Pricing</a></li>
           <li><a href="/docs">Docs</a></li>
-          <li><a href="C:/Program Files/Git/#auditors">For auditors</a></li>
+          <li><a href="/auditors">For auditors</a></li>
           <li><a href="https://github.com/LembaGang">GitHub</a></li>
         </ul>
       </details>
@@ -60,82 +63,59 @@
   </div>
 </header>
 
-    <main id="main" class="flex-grow max-w-3xl mx-auto w-full px-6 py-16">
+    <main id="main">
+    <div class="wrap page-head">
+        <h1>Essays</h1>
+        <div class="lede"><p>Long-form architectural arguments on the primitives, protocols, and standards work behind verifiable agent commerce.</p></div>
+    </div>
 
-        <header class="mb-14">
-            <h1 class="text-5xl font-bold text-white mb-4 tracking-tight">Essays</h1>
-            <p class="text-lg text-slate-400">Long-form architectural arguments on the primitives, protocols, and standards work behind verifiable agent commerce.</p>
-        </header>
+    <div class="wrap page-body">
+      <div class="doc">
+        <ol class="essay-list">
 
         <!-- Essay 1: x402 Delivery Integrity (NEW) -->
-        <article class="mb-12">
-            <a href="/essays/x402-delivery-integrity" class="block group">
-                <div class="glass rounded-xl p-7 hover:bg-white/[0.08] transition">
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <span class="text-xs font-mono px-2 py-1 rounded-full bg-blue-900/40 border border-blue-500/30 text-blue-400 font-semibold">Architecture</span>
-                        <span class="text-xs font-mono px-2 py-1 rounded-full bg-cyan-900/40 border border-cyan-500/30 text-cyan-300 font-semibold">x402</span>
-                        <span class="text-xs font-mono px-2 py-1 rounded-full bg-emerald-900/40 border border-emerald-500/30 text-emerald-300 font-semibold">v1.0.0 — new</span>
-                    </div>
-                    <h2 class="text-3xl font-bold text-white mb-3 tracking-tight group-hover:text-blue-300 transition">Agents Pay Trustlessly. Then They Act on State They Can't Verify.</h2>
-                    <div class="text-xs font-mono text-slate-500 mb-4">
-                        <span class="text-slate-400">Michael Msebenzi</span>
-                        <span class="mx-2 text-slate-700">·</span>
-                        <time datetime="2026-06-15">June 15, 2026</time>
-                    </div>
-                    <p class="serif text-slate-300 leading-relaxed mb-4">The agentic-payment stack has a hole in it, and it sits one layer above the part everyone is building. x402 made the payment trustless. The state an agent acts on afterward is still unsigned, unverifiable, and fetched from parties with a stake in the outcome. The structural case for a neutral delivery-integrity layer — with a working reference implementation across 28 venues.</p>
-                    <span class="text-sm text-blue-400 font-semibold">Read essay &rarr;</span>
-                </div>
+        <li>
+            <a href="/essays/x402-delivery-integrity" class="panel">
+                <p class="kicker row"><span>Architecture</span><span>x402</span><span>v1.0.0 — new</span></p>
+                <h2>Agents Pay Trustlessly. Then They Act on State They Can't Verify.</h2>
+                <p class="byline">Michael Msebenzi · <time datetime="2026-06-15">June 15, 2026</time></p>
+                <p>The agentic-payment stack has a hole in it, and it sits one layer above the part everyone is building. x402 made the payment trustless. The state an agent acts on afterward is still unsigned, unverifiable, and fetched from parties with a stake in the outcome. The structural case for a neutral delivery-integrity layer — with a working reference implementation across 28 venues.</p>
+                <span class="small">Read essay &rarr;</span>
             </a>
-        </article>
+        </li>
 
         <!-- Essay 2: Internet-Draft -->
-        <article class="mb-12">
-            <a href="/essays/environment-internet-draft" class="block group">
-                <div class="glass rounded-xl p-7 hover:bg-white/[0.08] transition">
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <span class="text-xs font-mono px-2 py-1 rounded-full bg-blue-900/40 border border-blue-500/30 text-blue-400 font-semibold">IETF</span>
-                        <span class="text-xs font-mono px-2 py-1 rounded-full bg-indigo-900/40 border border-indigo-500/30 text-indigo-300 font-semibold">Internet-Draft</span>
-                        <span class="text-xs font-mono px-2 py-1 rounded-full bg-slate-700/60 border border-slate-600/40 text-slate-300 font-semibold">v1.0.0</span>
-                    </div>
-                    <h2 class="text-3xl font-bold text-white mb-3 tracking-tight group-hover:text-blue-300 transition">environment.* is now an Internet-Draft</h2>
-                    <div class="text-xs font-mono text-slate-500 mb-4">
-                        <span class="text-slate-400">Michael Msebenzi</span>
-                        <span class="mx-2 text-slate-700">·</span>
-                        <time datetime="2026-05-13">May 13, 2026</time>
-                    </div>
-                    <p class="serif text-slate-300 leading-relaxed mb-4">On May 11, 2026, the family-definition specification for the <code class="font-mono text-blue-300 text-sm bg-white/5 px-1 rounded">environment.*</code> constraint family was filed with the IETF. This is a short post explaining what the document does, what it doesn't do, and why a family-definition is the load-bearing artifact rather than any single constraint type.</p>
-                    <span class="text-sm text-blue-400 font-semibold">Read essay &rarr;</span>
-                </div>
+        <li>
+            <a href="/essays/environment-internet-draft" class="panel">
+                <p class="kicker row"><span>IETF</span><span>Internet-Draft</span><span>v1.0.0</span></p>
+                <h2>environment.* is now an Internet-Draft</h2>
+                <p class="byline">Michael Msebenzi · <time datetime="2026-05-13">May 13, 2026</time></p>
+                <p>On May 11, 2026, the family-definition specification for the <code>environment.*</code> constraint family was filed with the IETF. This is a short post explaining what the document does, what it doesn't do, and why a family-definition is the load-bearing artifact rather than any single constraint type.</p>
+                <span class="small">Read essay &rarr;</span>
             </a>
-        </article>
+        </li>
 
         <!-- Essay 3: Trust Primitive -->
-        <article class="mb-12">
-            <a href="/essays/trust-primitive" class="block group">
-                <div class="glass rounded-xl p-7 hover:bg-white/[0.08] transition">
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <span class="text-xs font-mono px-2 py-1 rounded-full bg-blue-900/40 border border-blue-500/30 text-blue-400 font-semibold">Architecture</span>
-                        <span class="text-xs font-mono px-2 py-1 rounded-full bg-slate-700/60 border border-slate-600/40 text-slate-300 font-semibold">v1.6.4</span>
-                    </div>
-                    <h2 class="text-3xl font-bold text-white mb-3 tracking-tight group-hover:text-blue-300 transition">The Trust Primitive: Why Agent Commerce Needs Environment-State Attestation</h2>
-                    <div class="text-xs font-mono text-slate-500 mb-4">
-                        <span class="text-slate-400">Michael Msebenzi</span>
-                        <span class="mx-2 text-slate-700">·</span>
-                        <time datetime="2026-04-28">April 28, 2026</time>
-                    </div>
-                    <p class="serif text-slate-300 leading-relaxed mb-4">When intelligence is cheap, what becomes expensive is verification. The architectural argument for environment-state attestation as a distinct primitive alongside identity, payments, governance, and provenance — with reference implementations on both sides and a coordinated constraint family on the Mastercard-maintained Verifiable Intent repository.</p>
-                    <span class="text-sm text-blue-400 font-semibold">Read essay &rarr;</span>
-                </div>
+        <li>
+            <a href="/essays/trust-primitive" class="panel">
+                <p class="kicker row"><span>Architecture</span><span>v1.6.4</span></p>
+                <h2>The Trust Primitive: Why Agent Commerce Needs Environment-State Attestation</h2>
+                <p class="byline">Michael Msebenzi · <time datetime="2026-04-28">April 28, 2026</time></p>
+                <p>When intelligence is cheap, what becomes expensive is verification. The architectural argument for environment-state attestation as a distinct primitive alongside identity, payments, governance, and provenance — with reference implementations on both sides and a coordinated constraint family on the Mastercard-maintained Verifiable Intent repository.</p>
+                <span class="small">Read essay &rarr;</span>
             </a>
-        </article>
+        </li>
+        </ol>
 
         <!-- Provenance note -->
-        <aside class="glass rounded-xl p-6 mt-14 text-sm">
-            <div class="text-xs font-mono text-slate-500 uppercase tracking-wider mb-3">Provenance &amp; source</div>
-            <p class="text-slate-400 leading-relaxed">Canonical markdown sources are committed to <a href="https://github.com/headlessoracle/essays" target="_blank" rel="noopener" class="text-blue-400 hover:text-blue-300">github.com/headlessoracle/essays</a>. Each essay carries an immutable tagged release. Subsequent revisions ship as new tags; prior tags are never overwritten.</p>
-            <p class="text-xs text-slate-500 mt-3">Prose licensed under CC BY 4.0. Code samples MIT.</p>
+        <aside class="note essays-note">
+            <p class="note-title">Provenance &amp; source</p>
+            <p>Canonical markdown sources are committed to <a href="https://github.com/headlessoracle/essays" target="_blank" rel="noopener">github.com/headlessoracle/essays</a>. Each essay carries an immutable tagged release. Subsequent revisions ship as new tags; prior tags are never overwritten.</p>
+            <p class="small muted">Prose licensed under CC BY 4.0. Code samples MIT.</p>
         </aside>
 
+      </div>
+    </div>
     </main>
 
     <footer class="site-foot">

@@ -28,7 +28,7 @@
  *
  * Usage:
  *   node scripts/check-prices.mjs [--page=dist/pricing.html] [--api=https://headlessoracle.com/v5/pricing]
- *     [--offer-pages=dist/index.html,dist/pricing.html]   JSON-LD Offers held to the API too
+ *     [--offer-pages=dist/index.html,dist/pricing.html,dist/witness.html]   JSON-LD Offers held to the API too
  */
 
 import { readFileSync } from 'node:fs';
@@ -382,7 +382,7 @@ async function main() {
  * prices without ever opening /pricing, so a stale literal there misleads exactly them.
  * Every Offer must carry a `sku` naming an API tier id; a listed page with no Offers fails.
  */
-const DEFAULT_OFFER_PAGES = ['dist/index.html', 'dist/pricing.html'];
+const DEFAULT_OFFER_PAGES = ['dist/index.html', 'dist/pricing.html', 'dist/witness.html'];
 
 function jsonLdBlocks(html, page) {
   const out = [];

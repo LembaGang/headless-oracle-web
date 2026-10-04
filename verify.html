@@ -4,59 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Receipt Verifier | Headless Oracle</title>
-    <meta name="description" content="Verify Ed25519-signed market-state attestations from Headless Oracle. Paste a signed receipt JSON and verify the cryptographic signature against the live public key.">
+    <meta name="description" content="Verify receipts in your browser: a Chirindo agent log against its Witness receipt (signatures, hash links, the witnessed count and head), and Ed25519-signed market-state receipts. Nothing is uploaded.">
     <meta name="robots" content="index, follow">
+    <meta name="color-scheme" content="light dark">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://headlessoracle.com/verify">
     <meta property="og:title" content="Receipt Verifier | Headless Oracle">
-    <meta property="og:description" content="Verify Ed25519-signed market-state attestations. Cryptographic proof of market state for autonomous agents.">
+    <meta property="og:description" content="Check a Chirindo agent log against its Witness receipt, or a signed market-state receipt, in your browser.">
     <meta property="og:image" content="https://headlessoracle.com/og-image.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Receipt Verifier | Headless Oracle">
-    <meta name="twitter:description" content="Verify Ed25519-signed market-state attestations. Cryptographic proof in your browser.">
+    <meta name="twitter:description" content="Check a Chirindo agent log against its Witness receipt, or a signed market-state receipt, in your browser.">
     <meta name="twitter:image" content="https://headlessoracle.com/og-image.png">
     <link rel="canonical" href="https://headlessoracle.com/verify">
     <link rel="alternate" type="application/json" href="/openapi.json" title="OpenAPI 3.1 specification">
     <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt — machine-readable API summary">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/site.css">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; }
-        .glass {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
+        .verify-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 33rem); gap: 24px clamp(24px, 4vw, 56px); align-items: start; }
+        @media (max-width: 980px) { .verify-grid { grid-template-columns: minmax(0, 1fr); } }
+        #w-entries .entry-gloss { justify-content: flex-end; }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-300 min-h-screen flex flex-col">
-
-    <a class="skip" href="#main">Skip to content</a>
+<body>
+<a class="skip" href="#main">Skip to content</a>
 
 <header class="site-head">
   <div class="wrap">
     <a class="wordmark" href="/">Headless Oracle</a>
     <nav aria-label="Main">
       <ul class="nav-list nav-wide">
-        <li><a href="C:/Program Files/Git/#how">Witness</a></li>
+        <li><a href="/witness">Witness</a></li>
         <li><a href="/verify" aria-current="page">Verify</a></li>
         <li><a href="/pricing">Pricing</a></li>
         <li><a href="/docs">Docs</a></li>
-        <li><a href="C:/Program Files/Git/#auditors">For auditors</a></li>
+        <li><a href="/auditors">For auditors</a></li>
         <li><a href="https://github.com/LembaGang">GitHub</a></li>
       </ul>
       <details class="nav-small">
         <summary>Menu</summary>
         <ul>
-          <li><a href="C:/Program Files/Git/#how">Witness</a></li>
+          <li><a href="/witness">Witness</a></li>
           <li><a href="/verify" aria-current="page">Verify</a></li>
           <li><a href="/pricing">Pricing</a></li>
           <li><a href="/docs">Docs</a></li>
-          <li><a href="C:/Program Files/Git/#auditors">For auditors</a></li>
+          <li><a href="/auditors">For auditors</a></li>
           <li><a href="https://github.com/LembaGang">GitHub</a></li>
         </ul>
       </details>
@@ -64,64 +59,149 @@
   </div>
 </header>
 
-    <main id="main" class="flex-grow flex flex-col items-center justify-center p-4">
-        <div class="max-w-3xl w-full">
+<main id="main">
 
-            <div class="mb-6 p-4 rounded-lg border border-blue-500/40 bg-blue-900/20 text-blue-100 text-sm">
-                <strong class="text-white">Looking for an independent verifier?</strong>
-                For an independent client-side verifier on a separate trust boundary, see
-                <a href="https://verify.headlessoracle.com" target="_blank" rel="noopener" class="underline text-blue-300 hover:text-white">verify.headlessoracle.com</a>
-                &mdash; same Ed25519 verification, served from a separate Cloudflare Pages deployment, source at
-                <a href="https://github.com/headlessoracle/verify" target="_blank" rel="noopener" class="underline text-blue-300 hover:text-white">github.com/headlessoracle/verify</a>.
-            </div>
-
-            <h1 class="text-3xl font-bold text-white mb-2 text-center">Verify Signed Market-State Attestation</h1>
-            <p class="text-center text-slate-500 mb-8">
-                Paste a signed receipt JSON below to independently verify its Ed25519 signature using the Web Crypto API.
-                <br>This happens entirely in your browser. No data is sent to our servers.
-            </p>
-
-            <div id="browser-warning" class="hidden mb-6 p-4 rounded-lg border border-yellow-500 bg-yellow-900/20 text-yellow-200 text-sm text-center">
-                ⚠️ <strong>Browser Incompatible:</strong> Your browser doesn't support Ed25519. Please use Chrome 113+, Firefox 128+, or the latest Safari.
-            </div>
-
-            <div class="glass rounded-xl p-6 mb-6">
-                <div class="flex justify-between items-center mb-2">
-                    <label class="block text-sm font-bold text-white">Signed Receipt (JSON)</label>
-                    <button id="fetch-demo-btn" class="text-xs bg-slate-700 hover:bg-slate-600 text-blue-400 px-3 py-1 rounded-md transition font-medium">
-                        Fetch &amp; Verify Live Receipt
-                    </button>
-                </div>
-                <textarea id="receipt-input" rows="8"
-                    class="w-full bg-slate-800 border border-slate-700 rounded-lg p-4 font-mono text-xs text-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
-                    placeholder='{ "receipt_id": "...", "signature": "..." }'></textarea>
-            </div>
-
-            <div class="glass rounded-xl p-6 mb-8">
-                <label class="block text-sm font-bold text-white mb-2">Oracle Public Key (hex or PEM)</label>
-                <textarea id="public-key-input" rows="3"
-                    class="w-full bg-slate-800 border border-slate-700 rounded-lg p-4 font-mono text-xs text-slate-400 focus:ring-2 focus:ring-blue-500 outline-none"
-                    placeholder="03dc27993a2c90856cdeb45e228ac065f18f69f0933c917b2336c1e75712f178"></textarea>
-                <p class="text-xs text-slate-600 mt-2">
-                    Hex is the canonical format. PEM/SPKI is also accepted as a legacy fallback. Public keys are published at
-                    <a href="/.well-known/oracle-keys.json" target="_blank" class="underline text-blue-500">/.well-known/oracle-keys.json</a> (RFC 8615).
-                </p>
-            </div>
-
-            <button id="verify-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-lg transition mb-8 shadow-lg shadow-blue-900/20">
-                Verify Signature
-            </button>
-
-            <div id="result-area" class="hidden rounded-xl p-6 border text-center transition-all">
-                <div id="result-icon" class="text-6xl mb-4"></div>
-                <h2 id="result-title" class="text-2xl font-bold mb-2"></h2>
-                <p id="result-desc" class="text-sm"></p>
-            </div>
-
+    <div class="wrap page-head">
+        <p class="kicker">Verify</p>
+        <h1>Check a receipt in your browser.</h1>
+        <div class="lede">
+            <p>Two kinds of receipt: a Chirindo agent log with its Witness receipt, and a signed market-state receipt. The checks run on your machine with WebCrypto; nothing you paste is sent anywhere.</p>
         </div>
-    </main>
+    </div>
 
-    <footer class="site-foot">
+    <!-- ==================== CHIRINDO / WITNESS ==================== -->
+    <section class="section" id="witness-log" aria-labelledby="h-witness-log">
+        <div class="wrap sec-grid">
+            <div class="sec-num">Chirindo log + Witness receipt</div>
+            <div class="sec-body">
+                <h2 id="h-witness-log">An agent log against its witness receipt</h2>
+                <div class="verify-grid">
+                    <div>
+                        <div class="prose small">
+                            <p>Paste or drop a JSON bundle with four members: <code>entries</code> (the log, in order), <code>checkpoint</code> (signed with the operator key), <code>operator_public_key_jwk</code> and <code>witness_receipt</code>. The Witness public key is not taken from the bundle: this page fetches it from <a href="https://api.headlessoracle.com/v5/keys">api.headlessoracle.com/v5/keys</a>.</p>
+                        </div>
+                        <div class="field dropzone" id="w-drop">
+                            <label for="w-input" class="field-label">Bundle (JSON)</label>
+                            <textarea id="w-input" rows="12" class="input" spellcheck="false" placeholder='{ "entries": [...], "checkpoint": {...}, "operator_public_key_jwk": {...}, "witness_receipt": {...} }'></textarea>
+                            <p class="small muted" style="margin:8px 0 0">Or drop a .json file here, or <label for="w-file" class="linkish">choose a file</label>.<input type="file" id="w-file" accept="application/json,.json" class="visually-hidden"></p>
+                        </div>
+                        <div class="controls" style="margin-top:12px">
+                            <button type="button" class="btn" id="w-check">Check the bundle</button>
+                            <button type="button" class="btn btn--line" id="w-example">Load an example</button>
+                        </div>
+                        <div id="w-keyfallback" class="note note--fail" hidden>
+                            <p class="note-title">The Witness key could not be fetched</p>
+                            <p id="w-keyfallback-text">This browser could not reach api.headlessoracle.com/v5/keys, so the witness receipt has not been checked.</p>
+                            <p>Open <a href="https://api.headlessoracle.com/v5/keys">api.headlessoracle.com/v5/keys</a> yourself and paste the <code>public_key</code> (hex) of the entry whose <code>key_id</code> matches the receipt's <code>public_key_id</code>, or check offline with <code>chirindo verify</code> from the <a href="https://github.com/LembaGang/chirindo">Chirindo repository</a>.</p>
+                            <div class="row">
+                                <label for="w-key" class="visually-hidden">Witness public key (hex)</label>
+                                <input id="w-key" type="text" class="input mono" style="flex:1 1 18rem" placeholder="64 hex characters" spellcheck="false">
+                                <button type="button" class="btn btn--line" id="w-key-use">Use this key</button>
+                            </div>
+                        </div>
+                        <p class="small muted" style="margin-top:16px">The checks are the ones on the <a href="/">homepage</a> receipt card. What they do and do not show is set out under <a href="/witness#limits">what a witness receipt is, and what it is not</a>.</p>
+                    </div>
+
+                    <article class="card" id="w-card" aria-labelledby="w-card-title">
+                        <div class="card-head">
+                            <h3 id="w-card-title" style="font-size:var(--step-0);font-weight:600">Result</h3>
+                            <p id="w-card-sub">Load the example or paste a bundle.</p>
+                        </div>
+                        <div class="card-sec">
+                            <p class="sec-label">Log entries</p>
+                            <ol class="entries" id="w-entries"></ol>
+                        </div>
+                        <div class="card-sec">
+                            <dl class="kv" id="w-kv"></dl>
+                        </div>
+                        <div class="unsupported" id="w-unsupported" hidden>
+                            <p style="margin:0">This browser cannot check Ed25519 signatures with WebCrypto, so the receipt has not been checked here. Check the log offline with <a href="https://www.npmjs.com/package/@headlessoracle/receipt-verify">@headlessoracle/receipt-verify</a> on npm, and the witness receipt with <code>chirindo verify</code> from <a href="https://github.com/LembaGang/chirindo">the Chirindo repository</a>.</p>
+                        </div>
+                        <div class="card-sec">
+                            <p class="sec-label">Checks run by this page</p>
+                            <ol class="checks" id="w-checks">
+                                <li class="check" data-state="pending"><span aria-hidden="true"><svg class="mark-wait" viewBox="0 0 16 16"><circle class="mk-wait" cx="8" cy="8" r="5.5"/></svg><svg class="mark-run" viewBox="0 0 16 16"><circle class="mk-track" cx="8" cy="8" r="5.5"/><path class="mk-arc" d="M8 2.5a5.5 5.5 0 0 1 5.5 5.5"/></svg><svg class="mark-pass" viewBox="0 0 16 16"><circle class="mk-pass" cx="8" cy="8" r="7"/><path class="mk-pass" d="M4.8 8.3l2.2 2.2 4.3-4.7"/></svg><svg class="mark-fail" viewBox="0 0 16 16"><circle class="mk-fail" cx="8" cy="8" r="7"/><path class="mk-fail" d="M5.6 5.6l4.8 4.8M10.4 5.6l-4.8 4.8"/></svg></span><span><span class="check-text">Entries signed by the operator key and hash-linked</span><span class="check-detail"></span></span></li>
+                                <li class="check" data-state="pending"><span aria-hidden="true"><svg class="mark-wait" viewBox="0 0 16 16"><circle class="mk-wait" cx="8" cy="8" r="5.5"/></svg><svg class="mark-run" viewBox="0 0 16 16"><circle class="mk-track" cx="8" cy="8" r="5.5"/><path class="mk-arc" d="M8 2.5a5.5 5.5 0 0 1 5.5 5.5"/></svg><svg class="mark-pass" viewBox="0 0 16 16"><circle class="mk-pass" cx="8" cy="8" r="7"/><path class="mk-pass" d="M4.8 8.3l2.2 2.2 4.3-4.7"/></svg><svg class="mark-fail" viewBox="0 0 16 16"><circle class="mk-fail" cx="8" cy="8" r="7"/><path class="mk-fail" d="M5.6 5.6l4.8 4.8M10.4 5.6l-4.8 4.8"/></svg></span><span><span class="check-text">Checkpoint signed by the operator key</span><span class="check-detail"></span></span></li>
+                                <li class="check" data-state="pending"><span aria-hidden="true"><svg class="mark-wait" viewBox="0 0 16 16"><circle class="mk-wait" cx="8" cy="8" r="5.5"/></svg><svg class="mark-run" viewBox="0 0 16 16"><circle class="mk-track" cx="8" cy="8" r="5.5"/><path class="mk-arc" d="M8 2.5a5.5 5.5 0 0 1 5.5 5.5"/></svg><svg class="mark-pass" viewBox="0 0 16 16"><circle class="mk-pass" cx="8" cy="8" r="7"/><path class="mk-pass" d="M4.8 8.3l2.2 2.2 4.3-4.7"/></svg><svg class="mark-fail" viewBox="0 0 16 16"><circle class="mk-fail" cx="8" cy="8" r="7"/><path class="mk-fail" d="M5.6 5.6l4.8 4.8M10.4 5.6l-4.8 4.8"/></svg></span><span><span class="check-text">Receipt signed by Witness, naming this checkpoint</span><span class="check-detail"></span></span></li>
+                                <li class="check" data-state="pending"><span aria-hidden="true"><svg class="mark-wait" viewBox="0 0 16 16"><circle class="mk-wait" cx="8" cy="8" r="5.5"/></svg><svg class="mark-run" viewBox="0 0 16 16"><circle class="mk-track" cx="8" cy="8" r="5.5"/><path class="mk-arc" d="M8 2.5a5.5 5.5 0 0 1 5.5 5.5"/></svg><svg class="mark-pass" viewBox="0 0 16 16"><circle class="mk-pass" cx="8" cy="8" r="7"/><path class="mk-pass" d="M4.8 8.3l2.2 2.2 4.3-4.7"/></svg><svg class="mark-fail" viewBox="0 0 16 16"><circle class="mk-fail" cx="8" cy="8" r="7"/><path class="mk-fail" d="M5.6 5.6l4.8 4.8M10.4 5.6l-4.8 4.8"/></svg></span><span><span class="check-text">Log at the witnessed count matches what Witness saw</span><span class="check-detail"></span></span></li>
+                            </ol>
+                        </div>
+                        <div class="verdict" id="w-verdict" data-state="idle" aria-live="polite">
+                            <p class="verdict-word" id="w-verdict-word">NOT CHECKED</p>
+                            <p class="verdict-text" id="w-verdict-text">Nothing has been checked yet.</p>
+                        </div>
+                        <div class="card-sec">
+                            <div class="controls">
+                                <button type="button" class="btn btn--line btn--small" id="w-cut" disabled>Cut the last entry</button>
+                                <button type="button" class="btn btn--line btn--small" id="w-fetch" disabled>Use the receipt Witness returns</button>
+                                <button type="button" class="btn btn--line btn--small" id="w-restore" hidden>Restore</button>
+                            </div>
+                            <p class="controls-note" id="w-note"></p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== MARKET STATE ==================== -->
+    <section class="section" id="market-state" aria-labelledby="h-market-state">
+        <div class="wrap sec-grid">
+            <div class="sec-num">Market-state receipt</div>
+            <div class="sec-body">
+                <h2 id="h-market-state">Verify Signed Market-State Attestation</h2>
+                <div class="prose">
+                    <p>Paste a signed receipt JSON below to independently verify its Ed25519 signature using the Web Crypto API.
+                    This happens entirely in your browser. No data is sent to our servers.</p>
+                    <div class="note">
+                        <p><strong>Looking for an independent verifier?</strong>
+                        For an independent client-side verifier on a separate trust boundary, see
+                        <a href="https://verify.headlessoracle.com" target="_blank" rel="noopener">verify.headlessoracle.com</a>
+                        &mdash; same Ed25519 verification, served from a separate Cloudflare Pages deployment, source at
+                        <a href="https://github.com/headlessoracle/verify" target="_blank" rel="noopener">github.com/headlessoracle/verify</a>.</p>
+                    </div>
+                </div>
+
+                <div id="browser-warning" class="hidden note note--fail">
+                    <p><strong>Browser Incompatible:</strong> Your browser doesn't support Ed25519. Please use Chrome 113+, Firefox 128+, or the latest Safari.</p>
+                </div>
+
+                <div class="stack" style="max-width:72ch">
+                    <div class="field">
+                        <div class="row row--between">
+                            <label for="receipt-input" class="field-label">Signed Receipt (JSON)</label>
+                            <button id="fetch-demo-btn" class="btn btn--line btn--small">Fetch &amp; Verify Live Receipt</button>
+                        </div>
+                        <textarea id="receipt-input" rows="8" class="input" spellcheck="false"
+                            placeholder='{ "receipt_id": "...", "signature": "..." }'></textarea>
+                    </div>
+
+                    <div class="field">
+                        <label for="public-key-input" class="field-label">Oracle Public Key (hex or PEM)</label>
+                        <textarea id="public-key-input" rows="3" class="input" spellcheck="false"
+                            placeholder="03dc27993a2c90856cdeb45e228ac065f18f69f0933c917b2336c1e75712f178"></textarea>
+                        <p class="small muted" style="margin:6px 0 0">
+                            Hex is the canonical format. PEM/SPKI is also accepted as a legacy fallback. Public keys are published at
+                            <a href="/.well-known/oracle-keys.json" target="_blank">/.well-known/oracle-keys.json</a> (RFC 8615).
+                        </p>
+                    </div>
+
+                    <button id="verify-btn" class="btn">Verify Signature</button>
+
+                    <div id="result-area" class="hidden verdict">
+                        <p id="result-icon" class="verdict-word"></p>
+                        <h3 id="result-title" style="font-size:var(--step-1);font-weight:600;margin-top:8px"></h3>
+                        <p id="result-desc" class="verdict-text"></p>
+                    </div>
+                </div>
+                <p class="small muted" style="margin-top:24px">Verification runs locally via <a href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto">window.crypto.subtle</a>.</p>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="site-foot">
   <div class="wrap">
     <span class="mono">Headless Oracle</span>
     <ul class="foot-links">
@@ -133,7 +213,411 @@
   </div>
 </footer>
 
-    <script>
+<script id="ho-verify">
+/* Verification core. Plain WebCrypto, no libraries. The same text is run in Node
+   against the embedded data and the tampered variants before publishing. */
+var HOV = (function () {
+  "use strict";
+  var te = new TextEncoder();
+  var subtle = crypto.subtle;
+
+  // RFC 8785 (JCS) for the values these records use: objects, arrays, strings,
+  // integers, booleans, null. Keys sort by UTF-16 code units (default sort).
+  function jcs(v) {
+    if (v === null) return "null";
+    if (typeof v === "boolean") return v ? "true" : "false";
+    if (typeof v === "number") {
+      if (!isFinite(v)) throw new Error("non-finite number");
+      return JSON.stringify(v);
+    }
+    if (typeof v === "string") return JSON.stringify(v);
+    if (Array.isArray(v)) return "[" + v.map(jcs).join(",") + "]";
+    if (typeof v === "object") {
+      return "{" + Object.keys(v).filter(function (k) { return v[k] !== undefined; }).sort()
+        .map(function (k) { return JSON.stringify(k) + ":" + jcs(v[k]); }).join(",") + "}";
+    }
+    throw new Error("unsupported JSON value");
+  }
+  function without(o, key) {
+    var c = {};
+    Object.keys(o).forEach(function (k) { if (k !== key) c[k] = o[k]; });
+    return c;
+  }
+  function b64uToBytes(s) {
+    if (!/^[A-Za-z0-9_-]*$/.test(s)) throw new Error("not base64url");
+    var b64 = s.replace(/-/g, "+").replace(/_/g, "/");
+    while (b64.length % 4) b64 += "=";
+    var bin = atob(b64), out = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+  function bytesToB64u(b) {
+    var s = "";
+    for (var i = 0; i < b.length; i++) s += String.fromCharCode(b[i]);
+    return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  function hexToBytes(h) {
+    if (!/^([0-9a-f]{2})*$/.test(h)) throw new Error("not lowercase hex");
+    var out = new Uint8Array(h.length / 2);
+    for (var i = 0; i < out.length; i++) out[i] = parseInt(h.substr(i * 2, 2), 16);
+    return out;
+  }
+  function bytesToHex(b) {
+    var s = "";
+    for (var i = 0; i < b.length; i++) s += (b[i] < 16 ? "0" : "") + b[i].toString(16);
+    return s;
+  }
+  async function sha256(str) {
+    return new Uint8Array(await subtle.digest("SHA-256", te.encode(str)));
+  }
+  async function sha256Tag(str) { return "sha256:" + bytesToHex(await sha256(str)); }
+  async function importEd(raw) {
+    return subtle.importKey("raw", raw, { name: "Ed25519" }, false, ["verify"]);
+  }
+  async function edVerify(key, sigBytes, str) {
+    try { return await subtle.verify({ name: "Ed25519" }, key, sigBytes, te.encode(str)); }
+    catch (e) { return false; }
+  }
+  async function supported(d) {
+    try { await importEd(hexToBytes(d.witness_key.public_key_hex)); return true; }
+    catch (e) { return false; }
+  }
+  function short(h) { return h.replace(/^sha256:/, "").slice(0, 8) + "…"; }
+
+  // Runs the four checks. Returns { checks: [{ok, detail}], ok, reason, entryHashes }.
+  async function verifyAll(d, entries) {
+    var cp = d.checkpoint, rc = d.witness_receipt, jwk = d.operator_public_key_jwk;
+    var checks = [];
+    var kid = bytesToB64u(await sha256('{"crv":"Ed25519","kty":"OKP","x":"' + jwk.x + '"}'));
+    var opKey = await importEd(b64uToBytes(jwk.x));
+    var hoKey = await importEd(hexToBytes(d.witness_key.public_key_hex));
+
+    // 1. Entries: key binding, order, signature, link to the previous entry.
+    var problems = [], hashes = [];
+    if (!entries.length) problems.push("The log is empty.");
+    for (var i = 0; i < entries.length; i++) {
+      var r = entries[i], content = without(r, "sig"), canon = jcs(content);
+      hashes.push(await sha256Tag(canon));
+      var n = i + 1;
+      if (r.kid !== kid || r.key_thumbprint !== kid) problems.push("Entry " + n + " names a different key.");
+      if (r.seq !== i) problems.push("Entry " + n + " is out of order.");
+      if (r.session_id !== entries[0].session_id) problems.push("Entry " + n + " belongs to another session.");
+      var expectPrev = i === 0
+        ? await sha256Tag(jcs({ marker: "genesis", session_id: r.session_id, v: r.v }))
+        : hashes[i - 1];
+      if (r.prev_hash !== expectPrev) {
+        problems.push(i === 0 ? "Entry 1 does not start the chain." : "Entry " + n + " no longer links to entry " + i + ".");
+      }
+      var sigOk = false;
+      try { sigOk = await edVerify(opKey, b64uToBytes(r.sig), canon); } catch (e) { sigOk = false; }
+      if (!sigOk) problems.push("Entry " + n + "'s signature does not match its contents.");
+    }
+    checks.push({ ok: problems.length === 0, detail: problems.slice(0, 2).join(" ") });
+
+    // 2. Checkpoint: thumbprint and operator signature over JCS without sig.
+    var cpOk = cp.kid === kid && entries.length > 0 && cp.session_id === entries[0].session_id;
+    if (cpOk) { try { cpOk = await edVerify(opKey, b64uToBytes(cp.sig), jcs(without(cp, "sig"))); } catch (e) { cpOk = false; } }
+    checks.push({ ok: cpOk, detail: cpOk ? "" : "The checkpoint's signature or key does not match this log." });
+
+    // 3. Witness receipt: signature (hex) over sorted-key JSON of all fields
+    //    except signature, and that it names exactly this checkpoint.
+    var rcOk = typeof rc.signature === "string" && /^[0-9a-f]{128}$/.test(rc.signature);
+    if (rcOk) rcOk = await edVerify(hoKey, hexToBytes(rc.signature), jcs(without(rc, "signature")));
+    var names = rcOk &&
+      rc.type === "witness.checkpoint/1" && rc.witness === "headlessoracle.com" &&
+      rc.public_key_id === d.witness_key.key_id && rc.fork === "false" &&
+      rc.kid === cp.kid && rc.session_id === cp.session_id && rc.count === String(cp.count) &&
+      rc.last_entry_hash === cp.last_entry_hash && rc.checkpoint_ts === cp.ts &&
+      rc.checkpoint_sha256 === (await sha256Tag(jcs(cp)));
+    checks.push({ ok: !!names, detail: names ? "" : (rcOk ? "The receipt does not name this checkpoint." : "The receipt's signature does not verify under the Witness key.") });
+
+    // 4. The log at the witnessed count equals the witnessed head.
+    var count = Number(rc.count), headOk, headDetail = "";
+    if (!(count >= 1)) { headOk = false; headDetail = "The receipt has no count."; }
+    else if (count > entries.length) {
+      headOk = false;
+      headDetail = "The log has " + entries.length + " " + (entries.length === 1 ? "entry" : "entries") +
+        "; Witness saw a checkpoint over " + count + " at " + rc.received_at + ".";
+    } else {
+      headOk = hashes[count - 1] === rc.last_entry_hash && hashes[count - 1] === cp.last_entry_hash;
+      if (!headOk) headDetail = "Entry " + count + " now hashes to " + short(hashes[count - 1]) +
+        "; Witness saw " + short(rc.last_entry_hash) + " at " + rc.received_at + ".";
+    }
+    checks.push({ ok: headOk, detail: headDetail });
+
+    var ok = checks.every(function (c) { return c.ok; });
+    var reason = "";
+    if (!ok) {
+      if (!checks[0].ok) reason = "An entry was changed after it was signed. The chain catches this on its own; no witness is needed.";
+      else if (count > entries.length) reason = headDetail;
+      else if (!headOk) reason = "The log checks out on its own, because the key holder re-signed it. It no longer matches the head Witness saw at " + rc.received_at + ".";
+      else reason = checks.filter(function (c) { return !c.ok; })[0].detail;
+    }
+    return { checks: checks, ok: ok, reason: reason, entryHashes: hashes };
+  }
+
+  // The in-page "edit": what someone without the key can do to entry 3.
+  function editEntry(entries) {
+    var out = JSON.parse(JSON.stringify(entries));
+    var r = out[2];
+    r.event.outcome = "executed";
+    r.event.decision = "allow";
+    r.gate.result = "act";
+    return out;
+  }
+
+  return { jcs: jcs, verifyAll: verifyAll, editEntry: editEntry, supported: supported, short: short };
+})();
+</script>
+
+<script>
+/* Witness mode. The checks are HOV.verifyAll from the homepage (byte-identical script above).
+   The Witness public key comes from api.headlessoracle.com/v5/keys, never from the bundle:
+   a key supplied by the operator would make the check rely on the operator. */
+(function () {
+  "use strict";
+  var KEYS_URL = "https://api.headlessoracle.com/v5/keys";
+  var QUERY_URL = "https://api.headlessoracle.com/v1/witness/checkpoints";
+  var EXAMPLE_URL = "/examples/witness-demo-bundle.json";
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var $ = function (id) { return document.getElementById(id); };
+  var input = $("w-input"), verdict = $("w-verdict"), note = $("w-note");
+  var btnCheck = $("w-check"), btnExample = $("w-example"), btnCut = $("w-cut"), btnFetch = $("w-fetch"), btnRestore = $("w-restore");
+  var bundle = null;        // the parsed bundle as given
+  var receipt = null;       // the receipt in use (the bundle's, or the one Witness returned)
+  var entries = null;       // the entries in use (all, or cut)
+  var manualKey = null;     // hex pasted by the reader when /v5/keys is unreachable
+  var keyCache = null;
+  var runId = 0;
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  function parseBundle(text) {
+    var b;
+    try { b = JSON.parse(text); } catch (e) { throw new Error("The bundle is not valid JSON: " + e.message); }
+    if (!b || typeof b !== "object") throw new Error("The bundle must be a JSON object.");
+    if (!Array.isArray(b.entries) || !b.entries.length) throw new Error("The bundle has no entries array.");
+    if (!b.checkpoint || typeof b.checkpoint !== "object") throw new Error("The bundle has no checkpoint.");
+    if (!b.operator_public_key_jwk || typeof b.operator_public_key_jwk.x !== "string") throw new Error("The bundle has no operator_public_key_jwk with an x member.");
+    if (!b.witness_receipt || typeof b.witness_receipt !== "object") throw new Error("The bundle has no witness_receipt.");
+    return b;
+  }
+
+  // The Witness key whose key_id matches the receipt, from /v5/keys (or the reader's paste).
+  async function witnessKey(keyId) {
+    if (manualKey) return { key_id: keyId, public_key_hex: manualKey, source: "pasted by you" };
+    if (!keyCache) {
+      var res = await fetch(KEYS_URL, { cache: "no-store" });
+      if (!res.ok) throw new Error(KEYS_URL + " answered " + res.status);
+      keyCache = await res.json();
+    }
+    var k = (keyCache.keys || []).filter(function (x) { return x.key_id === keyId; })[0];
+    if (!k) throw new Error("No key with key_id " + keyId + " is listed at " + KEYS_URL + ". After a rotation only the new key is listed; a receipt signed earlier needs a copy of the old key pinned before rotation.");
+    return { key_id: k.key_id, public_key_hex: k.public_key, source: KEYS_URL };
+  }
+
+  function setChecks(state) {
+    $("w-checks").querySelectorAll(".check").forEach(function (li) { li.dataset.state = state; li.querySelector(".check-detail").textContent = ""; });
+  }
+  function setVerdict(state, word, text) {
+    verdict.dataset.state = state;
+    $("w-verdict-word").textContent = word;
+    $("w-verdict-text").textContent = text;
+  }
+
+  function renderEntries(list, hashes, cutFrom) {
+    var ol = $("w-entries");
+    ol.textContent = "";
+    var all = cutFrom != null ? bundle.entries : list;
+    all.forEach(function (r, i) {
+      var li = el("li", "entry");
+      if (cutFrom != null && i >= cutFrom) li.classList.add("is-cut");
+      var line = el("div", "entry-line");
+      line.appendChild(el("span", "n", String(i + 1)));
+      line.appendChild(el("span", "t", typeof r.ts === "string" ? r.ts.slice(11, 19) : "--:--:--"));
+      line.appendChild(el("span", "tool", r.event && r.event.tool_name ? r.event.tool_name : (r.event && r.event.type) || "entry"));
+      if (r.event && r.event.decision) line.appendChild(el("span", "dec " + r.event.decision, r.event.decision));
+      li.appendChild(line);
+      var g = el("div", "entry-gloss");
+      if (cutFrom != null && i >= cutFrom) g.appendChild(el("span", "tag-note", "removed"));
+      else if (hashes && hashes[i]) g.appendChild(el("span", "h", HOV.short(hashes[i])));
+      li.appendChild(g);
+      ol.appendChild(li);
+    });
+  }
+
+  function renderKV(cp, rc) {
+    var kv = $("w-kv");
+    kv.textContent = "";
+    function row(k, v, sub) {
+      kv.appendChild(el("dt", null, k));
+      var dd = el("dd");
+      dd.appendChild(document.createTextNode(v));
+      if (sub) { dd.appendChild(document.createElement("br")); dd.appendChild(el("span", "muted", sub)); }
+      kv.appendChild(dd);
+    }
+    row("checkpoint", "count " + cp.count + " · head " + (typeof cp.last_entry_hash === "string" ? HOV.short(cp.last_entry_hash) : "?"), "signed by the operator key");
+    row("witness", String(rc.received_at), "received_at, signed by Headless Oracle (" + rc.public_key_id + ")");
+  }
+
+  function setBusy(b) {
+    [btnCheck, btnExample, btnCut, btnFetch, btnRestore].forEach(function (x) { x.disabled = b; });
+  }
+
+  async function run(cutFrom) {
+    var my = ++runId;
+    setBusy(true);
+    $("w-keyfallback").hidden = true;
+    $("w-unsupported").hidden = true;
+    setChecks("pending");
+    setVerdict("checking", "CHECKING", "Running the four checks in your browser.");
+    renderKV(bundle.checkpoint, receipt);
+    var key;
+    try {
+      key = await witnessKey(receipt.public_key_id);
+    } catch (e) {
+      if (my !== runId) return;
+      $("w-keyfallback-text").textContent = "The Witness key could not be fetched (" + e.message + "), so the witness receipt has not been checked.";
+      $("w-keyfallback").hidden = false;
+      setChecks("pending");
+      setVerdict("idle", "NOT CHECKED", "The Witness public key is needed to check the receipt.");
+      renderEntries(entries, null, cutFrom);
+      setBusy(false);
+      return;
+    }
+    var d = { checkpoint: bundle.checkpoint, witness_receipt: receipt, operator_public_key_jwk: bundle.operator_public_key_jwk, witness_key: key };
+    if (!(await HOV.supported(d))) {
+      $("w-unsupported").hidden = false;
+      setVerdict("idle", "NOT CHECKED", "This browser cannot check Ed25519 signatures.");
+      renderEntries(entries, null, cutFrom);
+      setBusy(false);
+      return;
+    }
+    var res;
+    try { res = await HOV.verifyAll(d, entries); }
+    catch (e) { res = { ok: false, checks: [0, 1, 2, 3].map(function () { return { ok: false, detail: "" }; }), reason: "The checks could not run: " + e.message, entryHashes: [] }; }
+    if (my !== runId) return;
+    renderEntries(entries, res.entryHashes, cutFrom);
+    var items = $("w-checks").querySelectorAll(".check");
+    for (var i = 0; i < items.length; i++) {
+      if (!reduce) {
+        items[i].dataset.state = "running";
+        await new Promise(function (r) { setTimeout(r, 250); });
+        if (my !== runId) return;
+      }
+      items[i].dataset.state = res.checks[i].ok ? "pass" : "fail";
+      items[i].querySelector(".check-detail").textContent = res.checks[i].ok ? "" : res.checks[i].detail;
+    }
+    if (res.ok) {
+      setVerdict("valid", "VALID", "Checked in your browser just now. Receipt issued " + receipt.received_at + " by Witness; key " + key.key_id + " from " + key.source + ".");
+    } else {
+      setVerdict("fail", "FAIL", res.reason);
+    }
+    setBusy(false);
+    btnCut.disabled = cutFrom != null || entries.length < 2;
+    btnRestore.hidden = cutFrom == null && receipt === bundle.witness_receipt;
+  }
+
+  async function load(text, sourceLabel) {
+    try { bundle = parseBundle(text); }
+    catch (e) {
+      bundle = null;
+      setChecks("pending");
+      setVerdict("fail", "NOT CHECKED", e.message);
+      btnCut.disabled = true; btnFetch.disabled = true; btnRestore.hidden = true;
+      return;
+    }
+    receipt = bundle.witness_receipt;
+    entries = bundle.entries;
+    note.textContent = "";
+    $("w-card-sub").textContent = sourceLabel;
+    btnFetch.disabled = false;
+    await run(null);
+  }
+
+  btnCheck.addEventListener("click", function () { load(input.value, "The bundle you pasted."); });
+  btnExample.addEventListener("click", async function () {
+    btnExample.disabled = true;
+    try {
+      var res = await fetch(EXAMPLE_URL, { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      input.value = await res.text();
+      await load(input.value, "Demo log of a purchasing agent: five tool calls through the Chirindo gate.");
+    } catch (e) {
+      setVerdict("fail", "NOT CHECKED", "The example could not be loaded: " + e.message);
+    } finally { btnExample.disabled = false; }
+  });
+  btnCut.addEventListener("click", function () {
+    entries = bundle.entries.slice(0, -1);
+    note.textContent = "The last entry is gone. Every remaining signature and link still checks out, so the chain alone cannot tell.";
+    run(entries.length);
+  });
+  btnRestore.addEventListener("click", function () {
+    entries = bundle.entries;
+    receipt = bundle.witness_receipt;
+    note.textContent = "";
+    run(null);
+  });
+  // Independence: the receipt Witness itself returns for this key and session, not the operator's copy.
+  btnFetch.addEventListener("click", async function () {
+    var cp = bundle.checkpoint, url = QUERY_URL + "?kid=" + encodeURIComponent(cp.kid) + "&session_id=" + encodeURIComponent(cp.session_id);
+    btnFetch.disabled = true;
+    note.textContent = "Asking Witness for every receipt it holds for this key and session...";
+    try {
+      var all = [], after = null;
+      for (var page = 0; page < 20; page++) {
+        var res = await fetch(url + (after ? "&after=" + encodeURIComponent(after) : ""), { cache: "no-store" });
+        if (!res.ok) throw new Error("Witness answered " + res.status);
+        var body = await res.json();
+        all = all.concat(body.receipts || []);
+        if (!body.next_after) break;
+        after = body.next_after;
+      }
+      var match = all.filter(function (r) { return r.count === String(cp.count) && r.last_entry_hash === cp.last_entry_hash; })[0];
+      if (!match) {
+        note.textContent = "Witness holds " + all.length + " receipt" + (all.length === 1 ? "" : "s") + " for this key and session, none for this checkpoint (count " + cp.count + "). The bundle's receipt is not one Witness returns.";
+        btnFetch.disabled = false;
+        return;
+      }
+      var latest = all.reduce(function (m, r) { return Number(r.count) > Number(m.count) ? r : m; }, all[0]);
+      receipt = match;
+      note.textContent = "Using the receipt Witness returned (" + all.length + " in total for this session; highest witnessed count " + latest.count + ")." +
+        (Number(latest.count) > Number(cp.count) ? " Witness saw a later checkpoint than this bundle's: the log you were given may be cut short." : "");
+      await run(entries === bundle.entries ? null : entries.length);
+    } catch (e) {
+      note.textContent = "Witness could not be queried from this browser (" + e.message + "). Query " + url + " yourself.";
+      btnFetch.disabled = false;
+    }
+  });
+
+  $("w-key-use").addEventListener("click", function () {
+    var v = $("w-key").value.trim().toLowerCase();
+    if (!/^[0-9a-f]{64}$/.test(v)) { $("w-keyfallback-text").textContent = "That is not 64 hex characters."; return; }
+    manualKey = v;
+    if (bundle) run(entries === bundle.entries ? null : entries.length);
+  });
+
+  // File input and drag and drop.
+  function readFile(f) {
+    if (!f) return;
+    var r = new FileReader();
+    r.onload = function () { input.value = String(r.result); load(input.value, "The file " + f.name + "."); };
+    r.readAsText(f);
+  }
+  $("w-file").addEventListener("change", function (e) { readFile(e.target.files && e.target.files[0]); });
+  var drop = $("w-drop");
+  ["dragenter", "dragover"].forEach(function (t) { drop.addEventListener(t, function (e) { e.preventDefault(); drop.classList.add("is-over"); }); });
+  ["dragleave", "drop"].forEach(function (t) { drop.addEventListener(t, function () { drop.classList.remove("is-over"); }); });
+  drop.addEventListener("drop", function (e) { e.preventDefault(); readFile(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]); });
+})();
+</script>
+
+<script>
         const ORACLE_API = "https://headlessoracle.com";
 
         // Hardcoded fallback — always available even if API is down
@@ -243,7 +727,7 @@
             const resultIcon = document.getElementById('result-icon');
 
             // Reset UI
-            resultArea.className = "hidden rounded-xl p-6 border text-center transition-all";
+            resultArea.className = "hidden verdict";
 
             try {
                 if (!receiptText || !publicKeyPem) throw new Error("Please fill in both fields.");
@@ -295,8 +779,9 @@
                 // UPDATE UI WITH RESULTS
                 resultArea.classList.remove('hidden');
                 if (isValid) {
-                    resultArea.className = "rounded-xl p-6 border border-green-500 bg-green-900/20 text-green-200";
-                    resultIcon.innerHTML = "✅";
+                    resultArea.className = "verdict";
+                    resultArea.dataset.state = "valid";
+                    resultIcon.textContent = "VALID";
                     resultTitle.innerText = "Signature Valid";
                     resultDesc.innerText = `Successfully verified against Key: ${inner.public_key_id}`;
                 } else {
@@ -305,8 +790,9 @@
 
             } catch (err) {
                 resultArea.classList.remove('hidden');
-                resultArea.className = "rounded-xl p-6 border border-red-500 bg-red-900/20 text-red-200";
-                resultIcon.innerHTML = "❌";
+                resultArea.className = "verdict";
+                resultArea.dataset.state = "fail";
+                resultIcon.textContent = "FAIL";
                 resultTitle.innerText = "Verification Failed";
                 resultDesc.innerText = err.message;
             }
@@ -340,7 +826,6 @@
             }
         });
     </script>
-    <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
-    <script src="/js/paddle-init.js"></script>
+<script src="/js/ptxn-redirect.js"></script>
 </body>
 </html>

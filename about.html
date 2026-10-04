@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About · Headless Oracle</title>
+<meta name="description" content="Headless Oracle is run by Mike Msebenzi, founder. It makes Chirindo Witness, signed receipts for agent-log checkpoints, and signed market-state receipts. Source repositories, npm packages, standards work and contact.">
+<meta name="robots" content="index, follow">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="https://headlessoracle.com/about">
+<link rel="alternate" type="text/markdown" href="/about.md" title="This page in Markdown">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://headlessoracle.com/about">
+<meta property="og:title" content="About · Headless Oracle">
+<meta property="og:description" content="Who runs Headless Oracle, the source, the packages and how to get in touch.">
+<meta property="og:image" content="https://headlessoracle.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="About · Headless Oracle">
+<meta name="twitter:description" content="Who runs Headless Oracle, the source, the packages and how to get in touch.">
+<meta name="twitter:image" content="https://headlessoracle.com/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://headlessoracle.com/#org",
+      "name": "Headless Oracle",
+      "url": "https://headlessoracle.com/",
+      "email": "mike@headlessoracle.com",
+      "founder": { "@id": "https://headlessoracle.com/about#mike" },
+      "sameAs": ["https://github.com/LembaGang"]
+    },
+    {
+      "@type": "Person",
+      "@id": "https://headlessoracle.com/about#mike",
+      "name": "Mike Msebenzi",
+      "jobTitle": "Founder",
+      "worksFor": { "@id": "https://headlessoracle.com/#org" },
+      "email": "mike@headlessoracle.com"
+    },
+    {
+      "@type": "AboutPage",
+      "url": "https://headlessoracle.com/about",
+      "about": { "@id": "https://headlessoracle.com/#org" }
+    }
+  ]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="wordmark" href="/">Headless Oracle</a>
+    <nav aria-label="Main">
+      <ul class="nav-list nav-wide">
+        <li><a href="/witness">Witness</a></li>
+        <li><a href="/verify">Verify</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/docs">Docs</a></li>
+        <li><a href="/auditors">For auditors</a></li>
+        <li><a href="https://github.com/LembaGang">GitHub</a></li>
+      </ul>
+      <details class="nav-small">
+        <summary>Menu</summary>
+        <ul>
+          <li><a href="/witness">Witness</a></li>
+          <li><a href="/verify">Verify</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+          <li><a href="/docs">Docs</a></li>
+          <li><a href="/auditors">For auditors</a></li>
+          <li><a href="https://github.com/LembaGang">GitHub</a></li>
+        </ul>
+      </details>
+    </nav>
+  </div>
+</header>
+<main id="main">
+
+<div class="wrap page-head">
+  <p class="kicker">About</p>
+  <h1>Headless Oracle</h1>
+  <div class="lede">
+    <p>Mike Msebenzi, founder.</p>
+    <p>Headless Oracle makes <a href="/witness">Chirindo Witness</a>, signed receipts for the checkpoints of an agent's log, and signed <a href="/docs">market-state receipts</a> for 28 venues.</p>
+  </div>
+</div>
+
+<div class="wrap page-body">
+  <div class="doc">
+    <dl class="facts">
+      <div>
+        <dt>Standards</dt>
+        <dd><p>Headless Oracle co-authors the IETF draft family defining environmental constraints for Verifiable Intent.</p></dd>
+      </div>
+      <div>
+        <dt>Source</dt>
+        <dd>
+          <p><a href="https://github.com/LembaGang/chirindo">github.com/LembaGang/chirindo</a>, the gate and the witness client.</p>
+          <p><a href="https://github.com/LembaGang/receipt-verify">github.com/LembaGang/receipt-verify</a>, the verifier.</p>
+          <p><a href="https://github.com/LembaGang/headless-oracle-verify">github.com/LembaGang/headless-oracle-verify</a>, the market-state receipt verifier.</p>
+          <p>All repositories: <a href="https://github.com/LembaGang">github.com/LembaGang</a>.</p>
+        </dd>
+      </div>
+      <div>
+        <dt>Signed commits</dt>
+        <dd><p>Every commit in receipt-verify is SSH-signed. <code>sh tools/verify-history.sh</code> checks the whole history against the key in <code>SIGNING_KEYS</code>, fingerprint <code class="mono">SHA256:KFZr0BiXIrvl/hsri0vzciGsj+suWiBqHYBwdnnyJXg</code>.</p><p>Chirindo commits since 24 July 2026 are signed with the same key.</p></dd>
+      </div>
+      <div>
+        <dt>Packages</dt>
+        <dd><p><a href="https://www.npmjs.com/package/@headlessoracle/chirindo">@headlessoracle/chirindo</a>, <a href="https://www.npmjs.com/package/@headlessoracle/receipt-verify">@headlessoracle/receipt-verify</a> and <a href="https://www.npmjs.com/package/@headlessoracle/verify">@headlessoracle/verify</a> on npm.</p></dd>
+      </div>
+      <div>
+        <dt>Contact</dt>
+        <dd><p><!--email_off--><a href="mailto:mike@headlessoracle.com">mike@headlessoracle.com</a><!--/email_off--></p></dd>
+      </div>
+    </dl>
+  </div>
+</div>
+
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="mono">Headless Oracle</span>
+    <ul class="foot-links">
+      <li><a href="/terms">Terms</a></li>
+      <li><a href="/privacy">Privacy</a></li>
+      <li><a href="/refund">Refund</a></li>
+      <li><!--email_off--><a href="mailto:mike@headlessoracle.com">mike@headlessoracle.com</a><!--/email_off--></li>
+    </ul>
+  </div>
+</footer>
+<script src="/js/ptxn-redirect.js"></script>
+</body>
+</html>

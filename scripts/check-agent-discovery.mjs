@@ -270,10 +270,38 @@ function checkMarkdownSync(htmlPath, mdPath, fails, lines) {
   else lines.push(`ok   every URL in Markdown code (${codeUrls.size}) is visible on the page as a whole token`);
 }
 
+/**
+ * Markdown twins beyond the homepage (W4): every `Link: <x.md>; rel="alternate";
+ * type="text/markdown"` rule in _headers must name a file that is in dist/ and starts with
+ * a "# " heading, for a page that is in dist/ and declares the same twin in its <head>.
+ */
+function checkTwins(dir, fails, lines) {
+  let path = null;
+  const twins = [];
+  for (const raw of read(join(dir, '_headers')).split('\n')) {
+    const line = raw.replace(/\r$/, '');
+    if (line.trim() === '' || line.trimStart().startsWith('#')) continue;
+    if (!/^\s/.test(line)) { path = line.trim(); continue; }
+    const m = line.match(/^\s+Link:\s*<([^>]+)>;\s*rel="alternate";\s*type="text\/markdown"\s*$/i);
+    if (m) twins.push({ path, md: m[1] });
+  }
+  if (twins.length === 0) fails.push('no Markdown twin rules in _headers');
+  for (const { path: p, md } of twins) {
+    let mdText, html;
+    try { mdText = readFileSync(join(dir, md), 'utf8'); } catch { fails.push(`twin ${md} for ${p} is not in ${dir}`); continue; }
+    try { html = readFileSync(join(dir, p.replace(/^\//, '') + '.html'), 'utf8'); } catch { fails.push(`page ${p} (twin ${md}) is not in ${dir}`); continue; }
+    if (!/^# \S/.test(mdText)) fails.push(`twin ${md} does not start with a "# " heading`);
+    else if (!new RegExp(`<link\\b[^>]*rel="alternate"[^>]*type="text/markdown"[^>]*href="${md.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`).test(html)) {
+      fails.push(`page ${p} does not declare its twin ${md} with <link rel="alternate" type="text/markdown">`);
+    } else lines.push(`ok   ${p} has its Markdown twin ${md} (in dist, linked from the page and from _headers)`);
+  }
+}
+
 async function main() {
   const dir = resolve(arg('dir', 'dist'));
   const fails = [];
   const lines = [];
+  checkTwins(dir, fails, lines);
   checkMarkdownSync(resolve(arg('html', join(dir, 'index.html'))), resolve(arg('md', join(dir, 'index.md'))), fails, lines);
   await checkLinkHeader(dir, fails, lines);
   if (fails.length > 0) {

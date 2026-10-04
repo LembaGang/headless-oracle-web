@@ -1,0 +1,193 @@
+{
+  "note": "Demo bundle from the headlessoracle.com homepage. The entries, checkpoint and operator key were made for that page; the witness receipt is the real reply of POST https://api.headlessoracle.com/v1/witness/checkpoints, and GET https://api.headlessoracle.com/v1/witness/checkpoints?kid=jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo&session_id=demo-purchasing-agent-76f75512-dfca-4385-8ad0-16117144c933 returns it. The witness public key is not in the bundle: the verifier takes it from https://api.headlessoracle.com/v5/keys.",
+  "entries": [
+    {
+      "v": "evidence.action/1",
+      "seq": 0,
+      "session_id": "demo-purchasing-agent-76f75512-dfca-4385-8ad0-16117144c933",
+      "ts": "2026-10-04T13:59:54.635Z",
+      "agent": {
+        "vendor": "chirindo",
+        "version": "0.0.1"
+      },
+      "event": {
+        "type": "mcp_call",
+        "outcome": "executed",
+        "server": "procurement",
+        "tool_name": "search_suppliers",
+        "args_hash": "sha256:65eef1ef3141d2a5f15dd3ac07b860448ef4e036cedf2e5b94675bb5463c4be6",
+        "decision": "allow",
+        "decision_source": "config",
+        "result_hash": "sha256:21350ad95e91fa82ad09bc05f2cc2c5d266153b20186ef44b883e4a710c94516"
+      },
+      "request_commitment": "sha256:0995edc368e820d3be96bcffd2cef762bf71d143d21b958bf14edd292c0eee2a",
+      "gate": {
+        "request_commitment": "sha256:0995edc368e820d3be96bcffd2cef762bf71d143d21b958bf14edd292c0eee2a",
+        "gate_receipt": "sha256:f607c4f63700a269af33937379dfd18fb2c8e40ed17ab7d46e0d14c93decd293",
+        "gate_family": "permit",
+        "result": "act"
+      },
+      "key_thumbprint": "jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo",
+      "iss": "urn:chirindo:key:jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo",
+      "prev_hash": "sha256:ebbe942b67842676c7c21949ab0a3a77fb24c9e2cc5b2e60a24eb465c8aa0de9",
+      "kid": "jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo",
+      "sig": "QL2iT7MwwxVO2HzBJcuZ1TyzmI_4d5uwQ2m8KN--lRNKeOCDfC5BDT2cipd0zvWKocJEnt0oPoNUUa9C61rkBw"
+    },
+    {
+      "v": "evidence.action/1",
+      "seq": 1,
+      "session_id": "demo-purchasing-agent-76f75512-dfca-4385-8ad0-16117144c933",
+      "ts": "2026-10-04T13:59:56.975Z",
+      "agent": {
+        "vendor": "chirindo",
+        "version": "0.0.1"
+      },
+      "event": {
+        "type": "mcp_call",
+        "outcome": "executed",
+        "server": "procurement",
+        "tool_name": "get_quote",
+        "args_hash": "sha256:97970a011f17f9c790b22862461a392d1da00b4db9fa0cb254122829fb0c7383",
+        "decision": "allow",
+        "decision_source": "config",
+        "result_hash": "sha256:a82b8cdaee67360ca32807af224892242bf67002e20fc101b978195d0fee3ff4"
+      },
+      "request_commitment": "sha256:4d02104aad0dbf144a1ffefbc1ae2a4f349621cb830f04c270508d44d52b64af",
+      "gate": {
+        "request_commitment": "sha256:4d02104aad0dbf144a1ffefbc1ae2a4f349621cb830f04c270508d44d52b64af",
+        "gate_receipt": "sha256:8025e6258186379e636939a036243dd206bd0ee81ba4a611054ec2683cbe6aee",
+        "gate_family": "permit",
+        "result": "act"
+      },
+      "key_thumbprint": "jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo",
+      "iss": "urn:chirindo:key:jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo",
+      "prev_hash": "sha256:059b82f3a157dede2b7a40e63f9b4ee50f65fc7f155b3b8a98193d6558d1ecd5",
+      "kid": "jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo",
+      "sig": "eTxywkURaCIom_k2SavFDH-9dpBBzxJ4D9vzEzxOLhuhbQxol7lYhKRkPUkji635E7tOhhBTNqyoYGP5mQ1AAg"
+    },
+    {
+      "v": "evidence.action/1",
+      "seq": 2,
+      "session_id": "demo-purchasing-agent-76f75512-dfca-4385-8ad0-16117144c933",
+      "ts": "2026-10-04T13:59:59.545Z",
+      "agent": {
+        "vendor": "chirindo",
+        "version": "0.0.1"
+      },
+      "event": {
+        "type": "mcp_call",
+        "outcome": "denied",
+        "server": "procurement",
+        "tool_name": "send_payment",
+        "args_hash": "sha256:86b519dd1950da96b52d6968ccdc395048e9f9638d5919bec94a660cdb4c34f0",
+        "decision": "deny",
+        "decision_source": "config"
+      },
+      "request_commitment": "sha256:975de8c3590ec41a6973d6e3f18f5a97f5551f33e2b42c84bd1e24fc1e471693",
+      "gate": {
+        "request_commitment": "sha256:975de8c3590ec41a6973d6e3f18f5a97f5551f33e2b42c84bd1e24fc1e471693",
+        "gate_receipt": "sha256:f253bc0c54b8de99e257e3d46851c518d5fb2193a1f65e11c1df9ff8a352ddf9",
+        "gate_family": "permit",
+        "result": "halt"
+      },
+      "key_thumbprint": "jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo",
+      "iss": "urn:chirindo:key:jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo",
+      "prev_hash": "sha256:dd3a95219229636c3a467d3e82a58ced02ece860248b8c06886111433c1aaf99",
+      "kid": "jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo",
+      "sig": "-hSq9YkGCtYsLqj6wIOgQu_HR7KbNrSFhHJkRyeD9Nm2ZfXZGUwmwiduzyMDlaTF-IZnldLVfNj-YEf9W3kpCA"
+    },
+    {
+      "v": "evidence.action/1",
+      "seq": 3,
+      "session_id": "demo-purchasing-agent-76f75512-dfca-4385-8ad0-16117144c933",
+      "ts": "2026-10-04T14:00:02.115Z",
+      "agent": {
+        "vendor": "chirindo",
+        "version": "0.0.1"
+      },
+      "event": {
+        "type": "mcp_call",
+        "outcome": "executed",
+        "server": "procurement",
+        "tool_name": "create_purchase_order",
+        "args_hash": "sha256:6caf009cd45f79b23d1fd0a3bb52715072d5e457873ce04837746c778deb9adc",
+        "decision": "allow",
+        "decision_source": "config",
+        "result_hash": "sha256:cafe3e68c75aec066c7eb497fdd6ab00839c78c9d807f0a6278641a54b1217e2"
+      },
+      "request_commitment": "sha256:147b11a5678bd827706d755cb9726e22b6343c69a62e3a20298572da7e647267",
+      "gate": {
+        "request_commitment": "sha256:147b11a5678bd827706d755cb9726e22b6343c69a62e3a20298572da7e647267",
+        "gate_receipt": "sha256:44c32e77eee33cc6bca3c538f812aedeebc4a69d1291c6ea893fe6fb9e818de4",
+        "gate_family": "permit",
+        "result": "act"
+      },
+      "key_thumbprint": "jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo",
+      "iss": "urn:chirindo:key:jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo",
+      "prev_hash": "sha256:3a258f5999002b995e3196b28c06ac58b94c4a6d6ef01fe6e005dae473403b9a",
+      "kid": "jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo",
+      "sig": "4a1ez8pyuApPaNciLLG_clf4VJ3NvSUaCWxrUZwuK7IUSzPZXhDj_WqopUtqRVB3o0jDwxhTD8vCSWAZKt9rCA"
+    },
+    {
+      "v": "evidence.action/1",
+      "seq": 4,
+      "session_id": "demo-purchasing-agent-76f75512-dfca-4385-8ad0-16117144c933",
+      "ts": "2026-10-04T14:00:03.755Z",
+      "agent": {
+        "vendor": "chirindo",
+        "version": "0.0.1"
+      },
+      "event": {
+        "type": "mcp_call",
+        "outcome": "executed",
+        "server": "procurement",
+        "tool_name": "notify_approver",
+        "args_hash": "sha256:ae7921979298c0449f98f2bd27a96f16b9b501de41ae08a4982964287867e306",
+        "decision": "allow",
+        "decision_source": "config",
+        "result_hash": "sha256:e2b168eb564516a10ff8220919b08e0e13712f958a20b56c88e274799204d9ea"
+      },
+      "request_commitment": "sha256:14580f93f9486ae0d30ba826516198613ff65f8d6ab24c331c998ce5d7ccff5f",
+      "gate": {
+        "request_commitment": "sha256:14580f93f9486ae0d30ba826516198613ff65f8d6ab24c331c998ce5d7ccff5f",
+        "gate_receipt": "sha256:b94ef5d9d64d3c4b308246104b67cb4678350acf37d7913139dca11bfefb64d1",
+        "gate_family": "permit",
+        "result": "act"
+      },
+      "key_thumbprint": "jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo",
+      "iss": "urn:chirindo:key:jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo",
+      "prev_hash": "sha256:7d4c1d06d9db26b5cc7822ae9260a79fe49e24026f282da0c805ab33383c5299",
+      "kid": "jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo",
+      "sig": "grm-OSVUvgSyTtytMbIAuyCJfIyEtENQJpBzLs37M2LB_7YXBA23WiXnaTc2CHU2bWyc3J-rOm2pNRZgslnCCA"
+    }
+  ],
+  "checkpoint": {
+    "v": "evidence.action/1",
+    "type": "checkpoint",
+    "session_id": "demo-purchasing-agent-76f75512-dfca-4385-8ad0-16117144c933",
+    "count": 5,
+    "last_entry_hash": "sha256:6298962b6665ce4734a25b881248a6c0551c158051f7d5a11664ced9e7897f06",
+    "ts": "2026-10-04T14:00:04.835Z",
+    "kid": "jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo",
+    "sig": "MmiPbL1qPG6HcpZIsVmzg8X0QaY0-_s7rf1trXt5xou1kotowU_o25nBrg5k1YeNy7XeTOVAZaJB7EkLqA6HBg"
+  },
+  "operator_public_key_jwk": {
+    "kty": "OKP",
+    "crv": "Ed25519",
+    "x": "orwHIAT1iik2iq7Iylklv39yJleiiaOsub_-AUzGgzE"
+  },
+  "witness_receipt": {
+    "type": "witness.checkpoint/1",
+    "witness": "headlessoracle.com",
+    "received_at": "2026-10-04T14:01:07.785Z",
+    "kid": "jz-7FYorYzzTy10kk3T1z8pWn2Ln8JBBhcdweor1xjo",
+    "session_id": "demo-purchasing-agent-76f75512-dfca-4385-8ad0-16117144c933",
+    "count": "5",
+    "last_entry_hash": "sha256:6298962b6665ce4734a25b881248a6c0551c158051f7d5a11664ced9e7897f06",
+    "checkpoint_ts": "2026-10-04T14:00:04.835Z",
+    "checkpoint_sha256": "sha256:aa3c975343b94fed6c7003495ea94eb7be8ff5662eb85a11ac18a40c5ead4f95",
+    "fork": "false",
+    "public_key_id": "key_2026_v1",
+    "signature": "1760ed122b7276c4760f0f2d45d2955fdf03b65cf3424a360a3f42d4e33dc39af9895b898746a1719d33ef7ae749a4d7787da60d1a8496188a4279c0ac427e0c"
+  }
+}

@@ -23,6 +23,12 @@
  * Other URLs must answer 200, or 200 through the host's public API (npm, PyPI, GitHub),
  * which covers hosts that refuse scripted page fetches.
  *
+ * Then every href in the built dist/**\/*.html (W4): a same-origin link must resolve to a
+ * file in dist/ (or a dist/_redirects target), with its #fragment present as an id, or be
+ * a worker route, or answer 200 live as something other than the homepage. A link to any
+ * other host is fetched (HEAD, then GET, 15 s timeout) and reported; it fails the gate
+ * only on 404 or 410 (confirmed through the host's API where there is one).
+ *
  * Exit codes:
  *   0  PASS   : every URL resolves
  *   1  FAIL   : every failing URL is listed
@@ -33,8 +39,8 @@
  * Import: `runLiveLinks({ allowDistFixes })` returns { code, lines } without side effects.
  */
 
-import { existsSync, readFileSync, statSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { join, relative, resolve, sep } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const EXIT_PASS = 0;
@@ -227,6 +233,9 @@ export async function runLiveLinks({ allowDistFixes = true } = {}) {
       return skipped.push(raw);
     }
     if (!isFirstParty(u)) return add(raw, 'other');
+    // The bare API origin is named in prose as a base URL ("use https://api.headlessoracle.com
+    // for /v1/witness/*"), not as a resource; it has no document of its own.
+    if (u.hostname === 'api.headlessoracle.com' && u.pathname === '/' && !u.search) return skipped.push(`${raw} (API base URL)`);
     add(raw, isAnchorUrl(u) ? 'anchor' : 'page');
   };
   for (const loc of locs) classify(loc);
@@ -257,8 +266,140 @@ export async function runLiveLinks({ allowDistFixes = true } = {}) {
       `${count('ERROR')} error; ${uniqSkipped.length} skipped template(s); sources: sitemap ${locs.length} locs, ` +
       `${TEXT_SOURCES.join(' ')}, api-catalog ${catalog.linkset.length} anchors; allowDistFixes=${allowDistFixes}`,
   );
-  const code = count('ERROR') ? EXIT_ERROR : count('FAIL') ? EXIT_FAIL : EXIT_PASS;
+  // Links inside the built pages (W4). Dead links on /blog shipped for months because only
+  // the discovery files were checked; every href a reader can click is checked now too.
+  const page = await checkPageLinks(dist, ctx.redirects);
+  lines.push(...page.lines);
+
+  const pageFail = page.fail > 0;
+  const code = count('ERROR') ? EXIT_ERROR : count('FAIL') || pageFail ? EXIT_FAIL : EXIT_PASS;
   return { code, lines };
+}
+
+/**
+ * Paths the worker answers on headlessoracle.com without a page in dist/ (it sits in front
+ * of Pages). A same-origin link to one of these passes without a fetch.
+ */
+const WORKER_ROUTE = /^\/(?:v\d+\/|mcp(?:\/|$)|oauth\/|\.well-known\/|openapi\.json$|llms\.txt$|llms-full\.txt$|AGENTS\.md$|SKILL\.md$|sitemap\.xml$|mics\.json$)/;
+const EXTERNAL_TIMEOUT_MS = 15000;
+
+function htmlFiles(dir) {
+  const out = [];
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const p = join(dir, entry.name);
+    if (entry.isDirectory()) out.push(...htmlFiles(p));
+    else if (entry.name.endsWith('.html')) out.push(p);
+  }
+  return out;
+}
+
+/** The URL path a built file is served at: dist/a.html -> /a, dist/a/index.html -> /a/. */
+function servedPath(dist, file) {
+  const rel = relative(dist, file).split(sep).join('/');
+  if (rel === 'index.html') return '/';
+  if (rel.endsWith('/index.html')) return '/' + rel.slice(0, -'index.html'.length);
+  return '/' + rel.replace(/\.html$/, '');
+}
+
+function distFileFor(dist, pathname) {
+  const p = decodeURIComponent(pathname).replace(/\/+$/, '');
+  const c = p === '' ? [join(dist, 'index.html')] : [join(dist, p), join(dist, p + '.html'), join(dist, p, 'index.html')];
+  return c.find((f) => existsSync(f) && statSync(f).isFile()) || null;
+}
+
+function idsIn(html) {
+  return new Set([...html.matchAll(/\b(?:id|name)\s*=\s*["']([^"']+)["']/gi)].map((m) => m[1]));
+}
+
+/** HEAD, then GET when HEAD is refused or unhelpful; status only. */
+async function probe(url) {
+  const opts = (method) => ({ method, redirect: 'follow', headers: { 'User-Agent': UA }, signal: AbortSignal.timeout(EXTERNAL_TIMEOUT_MS) });
+  try {
+    const h = await fetch(url, opts('HEAD'));
+    if (h.status < 400) return { status: h.status };
+  } catch { /* some hosts refuse HEAD; GET decides */ }
+  const g = await fetch(url, opts('GET'));
+  await g.arrayBuffer().catch(() => {});
+  return { status: g.status };
+}
+
+export async function checkPageLinks(dist, redirects) {
+  const lines = [];
+  const files = htmlFiles(dist);
+  const internal = new Map(); // url -> [pages]
+  const external = new Map();
+  let fail = 0;
+  for (const file of files) {
+    const html = readFileSync(file, 'utf8');
+    const base = ORIGIN + servedPath(dist, file);
+    for (const m of html.matchAll(/<(?:a|link)\b[^>]*?\bhref\s*=\s*["']([^"']*)["'][^>]*>/gi)) {
+      // preconnect / dns-prefetch name an origin to warm up, not a document.
+      if (/^<link\b/i.test(m[0]) && /\brel\s*=\s*["'](?:preconnect|dns-prefetch)["']/i.test(m[0])) continue;
+      const raw = m[1].trim();
+      if (!raw || /^(mailto:|tel:|javascript:|data:)/i.test(raw) || raw.includes('{') || raw.includes('<')) continue;
+      let u;
+      try { u = new URL(raw, base); } catch { lines.push(`FAIL  href    ${raw} on ${servedPath(dist, file)} (unparseable)`); fail++; continue; }
+      if (!/^https?:$/.test(u.protocol)) { lines.push(`FAIL  href    ${raw} on ${servedPath(dist, file)} (scheme ${u.protocol})`); fail++; continue; }
+      const map = u.hostname === 'headlessoracle.com' ? internal : external;
+      const key = u.hostname === 'headlessoracle.com' ? u.pathname + u.hash : u.href.split('#')[0];
+      if (!map.has(key)) map.set(key, new Set());
+      map.get(key).add(servedPath(dist, file));
+    }
+  }
+
+  // Same origin: the file must be in dist/ (or redirected to one), or be a worker route,
+  // or answer 200 live as something other than the homepage. A #fragment must exist.
+  const live = [];
+  for (const [key, pages] of internal) {
+    const [pathname, frag] = [key.split('#')[0] || '/', key.includes('#') ? decodeURIComponent(key.split('#')[1]) : ''];
+    const where = [...pages].slice(0, 3).join(', ') + (pages.size > 3 ? ` +${pages.size - 3}` : '');
+    let file = distFileFor(dist, pathname);
+    if (!file && redirects.has(pathname)) file = distFileFor(dist, redirects.get(pathname));
+    if (file) {
+      if (frag && !idsIn(readFileSync(file, 'utf8')).has(frag)) {
+        lines.push(`FAIL  page-link ${key} (no id "${frag}" in ${relative(dist, file)}) on ${where}`);
+        fail++;
+      }
+      continue;
+    }
+    if (WORKER_ROUTE.test(pathname)) continue;
+    live.push({ key, pathname, where });
+  }
+  const liveResults = await pool(live, async ({ key, pathname, where }) => {
+    try {
+      const r = await get(ORIGIN + pathname);
+      const homepage = r.body.includes(CANONICAL) && new URL(r.url).pathname !== '/';
+      if (r.status === 200 && !homepage) return `PASS  page-link ${key} 200 live (not in dist; served by the worker)`;
+      return `FAIL  page-link ${key} ${homepage ? r.status + ' serves the homepage' : r.status} (not in dist) on ${where}`;
+    } catch (e) {
+      return `FAIL  page-link ${key} fetch failed (${e.message}) on ${where}`;
+    }
+  });
+  for (const l of liveResults) { lines.push(l); if (l.startsWith('FAIL')) fail++; }
+
+  // Other hosts: reported; only a 404 or 410 fails the gate (a timeout or a bot wall does not).
+  const ext = [...external.entries()].map(([url, pages]) => ({ url, where: [...pages].slice(0, 3).join(', ') }));
+  const extResults = await pool(ext, async ({ url, where }) => {
+    try {
+      const { status } = await probe(url);
+      if (status >= 400) {
+        const api = apiUrlFor(new URL(url));
+        if (api) {
+          const a = await get(api);
+          if (a.status === 200) return { fail: false, line: `PASS  external ${url} ${status}, 200 (via API)` };
+        }
+        if (status === 404 || status === 410) return { fail: true, line: `FAIL  external ${url} ${status} on ${where}` };
+      }
+      return { fail: false, line: `${status < 400 ? 'PASS ' : 'NOTE '} external ${url} ${status}` };
+    } catch (e) {
+      return { fail: false, line: `NOTE  external ${url} not reachable from here (${e.name === 'TimeoutError' ? 'timeout' : e.message})` };
+    }
+  });
+  for (const r of extResults) { lines.push(r.line); if (r.fail) fail++; }
+
+  lines.push(`PAGE-LINKS ${files.length} built pages: ${internal.size} same-origin targets (${live.length} not in dist, checked live), ` +
+    `${external.size} external; ${fail} fail`);
+  return { fail, lines };
 }
 
 if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {

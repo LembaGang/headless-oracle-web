@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
     <title>LangGraph Integration | Headless Oracle</title>
     <meta name="description" content="Use Headless Oracle as a market gate node in a LangGraph StateGraph. Fetch signed receipts, verify Ed25519 signatures, and halt the graph when markets are closed.">
     <meta name="robots" content="index, follow">
@@ -10,23 +11,18 @@
     <meta property="og:url" content="https://headlessoracle.com/docs/integrations/langgraph">
     <meta property="og:title" content="LangGraph Integration | Headless Oracle">
     <meta property="og:description" content="Headless Oracle market gate node for LangGraph StateGraph workflows.">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/site.css">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #cbd5e1; }
-        .glass { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(51, 65, 85, 0.5); }
-        pre { background: #1e293b; padding: 1.25rem; border-radius: 0.5rem; overflow-x: auto; font-family: 'Menlo', 'Consolas', monospace; font-size: 0.82rem; border: 1px solid #334155; line-height: 1.6; }
-        code { color: #60a5fa; font-family: 'Menlo', 'Consolas', monospace; font-size: 0.85em; }
-        .note { background: #1e2a1e; border: 1px solid #365a36; border-left: 3px solid #4ade80; padding: 0.75rem 1rem; border-radius: 0 0.375rem 0.375rem 0; }
-        .warn { background: #2a1e1e; border: 1px solid #5a3636; border-left: 3px solid #f87171; padding: 0.75rem 1rem; border-radius: 0 0.375rem 0.375rem 0; }
-        .badge { background: #1e293b; color: #60a5fa; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; border: 1px solid #334155; font-family: monospace; }
+.doc .code-block pre { margin: 0; }
+        .doc .plain { list-style: none; padding-left: 0; }
+        .step-n { font-family: var(--font-mono); font-size: var(--step-0); font-weight: 400; color: var(--muted); margin-right: 10px; }
+        .kicker span + span::before { content: "· "; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body>
 
     <a class="skip" href="#main">Skip to content</a>
 
@@ -35,21 +31,21 @@
     <a class="wordmark" href="/">Headless Oracle</a>
     <nav aria-label="Main">
       <ul class="nav-list nav-wide">
-        <li><a href="C:/Program Files/Git/#how">Witness</a></li>
+        <li><a href="/witness">Witness</a></li>
         <li><a href="/verify">Verify</a></li>
         <li><a href="/pricing">Pricing</a></li>
         <li><a href="/docs">Docs</a></li>
-        <li><a href="C:/Program Files/Git/#auditors">For auditors</a></li>
+        <li><a href="/auditors">For auditors</a></li>
         <li><a href="https://github.com/LembaGang">GitHub</a></li>
       </ul>
       <details class="nav-small">
         <summary>Menu</summary>
         <ul>
-          <li><a href="C:/Program Files/Git/#how">Witness</a></li>
+          <li><a href="/witness">Witness</a></li>
           <li><a href="/verify">Verify</a></li>
           <li><a href="/pricing">Pricing</a></li>
           <li><a href="/docs">Docs</a></li>
-          <li><a href="C:/Program Files/Git/#auditors">For auditors</a></li>
+          <li><a href="/auditors">For auditors</a></li>
           <li><a href="https://github.com/LembaGang">GitHub</a></li>
         </ul>
       </details>
@@ -57,42 +53,44 @@
   </div>
 </header>
 
-    <main id="main" class="flex-grow max-w-5xl mx-auto px-6 py-12 w-full">
+<div class="crosslink">
+  <div class="wrap">
+    <span>Market-state receipts: <a href="/docs">Docs</a> · <a href="/status">Status</a> · <a href="/dashboard">Dashboard</a> · <a href="/halt-gate">Halt gate</a> · <a href="/standards">Standards</a></span>
+    <span>For agent logs your auditor can check, see <a href="/witness">Chirindo Witness</a>.</span>
+  </div>
+</div>
 
-        <div class="text-xs text-slate-500 mb-8 font-mono">
-            <a href="/docs" class="hover:text-slate-300">docs</a>
-            <span class="mx-2">/</span><span>integrations</span><span class="mx-2">/</span>
-            <span class="text-slate-300">langgraph</span>
-        </div>
+<main id="main">
 
-        <div class="mb-10">
-            <div class="flex items-center gap-3 mb-4">
-                <span class="text-3xl">🦜</span>
-                <h1 class="text-4xl font-bold text-white">LangGraph Integration</h1>
+        <div class="wrap page-head">
+            <p class="breadcrumb"><a href="/docs">docs</a> / integrations / langgraph <span aria-hidden="true">🦜</span></p>
+            <h1>LangGraph Integration</h1>
+            <div class="lede">
+                <p>Use Headless Oracle as a market gate node in a LangGraph <code>StateGraph</code>. The node fetches a signed receipt, verifies the Ed25519 signature, and halts the graph if the market is not OPEN — before any trade execution node runs.</p>
             </div>
-            <p class="text-lg text-slate-400 max-w-3xl">
-                Use Headless Oracle as a market gate node in a LangGraph <code>StateGraph</code>. The node fetches a signed receipt, verifies the Ed25519 signature, and halts the graph if the market is not OPEN — before any trade execution node runs.
-            </p>
         </div>
 
-        <section class="mb-10">
-            <h2 class="text-xl font-bold text-white mb-4">Prerequisites</h2>
-            <pre><span style="color:#4ade80">pip install headless-oracle langgraph langchain-core httpx</span></pre>
-        </section>
+        <div class="wrap page-body">
+            <div class="doc">
 
-        <section class="mb-10">
-            <h2 class="text-xl font-bold text-white mb-4">Complete Example</h2>
-            <pre><span style="color:#f8fafc">import httpx
+                <section>
+                    <h2>Prerequisites</h2>
+                    <pre><span>pip install headless-oracle langgraph langchain-core httpx</span></pre>
+                </section>
+
+                <section>
+                    <h2>Complete Example</h2>
+                    <pre><span>import httpx
 from typing import TypedDict, Annotated
 from langgraph.graph import StateGraph, END
 from headless_oracle import verify, VerificationError
 
 ORACLE_BASE = "https://headlessoracle.com"
-ORACLE_KEY = "your_key_here"  <span style="color:#94a3b8"># set via environment variable in production</span>
+ORACLE_KEY = "your_key_here"  <span class="muted"># set via environment variable in production</span>
 MIC = "XNYS"
 
 
-<span style="color:#94a3b8"># --- State definition ---</span>
+<span class="muted"># --- State definition ---</span>
 
 class TradeState(TypedDict):
     mic: str
@@ -102,7 +100,7 @@ class TradeState(TypedDict):
     trade_result: str | None
 
 
-<span style="color:#94a3b8"># --- Nodes ---</span>
+<span class="muted"># --- Nodes ---</span>
 
 def market_gate(state: TradeState) -&gt; TradeState:
     """
@@ -121,7 +119,7 @@ def market_gate(state: TradeState) -&gt; TradeState:
         resp.raise_for_status()
         receipt = resp.json()
 
-        <span style="color:#94a3b8"># Verify signature and TTL — raises VerificationError on failure</span>
+        <span class="muted"># Verify signature and TTL — raises VerificationError on failure</span>
         verify(receipt)
 
         if receipt.get("status") != "OPEN":
@@ -151,13 +149,13 @@ def halt_node(state: TradeState) -&gt; TradeState:
     return {**state, "trade_result": None}
 
 
-<span style="color:#94a3b8"># --- Routing ---</span>
+<span class="muted"># --- Routing ---</span>
 
 def route_after_gate(state: TradeState) -&gt; str:
     return "execute_trade" if state["market_open"] else "halt"
 
 
-<span style="color:#94a3b8"># --- Graph assembly ---</span>
+<span class="muted"># --- Graph assembly ---</span>
 
 builder = StateGraph(TradeState)
 builder.add_node("market_gate", market_gate)
@@ -173,56 +171,45 @@ builder.add_edge("halt", END)
 graph = builder.compile()
 
 
-<span style="color:#94a3b8"># --- Usage ---</span>
+<span class="muted"># --- Usage ---</span>
 
 if __name__ == "__main__":
     result = graph.invoke({"mic": "XNYS"})
     print(result)</span></pre>
-        </section>
+                </section>
 
-        <section class="mb-10">
-            <h2 class="text-xl font-bold text-white mb-4">Important</h2>
-            <div class="space-y-3 text-sm">
-                <div class="note">
-                    <strong class="text-green-300">Verify before routing.</strong>
-                    <span class="text-slate-300 ml-1">The <code>verify()</code> call checks both the Ed25519 signature and the <code>expires_at</code> TTL (60 seconds). A receipt that passes HTTP status checks but fails <code>verify()</code> must be treated as untrusted.</span>
-                </div>
-                <div class="warn">
-                    <strong class="text-red-300">Timeout is CLOSED.</strong>
-                    <span class="text-slate-300 ml-1">If the Oracle request times out, the node returns <code>market_open=False</code>. Never default to OPEN on an unknown state.</span>
-                </div>
-                <div class="warn">
-                    <strong class="text-red-300">UNKNOWN means CLOSED.</strong>
-                    <span class="text-slate-300 ml-1">A receipt with <code>status="UNKNOWN"</code> indicates the Oracle's signing infrastructure detected an error. Route it to <code>halt</code>, not <code>execute_trade</code>.</span>
-                </div>
-                <div class="warn">
-                    <strong class="text-red-300">Do not cache receipts</strong>
-                    <span class="text-slate-300 ml-1">across LangGraph invocations. Each graph run must fetch a fresh receipt — receipts expire after 60 seconds.</span>
-                </div>
-            </div>
-        </section>
+                <section>
+                    <h2>Important</h2>
+                    <div class="note">
+                        <p><strong>Verify before routing.</strong>
+                        The <code>verify()</code> call checks both the Ed25519 signature and the <code>expires_at</code> TTL (60 seconds). A receipt that passes HTTP status checks but fails <code>verify()</code> must be treated as untrusted.</p>
+                    </div>
+                    <div class="note">
+                        <p><strong>Timeout is CLOSED.</strong>
+                        If the Oracle request times out, the node returns <code>market_open=False</code>. Never default to OPEN on an unknown state.</p>
+                    </div>
+                    <div class="note">
+                        <p><strong>UNKNOWN means CLOSED.</strong>
+                        A receipt with <code>status="UNKNOWN"</code> indicates the Oracle's signing infrastructure detected an error. Route it to <code>halt</code>, not <code>execute_trade</code>.</p>
+                    </div>
+                    <div class="note">
+                        <p><strong>Do not cache receipts</strong>
+                        across LangGraph invocations. Each graph run must fetch a fresh receipt — receipts expire after 60 seconds.</p>
+                    </div>
+                </section>
 
-        <section class="mb-10 border-t border-slate-800 pt-8">
-            <h2 class="text-xl font-bold text-white mb-4">Resources</h2>
-            <div class="grid sm:grid-cols-2 gap-3 text-sm">
-                <a href="/docs" class="glass rounded-lg p-4 hover:bg-white/5 transition">
-                    <div class="text-white font-semibold mb-1">API Reference</div>
-                    <div class="text-slate-400 text-xs">All endpoints, response schemas, authentication</div>
-                </a>
-                <a href="/docs/x402-payments" class="glass rounded-lg p-4 hover:bg-white/5 transition">
-                    <div class="text-white font-semibold mb-1">x402 Payments Guide</div>
-                    <div class="text-xs text-slate-400">Agent-native micropayments on Base mainnet</div>
-                </a>
-                <a href="https://pypi.org/project/headless-oracle/" target="_blank" rel="noopener" class="glass rounded-lg p-4 hover:bg-white/5 transition">
-                    <div class="text-white font-semibold mb-1">PyPI: headless-oracle</div>
-                    <div class="text-xs text-slate-400">Python SDK — <code>pip install headless-oracle</code></div>
-                </a>
-                <a href="/pricing" class="glass rounded-lg p-4 hover:bg-white/5 transition">
-                    <div class="text-white font-semibold mb-1">Pricing</div>
-                    <div class="text-xs text-slate-400">Free tier: 500 req/day. No credit card required.</div>
-                </a>
+                <section>
+                    <h2>Resources</h2>
+                    <ul class="links">
+                        <li><a href="/docs">API Reference</a><br><span class="muted small">All endpoints, response schemas, authentication</span></li>
+                        <li><a href="/docs/x402-payments">x402 Payments Guide</a><br><span class="muted small">Agent-native micropayments on Base mainnet</span></li>
+                        <li><a href="https://pypi.org/project/headless-oracle/" target="_blank" rel="noopener">PyPI: headless-oracle</a><br><span class="muted small">Python SDK — <code>pip install headless-oracle</code></span></li>
+                        <li><a href="/pricing">Pricing</a><br><span class="muted small">Free tier: 500 req/day. No credit card required.</span></li>
+                    </ul>
+                </section>
+
             </div>
-        </section>
+        </div>
 
     </main>
 

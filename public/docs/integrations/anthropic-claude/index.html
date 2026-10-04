@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
     <title>Anthropic Claude Integration | Headless Oracle</title>
     <meta name="description" content="Define Headless Oracle as a Claude tool via the Anthropic tool_use API. Claude requests the tool; your code verifies the signed receipt; fail-closed market gating for Claude agents.">
     <meta name="robots" content="index, follow">
@@ -10,23 +11,18 @@
     <meta property="og:url" content="https://headlessoracle.com/docs/integrations/anthropic-claude">
     <meta property="og:title" content="Anthropic Claude Integration | Headless Oracle">
     <meta property="og:description" content="Headless Oracle as a Claude tool: signed market receipts verified in your code, not the model.">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/site.css">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #cbd5e1; }
-        .glass { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(51, 65, 85, 0.5); }
-        pre { background: #1e293b; padding: 1.25rem; border-radius: 0.5rem; overflow-x: auto; font-family: 'Menlo', 'Consolas', monospace; font-size: 0.82rem; border: 1px solid #334155; line-height: 1.6; }
-        code { color: #60a5fa; font-family: 'Menlo', 'Consolas', monospace; font-size: 0.85em; }
-        .note { background: #1e2a1e; border: 1px solid #365a36; border-left: 3px solid #4ade80; padding: 0.75rem 1rem; border-radius: 0 0.375rem 0.375rem 0; }
-        .warn { background: #2a1e1e; border: 1px solid #5a3636; border-left: 3px solid #f87171; padding: 0.75rem 1rem; border-radius: 0 0.375rem 0.375rem 0; }
-        .badge { background: #1e293b; color: #60a5fa; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; border: 1px solid #334155; font-family: monospace; }
+.doc .code-block pre { margin: 0; }
+        .doc .plain { list-style: none; padding-left: 0; }
+        .step-n { font-family: var(--font-mono); font-size: var(--step-0); font-weight: 400; color: var(--muted); margin-right: 10px; }
+        .kicker span + span::before { content: "· "; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body>
 
     <a class="skip" href="#main">Skip to content</a>
 
@@ -35,21 +31,21 @@
     <a class="wordmark" href="/">Headless Oracle</a>
     <nav aria-label="Main">
       <ul class="nav-list nav-wide">
-        <li><a href="C:/Program Files/Git/#how">Witness</a></li>
+        <li><a href="/witness">Witness</a></li>
         <li><a href="/verify">Verify</a></li>
         <li><a href="/pricing">Pricing</a></li>
         <li><a href="/docs">Docs</a></li>
-        <li><a href="C:/Program Files/Git/#auditors">For auditors</a></li>
+        <li><a href="/auditors">For auditors</a></li>
         <li><a href="https://github.com/LembaGang">GitHub</a></li>
       </ul>
       <details class="nav-small">
         <summary>Menu</summary>
         <ul>
-          <li><a href="C:/Program Files/Git/#how">Witness</a></li>
+          <li><a href="/witness">Witness</a></li>
           <li><a href="/verify">Verify</a></li>
           <li><a href="/pricing">Pricing</a></li>
           <li><a href="/docs">Docs</a></li>
-          <li><a href="C:/Program Files/Git/#auditors">For auditors</a></li>
+          <li><a href="/auditors">For auditors</a></li>
           <li><a href="https://github.com/LembaGang">GitHub</a></li>
         </ul>
       </details>
@@ -57,41 +53,43 @@
   </div>
 </header>
 
-    <main id="main" class="flex-grow max-w-5xl mx-auto px-6 py-12 w-full">
+<div class="crosslink">
+  <div class="wrap">
+    <span>Market-state receipts: <a href="/docs">Docs</a> · <a href="/status">Status</a> · <a href="/dashboard">Dashboard</a> · <a href="/halt-gate">Halt gate</a> · <a href="/standards">Standards</a></span>
+    <span>For agent logs your auditor can check, see <a href="/witness">Chirindo Witness</a>.</span>
+  </div>
+</div>
 
-        <div class="text-xs text-slate-500 mb-8 font-mono">
-            <a href="/docs" class="hover:text-slate-300">docs</a>
-            <span class="mx-2">/</span><span>integrations</span><span class="mx-2">/</span>
-            <span class="text-slate-300">anthropic-claude</span>
-        </div>
+<main id="main">
 
-        <div class="mb-10">
-            <div class="flex items-center gap-3 mb-4">
-                <span class="text-3xl">🤖</span>
-                <h1 class="text-4xl font-bold text-white">Anthropic Claude API</h1>
+        <div class="wrap page-head">
+            <p class="breadcrumb"><a href="/docs">docs</a> / integrations / anthropic-claude <span aria-hidden="true">🤖</span></p>
+            <h1>Anthropic Claude API</h1>
+            <div class="lede">
+                <p>Define Headless Oracle as a Claude tool via the Anthropic <code>tool_use</code> API. Claude requests the tool; your code fetches and verifies the signed receipt; the verified result is returned in a <code>tool_result</code> block. Verification runs in your code — not inside the model.</p>
             </div>
-            <p class="text-lg text-slate-400 max-w-3xl">
-                Define Headless Oracle as a Claude tool via the Anthropic <code>tool_use</code> API. Claude requests the tool; your code fetches and verifies the signed receipt; the verified result is returned in a <code>tool_result</code> block. Verification runs in your code — not inside the model.
-            </p>
         </div>
 
-        <section class="mb-10">
-            <h2 class="text-xl font-bold text-white mb-4">Prerequisites</h2>
-            <pre><span style="color:#4ade80">npm install @anthropic-ai/sdk @headlessoracle/verify</span>
-<span style="color:#94a3b8"># or</span>
-<span style="color:#4ade80">pip install anthropic headless-oracle</span></pre>
-        </section>
+        <div class="wrap page-body">
+            <div class="doc">
 
-        <section class="mb-10">
-            <h2 class="text-xl font-bold text-white mb-4">TypeScript Example</h2>
-            <pre><span style="color:#f8fafc">import Anthropic from "@anthropic-ai/sdk";
+                <section>
+                    <h2>Prerequisites</h2>
+                    <pre><span>npm install @anthropic-ai/sdk @headlessoracle/verify</span>
+<span class="muted"># or</span>
+<span>pip install anthropic headless-oracle</span></pre>
+                </section>
+
+                <section>
+                    <h2>TypeScript Example</h2>
+                    <pre><span>import Anthropic from "@anthropic-ai/sdk";
 import { verify } from "@headlessoracle/verify";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
 const ORACLE_BASE = "https://headlessoracle.com";
 const ORACLE_KEY = process.env.ORACLE_KEY!;
 
-<span style="color:#94a3b8">// --- Tool definitions sent to Claude ---</span>
+<span class="muted">// --- Tool definitions sent to Claude ---</span>
 
 const tools: Anthropic.Tool[] = [
   {
@@ -115,7 +113,7 @@ const tools: Anthropic.Tool[] = [
   },
 ];
 
-<span style="color:#94a3b8">// --- Tool execution ---</span>
+<span class="muted">// --- Tool execution ---</span>
 
 async function executeTool(name: string, input: Record&lt;string, string&gt;): Promise&lt;string&gt; {
   if (name === "check_market_status") {
@@ -157,7 +155,7 @@ async function executeTool(name: string, input: Record&lt;string, string&gt;): P
   return JSON.stringify({ error: `Unknown tool: ${name}` });
 }
 
-<span style="color:#94a3b8">// --- Tool use loop ---</span>
+<span class="muted">// --- Tool use loop ---</span>
 
 async function runWithOracle(userMessage: string): Promise&lt;string&gt; {
   const messages: Anthropic.MessageParam[] = [
@@ -201,7 +199,7 @@ async function runWithOracle(userMessage: string): Promise&lt;string&gt; {
   }
 }
 
-<span style="color:#94a3b8">// --- Usage ---</span>
+<span class="muted">// --- Usage ---</span>
 
 async function main() {
   const response = await runWithOracle(
@@ -211,12 +209,12 @@ async function main() {
 }
 
 main().catch(console.error);</span></pre>
-        </section>
+                </section>
 
-        <section class="mb-10">
-            <h2 class="text-xl font-bold text-white mb-4">System Prompt Fragment</h2>
-            <p class="text-sm text-slate-400 mb-3">Include this in your system prompt whenever Oracle tools are registered:</p>
-            <pre><span style="color:#f8fafc">Before recommending or executing any trade, call check_market_status for the
+                <section>
+                    <h2>System Prompt Fragment</h2>
+                    <p>Include this in your system prompt whenever Oracle tools are registered:</p>
+                    <pre><span>Before recommending or executing any trade, call check_market_status for the
 relevant exchange and evaluate safe_to_trade:
 
 - safe_to_trade: true  → market is OPEN with a cryptographically verified receipt
@@ -226,47 +224,36 @@ UNKNOWN means the Oracle's signing infrastructure could not produce a verified
 receipt. Treat it as CLOSED. Never infer that a market is open from context,
 time of day, or prior messages. Only a verified receipt with safe_to_trade=true
 authorizes a trade.</span></pre>
-        </section>
+                </section>
 
-        <section class="mb-10">
-            <h2 class="text-xl font-bold text-white mb-4">Important</h2>
-            <div class="space-y-3 text-sm">
-                <div class="warn">
-                    <strong class="text-red-300">Verification runs in your code, not in the model.</strong>
-                    <span class="text-slate-300 ml-1">Claude cannot verify Ed25519 signatures. The <code>executeTool</code> function calls <code>verify()</code> before returning <code>safe_to_trade</code> to Claude. Claude should never be asked to reason about raw signature bytes.</span>
-                </div>
-                <div class="note">
-                    <strong class="text-green-300">Return <code>safe_to_trade</code> as a top-level boolean.</strong>
-                    <span class="text-slate-300 ml-1">Claude parses the <code>tool_result</code> content string as JSON. A flat, clearly named boolean is more reliable than nesting it inside a receipt object the model must interpret.</span>
-                </div>
-                <div class="note">
-                    <strong class="text-green-300">The tool use loop handles multiple tool calls per turn.</strong>
-                    <span class="text-slate-300 ml-1">Claude may call multiple tools in the same response. The loop above handles all blocks in a single pass before returning results.</span>
-                </div>
-            </div>
-        </section>
+                <section>
+                    <h2>Important</h2>
+                    <div class="note">
+                        <p><strong>Verification runs in your code, not in the model.</strong>
+                        Claude cannot verify Ed25519 signatures. The <code>executeTool</code> function calls <code>verify()</code> before returning <code>safe_to_trade</code> to Claude. Claude should never be asked to reason about raw signature bytes.</p>
+                    </div>
+                    <div class="note">
+                        <p><strong>Return <code>safe_to_trade</code> as a top-level boolean.</strong>
+                        Claude parses the <code>tool_result</code> content string as JSON. A flat, clearly named boolean is more reliable than nesting it inside a receipt object the model must interpret.</p>
+                    </div>
+                    <div class="note">
+                        <p><strong>The tool use loop handles multiple tool calls per turn.</strong>
+                        Claude may call multiple tools in the same response. The loop above handles all blocks in a single pass before returning results.</p>
+                    </div>
+                </section>
 
-        <section class="mb-10 border-t border-slate-800 pt-8">
-            <h2 class="text-xl font-bold text-white mb-4">Resources</h2>
-            <div class="grid sm:grid-cols-2 gap-3 text-sm">
-                <a href="/docs" class="glass rounded-lg p-4 hover:bg-white/5 transition">
-                    <div class="text-white font-semibold mb-1">API Reference</div>
-                    <div class="text-slate-400 text-xs">All endpoints, response schemas, authentication</div>
-                </a>
-                <a href="https://www.npmjs.com/package/@headlessoracle/verify" target="_blank" rel="noopener" class="glass rounded-lg p-4 hover:bg-white/5 transition">
-                    <div class="text-white font-semibold mb-1">npm: @headlessoracle/verify</div>
-                    <div class="text-xs text-slate-400">Zero-dependency Ed25519 verification SDK</div>
-                </a>
-                <a href="/docs/x402-payments" class="glass rounded-lg p-4 hover:bg-white/5 transition">
-                    <div class="text-white font-semibold mb-1">x402 Payments</div>
-                    <div class="text-xs text-slate-400">Agents that pay for themselves on Base mainnet</div>
-                </a>
-                <a href="/pricing" class="glass rounded-lg p-4 hover:bg-white/5 transition">
-                    <div class="text-white font-semibold mb-1">Pricing</div>
-                    <div class="text-xs text-slate-400">Free tier: 500 req/day. No credit card required.</div>
-                </a>
+                <section>
+                    <h2>Resources</h2>
+                    <ul class="links">
+                        <li><a href="/docs">API Reference</a><br><span class="muted small">All endpoints, response schemas, authentication</span></li>
+                        <li><a href="https://www.npmjs.com/package/@headlessoracle/verify" target="_blank" rel="noopener">npm: @headlessoracle/verify</a><br><span class="muted small">Zero-dependency Ed25519 verification SDK</span></li>
+                        <li><a href="/docs/x402-payments">x402 Payments</a><br><span class="muted small">Agents that pay for themselves on Base mainnet</span></li>
+                        <li><a href="/pricing">Pricing</a><br><span class="muted small">Free tier: 500 req/day. No credit card required.</span></li>
+                    </ul>
+                </section>
+
             </div>
-        </section>
+        </div>
 
     </main>
 

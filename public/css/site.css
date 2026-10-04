@@ -363,7 +363,8 @@ table { border-collapse: collapse; }
    -------------------------------------------------------------------------- */
 
 /* Interior page head: kicker, one serif H1, a lede. */
-.page-head { padding: clamp(40px, 6vw, 72px) 0 clamp(28px, 4vw, 48px); }
+/* Top and bottom only: the element is also .wrap, whose side padding is the gutter. */
+.page-head { padding-top: clamp(40px, 6vw, 72px); padding-bottom: clamp(28px, 4vw, 48px); }
 .kicker { font-family: var(--font-mono); font-size: var(--step--1); color: var(--muted); margin: 0 0 16px; }
 .page-head h1 { font-family: var(--font-serif); font-weight: 500; font-size: clamp(2rem, 1.5rem + 1.8vw, 2.875rem); line-height: 1.1; letter-spacing: -0.01em; max-width: 24ch; }
 .lede { margin-top: 20px; max-width: 40em; font-size: var(--step-1); }
