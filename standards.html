@@ -109,7 +109,7 @@
             <p>A <strong>Signed Market-State Attestation</strong> (SMA) is a cryptographically signed claim about the current trading state of a regulated venue at a specific moment in time. Every response from Headless Oracle is an SMA: a structured payload describing whether a market is open, closed, in pre-auction, in lunch break, or on an early-close schedule, together with the exchange's ISO 10383 MIC code, an RFC 3339 timestamp, and an Ed25519 signature over the canonical form of the payload.</p>
             <p>The design goal is simple: make market state a signed, checkable record rather than an unsigned claim. A smart contract, trading agent, or compliance process can independently validate an SMA against Headless Oracle's published Ed25519 public key, without ever calling back to our service. If the public key verifies the signature, the payload is exactly what Headless Oracle signed. It records Headless Oracle's observation, not a guarantee of fact.</p>
             <p>SMAs are short-lived by design. Each attestation carries a <strong>60-second time-to-live</strong>, after which downstream consumers must refuse to act on it. This bounds the window in which a stale reading can drive an incorrect decision — a critical property for autonomous systems handling real capital.</p>
-            <p class="small muted"><em>Co-author of the IETF draft family defining environmental constraints for Verifiable Intent.</em></p>
+            <p class="small muted"><em>Headless Oracle co-authors the IETF draft family defining environmental constraints for Verifiable Intent.</em></p>
         </section>
 
         <!-- Regulatory references -->
@@ -179,10 +179,10 @@
         <!-- Open Standards & Family Specs -->
         <section id="open-standards">
             <h2>Open Standards &amp; Family Specs</h2>
-            <p><code>environment.market_state</code> is a proposed member of the <code>environment.*</code> constraint family. Sibling implementations cover adjacent constraint surfaces, and an <a href="https://datatracker.ietf.org/doc/draft-borthwick-msebenzi-environment-state/" target="_blank" rel="noopener">IETF Internet-Draft</a> filed May 11, 2026 formalises the family and vocabulary layer. <a href="/essays/environment-internet-draft">Read the announcement &rarr;</a></p>
+            <p><code>environment.market_state</code> is a proposed member of the <code>environment.*</code> constraint family. Sibling implementations cover adjacent constraint surfaces, and an <a href="https://datatracker.ietf.org/doc/draft-borthwick-msebenzi-environment-state/" target="_blank" rel="noopener">IETF Internet-Draft</a> filed May 11, 2026 formalises the family and vocabulary layer.</p>
 
             <div class="grid grid--2">
-                <a href="https://github.com/environment-charter/environment-charter/blob/main/specs/environment-wallet-state.md" target="_blank" rel="noopener" class="panel">
+                <a href="https://github.com/environment-charter/environment-charter/blob/d354d8c6bc334831572325e5dd258120b8299a36/specs/environment-wallet-state.md" target="_blank" rel="noopener" class="panel">
                     <div class="row row--between">
                         <p class="label">Sibling spec</p>
                         <span>&rarr;</span>
@@ -196,7 +196,7 @@
                         <p class="label">filed · May 11, 2026</p>
                     </div>
                     <h3>IETF Internet-Draft</h3>
-                    <p class="small">Family-definition specification for the <code>environment.*</code> constraint family — <code class="wrap-any">draft-borthwick-msebenzi-environment-state-00</code>. Co-authored with Douglas Borthwick (InsumerAPI). Live at the IETF Datatracker as a citable archive.</p>
+                    <p class="small">Family-definition specification for the <code>environment.*</code> constraint family — <code class="wrap-any">draft-borthwick-msebenzi-environment-state</code>. Authors: D. Borthwick, InsumerAPI; M. Msebenzi, Headless Oracle. Live at the IETF Datatracker as a citable archive.</p>
                 </a>
             </div>
         </section>

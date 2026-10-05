@@ -391,6 +391,7 @@ curl "https://headlessoracle.com/v5/demo?mic=XJPX"</pre>
                         </tbody>
                     </table>
                 </div>
+                <p class="small muted">Also covered, not listed in the table: XCBT, XNYM, XCBO, XCOI and XBIN.</p>
                 <p class="small muted">All times are local to the exchange. Retrieve the full exchange directory programmatically at <code>/v5/exchanges</code>.</p>
 
                 <div class="note">
@@ -734,16 +735,16 @@ function hexToBytes(hex) {
                 </p>
 
                 <h3>Get an API Key</h3>
-                <p>Subscribe via anonymous Paddle checkout — no account creation required. After payment your key appears on the pricing page and is also sent by email.</p>
+                <p>Subscribe via anonymous Paddle checkout — no account creation required. After payment your key appears on the pricing page.</p>
                 <pre>curl -X POST https://headlessoracle.com/v5/checkout
 # Returns: { "url": "https://checkout.paddle.com/..." }
 # Redirect the user (or open the URL) to complete payment.</pre>
-                <p class="small muted">Keys are prefixed <code>ok_live_</code> for easy identification in logs and environment variables.</p>
+                <p class="small muted">Keys are prefixed <code>ho_live_</code> for easy identification in logs and environment variables.</p>
 
                 <h3>Check Your Account</h3>
                 <pre>curl https://headlessoracle.com/v5/account \
      -H "X-Oracle-Key: YOUR_API_KEY"
-# Returns: { "plan": "pro", "status": "active", "key_prefix": "ok_live_..." }</pre>
+# Returns: { "plan": "pro", "status": "active", "key_prefix": "ho_live_..." }</pre>
 
                 <h3>Error Codes</h3>
                 <ul>

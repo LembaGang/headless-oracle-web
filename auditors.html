@@ -38,7 +38,7 @@
       "publisher": { "@id": "https://headlessoracle.com/#org" },
       "step": [
         { "@type": "HowToStep", "position": 1, "name": "Get the complete log and fetch its receipts from Witness yourself", "text": "Ask for the complete session log, then fetch its receipts from Witness yourself with GET https://api.headlessoracle.com/v1/witness/checkpoints?kid=<kid>&session_id=<session_id>, following next_after until it is absent." },
-        { "@type": "HowToStep", "position": 2, "name": "Run the open-source verifier offline", "text": "A log cut short, or rewritten before a witnessed checkpoint, fails and names the lowest failing count." },
+        { "@type": "HowToStep", "position": 2, "name": "Run the open-source verifier offline", "text": "A log cut short or rewritten anywhere up to the last witnessed checkpoint fails, and the check names the lowest failing count." },
         { "@type": "HowToStep", "position": 3, "name": "Compare each received_at with the entries' times", "text": "That gap is the window in which history could have been rewritten before anyone witnessed it." }
       ]
     }
@@ -116,7 +116,7 @@
       <h2 id="h-steps">Three steps</h2>
       <ol class="alist">
         <li>Ask for the complete session log, then fetch its receipts from Witness yourself. A receipt file supplied by the operator relies on the operator; a query to <code>api.headlessoracle.com</code> does not.</li>
-        <li>Run the open-source verifier offline. A log cut short, or rewritten before a witnessed checkpoint, fails and names the lowest failing count.</li>
+        <li>Run the open-source verifier offline. A log cut short or rewritten anywhere up to the last witnessed checkpoint fails, and the check names the lowest failing count.</li>
         <li>Compare each <code>received_at</code> with the entries' times. That gap is the window in which history could have been rewritten before anyone witnessed it.</li>
       </ol>
     </div>

@@ -478,7 +478,7 @@ a.panel:hover h3, a.panel:hover .panel-title { text-decoration: underline; }
 
 /* Forms. */
 .form-grid { display: grid; gap: 14px 20px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); }
-.field label, .field-label { display: block; font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); margin-bottom: 4px; }
+.field label:not(.linkish), .field-label { display: block; font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); margin-bottom: 4px; }
 .input, textarea.input {
   width: 100%; min-height: 44px; padding: 10px 12px;
   font: 400 var(--step-0)/1.4 var(--font-sans); color: var(--ink);

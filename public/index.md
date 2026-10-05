@@ -72,7 +72,7 @@ Sending checkpoints to Witness from the gate (`chirindo checkpoint`, `proxy --ch
 ## For auditors and insurers
 
 1. Ask for the complete session log, then fetch its receipts from Witness yourself. A receipt file supplied by the operator relies on the operator; a query to `api.headlessoracle.com` does not.
-2. Run the open-source verifier offline. A log cut short, or rewritten before a witnessed checkpoint, fails and names the lowest failing count.
+2. Run the open-source verifier offline. A log cut short or rewritten anywhere up to the last witnessed checkpoint fails, and the check names the lowest failing count.
 3. Compare each `received_at` with the entries' times. That gap is the window in which history could have been rewritten before anyone witnessed it.
 
 [Test kit: five tampering cases and an untouched control, chain alone against witnessed](https://github.com/LembaGang/chirindo/tree/main/examples/e015-4-kit)

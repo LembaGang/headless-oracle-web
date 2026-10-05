@@ -59,6 +59,10 @@ const BANNED = [
   // Files are matched raw, without entity decoding; the old H1 was written this way.
   ['Standards &amp; Compliance', 'entity-encoded form of the same label (W3 #29)'],
   ['V5 Beta', 'stale launch badge (W3 #17)'],
+  // W4b: paid keys are shown on screen after payment; the site must not promise email delivery.
+  ['sent by email after payment', 'paid keys are shown on screen after payment, not emailed (W4b)'],
+  ['appear by email', 'paid keys are shown on screen after payment, not emailed (W4b)'],
+  ['also sent by email', 'paid keys are shown on screen after payment, not emailed (W4b)'],
   // Not banned: "Mastercard's Verifiable Intent". Removed from the human pages in W3 (#23),
   // but two published essays under public/essays/ still use it and are not edited here.
 ];

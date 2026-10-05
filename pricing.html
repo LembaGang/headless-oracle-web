@@ -139,7 +139,7 @@
                         <h3>Evidence Starter</h3>
                         <p class="plan-price">$49</p>
                         <p class="plan-cycle">/month · Introductory until 31 December 2026</p>
-                        <p class="plan-desc grow">Your own Witness key, sent by email after payment. Up to 1,000 new checkpoints per UTC day, drawn from your own quota, not the free pool. For one production agent or a pilot.</p>
+                        <p class="plan-desc grow">Your own Witness key, shown on screen after payment. Up to 1,000 new checkpoints per UTC day, drawn from your own quota, not the free pool. For one production agent or a pilot.</p>
                         <button onclick="openPaddleCheckout('custody_90d')" id="custody_90d-btn" class="btn btn--block">Subscribe: $49/mo</button>
                         <div id="custody_90d-fallback" class="hidden plan-fallback"></div>
                     </div>
@@ -150,7 +150,7 @@
                         <h3>Evidence</h3>
                         <p class="plan-price">$199</p>
                         <p class="plan-cycle">/month · Introductory until 31 December 2026</p>
-                        <p class="plan-desc grow">Your own Witness key, sent by email after payment. Up to 3,000 new checkpoints per UTC day, drawn from your own quota, not the free pool. For teams preparing evidence for AIUC-1 E015.4 log integrity across several agents.</p>
+                        <p class="plan-desc grow">Your own Witness key, shown on screen after payment. Up to 3,000 new checkpoints per UTC day, drawn from your own quota, not the free pool. For teams preparing evidence for AIUC-1 E015.4 log integrity across several agents.</p>
                         <button onclick="openPaddleCheckout('custody_1y')" id="custody_1y-btn" class="btn btn--block">Subscribe: $199/mo</button>
                         <div id="custody_1y-fallback" class="hidden plan-fallback"></div>
                     </div>
@@ -159,7 +159,7 @@
 
                 <div class="prose">
                     <p class="small">Evidence pilot for a team in its audit window: $4,900 fixed price, scope agreed by conversation. Write to <!--email_off--><a href="mailto:mike@headlessoracle.com?subject=Evidence%20pilot">mike@headlessoracle.com</a><!--/email_off-->.</p>
-                    <p class="muted small">Evidence for AIUC-1 E015.4. It does not make anyone compliant or certified; the honest limits are in the spec.</p>
+                    <p class="muted small">Evidence that may support AIUC-1 E015.4. It does not make anyone compliant or certified; the honest limits are in the spec.</p>
                 </div>
             </div>
         </div>
@@ -179,7 +179,7 @@
                         <p class="plan-kind">Explore</p>
                         <h3>Sandbox</h3>
                         <p class="plan-price">$0</p>
-                        <p class="plan-cycle">forever free</p>
+                        <p class="plan-cycle">200 calls over 7 days</p>
                         <p class="plan-desc">Demo endpoint, no key needed</p>
                         <ul>
                             <li>/v5/demo endpoint</li>
@@ -853,9 +853,9 @@
         if (lastPlan && NO_KEY_PLANS.indexOf(lastPlan) !== -1) {
             text = 'Payment received. Paddle emails your receipt, and we will be in touch within one business day at the address you used.';
         } else if (!lastPlan) {
-            text = 'Payment received. If you bought a plan with a key, it appears here or by email; otherwise Paddle emails your receipt and we will be in touch within one business day.';
+            text = 'Payment received. If you bought a plan with a key, it appears here or, if it does not, write to mike@headlessoracle.com with the transaction ID from your Paddle receipt; otherwise Paddle emails your receipt and we will be in touch within one business day.';
         } else {
-            text = 'Payment received. If your key does not appear by email within 15 minutes, write to mike@headlessoracle.com with ' +
+            text = 'Payment received. If your key does not appear here within 15 minutes, write to mike@headlessoracle.com with ' +
                 (txn ? 'transaction ' + txn : 'the transaction ID from your Paddle receipt') + '.';
         }
         showClaimView('message', { txn: txn, text: text });

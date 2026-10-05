@@ -344,7 +344,7 @@ npx -y @headlessoracle/chirindo verify .gate/sessions/&lt;session-id&gt;.jsonl -
       <h2 id="h-auditors">For auditors and insurers</h2>
       <ol class="alist">
         <li>Ask for the complete session log, then fetch its receipts from Witness yourself. A receipt file supplied by the operator relies on the operator; a query to <code>api.headlessoracle.com</code> does not.</li>
-        <li>Run the open-source verifier offline. A log cut short, or rewritten before a witnessed checkpoint, fails and names the lowest failing count.</li>
+        <li>Run the open-source verifier offline. A log cut short or rewritten anywhere up to the last witnessed checkpoint fails, and the check names the lowest failing count.</li>
         <li>Compare each <code>received_at</code> with the entries' times. That gap is the window in which history could have been rewritten before anyone witnessed it.</li>
       </ol>
       <p><a href="https://github.com/LembaGang/chirindo/tree/main/examples/e015-4-kit">Test kit: five tampering cases and an untouched control, chain alone against witnessed</a></p>

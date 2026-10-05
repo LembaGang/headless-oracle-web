@@ -21,7 +21,7 @@ The full list is in the [Witness spec](https://api.headlessoracle.com/v1/witness
 ## 2. Three steps
 
 1. Ask for the complete session log, then fetch its receipts from Witness yourself. A receipt file supplied by the operator relies on the operator; a query to `api.headlessoracle.com` does not.
-2. Run the open-source verifier offline. A log cut short, or rewritten before a witnessed checkpoint, fails and names the lowest failing count.
+2. Run the open-source verifier offline. A log cut short or rewritten anywhere up to the last witnessed checkpoint fails, and the check names the lowest failing count.
 3. Compare each `received_at` with the entries' times. That gap is the window in which history could have been rewritten before anyone witnessed it.
 
 ## 3. Fetch the receipts from Witness yourself
