@@ -1,0 +1,16 @@
+{
+  "note": "Drift between the built site and the worker-served sitemap.xml, measured 2026-10-05 when the gate shipped (W5). The worker owns sitemap.xml (headless-oracle-v5); these are its to fix. check-live-links prints each as KNOWN, fails on anything not listed here, and prints RESOLVED for an entry that no longer drifts: delete that entry then.",
+  "missing_from_sitemap": [
+    "/blog",
+    "/dashboard",
+    "/docs/integrations/anthropic-claude",
+    "/docs/integrations/bun",
+    "/docs/integrations/langgraph",
+    "/docs/quickstart",
+    "/privacy",
+    "/refund",
+    "/terms",
+    "/traction"
+  ],
+  "not_indexable_in_sitemap": []
+}

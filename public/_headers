@@ -9,3 +9,12 @@
 
 /about
   Link: </about.md>; rel="alternate"; type="text/markdown"
+
+/pricing
+  Link: </pricing.md>; rel="alternate"; type="text/markdown"
+
+/verify
+  Link: </verify.md>; rel="alternate"; type="text/markdown"
+
+/docs
+  Link: </docs.md>; rel="alternate"; type="text/markdown"

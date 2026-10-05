@@ -29,6 +29,7 @@
  * Usage:
  *   node scripts/check-prices.mjs [--page=dist/pricing.html] [--api=https://headlessoracle.com/v5/pricing]
  *     [--offer-pages=dist/index.html,dist/pricing.html,dist/witness.html]   JSON-LD Offers held to the API too
+ *     [--plan-rows=dist/pricing.md:complete,dist/docs.md,dist/docs.html]     "Plan id" tables held to the API too
  */
 
 import { readFileSync } from 'node:fs';
@@ -196,6 +197,7 @@ async function main() {
   const pagePath = resolve(arg('page', DEFAULT_PAGE));
   const apiUrl = arg('api', DEFAULT_API);
   const offerPages = arg('offer-pages', DEFAULT_OFFER_PAGES.join(',')).split(',').filter(Boolean);
+  const planRowFiles = arg('plan-rows', DEFAULT_PLAN_ROW_FILES.join(',')).split(',').filter(Boolean);
 
   let html;
   try {
@@ -354,6 +356,9 @@ async function main() {
   // --- JSON-LD offers on the other pages -----------------------------------------------
   const offerLines = checkOfferPages(offerPages, tiers);
 
+  // --- "Plan id" tables in the Markdown twins and /docs (W5) ---------------------------
+  const rowLines = checkPlanRows(planRowFiles, { tiers, refereeBlock, apiByPlan, pageItems });
+
   if (absentFromApi.length > 0) {
     return {
       code: EXIT_REFEREE_ABSENT,
@@ -373,8 +378,139 @@ async function main() {
       `MATCH ${checked.length} plans agree between ${pagePath} and ${apiUrl}`,
       `  ${checked.join(', ')}`,
       ...offerLines,
+      ...rowLines,
     ],
   };
+}
+
+/**
+ * Files carrying a table with a "Plan id" column (W5: the Markdown twins and the Witness
+ * quickstart in /docs). Every body row of such a table must name a plan the API offers,
+ * in backticks (Markdown) or <code> (HTML), and every figure in the row must be the API's:
+ * each "$N", the billing cycle, "N new checkpoints" against checkpoints_per_day, "N calls/day"
+ * against calls_per_day and "N calls" against calls. `:complete` also requires a row for
+ * every data-price-item plan on the pricing page, the neutrality rule verbatim, and the
+ * introductory date wherever a listed plan has one. A listed file with no such table fails.
+ */
+const DEFAULT_PLAN_ROW_FILES = ['dist/pricing.md:complete', 'dist/docs.md', 'dist/docs.html'];
+
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+function longDate(iso) {
+  const [y, m, d] = iso.split('-').map(Number);
+  return `${d} ${MONTHS[m - 1]} ${y}`;
+}
+
+/** { tables, rows: [{ text, ids }] } for every table whose header has a "Plan id" column. */
+function planRows(src, isHtml) {
+  const rows = [];
+  let tables = 0;
+  if (isHtml) {
+    for (const t of src.matchAll(/<table\b[\s\S]*?<\/table>/gi)) {
+      const ths = [...t[0].matchAll(/<th\b[^>]*>([\s\S]*?)<\/th>/gi)].map((m) => pageText(m[1]).trim());
+      if (!ths.includes('Plan id')) continue;
+      tables++;
+      for (const tr of t[0].matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)) {
+        if (/<th\b/i.test(tr[1])) continue;
+        rows.push({ text: pageText(tr[1]).trim(), ids: [...tr[1].matchAll(/<code>([^<]+)<\/code>/g)].map((m) => m[1]) });
+      }
+    }
+    return { tables, rows };
+  }
+  let inTable = false;
+  const lines = src.split(/\r?\n/);
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line.startsWith('|')) {
+      inTable = false;
+      continue;
+    }
+    if (!inTable) {
+      const cells = line.split('|').slice(1, -1).map((c) => c.trim());
+      inTable = cells.includes('Plan id') && /^\|[\s|:-]+\|$/.test((lines[i + 1] || '').trim());
+      if (inTable) {
+        tables++;
+        i++; // the |---| separator
+      }
+      continue;
+    }
+    rows.push({ text: line, ids: [...line.matchAll(/`([^`]+)`/g)].map((m) => m[1]) });
+  }
+  return { tables, rows };
+}
+
+function checkPlanRows(specs, { tiers, refereeBlock, apiByPlan, pageItems }) {
+  const lines = [];
+  const services = refereeBlock ? refereeBlock.services : [];
+  for (const spec of specs) {
+    const [file, mode] = spec.split(':');
+    let src;
+    try {
+      src = readFileSync(resolve(file), 'utf8');
+    } catch (e) {
+      fail(EXIT_ERROR, `ERROR cannot read ${file} for its plan rows (${e.code})`);
+    }
+    const { tables, rows } = planRows(src, file.endsWith('.html'));
+    if (tables === 0 || rows.length === 0) {
+      fail(EXIT_MISMATCH, `MISMATCH plan_rows page=${file}:<no "Plan id" table> api=<at least one expected>`);
+    }
+    const named = [];
+    const until = new Set();
+    for (const row of rows) {
+      const id = row.ids.find((x) => apiByPlan.has(x) || tiers.some((t) => t.id === x || t.plan === x));
+      if (!id) {
+        fail(EXIT_MISMATCH, `MISMATCH plan_row_id page=${file}:"${row.text.slice(0, 60)}" api=<no plan with id ${row.ids[0] ?? '<none>'}>`);
+      }
+      named.push(id);
+      // A checkout plan (custody_90d) and its tier (evidence_starter) are one offering.
+      const tier = tiers.find((t) => t.id === id) || tiers.find((t) => t.plan === id);
+      const service = services.find((s) => s.plan === id);
+      const offering = apiByPlan.get(id);
+      const price = offering ? offering.price : apiPrice(tier);
+      const cycle = offering ? offering.cycle : tier.interval || (price === 0 ? 'free' : 'unknown');
+      const text = row.text.replace(/&nbsp;|&#160;/g, ' ');
+
+      const shown = (text.match(/\$[\d,]+(?:\.\d+)?/g) || []).map(money);
+      if (!shown.includes(price) || shown.some((v) => v !== price)) {
+        fail(EXIT_MISMATCH, `MISMATCH ${id}.row_price page=${file}:${JSON.stringify(shown)} api=${price}`);
+      }
+      const cycleRe = { month: /\/\s*month\b/, 'one-time': /\bone-time\b/, request: /\/\s*request\b/ }[cycle];
+      if (price > 0 && cycleRe && !cycleRe.test(text)) {
+        fail(EXIT_MISMATCH, `MISMATCH ${id}.row_cycle page=${file}:<no ${cycle}> api=${cycle}`);
+      }
+      const figure = (re) => {
+        const m = text.match(re);
+        return m ? money(m[1]) : null;
+      };
+      const quotas = [
+        ['checkpoints_per_day', /(\d[\d,]*) new checkpoints/],
+        ['calls_per_day', /(\d[\d,]*) (?:API )?calls\/day/],
+        ['calls', /(\d[\d,]*) (?:API )?calls\b(?!\/)/],
+      ];
+      for (const [field, re] of quotas) {
+        if (typeof tier?.[field] !== 'number') continue;
+        if (figure(re) !== tier[field]) fail(EXIT_MISMATCH, `MISMATCH ${id}.row_${field} page=${file}:${figure(re)} api=${tier[field]}`);
+      }
+      const u = tier?.introductory_until || (service && refereeBlock.introductory_until);
+      if (u) until.add(u);
+    }
+    if (mode === 'complete') {
+      const missing = pageItems.map((i) => i.plan).filter((p) => !named.includes(p));
+      if (missing.length) {
+        fail(EXIT_MISMATCH, `MISMATCH plan_rows_incomplete page=${file}:<no row for ${missing.join(',')}> api=<on the pricing page>`);
+      }
+      if (!src.includes(NEUTRALITY_RULE)) {
+        fail(EXIT_MISMATCH, `MISMATCH neutrality_rule page=${file}:<altered or absent> api=<canonical constant>`);
+      }
+      for (const d of until) {
+        if (!src.includes(`until ${longDate(d)}`)) {
+          fail(EXIT_MISMATCH, `MISMATCH introductory_until page=${file}:<no "until ${longDate(d)}"> api=${d}`);
+        }
+      }
+    }
+    lines.push(`  plan rows agree in ${file}: ${named.join(', ')}`);
+  }
+  return lines;
 }
 
 /**

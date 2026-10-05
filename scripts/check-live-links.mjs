@@ -29,6 +29,11 @@
  * other host is fetched (HEAD, then GET, 15 s timeout) and reported; it fails the gate
  * only on 404 or 410 (confirmed through the host's API where there is one).
  *
+ * Then sitemap drift (W5): every built page without `noindex` must be in the live
+ * sitemap.xml, and every sitemap URL must be indexable (in dist/ without `noindex`, or
+ * 200 live without a noindex meta or X-Robots-Tag). Drift recorded in
+ * scripts/sitemap-drift-baseline.json prints KNOWN and does not fail; any other drift fails.
+ *
  * Exit codes:
  *   0  PASS   : every URL resolves
  *   1  FAIL   : every failing URL is listed
@@ -271,9 +276,90 @@ export async function runLiveLinks({ allowDistFixes = true } = {}) {
   const page = await checkPageLinks(dist, ctx.redirects);
   lines.push(...page.lines);
 
-  const pageFail = page.fail > 0;
+  // Sitemap drift (W5). The worker serves sitemap.xml, so a page added here does not reach
+  // it unless someone remembers; this names every page in either set but not the other.
+  const drift = await checkSitemapDrift(dist, locs);
+  lines.push(...drift.lines);
+
+  const pageFail = page.fail > 0 || drift.fail > 0;
   const code = count('ERROR') ? EXIT_ERROR : count('FAIL') || pageFail ? EXIT_FAIL : EXIT_PASS;
   return { code, lines };
+}
+
+/**
+ * Drift already known on the day this gate shipped, and handed to the worker (it owns
+ * sitemap.xml). Listed here, each still prints on every run but does not fail it; any drift
+ * outside this file fails. An entry the worker has fixed prints RESOLVED: delete it here.
+ */
+const DRIFT_BASELINE = 'scripts/sitemap-drift-baseline.json';
+
+function noindex(html) {
+  return /<meta\b[^>]*\bname=["']robots["'][^>]*\bcontent=["'][^"']*noindex/i.test(html);
+}
+
+/** One spelling per page: no trailing slash except the root. */
+function pageKey(pathname) {
+  return pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
+}
+
+export async function checkSitemapDrift(dist, locs) {
+  const lines = [];
+  const baselineFile = resolve(DRIFT_BASELINE);
+  const baseline = existsSync(baselineFile) ? JSON.parse(readFileSync(baselineFile, 'utf8')) : {};
+  const known = {
+    missing: new Set(baseline.missing_from_sitemap || []),
+    notIndexable: new Set(baseline.not_indexable_in_sitemap || []),
+  };
+
+  // Every indexable built page. 404.html is noindex, so it drops out on its own.
+  const built = new Map();
+  for (const file of htmlFiles(dist)) {
+    built.set(pageKey(servedPath(dist, file)), noindex(readFileSync(file, 'utf8')));
+  }
+  const inSitemap = new Set(locs.map((l) => pageKey(new URL(l).pathname)));
+
+  const missing = [...built].filter(([p, ni]) => !ni && !inSitemap.has(p)).map(([p]) => p).sort();
+
+  // Every sitemap URL must be indexable: from dist/ where it is built, else live.
+  const notIndexable = [];
+  for (const p of [...inSitemap].sort()) {
+    if (built.has(p)) {
+      if (built.get(p)) notIndexable.push(`${p} (noindex in dist)`);
+      continue;
+    }
+    try {
+      const res = await fetch(ORIGIN + p, { redirect: 'follow', headers: { 'User-Agent': UA }, signal: AbortSignal.timeout(TIMEOUT_MS) });
+      const body = await res.text();
+      const robots = res.headers.get('x-robots-tag') || '';
+      if (res.status !== 200) notIndexable.push(`${p} (live ${res.status})`);
+      else if (/noindex/i.test(robots) || noindex(body)) notIndexable.push(`${p} (noindex live)`);
+    } catch (e) {
+      notIndexable.push(`${p} (fetch failed: ${e.message})`);
+    }
+  }
+
+  let fail = 0;
+  const report = (label, list, knownSet) => {
+    for (const item of list) {
+      const key = item.split(' (')[0];
+      if (knownSet.has(key)) lines.push(`KNOWN ${label} ${item} (in ${DRIFT_BASELINE}; for the worker)`);
+      else {
+        lines.push(`FAIL  ${label} ${item}`);
+        fail++;
+      }
+    }
+    for (const key of knownSet) {
+      if (!list.some((i) => i.split(' (')[0] === key)) lines.push(`RESOLVED ${label} ${key}: remove it from ${DRIFT_BASELINE}`);
+    }
+  };
+  report('sitemap-missing', missing, known.missing);
+  report('sitemap-not-indexable', notIndexable, known.notIndexable);
+  lines.push(
+    `SITEMAP-DRIFT ${[...built.values()].filter((ni) => !ni).length} indexable built pages, ${inSitemap.size} sitemap URLs; ` +
+      `missing from sitemap: ${missing.length ? missing.join(' ') : 'none'}; ` +
+      `in sitemap but not indexable: ${notIndexable.length ? notIndexable.map((i) => i.split(' (')[0]).join(' ') : 'none'}; ${fail} new`,
+  );
+  return { fail, lines };
 }
 
 /**

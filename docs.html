@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <title>Integration Docs | Headless Oracle V5</title>
     <meta name="description" content="Integration documentation for Headless Oracle V5. REST API, MCP server, batch queries, billing, and verification SDK. All endpoints documented.">
     <meta name="robots" content="index, follow">
@@ -16,6 +18,7 @@
     <meta name="twitter:description" content="REST API, MCP server, batch queries, billing, and verification SDK. Full documentation.">
     <meta name="twitter:image" content="https://headlessoracle.com/og-image.png">
     <link rel="canonical" href="https://headlessoracle.com/docs">
+    <link rel="alternate" type="text/markdown" href="/docs.md" title="This page in Markdown">
     <link rel="alternate" type="application/json" href="/openapi.json" title="OpenAPI 3.1 specification">
     <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt — machine-readable API summary">
     <meta name="color-scheme" content="light dark">
@@ -87,6 +90,10 @@
 
         <nav class="toc" aria-label="On this page">
             <ul>
+                <li><a href="#witness-quickstart">Chirindo Witness quickstart</a></li>
+                <li class="toc-sub"><a href="#witness-first-checkpoint">↳ First checkpoint</a></li>
+                <li class="toc-sub"><a href="#witness-verify">↳ Verify a receipt</a></li>
+                <li class="toc-sub"><a href="#witness-plans">↳ Plans</a></li>
                 <li><a href="#complexity">Edge Cases</a></li>
                 <li><a href="#quickstart">Quick Start</a></li>
                 <li><a href="#exchanges">Supported Exchanges</a></li>
@@ -113,6 +120,63 @@
         </div>
 
         <div class="doc">
+
+            <!-- CHIRINDO WITNESS QUICKSTART. What it is and what it adds are the spec's own
+                 wording (purpose, honest_limits); the script is the one in public/index.md.
+                 Plan rows carry their plan id in <code> so check-prices holds them to /v5/pricing. -->
+            <section id="witness-quickstart">
+                <h2>Chirindo Witness quickstart</h2>
+                <p>An operator sends signed chain checkpoints to the witness, which records each one and signs a receipt saying when it saw it. The witness attests only &ldquo;at time T, I received this checkpoint, validly signed by the key with this thumbprint&rdquo;. It does not attest who owns the key, nor that the records are true.</p>
+                <p>What it adds: a cut-off tail, or a rewrite by the key holder (edit, delete or reorder, then re-sign and re-link), of any history up to the last witnessed checkpoint, made after that checkpoint was witnessed, is detected when the chain is compared with the witness's receipts. Records after the last witnessed checkpoint, and a history rewritten before it was first witnessed, are not. The full list is in the <a href="https://api.headlessoracle.com/v1/witness/spec">Witness spec</a>, under <code>honest_limits</code>.</p>
+                <p>The free pool needs no account and no key: anonymous checkpoints share one daily pool (figure in the plan table below). Because anyone can submit without an account, anyone can use up the rate limit or the daily cap until it resets; paid plans get their own key and quota.</p>
+
+                <h3 id="witness-first-checkpoint">Send your first checkpoint</h3>
+                <p>Witness accepts only a checkpoint signed with an Ed25519 key, so the request reads its body from a file. This script makes a key and a one-entry checkpoint and writes <code>checkpoint.json</code>. It needs Node 20 or later and nothing else.</p>
+                <p class="label">checkpoint.mjs</p>
+                <pre>import { generateKeyPairSync, sign, createHash } from "node:crypto"; import { writeFileSync } from "node:fs";
+const { privateKey, publicKey } = generateKeyPairSync("ed25519"), x = publicKey.export({ format: "jwk" }).x;
+const sha = (s, enc) =&gt; createHash("sha256").update(s).digest(enc), kid = sha(`{"crv":"Ed25519","kty":"OKP","x":"${x}"}`, "base64url");
+const cp = { count: 1, kid, last_entry_hash: "sha256:" + sha("first entry", "hex"), session_id: "try-" + Date.now(), ts: new Date().toISOString(), type: "checkpoint", v: "evidence.action/1" };
+cp.sig = sign(null, Buffer.from(JSON.stringify(cp)), privateKey).toString("base64url");
+writeFileSync("checkpoint.json", JSON.stringify({ checkpoint: cp, public_key_jwk: { kty: "OKP", crv: "Ed25519", x } }));</pre>
+                <pre>node checkpoint.mjs
+curl -sS https://api.headlessoracle.com/v1/witness/checkpoints \
+  -H 'Content-Type: application/json' \
+  --data-binary @checkpoint.json</pre>
+                <p>Witness answers <code>201</code> with a receipt signed by Headless Oracle. The checkpoint's keys are written in sorted order, so <code>JSON.stringify</code> gives the exact bytes the spec signs. With the gate, the count and the head hash come from your log; here they stand in for one placeholder entry.</p>
+                <p class="small muted">With the Chirindo gate in front of your MCP server, checkpoints come from your real log: see <a href="/witness#start">/witness</a> for <code>npx -y @headlessoracle/chirindo init</code>, <code>proxy</code> and <code>verify</code>.</p>
+
+                <h3 id="witness-verify">Verify a receipt</h3>
+                <ol>
+                    <li><strong>Fetch the receipts from Witness yourself.</strong> Public, no auth: <code class="wrap-any">GET https://api.headlessoracle.com/v1/witness/checkpoints?kid=&lt;thumbprint&gt;&amp;session_id=&lt;id&gt;</code>. Verifying against a sidecar file trusts the operator who supplied it. Only querying the witness is independent of the operator.</li>
+                    <li><strong>Take the Witness public key.</strong> Use <code>public_key</code> (hex, 32 raw bytes) of the <code>keys[]</code> entry in <a href="https://api.headlessoracle.com/v5/keys">GET https://api.headlessoracle.com/v5/keys</a> whose <code>key_id</code> equals the receipt's <code>public_key_id</code>, and pin it.</li>
+                    <li><strong>Check the signature.</strong> The signed bytes are all receipt fields except <code>signature</code>, keys sorted, <code>JSON.stringify</code> with no whitespace, UTF-8; the signature is Ed25519, hex.</li>
+                    <li><strong>Compare the log with the receipts.</strong> In your browser at <a href="/verify">/verify</a>, or offline with <a href="https://www.npmjs.com/package/@headlessoracle/receipt-verify">@headlessoracle/receipt-verify</a> and <code>chirindo verify</code>. A log shorter than a witnessed count, or different from what Witness saw at that count, fails, and the check names the count where it fails.</li>
+                </ol>
+
+                <h3 id="witness-plans">Plans</h3>
+                <div class="table-wrap">
+                    <table class="table">
+                        <thead>
+                            <tr><th>Plan</th><th>Plan id</th><th>Price</th><th>Quota</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Free pool</td><td><code>witness_free</code></td><td>$0</td><td>2,000 new checkpoints per UTC day, shared by every anonymous caller</td></tr>
+                            <tr><td>Evidence Starter</td><td><code>custody_90d</code></td><td>$49/month</td><td>Up to 1,000 new checkpoints per UTC day, your own key</td></tr>
+                            <tr><td>Evidence</td><td><code>custody_1y</code></td><td>$199/month</td><td>Up to 3,000 new checkpoints per UTC day, your own key</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>Buy from <a href="/pricing#witness">/pricing</a>, or start the checkout yourself. <code>POST /v5/checkout</code> returns a <code>transaction_id</code> for Paddle checkout and a <code>claim_token</code>; after payment, <code>POST /v5/claim</code> with the <code>claim_token</code> answers <code>{"state":"ready","key":"…"}</code> once the payment is recorded. Until then it can answer 404 or carry <code>retry_after_seconds</code>, so poll.</p>
+                <pre>curl -sS -X POST https://headlessoracle.com/v5/checkout \
+  -H 'Content-Type: application/json' \
+  -d '{"plan":"custody_90d"}'
+
+curl -sS -X POST https://headlessoracle.com/v5/claim \
+  -H 'Content-Type: application/json' \
+  -d '{"claim_token":"&lt;claim_token from the checkout response&gt;"}'</pre>
+                <p class="small muted">Machine-readable: the <a href="https://api.headlessoracle.com/v1/witness/spec">Witness spec</a> (request format, every check in order, receipt format, signing and its limits) and the prices at <a href="https://headlessoracle.com/v5/pricing">/v5/pricing</a>.</p>
+            </section>
 
             <!-- EDGE CASES -->
             <section id="complexity">

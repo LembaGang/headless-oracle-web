@@ -3,8 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Chirindo Witness: signed receipts for agent-log checkpoints · Headless Oracle</title>
-<meta name="description" content="Chirindo Witness signs a receipt for each checkpoint of a signed, hash-chained agent log. A log later cut short or rewritten by the key holder, up to the last witnessed checkpoint, fails the check. Free pool of 2,000 checkpoints a UTC day; paid plans from $49/month.">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<title>Chirindo Witness: signed receipts for agent action log checkpoints · Headless Oracle</title>
+<meta name="description" content="Chirindo Witness signs a receipt for each checkpoint of a signed, hash-chained agent action log. Checked against those signed receipts, a log later cut short or rewritten by the key holder, up to the last witnessed checkpoint, fails. Free shared pool; paid plans with their own key.">
 <meta name="robots" content="index, follow">
 <meta name="color-scheme" content="light dark">
 <link rel="canonical" href="https://headlessoracle.com/witness">
@@ -73,6 +75,45 @@
           "url": "https://headlessoracle.com/pricing#witness"
         }
       ]
+    }
+  ]
+}
+</script>
+<!-- FAQPage: every answer is text this page already shows, copied, never strengthened. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What does Chirindo Witness do?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Chirindo signs each agent action into a hash-chained log. Witness signs a receipt saying when it saw each checkpoint of that log. If the log is later cut short, or rewritten by whoever holds the key, anywhere up to the last witnessed checkpoint, comparing it with the witness receipts shows it." }
+    },
+    {
+      "@type": "Question",
+      "name": "What is sent to Witness?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Every so often the gate signs a checkpoint, the entry count and the hash at the head of the log, and sends it to Witness. Witness keeps it and signs a receipt with the time it received it. Only the checkpoint is sent: never arguments, results or records." }
+    },
+    {
+      "@type": "Question",
+      "name": "What is a witness receipt, and what does it not prove?",
+      "acceptedAnswer": { "@type": "Answer", "text": "A witness receipt is Headless Oracle's signed statement of what it was shown and when: at received_at, a checkpoint signed by the key with that thumbprint. It is only as reliable as Headless Oracle and its signing key. It does not prove that the records are true, who controls the key, or that the records were written at the times they carry." }
+    },
+    {
+      "@type": "Question",
+      "name": "What does Witness not detect?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Entries after the last witnessed checkpoint can still be cut off or rewritten without detection. A history rewritten before it was first witnessed is not detected. The gap between an entry's time and received_at is that exposure window. A session the operator never presents, or one restarted under a new key or session ID, starts with no receipts. Witness is independent of the operator, not of Headless Oracle, which also publishes the gate." }
+    },
+    {
+      "@type": "Question",
+      "name": "How does an auditor check an agent log?",
+      "acceptedAnswer": { "@type": "Answer", "text": "An auditor checks the log against the witness receipts with open-source tools. A log shorter than a witnessed count, or different from what Witness saw at that count, fails, and the check names the count where it fails. Checking is free, with open-source tools, and an auditor can fetch the receipts from Witness directly instead of taking them from the operator." }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need an account to send checkpoints?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Free checkpoints need no account and come from a shared pool. Paid plans get their own key and quota." }
     }
   ]
 }
