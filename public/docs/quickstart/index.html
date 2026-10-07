@@ -159,9 +159,10 @@
                         <dd>Next open/close times in UTC, holiday calendar, trading hours, and lunch break windows (Tokyo, HK, Shanghai).</dd>
                         <dt><code>list_exchanges</code></dt>
                         <dd>All 28 supported exchanges: NYSE, NASDAQ, London, Tokyo, Hong Kong, CME, Coinbase, Binance + 20 more.</dd>
-                        <dt><code>verify_receipt</code></dt>
-                        <dd>Verify the Ed25519 cryptographic signature on a receipt you received from another agent.</dd>
+                        <dt><code>get_payment_options</code></dt>
+                        <dd>How to authenticate or pay before a request that needs a key or payment: sandbox, x402 per request, credits, subscriptions and the Chirindo Witness plans. No authentication required.</dd>
                     </dl>
+                    <p class="small muted">There is no MCP tool for verifying a receipt. Verify it with <code>POST /v5/verify</code>, or offline against the public keys at <a href="/v5/keys">/v5/keys</a>.</p>
                 </section>
 
                 <section>

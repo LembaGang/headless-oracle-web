@@ -756,7 +756,13 @@ function hexToBytes(hex) {
                         <p class="small">Returns all 28 supported exchanges with MIC codes, names, and timezones.</p>
                         <p class="small muted">No input required.</p>
                     </div>
+                    <div class="panel">
+                        <p><strong><code>get_payment_options</code></strong></p>
+                        <p class="small">Returns the ways to authenticate or pay before a request that needs a key or payment: sandbox, x402 per request, credits, subscriptions and the Chirindo Witness plans. Always returns 200.</p>
+                        <p class="small muted">No input required.</p>
+                    </div>
                 </div>
+                <p class="small muted">Receipts are verified with <code>POST /v5/verify</code> or offline against <a href="/v5/keys">/v5/keys</a>; there is no MCP verification tool.</p>
 
                 <h3>Setup: Claude Desktop <span class="label">~30 seconds</span></h3>
                 <p>Add this to your Claude Desktop config file, then restart Claude Desktop:</p>

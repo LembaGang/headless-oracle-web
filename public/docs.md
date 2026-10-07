@@ -290,6 +290,9 @@ An MCP (Model Context Protocol) server at `POST https://headlessoracle.com/mcp`,
 - `get_market_status`: whether an exchange is open or closed, as a signed receipt. Treat UNKNOWN or HALTED as CLOSED and halt execution. Input `{ "mic": "XNYS" }`.
 - `get_market_schedule`: next open and close times, including lunch breaks for XJPX and XHKG. Not signed; does not reflect real-time halts. Input `{ "mic": "XJPX" }`.
 - `list_exchanges`: all 28 supported exchanges with MIC codes, names and timezones. No input.
+- `get_payment_options`: the ways to authenticate or pay before a request that needs a key or payment: sandbox, x402 per request, credits, subscriptions and the Chirindo Witness plans. Always returns 200. No input.
+
+Receipts are verified with `POST /v5/verify` or offline against [/v5/keys](https://headlessoracle.com/v5/keys); there is no MCP verification tool.
 
 Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS, `%APPDATA%\Claude\claude_desktop_config.json` on Windows):
 

@@ -31,13 +31,13 @@ Evidence that may support AIUC-1 E015.4. It does not make anyone compliant or ce
 
 | Plan | Plan id | Price | What you get |
 |---|---|---|---|
-| Sandbox | `sandbox` | $0 | 200 calls over 7 days. Demo endpoint, no key needed; all 28 exchanges; Ed25519 signed receipts |
+| Sandbox | `sandbox` | $0 | 200 calls over 7 days. `POST /v5/sandbox` with an email in the body; the `sb_` key is returned in the response; one per IP; all 28 exchanges; Ed25519 signed receipts |
 | Free Tier | `free` | $0 | 500 API calls/day; all 28 exchanges; Ed25519 signed receipts; instant provisioning, no credit card |
 | Pay-per-use | `x402` | $0.001/request | 0.001 USDC on Base mainnet, no subscription and no API key; HTTP 402 machine-readable |
 | Credits | `credits` | $5 one-time | 1,000 API calls, no expiry; pay via card |
 | Builder | `builder` | $99/month | 50,000 API calls/day; all 28 exchanges; webhook subscriptions; receipt audit log |
 | Pro | `pro` | $299/month | 200,000 API calls/day; all 28 exchanges; 25 webhook subscriptions; priority support |
-| Protocol / Enterprise | `protocol` | from $500/month | Unlimited calls, custom SLA, dedicated support, direct engineering access. Contact mike@headlessoracle.com |
+| Protocol / Enterprise | `protocol` | from $500/month | Unlimited calls, dedicated support, direct engineering access; service levels by agreement after the public beta. Contact mike@headlessoracle.com |
 
 All plans include Ed25519 cryptographic signatures on every response, a fail-closed architecture, and 28 global exchanges across 7 regions (Americas, Europe, Middle East, Africa, Asia, Pacific, Derivatives & Crypto).
 
