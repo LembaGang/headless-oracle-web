@@ -268,7 +268,7 @@ Or use the [browser-based verifier](https://headlessoracle.com/verify). An indep
 
 ### Fail-closed architecture
 
-A three-tier safety cascade. If anything fails at any tier, the response defaults to `UNKNOWN`, never a false `OPEN`.
+A four-tier safety cascade. If anything fails at any tier, the response defaults to `UNKNOWN`, never a false `OPEN`.
 
 | Tier | Behaviour |
 |---|---|
@@ -288,7 +288,7 @@ The `OVERRIDE` source broadcasts HALTED during exchange circuit breakers, emerge
 An MCP (Model Context Protocol) server at `POST https://headlessoracle.com/mcp`, JSON-RPC 2.0, protocol version `2024-11-05` (Streamable HTTP transport). No authentication required for MCP tool calls.
 
 - `get_market_status`: whether an exchange is open or closed, as a signed receipt. Treat UNKNOWN or HALTED as CLOSED and halt execution. Input `{ "mic": "XNYS" }`.
-- `get_market_schedule`: next open and close times, including lunch breaks for XJPX and XHKG. Not signed; does not reflect real-time halts. Input `{ "mic": "XJPX" }`.
+- `get_market_schedule`: next open and close times, including lunch breaks for XJPX, XHKG, XSHG and XSHE. Not signed; does not reflect real-time halts. Input `{ "mic": "XJPX" }`.
 - `list_exchanges`: all 28 supported exchanges with MIC codes, names and timezones. No input.
 - `get_payment_options`: the ways to authenticate or pay before a request that needs a key or payment: sandbox, x402 per request, credits, subscriptions and the Chirindo Witness plans. Always returns 200. No input.
 

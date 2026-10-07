@@ -711,7 +711,7 @@ function hexToBytes(hex) {
             <section id="fail-closed">
                 <h2>Fail-Closed Architecture</h2>
                 <p>
-                    The oracle uses a three-tier safety cascade. If anything fails at any tier, the response always defaults to <code>UNKNOWN</code> — never a false <code>OPEN</code>.
+                    The oracle uses a four-tier safety cascade. If anything fails at any tier, the response always defaults to <code>UNKNOWN</code> — never a false <code>OPEN</code>.
                 </p>
                 <div class="table-wrap">
                     <table class="table">
@@ -748,7 +748,7 @@ function hexToBytes(hex) {
                     </div>
                     <div class="panel">
                         <p><strong><code>get_market_schedule</code></strong></p>
-                        <p class="small">Get next open and close times for an exchange. Includes lunch break windows for XJPX and XHKG. Not cryptographically signed — does not reflect real-time halts.</p>
+                        <p class="small">Get next open and close times for an exchange. Includes lunch break windows for XJPX, XHKG, XSHG and XSHE. Not cryptographically signed — does not reflect real-time halts.</p>
                         <p class="small muted">Input: <code>{ "mic": "XJPX" }</code></p>
                     </div>
                     <div class="panel">
