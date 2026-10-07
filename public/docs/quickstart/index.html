@@ -79,7 +79,7 @@
 
                 <section>
                     <h2><span class="step-n">1</span> Copy <code>.mcp.json</code> to your project root</h2>
-                    <p>Choose <strong>Anonymous</strong> (no key required; 10 <code>get_market_status</code> calls per IP per UTC day) or <strong>Authenticated</strong> (your API key's plan limit; needs an OAuth access token exchanged from your key):</p>
+                    <p>Choose <strong>Anonymous</strong> (no key required; 10 <code>get_market_status</code> calls per IP per UTC day) or <strong>Authenticated</strong> (your API key's plan limit; send the key itself):</p>
 
                     <div class="code-block">
                         <div class="code-head">
@@ -98,18 +98,7 @@
 
                     <div class="code-block">
                         <div class="code-head">
-                            <span>Authenticated — first exchange your API key for an access token</span>
-                            <button class="copy" onclick="copyCode('token-exchange', this)">Copy</button>
-                        </div>
-                        <pre id="token-exchange">curl -X POST https://headlessoracle.com/oauth/token \
-  -H 'Content-Type: application/x-www-form-urlencoded' \
-  -d 'grant_type=client_credentials&amp;client_id=YOUR_API_KEY_HERE'
-# Returns: { "access_token": "…", "token_type": "bearer", "expires_in": 3600, "scope": "oracle:read" }</pre>
-                    </div>
-
-                    <div class="code-block">
-                        <div class="code-head">
-                            <span>Authenticated — with the access token</span>
+                            <span>Authenticated — with your API key</span>
                             <button class="copy" onclick="copyCode('auth-config', this)">Copy</button>
                         </div>
                         <pre id="auth-config">{
@@ -118,7 +107,7 @@
       "type": "http",
       "url": "https://headlessoracle.com/mcp",
       "headers": {
-        "Authorization": "Bearer YOUR_ACCESS_TOKEN_HERE"
+        "Authorization": "Bearer YOUR_API_KEY_HERE"
       }
     }
   }
@@ -126,8 +115,8 @@
                     </div>
 
                     <div class="note">
-                        <p><strong>Auth:</strong> <code>/mcp</code> recognises only an access token from <code>POST https://headlessoracle.com/oauth/token</code>, which lasts one hour; request a new one when it expires. A raw API key sent as <code>Bearer</code> is not recognised, and the request is treated as anonymous.</p>
-                        <p><strong>Limits:</strong> Anonymous MCP allows 10 <code>get_market_status</code> calls per IP per UTC day. With a token, calls count against your key's plan: Free 500/day, Builder 50,000/day, Pro 200,000/day; only Protocol is unlimited.
+                        <p><strong>Auth:</strong> send your API key as <code>Authorization: Bearer &lt;key&gt;</code> (or <code>X-Oracle-Key: &lt;key&gt;</code>); calls then count against that key's plan, as on REST. An OAuth access token from <code>POST https://headlessoracle.com/oauth/token</code> (form-encoded <code>grant_type=client_credentials&amp;client_id=&lt;key&gt;</code>, valid one hour) is also accepted. A Headless Oracle key or token that is not accepted (unknown, expired, out of quota) gets a JSON-RPC error, never anonymous service; other <code>Authorization</code> values are ignored.</p>
+                        <p><strong>Limits:</strong> Anonymous MCP allows 10 <code>get_market_status</code> calls per IP per UTC day. With a key, calls count against its plan: Free 500/day, Builder 50,000/day, Pro 200,000/day; only Protocol is unlimited.
                         A free key needs no signup: <code>POST /v5/keys/instant</code>. A sandbox key (<code>sb_</code>, 200 calls over 7 days, one per IP) comes only from <code>POST /v5/sandbox</code> with <!--email_off--><code>{"email":"you@example.com"}</code><!--/email_off-->; the key is in the response. Paid plans: <a href="/pricing">headlessoracle.com/pricing</a>.</p>
                     </div>
                 </section>
@@ -167,7 +156,7 @@
 
                 <section>
                     <h2>Need more than 10 calls a day?</h2>
-                    <p>Anonymous MCP stops at 10 <code>get_market_status</code> calls per IP per UTC day. A free key (500 calls/day) or a paid plan raises that limit; exchange the key for an access token as in step 1. Only the Protocol plan is unlimited.</p>
+                    <p>Anonymous MCP stops at 10 <code>get_market_status</code> calls per IP per UTC day. A free key (500 calls/day) or a paid plan raises that limit; send it as in step 1. Only the Protocol plan is unlimited.</p>
                     <div class="ctas">
                         <a href="/pricing" class="btn">Get API Key →</a>
                         <a href="/docs" class="btn btn--line">Full Docs</a>
