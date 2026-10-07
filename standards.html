@@ -138,7 +138,7 @@
                 <div class="panel">
                     <p class="label">Safe defaults</p>
                     <h3>Fail-closed architecture</h3>
-                    <p class="small">When Headless Oracle cannot confirm a venue's state with confidence, it returns an explicit <code>unknown</code> with a 4xx status — never a permissive default. Agents treating "unknown" as "open" fail safe.</p>
+                    <p class="small">When Headless Oracle cannot confirm a venue's state with confidence, it returns a signed <code>UNKNOWN</code> receipt with HTTP 200 — never a permissive default. Only a signing failure returns an unsigned <code>CRITICAL_FAILURE</code> with HTTP 500. Consumers must treat <code>UNKNOWN</code> as <code>CLOSED</code>: act only on a valid, unexpired, signature-verified <code>OPEN</code> receipt.</p>
                 </div>
             </div>
 
@@ -317,7 +317,7 @@
                 </div>
                 <div class="panel">
                     <h3>Fail-closed by default</h3>
-                    <p class="small">Ambiguous or unverifiable states return an explicit <code>unknown</code> status with a 4xx code. An agent that treats 4xx as "do not act" will always fail safe. Never a 200 with an error body.</p>
+                    <p class="small">Ambiguous or unverifiable states return a signed <code>UNKNOWN</code> receipt with HTTP 200; only a signing failure returns an unsigned <code>CRITICAL_FAILURE</code> with HTTP 500. Consumers must treat <code>UNKNOWN</code> as <code>CLOSED</code>. The safe rule: act only on a valid, unexpired, signature-verified <code>OPEN</code> receipt. Anything else, including an error, a timeout or a failed signature check, means do not act.</p>
                 </div>
                 <div class="panel">
                     <h3>Autonomous agent payments</h3>
