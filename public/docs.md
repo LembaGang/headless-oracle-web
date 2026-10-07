@@ -307,7 +307,7 @@ The public key for receipts returned by MCP tools is at [/.well-known/oracle-key
 
 ### API keys and billing
 
-`/v5/status`, `/v5/batch` and `/v5/account` require an API key in the `X-Oracle-Key` header. All other endpoints are public. Keys come from anonymous Paddle checkout at `POST /v5/checkout`, with no account creation; after payment the key appears on the pricing page. Keys are prefixed `ho_live_`. Plans and prices: [pricing.md](https://headlessoracle.com/pricing.md).
+`/v5/status`, `/v5/batch` and `/v5/account` require an API key in the `X-Oracle-Key` header. All other endpoints are public. Keys come from anonymous Paddle checkout at `POST /v5/checkout`, with no account creation. The body must name a plan, for example `{"plan":"builder"}` (no plan is 400 `PLAN_REQUIRED`); the response carries `url` (`https://buy.paddle.com/checkout/txn_…`), `transaction_id` and `claim_token`. After payment, `POST /v5/claim {"claim_token":"…"}` returns the key for 24 hours; bought from the pricing page, the key appears there. Keys are prefixed `ho_live_`. Plans and prices: [pricing.md](https://headlessoracle.com/pricing.md).
 
 ```sh
 curl https://headlessoracle.com/v5/account \

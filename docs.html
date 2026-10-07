@@ -800,9 +800,17 @@ function hexToBytes(hex) {
 
                 <h3>Get an API Key</h3>
                 <p>Subscribe via anonymous Paddle checkout — no account creation required. After payment your key appears on the pricing page.</p>
-                <pre>curl -X POST https://headlessoracle.com/v5/checkout
-# Returns: { "url": "https://checkout.paddle.com/..." }
-# Redirect the user (or open the URL) to complete payment.</pre>
+                <pre>curl -X POST https://headlessoracle.com/v5/checkout \
+  -H 'Content-Type: application/json' \
+  -d '{"plan":"builder"}'
+# Returns: { "url": "https://buy.paddle.com/checkout/txn_...",
+#            "transaction_id": "txn_...",
+#            "claim_token": "&lt;64 hex&gt;" }
+# Open the url to complete payment. A request that names no plan is 400 PLAN_REQUIRED.</pre>
+                <p>After payment, <code>POST /v5/claim</code> with <code>{"claim_token":"…"}</code> returns the key for 24 hours.</p>
+                <pre>curl -X POST https://headlessoracle.com/v5/claim \
+  -H 'Content-Type: application/json' \
+  -d '{"claim_token":"&lt;claim_token from the checkout response&gt;"}'</pre>
                 <p class="small muted">Keys are prefixed <code>ho_live_</code> for easy identification in logs and environment variables.</p>
 
                 <h3>Check Your Account</h3>
