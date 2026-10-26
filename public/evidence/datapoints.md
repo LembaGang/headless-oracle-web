@@ -46,7 +46,7 @@ This sheet does not map members to card network reason codes. Limit L8 of each v
 
 > This bundle is named in none of the card network rules read for this specification (scope: the pages its sources list; the dispute chapters of the Visa Core Rules and the body of the Mastercard Chargeback Guide could not be read). It is evidence a decider may weigh within the existing reason codes.
 
-## The four worked examples, online
+## The four constructed worked examples, online
 
 The exports of the four online verdicts, from the files beside each example (`<id>.online.datapoints.json`). Values are shown as JSON writes them.
 

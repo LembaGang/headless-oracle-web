@@ -243,22 +243,22 @@ const fileRowsMd = (files) => files.map((f) => [`[${f.name}](${f.href})`, String
 const CASES = {
   'physical-order': {
     ids: ['we-4-1', 'we-4-2'],
-    title: 'Worked example: a physical order bought by an AI agent',
-    h1: 'A physical order bought by an AI agent, and what the evidence shows',
+    title: 'Worked example: a constructed test case of an AI agent ordering a physical item',
+    h1: 'A constructed test case: an AI agent orders a physical item, and what the evidence shows',
     case: [
-      'An AI agent buys a physical item for a customer. The customer has signed an instruction that sets limits on what the agent may buy. The agent\'s call passes a gate, which records its decision in a signed log, and Headless Oracle\'s witness signs a receipt for that log\'s checkpoint. Then a test card charge is made.',
-      'The customer, the merchant, the order and the charge are test values made for this example. Nothing here is a real purchase.',
-      'Variant 1 stays inside the instruction. In variant 2 the order holds a final-sale item, and the instruction allows only refundable items.',
+      'This is a constructed test case for one situation: an AI agent orders a physical item for a customer who has signed an instruction that sets limits on what the agent may buy. A script, using a test key, builds a signed log in the format a Chirindo gate writes, as if for the agent\'s separate decision call. The log\'s checkpoint was sent to Headless Oracle\'s live witness, which signed a receipt with its own clock time. The card charge time is a test value, set one minute after the witness receipt\'s time, so the ordering the verdict checks holds by construction here.',
+      'The customer, the merchant, the order and the charge are test values made for this example. No real purchase was made, no card was charged, and no AI agent or gate ran: the files show what the verifier checks and what it reports. The limits above are the verifier\'s standard wording for a log of this format; here Headless Oracle holds the test key and a script built the log.',
+      'In variant 1 the order is inside the instruction. In variant 2 the order holds a final-sale item, and the instruction allows only refundable items.',
     ],
   },
   'hotel-booking': {
     ids: ['we-5-1', 'we-5-2'],
-    title: 'Worked example: a hotel booking made by an AI agent',
-    h1: 'A hotel booking made by an AI agent, and what the evidence shows',
+    title: 'Worked example: a constructed test case of an AI agent booking a hotel',
+    h1: 'A constructed test case: an AI agent books a hotel, and what the evidence shows',
     case: [
-      'An AI agent books a hotel stay for a customer. The customer has signed an instruction that sets limits on what the agent may book. The agent\'s call passes a gate, which records its decision in a signed log, and Headless Oracle\'s witness signs a receipt for that log\'s checkpoint. Then a test card charge is made.',
-      'The customer, the hotel, the stay, its dates and the charge are test values made for this example. Nothing here is a real booking.',
-      'Variant 1 stays inside the instruction. Variant 2 books a non-refundable rate, and the instruction allows only refundable ones.',
+      'This is a constructed test case for one situation: an AI agent books a hotel stay for a customer who has signed an instruction that sets limits on what the agent may book. A script, using a test key, builds a signed log in the format a Chirindo gate writes, as if for the agent\'s separate decision call. The log\'s checkpoint was sent to Headless Oracle\'s live witness, which signed a receipt with its own clock time. The card charge time is a test value, set one minute after the witness receipt\'s time, so the ordering the verdict checks holds by construction here.',
+      'The customer, the hotel, the stay, its dates and the charge are test values made for this example. No real booking was made, no card was charged, and no AI agent or gate ran: the files show what the verifier checks and what it reports. The limits above are the verifier\'s standard wording for a log of this format; here Headless Oracle holds the test key and a script built the log.',
+      'In variant 1 the order is inside the instruction. In variant 2 the order holds a non-refundable rate, and the instruction allows only refundable ones.',
     ],
   },
 };
@@ -414,7 +414,7 @@ function casePage(slug) {
   if (ex[a].page.limit !== ex[b].page.limit) die(`${slug}: the example's limit differs between the variants`);
   const path = `/evidence/cases/${slug}`;
   const variants = cfg.ids.map((id, i) => variantBlock(id, i + 1));
-  const description = 'A card dispute worked example: an AI agent\'s order under a customer\'s signed instruction, recorded and witnessed before a test charge, with the verifier\'s own verdicts and every file needed to rerun them.';
+  const description = 'A constructed card dispute test case: a script-built signed log of an AI agent\'s decision under a customer\'s signed instruction, with a live witness receipt, checked against a stated test charge, with the verifier\'s own verdicts and every file needed to rerun them.';
 
   const body = [
     section('limits', 'What this example does not show', `    <p>The example's own limit, as its page file states it:</p>
@@ -469,8 +469,8 @@ The source is also in the [chirindo repository](${REPO}), commit \`${COMMIT}\`. 
 function indexPage() {
   const l14 = limitOf(ex['we-4-1'].online, 'L14');
   const links = [
-    ['/evidence/cases/physical-order', 'Worked example: a physical order bought by an AI agent'],
-    ['/evidence/cases/hotel-booking', 'Worked example: a hotel booking made by an AI agent'],
+    ['/evidence/cases/physical-order', 'Worked example: a constructed test case of an AI agent ordering a physical item'],
+    ['/evidence/cases/hotel-booking', 'Worked example: a constructed test case of an AI agent booking a hotel'],
     ['/evidence/integration', 'Integration: the order fields, the commands and the exit codes'],
     ['/evidence/datapoints', 'The data-point sheet: every member of the export, and the four examples\' values'],
     ['/evidence/examples/jwks.json', 'The examples\' operator key set (JWKS)'],
@@ -478,7 +478,7 @@ function indexPage() {
     [REPO, `The chirindo repository (commit ${COMMIT})`],
   ];
   const intro = [
-    'A dispute evidence bundle holds the records of what an AI agent was allowed to do and what it did: the customer\'s signed instruction, the gate\'s signed record of the agent\'s decision, and a witness receipt for that record.',
+    'A dispute evidence bundle holds the records of what an AI agent was allowed to do and what it did: the customer\'s signed instruction, the gate\'s signed record of the agent\'s decision, and a witness receipt for a checkpoint of that record\'s log. Both worked examples here are constructed test cases: a script builds the signed log with a test key, and only the witness receipts are live.',
     'An open verifier checks a bundle and says what it shows and what it does not, so a merchant, a chargeback platform or a card issuer can check the same files without trusting whoever assembled them.',
   ];
   const body = [
@@ -489,7 +489,7 @@ function indexPage() {
 ${links.map(([href, label]) => `      <li><a href="${href}">${escHtml(label)}</a></li>`).join('\n')}
     </ul>`),
   ].join('\n');
-  const html = htmlPage({ path: '/evidence', title: 'Agent dispute evidence: worked examples', description: 'Evidence of what an AI agent was allowed to do and did, checked by an open verifier: two card dispute worked examples with every file, the integration fields and the data-point export.', indexable: true, twin: '/evidence.md', kicker: 'Agent dispute evidence', h1: 'Evidence of what an AI agent was allowed to do, and did', body });
+  const html = htmlPage({ path: '/evidence', title: 'Agent dispute evidence: worked examples', description: 'Evidence of what an AI agent was allowed to do and did, checked by an open verifier: two constructed card dispute test cases with every file, the integration fields and the data-point export.', indexable: true, twin: '/evidence.md', kicker: 'Agent dispute evidence', h1: 'Evidence of what an AI agent was allowed to do, and did', body });
   const md = `# Evidence of what an AI agent was allowed to do, and did
 
 Headless Oracle · ${ORIGIN}/evidence · as of ${ASOF}
@@ -556,7 +556,7 @@ ${table(['field', '', 'what it holds'], fields.map(([f, r, t]) => [`<code>${f}</
     section('setup', 'Set up', `    <p>Node 20 or later. Both folders need their pinned dependencies.</p>
 ${preCmds(setup)}
     <p>Or download <a href="/evidence/examples/${ZIP}"><code>${ZIP}</code></a>, extract it, and start from <code>cd chirindo-evidence/examples/ordering-evidence-h4</code>.</p>`),
-    section('pointer', 'Verify from the order\'s pointer', `    <p>In place of a bundle path, give the three fields as <code>--evidence-uri</code>, <code>--evidence-entry</code> and <code>--evidence-sha256</code>, with the disputed charge as the dispute record states it. This is the worked example's own pointer; the bundle it names is live on this site:</p>
+    section('pointer', 'Verify from the order\'s pointer', `    <p>In place of a bundle path, give the three fields as <code>--evidence-uri</code>, <code>--evidence-entry</code> and <code>--evidence-sha256</code>, with the disputed charge as the dispute record states it. This is the constructed worked example's own pointer; the bundle it names is live on this site:</p>
 ${preCmds(pointerCmd)}
     <p>${escHtml(fetchRules)}</p>
     <p>The run above, in this order:</p>
@@ -590,7 +590,7 @@ Or download [${ZIP}](/evidence/examples/${ZIP}), extract it, and start from \`cd
 
 ## Verify from the order's pointer
 
-In place of a bundle path, give the three fields as \`--evidence-uri\`, \`--evidence-entry\` and \`--evidence-sha256\`, with the disputed charge as the dispute record states it. This is the worked example's own pointer; the bundle it names is live on this site:
+In place of a bundle path, give the three fields as \`--evidence-uri\`, \`--evidence-entry\` and \`--evidence-sha256\`, with the disputed charge as the dispute record states it. This is the constructed worked example's own pointer; the bundle it names is live on this site:
 
 ${mdCmds(pointerCmd)}
 
@@ -669,7 +669,7 @@ function datapointsPage() {
 ${table(['member', 'line', 'type', 'null means', 'definition'], MEMBERS.map(([n, line, t, nul, d]) => [`<code>${n}</code>`, String(line), escHtml(t), escHtml(nul), escHtml(d)]))}
     <p>${escHtml(reasonCodes)}</p>
     <blockquote><p>${V(l8.text)}</p></blockquote>`),
-    section('values', 'The four worked examples, online', `    <p>The exports of the four online verdicts, from the files beside each example (<code>&lt;id&gt;.online.datapoints.json</code>). Values are shown as JSON writes them.</p>
+    section('values', 'The four constructed worked examples, online', `    <p>The exports of the four online verdicts, from the files beside each example (<code>&lt;id&gt;.online.datapoints.json</code>). Values are shown as JSON writes them.</p>
 ${table(['member', ...IDS.map((id) => `<a href="/evidence/examples/${id}/${id}.online.datapoints.json"><code>${id}</code></a>`)], MEMBERS.map(([n]) => [`<code>${n}</code>`, ...IDS.map((id) => `<code>${V(JSON.stringify(ex[id].dp[n]))}</code>`)]))}
     <p>See the cases: <a href="/evidence/cases/physical-order">physical order</a> (we-4-1, we-4-2) and <a href="/evidence/cases/hotel-booking">hotel booking</a> (we-5-1, we-5-2).</p>`),
   ].join('\n');
@@ -688,7 +688,7 @@ ${reasonCodes}
 
 > ${VM(l8.text)}
 
-## The four worked examples, online
+## The four constructed worked examples, online
 
 The exports of the four online verdicts, from the files beside each example (\`<id>.online.datapoints.json\`). Values are shown as JSON writes them.
 

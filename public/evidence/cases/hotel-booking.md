@@ -1,4 +1,4 @@
-# A hotel booking made by an AI agent, and what the evidence shows
+# A constructed test case: an AI agent books a hotel, and what the evidence shows
 
 Headless Oracle · https://headlessoracle.com/evidence/cases/hotel-booking · as of 2026-10-26
 
@@ -18,11 +18,11 @@ Three limits from the verifier's online verdict:
 
 ## The case
 
-An AI agent books a hotel stay for a customer. The customer has signed an instruction that sets limits on what the agent may book. The agent's call passes a gate, which records its decision in a signed log, and Headless Oracle's witness signs a receipt for that log's checkpoint. Then a test card charge is made.
+This is a constructed test case for one situation: an AI agent books a hotel stay for a customer who has signed an instruction that sets limits on what the agent may book. A script, using a test key, builds a signed log in the format a Chirindo gate writes, as if for the agent's separate decision call. The log's checkpoint was sent to Headless Oracle's live witness, which signed a receipt with its own clock time. The card charge time is a test value, set one minute after the witness receipt's time, so the ordering the verdict checks holds by construction here.
 
-The customer, the hotel, the stay, its dates and the charge are test values made for this example. Nothing here is a real booking.
+The customer, the hotel, the stay, its dates and the charge are test values made for this example. No real booking was made, no card was charged, and no AI agent or gate ran: the files show what the verifier checks and what it reports. The limits above are the verifier's standard wording for a log of this format; here Headless Oracle holds the test key and a script built the log.
 
-Variant 1 stays inside the instruction. Variant 2 books a non-refundable rate, and the instruction allows only refundable ones.
+In variant 1 the order is inside the instruction. In variant 2 the order holds a non-refundable rate, and the instruction allows only refundable ones.
 
 ## The two variants
 

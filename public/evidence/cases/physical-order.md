@@ -1,4 +1,4 @@
-# A physical order bought by an AI agent, and what the evidence shows
+# A constructed test case: an AI agent orders a physical item, and what the evidence shows
 
 Headless Oracle · https://headlessoracle.com/evidence/cases/physical-order · as of 2026-10-26
 
@@ -18,11 +18,11 @@ Three limits from the verifier's online verdict:
 
 ## The case
 
-An AI agent buys a physical item for a customer. The customer has signed an instruction that sets limits on what the agent may buy. The agent's call passes a gate, which records its decision in a signed log, and Headless Oracle's witness signs a receipt for that log's checkpoint. Then a test card charge is made.
+This is a constructed test case for one situation: an AI agent orders a physical item for a customer who has signed an instruction that sets limits on what the agent may buy. A script, using a test key, builds a signed log in the format a Chirindo gate writes, as if for the agent's separate decision call. The log's checkpoint was sent to Headless Oracle's live witness, which signed a receipt with its own clock time. The card charge time is a test value, set one minute after the witness receipt's time, so the ordering the verdict checks holds by construction here.
 
-The customer, the merchant, the order and the charge are test values made for this example. Nothing here is a real purchase.
+The customer, the merchant, the order and the charge are test values made for this example. No real purchase was made, no card was charged, and no AI agent or gate ran: the files show what the verifier checks and what it reports. The limits above are the verifier's standard wording for a log of this format; here Headless Oracle holds the test key and a script built the log.
 
-Variant 1 stays inside the instruction. In variant 2 the order holds a final-sale item, and the instruction allows only refundable items.
+In variant 1 the order is inside the instruction. In variant 2 the order holds a final-sale item, and the instruction allows only refundable items.
 
 ## The two variants
 

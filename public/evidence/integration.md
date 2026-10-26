@@ -32,7 +32,7 @@ Or download [chirindo-evidence-6285832c2944.zip](/evidence/examples/chirindo-evi
 
 ## Verify from the order's pointer
 
-In place of a bundle path, give the three fields as `--evidence-uri`, `--evidence-entry` and `--evidence-sha256`, with the disputed charge as the dispute record states it. This is the worked example's own pointer; the bundle it names is live on this site:
+In place of a bundle path, give the three fields as `--evidence-uri`, `--evidence-entry` and `--evidence-sha256`, with the disputed charge as the dispute record states it. This is the constructed worked example's own pointer; the bundle it names is live on this site:
 
 ```
 node check-bundle.mjs --evidence-uri https://headlessoracle.com/evidence/examples/we-4-1/we-4-1.bundle.json --evidence-entry sha256:4d5ba2f2d80cc39d02022f46d94d98727000c931b92df9fb1bb823c5670e4da4 --evidence-sha256 sha256:2c121a773542054932ed7b69e0798333dabd1c39df6cbdf510d53b72bff7824b --charge-id TEST-ch-we4-1 --charge-amount 4800 --charge-currency USD --charge-authorized-at 2026-10-25T15:08:29Z --merchant-order-id TEST-1001 --pins pages/we-4-1-pins --online > we-4-1.pointer-verdict.json
