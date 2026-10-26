@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<title>Agent dispute evidence: the data-point sheet · Headless Oracle</title>
+<meta name="description" content="Every member of the evidence-bundle-datapoints/0.10 export: its type, what null means and its definition from the verdict JSON, with the four worked examples' values.">
+<meta name="robots" content="index, follow">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="https://headlessoracle.com/evidence/datapoints">
+<link rel="alternate" type="text/markdown" href="/evidence/datapoints.md" title="This page in Markdown">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+<style>.ev code, .ev td, .ev pre { overflow-wrap: anywhere; } .ev pre { white-space: pre-wrap; } .ev table { width: 100%; margin: 0.75rem 0 1.25rem; } .ev th, .ev td { text-align: left; vertical-align: top; padding: 0.35rem 0.6rem 0.35rem 0; border-bottom: 1px solid var(--rule, #ccc); } .ev blockquote { margin: 0.75rem 0; padding-left: 1rem; border-left: 3px solid var(--rule, #ccc); }</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="wordmark" href="/">Headless Oracle</a>
+    <nav aria-label="Main">
+      <ul class="nav-list nav-wide">
+        <li><a href="/witness">Witness</a></li>
+        <li><a href="/verify">Verify</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/docs">Docs</a></li>
+        <li><a href="/auditors">For auditors</a></li>
+        <li><a href="https://github.com/LembaGang">GitHub</a></li>
+      </ul>
+      <details class="nav-small">
+        <summary>Menu</summary>
+        <ul>
+          <li><a href="/witness">Witness</a></li>
+          <li><a href="/verify">Verify</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+          <li><a href="/docs">Docs</a></li>
+          <li><a href="/auditors">For auditors</a></li>
+          <li><a href="https://github.com/LembaGang">GitHub</a></li>
+        </ul>
+      </details>
+    </nav>
+  </div>
+</header>
+<main id="main" class="ev">
+
+<div class="wrap page-head">
+  <p class="kicker">Agent dispute evidence</p>
+  <h1>The data-point export, member by member</h1>
+</div>
+
+<section class="section" id="members" aria-labelledby="h-members">
+  <div class="wrap">
+    <h2 id="h-members">The members</h2>
+    <p>Every member of evidence-bundle-datapoints/0.10, in the order lib/datapoints.mjs builds it at commit 6285832c294493001b12d4467259c04a2c4890fb, with the line that defines it. Each member is a string, a boolean or null, and is defined from the verdict JSON alone. Every boolean is three-valued, and null never means true. The export file itself lists the members sorted by name (RFC 8785).</p>
+<table>
+<thead><tr><th scope="col">member</th><th scope="col">line</th><th scope="col">type</th><th scope="col">null means</th><th scope="col">definition</th></tr></thead>
+<tbody>
+<tr><td><code>agent_evidence_format</code></td><td>28</td><td>string</td><td>never null</td><td>The constant evidence-bundle-datapoints/0.10.</td></tr>
+<tr><td><code>agent_evidence_verdict</code></td><td>29</td><td>string</td><td>never null</td><td>The verdict code (verdict.code).</td></tr>
+<tr><td><code>agent_evidence_verdict_text</code></td><td>30</td><td>string</td><td>never null</td><td>The verdict text (verdict.text).</td></tr>
+<tr><td><code>agent_evidence_verdict_rule</code></td><td>31</td><td>string or null</td><td>the verdict JSON&#39;s verdict.rule is null</td><td>The rule that gave the verdict (verdict.rule).</td></tr>
+<tr><td><code>agent_evidence_verdict_reason</code></td><td>32</td><td>string or null</td><td>the verdict has no reason (verdict.reason is null)</td><td>The verdict&#39;s reason (verdict.reason).</td></tr>
+<tr><td><code>agent_evidence_mode</code></td><td>33</td><td>string</td><td>never null</td><td>online or offline (mode).</td></tr>
+<tr><td><code>agent_evidence_checked_at</code></td><td>34</td><td>string</td><td>never null</td><td>When the verifier ran (checked_at).</td></tr>
+<tr><td><code>agent_evidence_bundle_sha256</code></td><td>35</td><td>string or null</td><td>no bundle bytes were read, as when a pointer fetch fails</td><td>The bundle file&#39;s digest (bundle_sha256).</td></tr>
+<tr><td><code>agent_evidence_verdict_sha256</code></td><td>37</td><td>string</td><td>never null</td><td>sha256: and the SHA-256 of the verdict JSON&#39;s bytes; the one member computed over the verdict JSON as a whole.</td></tr>
+<tr><td><code>agent_evidence_uri</code></td><td>38</td><td>string or null</td><td>no pointer was given</td><td>The pointer&#39;s URI (pointer.uri).</td></tr>
+<tr><td><code>agent_evidence_entry</code></td><td>39</td><td>string or null</td><td>no pointer was given</td><td>The entry the pointer stated (pointer.stated_entry).</td></tr>
+<tr><td><code>agent_evidence_entry_cited</code></td><td>40</td><td>boolean or null</td><td>P2.entry was not evaluated or not listed (no pointer given)</td><td>true when the check P2.entry passed, false when it failed.</td></tr>
+<tr><td><code>agent_evidence_pointer_status</code></td><td>41</td><td>string or null</td><td>no pointer was given</td><td>The pointer fetch&#39;s status (pointer.status).</td></tr>
+<tr><td><code>agent_decision</code></td><td>42</td><td>string or null</td><td>the verdict reports no decision (decision.value is null)</td><td>The gate&#39;s decision on the cited action (decision.value).</td></tr>
+<tr><td><code>agent_decision_before_auth</code></td><td>45</td><td>boolean or null</td><td>the time rule is unconfirmed (B-WIT not BOUND), it was not judged, or the subject is not a card subject with a stated charge</td><td>card.before_authorization, only when B-WIT is BOUND: true when the witness received the checkpoint before the stated authorization time.</td></tr>
+<tr><td><code>agent_order_matches_charge</code></td><td>46</td><td>boolean or null</td><td>no order reference was compared, the order is not committed, or the subject is not a card subject with a stated charge</td><td>false when any compared field of card.matches is false; true when the amount, the currency and at least one order reference compared true.</td></tr>
+<tr><td><code>agent_order_reference_matched</code></td><td>47</td><td>boolean or null</td><td>no order reference was compared, or the subject is not a card subject with a stated charge</td><td>true when the merchant order id or the checkout reference compared true and neither is false; false when either is false.</td></tr>
+<tr><td><code>agent_charge_id</code></td><td>48</td><td>string or null</td><td>no charge was stated</td><td>The stated charge id (stated.charge.id).</td></tr>
+<tr><td><code>agent_authorization_time</code></td><td>49</td><td>string or null</td><td>the verdict has no card section</td><td>The stated authorization time (card.authorized_at).</td></tr>
+<tr><td><code>agent_witness_time</code></td><td>50</td><td>string or null</td><td>the verdict has no card section</td><td>The witness receipt&#39;s received_at (card.witness_received_at).</td></tr>
+<tr><td><code>agent_witness_state</code></td><td>51</td><td>string or null</td><td>B-WIT is not listed</td><td>The state of B-WIT in bindings.</td></tr>
+<tr><td><code>agent_witness_time_as_supplied</code></td><td>52</td><td>boolean or null</td><td>no covering receipt was read (B-WIT NOT-EVALUATED, ABSENT or FAIL)</td><td>true when B-WIT is SUPPLIED or TRUNCATED (the receipt is the bundle&#39;s copy), false when it is BOUND.</td></tr>
+<tr><td><code>agent_log_state</code></td><td>53</td><td>string or null</td><td>B-LOG is not listed</td><td>The state of B-LOG.</td></tr>
+<tr><td><code>agent_key_state</code></td><td>54</td><td>string or null</td><td>B-KEY is not listed</td><td>The state of B-KEY.</td></tr>
+<tr><td><code>agent_card_binding_state</code></td><td>55</td><td>string or null</td><td>B-CARD is not listed</td><td>The state of B-CARD.</td></tr>
+<tr><td><code>agent_instruction_state</code></td><td>56</td><td>string or null</td><td>B-INS is not listed</td><td>The state of B-INS.</td></tr>
+<tr><td><code>agent_instruction_scope_ok</code></td><td>57</td><td>boolean or null</td><td>the instruction&#39;s scope was not judged (B-INS in any other state)</td><td>true when B-INS is BOUND or MATCHED, false when it is EXCEEDS or UNBOUND-OUTSIDE.</td></tr>
+<tr><td><code>agent_instruction_exceeded</code></td><td>58</td><td>string or null</td><td>no instruction is cited</td><td>The cited instruction&#39;s exceeded limits, joined with commas in their order; the empty string when none is exceeded.</td></tr>
+<tr><td><code>agent_gate_receipt_state</code></td><td>59</td><td>string or null</td><td>B-GRC is not listed</td><td>The state of B-GRC.</td></tr>
+<tr><td><code>agent_gaps</code></td><td>60</td><td>string</td><td>never null</td><td>Each member of verdict.gaps as binding:state, joined with commas in their order, reasons left out.</td></tr>
+<tr><td><code>agent_limits</code></td><td>61</td><td>string</td><td>never null</td><td>Each limit id of limits, joined with commas in their order.</td></tr>
+<tr><td><code>agent_verifier</code></td><td>62</td><td>string</td><td>never null</td><td>verifier.name, a space, and verifier.version.</td></tr>
+<tr><td><code>agent_verifier_commit</code></td><td>63</td><td>string</td><td>never null</td><td>verifier.commit, as the verifier records it.</td></tr>
+</tbody>
+</table>
+    <p>This sheet does not map members to card network reason codes. Limit L8 of each verdict says how the bundle relates to them:</p>
+    <blockquote><p>This bundle is named in none of the card network rules read for this specification (scope: the pages its sources list; the dispute chapters of the Visa Core Rules and the body of the Mastercard Chargeback Guide could not be read). It is evidence a decider may weigh within the existing reason codes.</p></blockquote>
+  </div>
+</section>
+
+<section class="section" id="values" aria-labelledby="h-values">
+  <div class="wrap">
+    <h2 id="h-values">The four worked examples, online</h2>
+    <p>The exports of the four online verdicts, from the files beside each example (<code>&lt;id&gt;.online.datapoints.json</code>). Values are shown as JSON writes them.</p>
+<table>
+<thead><tr><th scope="col">member</th><th scope="col"><a href="/evidence/examples/we-4-1/we-4-1.online.datapoints.json"><code>we-4-1</code></a></th><th scope="col"><a href="/evidence/examples/we-4-2/we-4-2.online.datapoints.json"><code>we-4-2</code></a></th><th scope="col"><a href="/evidence/examples/we-5-1/we-5-1.online.datapoints.json"><code>we-5-1</code></a></th><th scope="col"><a href="/evidence/examples/we-5-2/we-5-2.online.datapoints.json"><code>we-5-2</code></a></th></tr></thead>
+<tbody>
+<tr><td><code>agent_evidence_format</code></td><td><code>&quot;evidence-bundle-datapoints/0.10&quot;</code></td><td><code>&quot;evidence-bundle-datapoints/0.10&quot;</code></td><td><code>&quot;evidence-bundle-datapoints/0.10&quot;</code></td><td><code>&quot;evidence-bundle-datapoints/0.10&quot;</code></td></tr>
+<tr><td><code>agent_evidence_verdict</code></td><td><code>&quot;RECORDED-BEFORE-CHARGE&quot;</code></td><td><code>&quot;OUTSIDE-INSTRUCTION&quot;</code></td><td><code>&quot;RECORDED-BEFORE-CHARGE&quot;</code></td><td><code>&quot;OUTSIDE-INSTRUCTION&quot;</code></td></tr>
+<tr><td><code>agent_evidence_verdict_text</code></td><td><code>&quot;RECORDED BEFORE THE CHARGE: the decision and the instruction were recorded before the charge and match it&quot;</code></td><td><code>&quot;OUTSIDE THE INSTRUCTION: the decision was recorded before the charge and matches it, and the order falls outside the instruction or goes against the decision&quot;</code></td><td><code>&quot;RECORDED BEFORE THE CHARGE: the decision and the instruction were recorded before the charge and match it&quot;</code></td><td><code>&quot;OUTSIDE THE INSTRUCTION: the decision was recorded before the charge and matches it, and the order falls outside the instruction or goes against the decision&quot;</code></td></tr>
+<tr><td><code>agent_evidence_verdict_rule</code></td><td><code>&quot;C5&quot;</code></td><td><code>&quot;C4&quot;</code></td><td><code>&quot;C5&quot;</code></td><td><code>&quot;C4&quot;</code></td></tr>
+<tr><td><code>agent_evidence_verdict_reason</code></td><td><code>null</code></td><td><code>null</code></td><td><code>null</code></td><td><code>null</code></td></tr>
+<tr><td><code>agent_evidence_mode</code></td><td><code>&quot;online&quot;</code></td><td><code>&quot;online&quot;</code></td><td><code>&quot;online&quot;</code></td><td><code>&quot;online&quot;</code></td></tr>
+<tr><td><code>agent_evidence_checked_at</code></td><td><code>&quot;2026-10-26T10:24:17.554Z&quot;</code></td><td><code>&quot;2026-10-26T10:24:20.220Z&quot;</code></td><td><code>&quot;2026-10-26T10:24:25.867Z&quot;</code></td><td><code>&quot;2026-10-26T10:24:28.928Z&quot;</code></td></tr>
+<tr><td><code>agent_evidence_bundle_sha256</code></td><td><code>&quot;sha256:2c121a773542054932ed7b69e0798333dabd1c39df6cbdf510d53b72bff7824b&quot;</code></td><td><code>&quot;sha256:4e2e8dd7ad37c31436ebab4ca631a288941e75b6d940aea4e9354261a4b5304b&quot;</code></td><td><code>&quot;sha256:ffd6def6008684f2dffd16b52936b1c78875f5313b442215f7e65a41ad306572&quot;</code></td><td><code>&quot;sha256:8da516d746229d963701c9a4634540e30e7adb8cf5c974619146e5654c582bdc&quot;</code></td></tr>
+<tr><td><code>agent_evidence_verdict_sha256</code></td><td><code>&quot;sha256:5d07e29301af328156a97da02816925ffb1b321ce8af96825918dc0a6c671777&quot;</code></td><td><code>&quot;sha256:e6199fa824f15b78d193acc086c860067a0857e1a4bfa3c0bb3a476b0f68022a&quot;</code></td><td><code>&quot;sha256:634f363420ec2b0c187b66e9fc6e93a6c8bb6919529d594a74234d238b559d43&quot;</code></td><td><code>&quot;sha256:bae6151b0fe34b2eb3f09490a7b2b9a9eb99abf38daf9ba6c7ab1802c7b077e7&quot;</code></td></tr>
+<tr><td><code>agent_evidence_uri</code></td><td><code>null</code></td><td><code>null</code></td><td><code>null</code></td><td><code>null</code></td></tr>
+<tr><td><code>agent_evidence_entry</code></td><td><code>null</code></td><td><code>null</code></td><td><code>null</code></td><td><code>null</code></td></tr>
+<tr><td><code>agent_evidence_entry_cited</code></td><td><code>null</code></td><td><code>null</code></td><td><code>null</code></td><td><code>null</code></td></tr>
+<tr><td><code>agent_evidence_pointer_status</code></td><td><code>null</code></td><td><code>null</code></td><td><code>null</code></td><td><code>null</code></td></tr>
+<tr><td><code>agent_decision</code></td><td><code>&quot;allow&quot;</code></td><td><code>&quot;allow&quot;</code></td><td><code>&quot;allow&quot;</code></td><td><code>&quot;allow&quot;</code></td></tr>
+<tr><td><code>agent_decision_before_auth</code></td><td><code>true</code></td><td><code>true</code></td><td><code>true</code></td><td><code>true</code></td></tr>
+<tr><td><code>agent_order_matches_charge</code></td><td><code>true</code></td><td><code>true</code></td><td><code>true</code></td><td><code>true</code></td></tr>
+<tr><td><code>agent_order_reference_matched</code></td><td><code>true</code></td><td><code>true</code></td><td><code>true</code></td><td><code>true</code></td></tr>
+<tr><td><code>agent_charge_id</code></td><td><code>&quot;TEST-ch-we4-1&quot;</code></td><td><code>&quot;TEST-ch-we4-2&quot;</code></td><td><code>&quot;TEST-ch-we5-1&quot;</code></td><td><code>&quot;TEST-ch-we5-2&quot;</code></td></tr>
+<tr><td><code>agent_authorization_time</code></td><td><code>&quot;2026-10-25T15:08:29Z&quot;</code></td><td><code>&quot;2026-10-25T15:14:32Z&quot;</code></td><td><code>&quot;2026-10-25T15:18:03Z&quot;</code></td><td><code>&quot;2026-10-25T15:14:34Z&quot;</code></td></tr>
+<tr><td><code>agent_witness_time</code></td><td><code>&quot;2026-10-25T15:07:29.255Z&quot;</code></td><td><code>&quot;2026-10-25T15:13:32.531Z&quot;</code></td><td><code>&quot;2026-10-25T15:17:03.685Z&quot;</code></td><td><code>&quot;2026-10-25T15:13:34.504Z&quot;</code></td></tr>
+<tr><td><code>agent_witness_state</code></td><td><code>&quot;BOUND&quot;</code></td><td><code>&quot;BOUND&quot;</code></td><td><code>&quot;BOUND&quot;</code></td><td><code>&quot;BOUND&quot;</code></td></tr>
+<tr><td><code>agent_witness_time_as_supplied</code></td><td><code>false</code></td><td><code>false</code></td><td><code>false</code></td><td><code>false</code></td></tr>
+<tr><td><code>agent_log_state</code></td><td><code>&quot;BOUND&quot;</code></td><td><code>&quot;BOUND&quot;</code></td><td><code>&quot;BOUND&quot;</code></td><td><code>&quot;BOUND&quot;</code></td></tr>
+<tr><td><code>agent_key_state</code></td><td><code>&quot;BOUND&quot;</code></td><td><code>&quot;BOUND&quot;</code></td><td><code>&quot;BOUND&quot;</code></td><td><code>&quot;BOUND&quot;</code></td></tr>
+<tr><td><code>agent_card_binding_state</code></td><td><code>&quot;BOUND&quot;</code></td><td><code>&quot;BOUND&quot;</code></td><td><code>&quot;BOUND&quot;</code></td><td><code>&quot;BOUND&quot;</code></td></tr>
+<tr><td><code>agent_instruction_state</code></td><td><code>&quot;BOUND&quot;</code></td><td><code>&quot;EXCEEDS&quot;</code></td><td><code>&quot;BOUND&quot;</code></td><td><code>&quot;EXCEEDS&quot;</code></td></tr>
+<tr><td><code>agent_instruction_scope_ok</code></td><td><code>true</code></td><td><code>false</code></td><td><code>true</code></td><td><code>false</code></td></tr>
+<tr><td><code>agent_instruction_exceeded</code></td><td><code>&quot;&quot;</code></td><td><code>&quot;refundable_only&quot;</code></td><td><code>&quot;&quot;</code></td><td><code>&quot;refundable_only&quot;</code></td></tr>
+<tr><td><code>agent_gate_receipt_state</code></td><td><code>&quot;ABSENT&quot;</code></td><td><code>&quot;ABSENT&quot;</code></td><td><code>&quot;ABSENT&quot;</code></td><td><code>&quot;ABSENT&quot;</code></td></tr>
+<tr><td><code>agent_gaps</code></td><td><code>&quot;B-PAY:NOT-EVALUATED,B-CHAIN:NOT-EVALUATED&quot;</code></td><td><code>&quot;B-PAY:NOT-EVALUATED,B-CHAIN:NOT-EVALUATED,B-INS:EXCEEDS&quot;</code></td><td><code>&quot;B-PAY:NOT-EVALUATED,B-CHAIN:NOT-EVALUATED&quot;</code></td><td><code>&quot;B-PAY:NOT-EVALUATED,B-CHAIN:NOT-EVALUATED,B-INS:EXCEEDS&quot;</code></td></tr>
+<tr><td><code>agent_limits</code></td><td><code>&quot;L1,L2,L3,L6,L7,L8,L9,L12,L13,L14,L17,L24,L25&quot;</code></td><td><code>&quot;L1,L2,L3,L6,L7,L8,L9,L12,L13,L14,L17,L24,L25&quot;</code></td><td><code>&quot;L1,L2,L3,L6,L7,L8,L9,L12,L13,L14,L17,L24,L25&quot;</code></td><td><code>&quot;L1,L2,L3,L6,L7,L8,L9,L12,L13,L14,L17,L24,L25&quot;</code></td></tr>
+<tr><td><code>agent_verifier</code></td><td><code>&quot;chirindo examples/evidence-bundle 0.10.0&quot;</code></td><td><code>&quot;chirindo examples/evidence-bundle 0.10.0&quot;</code></td><td><code>&quot;chirindo examples/evidence-bundle 0.10.0&quot;</code></td><td><code>&quot;chirindo examples/evidence-bundle 0.10.0&quot;</code></td></tr>
+<tr><td><code>agent_verifier_commit</code></td><td><code>&quot;unrecorded&quot;</code></td><td><code>&quot;unrecorded&quot;</code></td><td><code>&quot;unrecorded&quot;</code></td><td><code>&quot;unrecorded&quot;</code></td></tr>
+</tbody>
+</table>
+    <p>See the cases: <a href="/evidence/cases/physical-order">physical order</a> (we-4-1, we-4-2) and <a href="/evidence/cases/hotel-booking">hotel booking</a> (we-5-1, we-5-2).</p>
+  </div>
+</section>
+
+
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="mono">Headless Oracle</span>
+    <ul class="foot-links">
+      <li><a href="/terms">Terms</a></li>
+      <li><a href="/privacy">Privacy</a></li>
+      <li><a href="/refund">Refund</a></li>
+      <li><!--email_off--><a href="mailto:mike@headlessoracle.com">mike@headlessoracle.com</a><!--/email_off--></li>
+    </ul>
+  </div>
+</footer>
+</body>
+</html>

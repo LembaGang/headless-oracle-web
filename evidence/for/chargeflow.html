@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<title>Agent dispute evidence, prepared for Chargeflow · Headless Oracle</title>
+<meta name="description" content="A worked agent card dispute mapped to a published evidence playbook. Not reviewed or endorsed by Chargeflow.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+<style>.ev code, .ev td, .ev pre { overflow-wrap: anywhere; } .ev pre { white-space: pre-wrap; } .ev table { width: 100%; margin: 0.75rem 0 1.25rem; } .ev th, .ev td { text-align: left; vertical-align: top; padding: 0.35rem 0.6rem 0.35rem 0; border-bottom: 1px solid var(--rule, #ccc); } .ev blockquote { margin: 0.75rem 0; padding-left: 1rem; border-left: 3px solid var(--rule, #ccc); }</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="wordmark" href="/">Headless Oracle</a>
+    <nav aria-label="Main">
+      <ul class="nav-list nav-wide">
+        <li><a href="/witness">Witness</a></li>
+        <li><a href="/verify">Verify</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/docs">Docs</a></li>
+        <li><a href="/auditors">For auditors</a></li>
+        <li><a href="https://github.com/LembaGang">GitHub</a></li>
+      </ul>
+      <details class="nav-small">
+        <summary>Menu</summary>
+        <ul>
+          <li><a href="/witness">Witness</a></li>
+          <li><a href="/verify">Verify</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+          <li><a href="/docs">Docs</a></li>
+          <li><a href="/auditors">For auditors</a></li>
+          <li><a href="https://github.com/LembaGang">GitHub</a></li>
+        </ul>
+      </details>
+    </nav>
+  </div>
+</header>
+<main id="main" class="ev">
+
+<div class="wrap page-head">
+  <p class="kicker">Agent dispute evidence</p>
+  <h1>An agent card dispute, mapped to the evidence playbook</h1>
+</div>
+
+<section class="section" id="front" aria-labelledby="h-front">
+  <div class="wrap">
+    <h2 id="h-front">Read this first</h2>
+    <p><strong>Prepared for the Chargeflow team. As of 2026-10-26, Chargeflow has not reviewed or endorsed this page, and no page or menu on this site links to it.</strong></p>
+    <p>The example's own limit:</p>
+    <blockquote><p>in WE-4, Headless Oracle is the gate&#39;s operator (it runs the gate and holds the operator key) and the witness, and the customer, the merchant and the charge are test parties the example makes. The example demonstrates the format and the checks, not independence between those parties (L14, L3). The card data is test data only: no card number, expiry, security code, network token or last four digits appears in the bundle, in the stated inputs, on the page or on the exhibit, because B-CARD reads none of them; the charge id and every merchant and item value are labelled test values (`TEST`, and the domain `test-merchant.example`, under the `.example` name reserved for examples).</p></blockquote>
+<table>
+<thead><tr><th scope="col">limit</th><th scope="col">text</th></tr></thead>
+<tbody>
+<tr><td>L24</td><td>v0.10. For a card payment, the payment proof is the card network&#39;s authorization record, which the issuer holds; this bundle neither carries nor verifies it. What this verdict shows is whether the decision and the order the gate recorded were witnessed before the charge&#39;s authorization time as stated, and whether that order matches the stated charge: the stated charge and its time are the statements of the person running the verifier, taken from the processor&#39;s records.</td></tr>
+<tr><td>L14</td><td>Headless Oracle operates both the gate whose key signed this log and the witness, so the log and the witness receipt are statements by one party.</td></tr>
+<tr><td>L3</td><td>The witness receipt is Headless Oracle&#39;s signed statement that at received_at it was shown a checkpoint signed by the key with that thumbprint; it is only as reliable as Headless Oracle and its signing key. The witness is operated by Headless Oracle, which also publishes the gate software: it is independent of an operator other than Headless Oracle, not of Headless Oracle.</td></tr>
+</tbody>
+</table>
+  </div>
+</section>
+
+<section class="section" id="stages" aria-labelledby="h-stages">
+  <div class="wrap">
+    <h2 id="h-stages">At every stage</h2>
+    <blockquote><p>"As agent context becomes available, it belongs in the decisions made at every stage"</p></blockquote>
+    <p>Ariel Chen, "Securing Agentic Commerce: Why Payment Is Just the Beginning" (<a href="https://www.chargeflow.io/blog/securing-agentic-commerce">https://www.chargeflow.io/blog/securing-agentic-commerce</a>, read 2026-10-26).</p>
+    <p>The physical order case at three stages, stating only what its verdicts and data points show:</p>
+    <ul>
+      <li>Before fulfilment: variant 2 (<code>we-4-2</code>) reads OUTSIDE-INSTRUCTION, with <code>agent_instruction_scope_ok</code> false and <code>agent_instruction_exceeded</code> refundable_only: a final-sale item, against an instruction that allows only refundable items.</li>
+      <li>When the customer complains: the same values are available from the same files.</li>
+      <li>After a chargeback: variant 1 (<code>we-4-1</code>) reads RECORDED-BEFORE-CHARGE, with its exhibit <a href="/evidence/examples/we-4-1/we-4-1.online.letter.pdf"><code>we-4-1.online.letter.pdf</code></a> (775084 bytes) and its verdict JSON <a href="/evidence/examples/we-4-1/we-4-1.online-verdict.json"><code>we-4-1.online-verdict.json</code></a> (17056 bytes).</li>
+    </ul>
+  </div>
+</section>
+
+<section class="section" id="items" aria-labelledby="h-items">
+  <div class="wrap">
+    <h2 id="h-items">The playbook's items</h2>
+    <p>The items of the evidence playbook by Dan Moshkovich, "Agentic Commerce Chargebacks: The Evidence Playbook Merchants Need" (<a href="https://www.chargeflow.io/blog/agentic-commerce-chargebacks-the-evidence-playbook-merchants-need">https://www.chargeflow.io/blog/agentic-commerce-chargebacks-the-evidence-playbook-merchants-need</a>, read 2026-10-26), each with what this bundle supplies and the state in variant 1's online verdict:</p>
+<table>
+<thead><tr><th scope="col">item</th><th scope="col">what this bundle supplies</th><th scope="col">state in we-4-1</th></tr></thead>
+<tbody>
+<tr><td>"Agent identity and signature check"</td><td>The gate's signed record of which agent key acted. The key's origin, as B-KEY shows it, is headlessoracle.com, the operator itself. A payment network's agent-identity record is not in this bundle.<blockquote><p>L6: A key&#39;s binding to an organisation goes no further than an https origin that served it to the verifier (B-KEY BOUND) or, for a standalone key, than the key itself (KEY-ONLY). An address is an address, not a person or a company.</p></blockquote></td><td>B-LOG BOUND; B-KEY BOUND</td></tr>
+<tr><td>"Customer mandate"</td><td>The customer's signed instruction with its limits.<blockquote><p>L12: The principal key in a minimal instruction is bound to no person, account or payer; the bundle shows that the holder of that key signed the instruction.</p></blockquote></td><td>B-INS BOUND</td></tr>
+<tr><td>"Cart as approved and as placed"</td><td>The cart committed at decision time, against the stated charge, and inside the instruction's limits. How the order was placed in the merchant's system is not in this bundle.<blockquote><p>L25: v0.10. The committed order is the agent&#39;s statement at decision time, as the gate recorded it: its merchant, items, prices, refundability, dates and places are what the agent&#39;s call named. The bundle does not show that the merchant fulfilled that order, that the charge was for it beyond the fields compared, or that an item&#39;s attributes are true.</p></blockquote></td><td>B-CARD BOUND; B-INS BOUND; <code>agent_order_matches_charge</code> true</td></tr>
+<tr><td>Timing</td><td>The witness's received_at before the stated authorization time (B-CARD rule 3).<blockquote><p>L3: The witness receipt is Headless Oracle&#39;s signed statement that at received_at it was shown a checkpoint signed by the key with that thumbprint; it is only as reliable as Headless Oracle and its signing key. The witness is operated by Headless Oracle, which also publishes the gate software: it is independent of an operator other than Headless Oracle, not of Headless Oracle.</p></blockquote><blockquote><p>L7: Times on the principal&#39;s, the issuer&#39;s, the operator&#39;s and Headless Oracle&#39;s clocks are those parties&#39; statements, and the block timestamp is set by the block producer within the chain&#39;s rules. Only the orderings that need no clock rest on signatures and hashes alone.</p></blockquote></td><td>B-WIT BOUND; <code>agent_decision_before_auth</code> true</td></tr>
+<tr><td>"Customer recognition", "Payment authentication", "Fulfillment"</td><td>Not carried by this bundle: they are the platform's and the processor's records. For payment authentication:<blockquote><p>L24: v0.10. For a card payment, the payment proof is the card network&#39;s authorization record, which the issuer holds; this bundle neither carries nor verifies it. What this verdict shows is whether the decision and the order the gate recorded were witnessed before the charge&#39;s authorization time as stated, and whether that order matches the stated charge: the stated charge and its time are the statements of the person running the verifier, taken from the processor&#39;s records.</p></blockquote></td><td>not carried</td></tr>
+<tr><td>"Notification and cancel window"</td><td>Not carried by this bundle.</td><td>not carried</td></tr>
+</tbody>
+</table>
+    <p>Two of the playbook's exhibit names: the "mandate record" sits beside the customer's signed instruction, and the "cart as approved compared with the order as placed" beside the cart against the charge. Our exhibit's sections for the customer's signed instruction and for the cart against the charge are in the online exhibits: <a href="/evidence/examples/we-4-1/we-4-1.online.letter.pdf"><code>we-4-1.online.letter.pdf</code></a> (775084 bytes) and <a href="/evidence/examples/we-4-2/we-4-2.online.letter.pdf"><code>we-4-2.online.letter.pdf</code></a> (775192 bytes). The playbook's signature verification record is not mapped here: it is a payment network's agent-identity record, not the gate operator's key.</p>
+  </div>
+</section>
+
+<section class="section" id="more" aria-labelledby="h-more">
+  <div class="wrap">
+    <h2 id="h-more">Run it</h2>
+    <p>The <a href="/evidence/cases/physical-order">physical order case</a>, <a href="/evidence/integration">integration</a>, and <a href="/evidence/examples/chirindo-evidence-6285832c2944.zip"><code>chirindo-evidence-6285832c2944.zip</code></a>. The one command for variant 1, from <code>examples/evidence-bundle</code> after setup:</p>
+<pre><code>node check-bundle.mjs pages/we-4-1.bundle.json --charge-id TEST-ch-we4-1 --charge-amount 4800 --charge-currency USD --charge-authorized-at 2026-10-25T15:08:29Z --merchant-order-id TEST-1001 --pins pages/we-4-1-pins --online &gt; we-4-1.online-verdict.json</code></pre>
+  </div>
+</section>
+
+
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="mono">Headless Oracle</span>
+    <ul class="foot-links">
+      <li><a href="/terms">Terms</a></li>
+      <li><a href="/privacy">Privacy</a></li>
+      <li><a href="/refund">Refund</a></li>
+      <li><!--email_off--><a href="mailto:mike@headlessoracle.com">mike@headlessoracle.com</a><!--/email_off--></li>
+    </ul>
+  </div>
+</footer>
+</body>
+</html>

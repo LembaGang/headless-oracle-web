@@ -12,7 +12,8 @@
     "check:hygiene": "node scripts/check-site-hygiene.mjs",
     "check:agent-discovery": "node scripts/check-agent-discovery.mjs",
     "check:live-links": "node scripts/check-live-links.mjs",
-    "deploy": "vite build && npm run check:banned && npm run check:hygiene && npm run check:prices && npm run check:agent-discovery && npm run check:live-links && npx wrangler pages deploy dist --project-name headless-oracle-web"
+    "check:evidence": "node scripts/make-evidence-pages.mjs --check",
+    "deploy": "vite build && npm run check:banned && npm run check:hygiene && npm run check:prices && npm run check:agent-discovery && npm run check:live-links && npm run check:evidence && npx wrangler pages deploy dist --project-name headless-oracle-web"
   },
   "devDependencies": {
     "vite": "^7.3.1"

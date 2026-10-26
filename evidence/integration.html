@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<title>Agent dispute evidence: integration · Headless Oracle</title>
+<meta name="description" content="The three order fields that point to an agent evidence bundle, the verifier commands with their exit codes, and the exhibit and data-point views, each command run against this site.">
+<meta name="robots" content="index, follow">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="https://headlessoracle.com/evidence/integration">
+<link rel="alternate" type="text/markdown" href="/evidence/integration.md" title="This page in Markdown">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+<style>.ev code, .ev td, .ev pre { overflow-wrap: anywhere; } .ev pre { white-space: pre-wrap; } .ev table { width: 100%; margin: 0.75rem 0 1.25rem; } .ev th, .ev td { text-align: left; vertical-align: top; padding: 0.35rem 0.6rem 0.35rem 0; border-bottom: 1px solid var(--rule, #ccc); } .ev blockquote { margin: 0.75rem 0; padding-left: 1rem; border-left: 3px solid var(--rule, #ccc); }</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="wordmark" href="/">Headless Oracle</a>
+    <nav aria-label="Main">
+      <ul class="nav-list nav-wide">
+        <li><a href="/witness">Witness</a></li>
+        <li><a href="/verify">Verify</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/docs">Docs</a></li>
+        <li><a href="/auditors">For auditors</a></li>
+        <li><a href="https://github.com/LembaGang">GitHub</a></li>
+      </ul>
+      <details class="nav-small">
+        <summary>Menu</summary>
+        <ul>
+          <li><a href="/witness">Witness</a></li>
+          <li><a href="/verify">Verify</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+          <li><a href="/docs">Docs</a></li>
+          <li><a href="/auditors">For auditors</a></li>
+          <li><a href="https://github.com/LembaGang">GitHub</a></li>
+        </ul>
+      </details>
+    </nav>
+  </div>
+</header>
+<main id="main" class="ev">
+
+<div class="wrap page-head">
+  <p class="kicker">Agent dispute evidence</p>
+  <h1>Integration: the order fields and the verifier commands</h1>
+</div>
+
+<section class="section" id="fields" aria-labelledby="h-fields">
+  <div class="wrap">
+    <h2 id="h-fields">The three order fields</h2>
+    <p>For engineers and AI coding tools. Everything here is from the verifier&#39;s README at commit 6285832c294493001b12d4467259c04a2c4890fb, and every verifier command shown was run against the files on this site; the clone and checkout lines need commit 6285832c to be public on GitHub.</p>
+    <p>At checkout, the merchant or its agent platform attaches these fields to the order. When a dispute comes, the person running the verifier copies them from the order record they hold.</p>
+<table>
+<thead><tr><th scope="col">field</th><th scope="col"></th><th scope="col">what it holds</th></tr></thead>
+<tbody>
+<tr><td><code>agent_evidence_entry</code></td><td>required</td><td>The cited record&#39;s entry hash, sha256: and 64 hex digits. It exists at decision time. This is the field that binds: the verifier checks that the record the bundle cites has exactly this entry hash.</td></tr>
+<tr><td><code>agent_evidence_uri</code></td><td>required</td><td>An https URL of at most 2,048 characters from which the bundle file can be fetched when a dispute comes. Its origin gives the bundle no standing.</td></tr>
+<tr><td><code>agent_evidence_sha256</code></td><td>optional</td><td>The bundle file&#39;s digest, sha256: and 64 hex digits. When it is given, the fetched bytes must have it.</td></tr>
+</tbody>
+</table>
+  </div>
+</section>
+
+<section class="section" id="setup" aria-labelledby="h-setup">
+  <div class="wrap">
+    <h2 id="h-setup">Set up</h2>
+    <p>Node 20 or later. Both folders need their pinned dependencies.</p>
+<pre><code>git clone https://github.com/LembaGang/chirindo.git
+cd chirindo
+git checkout 6285832c294493001b12d4467259c04a2c4890fb
+cd examples/ordering-evidence-h4
+npm ci
+cd ../evidence-bundle
+npm ci</code></pre>
+    <p>Or download <a href="/evidence/examples/chirindo-evidence-6285832c2944.zip"><code>chirindo-evidence-6285832c2944.zip</code></a>, extract it, and start from <code>cd chirindo-evidence/examples/ordering-evidence-h4</code>.</p>
+  </div>
+</section>
+
+<section class="section" id="pointer" aria-labelledby="h-pointer">
+  <div class="wrap">
+    <h2 id="h-pointer">Verify from the order's pointer</h2>
+    <p>In place of a bundle path, give the three fields as <code>--evidence-uri</code>, <code>--evidence-entry</code> and <code>--evidence-sha256</code>, with the disputed charge as the dispute record states it. This is the worked example's own pointer; the bundle it names is live on this site:</p>
+<pre><code>node check-bundle.mjs --evidence-uri https://headlessoracle.com/evidence/examples/we-4-1/we-4-1.bundle.json --evidence-entry sha256:4d5ba2f2d80cc39d02022f46d94d98727000c931b92df9fb1bb823c5670e4da4 --evidence-sha256 sha256:2c121a773542054932ed7b69e0798333dabd1c39df6cbdf510d53b72bff7824b --charge-id TEST-ch-we4-1 --charge-amount 4800 --charge-currency USD --charge-authorized-at 2026-10-25T15:08:29Z --merchant-order-id TEST-1001 --pins pages/we-4-1-pins --online &gt; we-4-1.pointer-verdict.json</code></pre>
+    <p>The fetch is one GET with no cookies, no credentials and no other header; at most 5 redirects, each to https and each checked by the verifier&#39;s own code; a final status of 200; a body of at most 67,108,864 bytes; all within 60 seconds. P1.pointer passes when the bytes are fetched, or when they have the stated digest; another digest fails the run. Then P2.entry: the entry hash of the record the bundle cites must equal the stated entry, or the verdict is FAILS.</p>
+    <p>The run above, in this order:</p>
+<table>
+<thead><tr><th scope="col">check</th><th scope="col">status</th><th scope="col">detail</th></tr></thead>
+<tbody>
+<tr><td>P1.pointer</td><td>PASS</td><td>pointer.status match</td></tr>
+<tr><td>P2.entry</td><td>PASS</td><td>the entry hash of log-d record 0 is the stated entry sha256:4d5ba2f2d80cc39d02022f46d94d98727000c931b92df9fb1bb823c5670e4da4</td></tr>
+<tr><td>verdict</td><td>RECORDED-BEFORE-CHARGE</td><td>checked at 2026-10-26T11:01:50.406Z</td></tr>
+</tbody>
+</table>
+  </div>
+</section>
+
+<section class="section" id="path" aria-labelledby="h-path">
+  <div class="wrap">
+    <h2 id="h-path">Verify a bundle file, and make the views</h2>
+    <p>With a bundle file in hand, give its path. The exhibit (a one-page PDF for a chargeback platform's exhibits) and the data-point export (a flat JSON object for argument engines) are each made from the verdict JSON alone.</p>
+<pre><code>node check-bundle.mjs pages/we-4-1.bundle.json --charge-id TEST-ch-we4-1 --charge-amount 4800 --charge-currency USD --charge-authorized-at 2026-10-25T15:08:29Z --merchant-order-id TEST-1001 --pins pages/we-4-1-pins &gt; we-4-1.verdict.json
+node check-bundle.mjs pages/we-4-1.bundle.json --charge-id TEST-ch-we4-1 --charge-amount 4800 --charge-currency USD --charge-authorized-at 2026-10-25T15:08:29Z --merchant-order-id TEST-1001 --pins pages/we-4-1-pins --online &gt; we-4-1.online-verdict.json
+node make-exhibit.mjs we-4-1.online-verdict.json --page letter --out we-4-1.online.letter.pdf
+node make-datapoints.mjs we-4-1.online-verdict.json &gt; we-4-1.online.datapoints.json</code></pre>
+    <p>The worked examples' outputs of these commands are on the <a href="/evidence/cases/physical-order">physical order</a> and <a href="/evidence/cases/hotel-booking">hotel booking</a> pages. Every member of the export is defined on <a href="/evidence/datapoints">the data-point sheet</a>.</p>
+  </div>
+</section>
+
+<section class="section" id="exit" aria-labelledby="h-exit">
+  <div class="wrap">
+    <h2 id="h-exit">Exit codes</h2>
+<table>
+<thead><tr><th scope="col">command</th><th scope="col">exit</th><th scope="col">meaning</th></tr></thead>
+<tbody>
+<tr><td><code>check-bundle.mjs</code></td><td>0</td><td>one verdict object on stdout, whatever the verdict (FAILS included)</td></tr>
+<tr><td><code>check-bundle.mjs</code></td><td>2</td><td>nothing on stdout and one line on stderr: a usage error (a malformed or repeated option, an unknown option, a missing bundle, invalid pins, a pointer URI that is not https), or a bundle outside the shape this build judges</td></tr>
+<tr><td><code>check-bundle.mjs</code></td><td>1</td><td>an internal error, with nothing on stdout; no test reaches it</td></tr>
+<tr><td><code>make-exhibit.mjs</code></td><td>0</td><td>the exhibit written, nothing on stdout</td></tr>
+<tr><td><code>make-exhibit.mjs</code></td><td>2</td><td>a usage error, a font file that is not the pinned one, or a file that is not a 0.10 verdict; no file is written</td></tr>
+<tr><td><code>make-exhibit.mjs</code></td><td>3</td><td>exhibit not written: every limit does not fit one page at 6 points</td></tr>
+<tr><td><code>make-datapoints.mjs</code></td><td>0</td><td>the export on stdout</td></tr>
+<tr><td><code>make-datapoints.mjs</code></td><td>2</td><td>a usage error, or a file that is not a 0.10 verdict</td></tr>
+</tbody>
+</table>
+  </div>
+</section>
+
+
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="mono">Headless Oracle</span>
+    <ul class="foot-links">
+      <li><a href="/terms">Terms</a></li>
+      <li><a href="/privacy">Privacy</a></li>
+      <li><a href="/refund">Refund</a></li>
+      <li><!--email_off--><a href="mailto:mike@headlessoracle.com">mike@headlessoracle.com</a><!--/email_off--></li>
+    </ul>
+  </div>
+</footer>
+</body>
+</html>

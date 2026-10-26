@@ -3,6 +3,11 @@
   "missing_from_sitemap": [
     "/blog",
     "/dashboard",
+    "/evidence",
+    "/evidence/cases/hotel-booking",
+    "/evidence/cases/physical-order",
+    "/evidence/datapoints",
+    "/evidence/integration",
     "/docs/integrations/anthropic-claude",
     "/docs/integrations/bun",
     "/docs/integrations/langgraph",

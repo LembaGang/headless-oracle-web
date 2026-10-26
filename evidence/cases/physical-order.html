@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<title>Worked example: a physical order bought by an AI agent · Headless Oracle</title>
+<meta name="description" content="A card dispute worked example: an AI agent's order under a customer's signed instruction, recorded and witnessed before a test charge, with the verifier's own verdicts and every file needed to rerun them.">
+<meta name="robots" content="index, follow">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="https://headlessoracle.com/evidence/cases/physical-order">
+<link rel="alternate" type="text/markdown" href="/evidence/cases/physical-order.md" title="This page in Markdown">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+<style>.ev code, .ev td, .ev pre { overflow-wrap: anywhere; } .ev pre { white-space: pre-wrap; } .ev table { width: 100%; margin: 0.75rem 0 1.25rem; } .ev th, .ev td { text-align: left; vertical-align: top; padding: 0.35rem 0.6rem 0.35rem 0; border-bottom: 1px solid var(--rule, #ccc); } .ev blockquote { margin: 0.75rem 0; padding-left: 1rem; border-left: 3px solid var(--rule, #ccc); }</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="wordmark" href="/">Headless Oracle</a>
+    <nav aria-label="Main">
+      <ul class="nav-list nav-wide">
+        <li><a href="/witness">Witness</a></li>
+        <li><a href="/verify">Verify</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/docs">Docs</a></li>
+        <li><a href="/auditors">For auditors</a></li>
+        <li><a href="https://github.com/LembaGang">GitHub</a></li>
+      </ul>
+      <details class="nav-small">
+        <summary>Menu</summary>
+        <ul>
+          <li><a href="/witness">Witness</a></li>
+          <li><a href="/verify">Verify</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+          <li><a href="/docs">Docs</a></li>
+          <li><a href="/auditors">For auditors</a></li>
+          <li><a href="https://github.com/LembaGang">GitHub</a></li>
+        </ul>
+      </details>
+    </nav>
+  </div>
+</header>
+<main id="main" class="ev">
+
+<div class="wrap page-head">
+  <p class="kicker">Agent dispute evidence</p>
+  <h1>A physical order bought by an AI agent, and what the evidence shows</h1>
+</div>
+
+<section class="section" id="limits" aria-labelledby="h-limits">
+  <div class="wrap">
+    <h2 id="h-limits">What this example does not show</h2>
+    <p>The example's own limit, as its page file states it:</p>
+    <blockquote><p>in WE-4, Headless Oracle is the gate&#39;s operator (it runs the gate and holds the operator key) and the witness, and the customer, the merchant and the charge are test parties the example makes. The example demonstrates the format and the checks, not independence between those parties (L14, L3). The card data is test data only: no card number, expiry, security code, network token or last four digits appears in the bundle, in the stated inputs, on the page or on the exhibit, because B-CARD reads none of them; the charge id and every merchant and item value are labelled test values (`TEST`, and the domain `test-merchant.example`, under the `.example` name reserved for examples).</p></blockquote>
+    <p>Three limits from the verifier's online verdict:</p>
+<table>
+<thead><tr><th scope="col">limit</th><th scope="col">text</th></tr></thead>
+<tbody>
+<tr><td>L24</td><td>v0.10. For a card payment, the payment proof is the card network&#39;s authorization record, which the issuer holds; this bundle neither carries nor verifies it. What this verdict shows is whether the decision and the order the gate recorded were witnessed before the charge&#39;s authorization time as stated, and whether that order matches the stated charge: the stated charge and its time are the statements of the person running the verifier, taken from the processor&#39;s records.</td></tr>
+<tr><td>L14</td><td>Headless Oracle operates both the gate whose key signed this log and the witness, so the log and the witness receipt are statements by one party.</td></tr>
+<tr><td>L3</td><td>The witness receipt is Headless Oracle&#39;s signed statement that at received_at it was shown a checkpoint signed by the key with that thumbprint; it is only as reliable as Headless Oracle and its signing key. The witness is operated by Headless Oracle, which also publishes the gate software: it is independent of an operator other than Headless Oracle, not of Headless Oracle.</td></tr>
+</tbody>
+</table>
+  </div>
+</section>
+
+<section class="section" id="case" aria-labelledby="h-case">
+  <div class="wrap">
+    <h2 id="h-case">The case</h2>
+    <p>An AI agent buys a physical item for a customer. The customer has signed an instruction that sets limits on what the agent may buy. The agent&#39;s call passes a gate, which records its decision in a signed log, and Headless Oracle&#39;s witness signs a receipt for that log&#39;s checkpoint. Then a test card charge is made.</p>
+    <p>The customer, the merchant, the order and the charge are test values made for this example. Nothing here is a real purchase.</p>
+    <p>Variant 1 stays inside the instruction. In variant 2 the order holds a final-sale item, and the instruction allows only refundable items.</p>
+  </div>
+</section>
+
+<section class="section" id="variants" aria-labelledby="h-variants">
+  <div class="wrap">
+    <h2 id="h-variants">The two variants</h2>
+    <h3 id="we-4-1">Variant 1: <code>we-4-1</code></h3>
+    <p>The online verdict:</p>
+    <p><strong>RECORDED-BEFORE-CHARGE</strong> (rule C5)</p>
+    <blockquote><p>RECORDED BEFORE THE CHARGE: the decision and the instruction were recorded before the charge and match it</p></blockquote>
+    <p>Checked at 2026-10-26T10:24:17.554Z.</p>
+    <h4>The stated charge</h4>
+<table>
+<thead><tr><th scope="col">charge id</th><th scope="col">amount (minor units)</th><th scope="col">currency</th><th scope="col">authorized at</th><th scope="col">merchant order id</th></tr></thead>
+<tbody>
+<tr><td>TEST-ch-we4-1</td><td>4800</td><td>USD</td><td>2026-10-25T15:08:29Z</td><td>TEST-1001</td></tr>
+</tbody>
+</table>
+    <h4>The committed order, as the online verdict reports it</h4>
+<table>
+<thead><tr><th scope="col">merchant</th><th scope="col">merchant order id</th><th scope="col">currency</th><th scope="col">total (minor units)</th><th scope="col">items sum (minor units)</th><th scope="col">items</th></tr></thead>
+<tbody>
+<tr><td>test-merchant.example</td><td>TEST-1001</td><td>USD</td><td>4800</td><td>4800</td><td>1</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th scope="col">amount matches</th><th scope="col">currency matches</th><th scope="col">order id matches</th><th scope="col">witness received at</th><th scope="col">before the authorization</th></tr></thead>
+<tbody>
+<tr><td>true</td><td>true</td><td>true</td><td>2026-10-25T15:07:29.255Z</td><td>true</td></tr>
+</tbody>
+</table>
+    <h4>The instruction's card limits, as the online verdict reports them</h4>
+<table>
+<thead><tr><th scope="col">limit</th><th scope="col">result</th><th scope="col">reason</th></tr></thead>
+<tbody>
+<tr><td>currency</td><td>inside</td><td>null</td></tr>
+<tr><td>max_total_minor</td><td>inside</td><td>null</td></tr>
+<tr><td>max_unit_price_minor</td><td>not-declared</td><td>null</td></tr>
+<tr><td>merchants</td><td>inside</td><td>null</td></tr>
+<tr><td>items</td><td>not-declared</td><td>null</td></tr>
+<tr><td>categories</td><td>not-declared</td><td>null</td></tr>
+<tr><td>refundable_only</td><td>inside</td><td>null</td></tr>
+<tr><td>service_window</td><td>not-declared</td><td>null</td></tr>
+<tr><td>locations</td><td>not-declared</td><td>null</td></tr>
+</tbody>
+</table>
+    <p>Limits exceeded: none.</p>
+    <h4>Bindings</h4>
+<table>
+<thead><tr><th scope="col">binding</th><th scope="col">state</th><th scope="col">reason</th></tr></thead>
+<tbody>
+<tr><td>B-LOG</td><td>BOUND</td><td>null</td></tr>
+<tr><td>B-CKP</td><td>BOUND</td><td>null</td></tr>
+<tr><td>B-WIT</td><td>BOUND</td><td>null</td></tr>
+<tr><td>B-KEY</td><td>BOUND</td><td>null</td></tr>
+<tr><td>B-INS</td><td>BOUND</td><td>null</td></tr>
+<tr><td>B-GRC</td><td>ABSENT</td><td>null</td></tr>
+<tr><td>B-CARD</td><td>BOUND</td><td>null</td></tr>
+</tbody>
+</table>
+    <h4>Does not apply to card payments</h4>
+<table>
+<thead><tr><th scope="col">binding</th><th scope="col">state</th><th scope="col">reason</th></tr></thead>
+<tbody>
+<tr><td>B-PAY</td><td>NOT-EVALUATED</td><td>card-subject</td></tr>
+<tr><td>B-CHAIN</td><td>NOT-EVALUATED</td><td>card-subject</td></tr>
+</tbody>
+</table>
+    <h4>Gaps</h4>
+    <p>None besides the two bindings above that do not apply to card payments.</p>
+    <p>The verdict JSON and the data-point export (<code>agent_gaps</code>) still list those two bindings among the gaps, as the format defines them. B-GRC (the gate receipt) reads ABSENT because these examples carry no gate receipt, and the format does not count that as a gap.</p>
+    <h4>The same bundle, checked offline</h4>
+    <p><strong>PAYMENT-NOT-VERIFIED</strong> (rule C3, reason offline-witness-data)</p>
+    <blockquote><p>NOT VERIFIED: the record does not show that the decision was recorded before the charge and matches it</p></blockquote>
+    <p>Offline, the verifier trusts the bundle's copy of the witness receipt, so it does not confirm the witness time (the verifier's README, "What an offline run never says").</p>
+    <h4>Times, each with its clock</h4>
+<table>
+<thead><tr><th scope="col">what</th><th scope="col">time</th><th scope="col">clock</th></tr></thead>
+<tbody>
+<tr><td>log-d record 0 ts</td><td>2026-10-25T15:07:27.378Z</td><td>operator</td></tr>
+<tr><td>selected checkpoint ts (sidecar-d line 1)</td><td>2026-10-25T15:07:28.378Z</td><td>operator</td></tr>
+<tr><td>selected witness receipt received_at (sidecar-d line 1)</td><td>2026-10-25T15:07:29.255Z</td><td>headless-oracle</td></tr>
+<tr><td>selected witness receipt checkpoint_ts (sidecar-d line 1)</td><td>2026-10-25T15:07:28.378Z</td><td>headless-oracle</td></tr>
+<tr><td>ins-d iat</td><td>2026-10-22T03:07:27Z</td><td>principal</td></tr>
+<tr><td>ins-d valid_from</td><td>2026-10-22T03:07:27Z</td><td>principal</td></tr>
+<tr><td>ins-d valid_until</td><td>2026-10-29T03:07:27Z</td><td>principal</td></tr>
+<tr><td>stated authorization time</td><td>2026-10-25T15:08:29Z</td><td>processor</td></tr>
+</tbody>
+</table>
+    <h4>Every limit of the online verdict</h4>
+<table>
+<thead><tr><th scope="col">limit</th><th scope="col">text</th></tr></thead>
+<tbody>
+<tr><td>L1</td><td>A gate entry is the operator&#39;s own signed statement of what its gate saw and decided. The bundle does not show that a decision was wise, that the agent read the instruction correctly, or that any member&#39;s contents are true.</td></tr>
+<tr><td>L2</td><td>A log records what passed through the gate. It does not show that no action bypassed the gate. The verifier reports the gate version each entry names; chirindo entries through release 0.5.2 carry the constant 0.0.1 in place of a version. chirindo through release 0.5.2 (source read at tags v0.3.0, v0.4.0, v0.5.1 and v0.5.2; run on 0.5.2) forwarded a tools/call without an id member without evaluating policy or writing a receipt, and ran an allowed tools/call with id null without a receipt.</td></tr>
+<tr><td>L3</td><td>The witness receipt is Headless Oracle&#39;s signed statement that at received_at it was shown a checkpoint signed by the key with that thumbprint; it is only as reliable as Headless Oracle and its signing key. The witness is operated by Headless Oracle, which also publishes the gate software: it is independent of an operator other than Headless Oracle, not of Headless Oracle.</td></tr>
+<tr><td>L6</td><td>A key&#39;s binding to an organisation goes no further than an https origin that served it to the verifier (B-KEY BOUND) or, for a standalone key, than the key itself (KEY-ONLY). An address is an address, not a person or a company.</td></tr>
+<tr><td>L7</td><td>Times on the principal&#39;s, the issuer&#39;s, the operator&#39;s and Headless Oracle&#39;s clocks are those parties&#39; statements, and the block timestamp is set by the block producer within the chain&#39;s rules. Only the orderings that need no clock rest on signatures and hashes alone.</td></tr>
+<tr><td>L8</td><td>This bundle is named in none of the card network rules read for this specification (scope: the pages its sources list; the dispute chapters of the Visa Core Rules and the body of the Mastercard Chargeback Guide could not be read). It is evidence a decider may weigh within the existing reason codes.</td></tr>
+<tr><td>L9</td><td>The bundle carries what its assembler chose to put in. A verifier can show that the pieces present bind; it cannot show that a piece which would contradict them was left out, except where the witness&#39;s receipts show a longer history than the log carried (TRUNCATED) or a different one (FAIL).</td></tr>
+<tr><td>L12</td><td>The principal key in a minimal instruction is bound to no person, account or payer; the bundle shows that the holder of that key signed the instruction.</td></tr>
+<tr><td>L13</td><td>Uses and budget are counted only over what the bundle carries: the records whose arguments it carries and the payments it binds. Uses and payments outside the bundle cannot be counted; the output gives the number of records whose arguments are not carried.</td></tr>
+<tr><td>L14</td><td>Headless Oracle operates both the gate whose key signed this log and the witness, so the log and the witness receipt are statements by one party.</td></tr>
+<tr><td>L17</td><td>This version does not verify card payments: whether the action connects to the card payment is not verified.</td></tr>
+<tr><td>L24</td><td>v0.10. For a card payment, the payment proof is the card network&#39;s authorization record, which the issuer holds; this bundle neither carries nor verifies it. What this verdict shows is whether the decision and the order the gate recorded were witnessed before the charge&#39;s authorization time as stated, and whether that order matches the stated charge: the stated charge and its time are the statements of the person running the verifier, taken from the processor&#39;s records.</td></tr>
+<tr><td>L25</td><td>v0.10. The committed order is the agent&#39;s statement at decision time, as the gate recorded it: its merchant, items, prices, refundability, dates and places are what the agent&#39;s call named. The bundle does not show that the merchant fulfilled that order, that the charge was for it beyond the fields compared, or that an item&#39;s attributes are true.</td></tr>
+</tbody>
+</table>
+    <h4>Files</h4>
+<table>
+<thead><tr><th scope="col">file</th><th scope="col">bytes</th><th scope="col">sha256</th></tr></thead>
+<tbody>
+<tr><td><a href="/evidence/examples/we-4-1/pins.json"><code>pins.json</code></a></td><td>2776</td><td><code>f79e079688f45432768da26f02d088b3277adaed0f5ad9c3ac1699dd952cd476</code></td></tr>
+<tr><td><a href="/evidence/examples/we-4-1/we-4-1.bundle.json"><code>we-4-1.bundle.json</code></a></td><td>7771</td><td><code>2c121a773542054932ed7b69e0798333dabd1c39df6cbdf510d53b72bff7824b</code></td></tr>
+<tr><td><a href="/evidence/examples/we-4-1/we-4-1.json"><code>we-4-1.json</code></a></td><td>40932</td><td><code>98cf91d48756002edc003e667f98f05cdbce334040f96efa4d5e17592063db8d</code></td></tr>
+<tr><td><a href="/evidence/examples/we-4-1/we-4-1.letter.pdf"><code>we-4-1.letter.pdf</code></a></td><td>776028</td><td><code>267ddb74c0ad2e88b6657fe9873081b1dfe7adbcd0388a9925309ea62d344505</code></td></tr>
+<tr><td><a href="/evidence/examples/we-4-1/we-4-1.online-verdict.json"><code>we-4-1.online-verdict.json</code></a></td><td>17056</td><td><code>5d07e29301af328156a97da02816925ffb1b321ce8af96825918dc0a6c671777</code></td></tr>
+<tr><td><a href="/evidence/examples/we-4-1/we-4-1.online.datapoints.json"><code>we-4-1.online.datapoints.json</code></a></td><td>1512</td><td><code>cb9985c71e4ecc5a376763d04091c0c5876eeb1936ef6a6d2166e696bcbf1f0a</code></td></tr>
+<tr><td><a href="/evidence/examples/we-4-1/we-4-1.online.letter.pdf"><code>we-4-1.online.letter.pdf</code></a></td><td>775084</td><td><code>a8732f5bcfeaf1e29da657c738d83fe001a1a47438982ea74d5b1e099a3851be</code></td></tr>
+</tbody>
+</table>
+    <h4>Run it yourself</h4>
+<pre><code>git clone https://github.com/LembaGang/chirindo.git
+cd chirindo
+git checkout 6285832c294493001b12d4467259c04a2c4890fb
+cd examples/ordering-evidence-h4
+npm ci
+cd ../evidence-bundle
+npm ci
+node check-bundle.mjs pages/we-4-1.bundle.json --charge-id TEST-ch-we4-1 --charge-amount 4800 --charge-currency USD --charge-authorized-at 2026-10-25T15:08:29Z --merchant-order-id TEST-1001 --pins pages/we-4-1-pins &gt; we-4-1.verdict.json
+node check-bundle.mjs pages/we-4-1.bundle.json --charge-id TEST-ch-we4-1 --charge-amount 4800 --charge-currency USD --charge-authorized-at 2026-10-25T15:08:29Z --merchant-order-id TEST-1001 --pins pages/we-4-1-pins --online &gt; we-4-1.online-verdict.json
+node make-exhibit.mjs we-4-1.online-verdict.json --page letter --out we-4-1.online.letter.pdf
+node make-datapoints.mjs we-4-1.online-verdict.json &gt; we-4-1.online.datapoints.json</code></pre>
+    <p>Or download the zip below, extract it, and start from <code>cd chirindo-evidence/examples/ordering-evidence-h4</code>. The charge and its authorization time are test values. In a real dispute, the person running the verifier states them from the dispute record they hold.</p>
+
+    <h3 id="we-4-2">Variant 2: <code>we-4-2</code></h3>
+    <p>The online verdict:</p>
+    <p><strong>OUTSIDE-INSTRUCTION</strong> (rule C4)</p>
+    <blockquote><p>OUTSIDE THE INSTRUCTION: the decision was recorded before the charge and matches it, and the order falls outside the instruction or goes against the decision</p></blockquote>
+    <p>Checked at 2026-10-26T10:24:20.220Z.</p>
+    <h4>The stated charge</h4>
+<table>
+<thead><tr><th scope="col">charge id</th><th scope="col">amount (minor units)</th><th scope="col">currency</th><th scope="col">authorized at</th><th scope="col">merchant order id</th></tr></thead>
+<tbody>
+<tr><td>TEST-ch-we4-2</td><td>4500</td><td>USD</td><td>2026-10-25T15:14:32Z</td><td>TEST-1001</td></tr>
+</tbody>
+</table>
+    <h4>The committed order, as the online verdict reports it</h4>
+<table>
+<thead><tr><th scope="col">merchant</th><th scope="col">merchant order id</th><th scope="col">currency</th><th scope="col">total (minor units)</th><th scope="col">items sum (minor units)</th><th scope="col">items</th></tr></thead>
+<tbody>
+<tr><td>test-merchant.example</td><td>TEST-1001</td><td>USD</td><td>4500</td><td>4500</td><td>1</td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th scope="col">amount matches</th><th scope="col">currency matches</th><th scope="col">order id matches</th><th scope="col">witness received at</th><th scope="col">before the authorization</th></tr></thead>
+<tbody>
+<tr><td>true</td><td>true</td><td>true</td><td>2026-10-25T15:13:32.531Z</td><td>true</td></tr>
+</tbody>
+</table>
+    <h4>The instruction's card limits, as the online verdict reports them</h4>
+<table>
+<thead><tr><th scope="col">limit</th><th scope="col">result</th><th scope="col">reason</th></tr></thead>
+<tbody>
+<tr><td>currency</td><td>inside</td><td>null</td></tr>
+<tr><td>max_total_minor</td><td>inside</td><td>null</td></tr>
+<tr><td>max_unit_price_minor</td><td>not-declared</td><td>null</td></tr>
+<tr><td>merchants</td><td>inside</td><td>null</td></tr>
+<tr><td>items</td><td>not-declared</td><td>null</td></tr>
+<tr><td>categories</td><td>not-declared</td><td>null</td></tr>
+<tr><td>refundable_only</td><td>outside</td><td>null</td></tr>
+<tr><td>service_window</td><td>not-declared</td><td>null</td></tr>
+<tr><td>locations</td><td>not-declared</td><td>null</td></tr>
+</tbody>
+</table>
+    <p>Limits exceeded: refundable_only.</p>
+    <h4>Bindings</h4>
+<table>
+<thead><tr><th scope="col">binding</th><th scope="col">state</th><th scope="col">reason</th></tr></thead>
+<tbody>
+<tr><td>B-LOG</td><td>BOUND</td><td>null</td></tr>
+<tr><td>B-CKP</td><td>BOUND</td><td>null</td></tr>
+<tr><td>B-WIT</td><td>BOUND</td><td>null</td></tr>
+<tr><td>B-KEY</td><td>BOUND</td><td>null</td></tr>
+<tr><td>B-INS</td><td>EXCEEDS</td><td>null</td></tr>
+<tr><td>B-GRC</td><td>ABSENT</td><td>null</td></tr>
+<tr><td>B-CARD</td><td>BOUND</td><td>null</td></tr>
+</tbody>
+</table>
+    <h4>Does not apply to card payments</h4>
+<table>
+<thead><tr><th scope="col">binding</th><th scope="col">state</th><th scope="col">reason</th></tr></thead>
+<tbody>
+<tr><td>B-PAY</td><td>NOT-EVALUATED</td><td>card-subject</td></tr>
+<tr><td>B-CHAIN</td><td>NOT-EVALUATED</td><td>card-subject</td></tr>
+</tbody>
+</table>
+    <h4>Gaps</h4>
+    <ul>
+      <li>B-INS EXCEEDS</li>
+    </ul>
+    <p>The verdict JSON and the data-point export (<code>agent_gaps</code>) still list those two bindings among the gaps, as the format defines them. B-GRC (the gate receipt) reads ABSENT because these examples carry no gate receipt, and the format does not count that as a gap.</p>
+    <h4>The same bundle, checked offline</h4>
+    <p><strong>PAYMENT-NOT-VERIFIED</strong> (rule C3, reason offline-witness-data)</p>
+    <blockquote><p>NOT VERIFIED: the record does not show that the decision was recorded before the charge and matches it</p></blockquote>
+    <p>Offline, the verifier trusts the bundle's copy of the witness receipt, so it does not confirm the witness time (the verifier's README, "What an offline run never says").</p>
+    <h4>Times, each with its clock</h4>
+<table>
+<thead><tr><th scope="col">what</th><th scope="col">time</th><th scope="col">clock</th></tr></thead>
+<tbody>
+<tr><td>log-d record 0 ts</td><td>2026-10-25T15:13:32.222Z</td><td>operator</td></tr>
+<tr><td>selected checkpoint ts (sidecar-d line 1)</td><td>2026-10-25T15:13:32.224Z</td><td>operator</td></tr>
+<tr><td>selected witness receipt received_at (sidecar-d line 1)</td><td>2026-10-25T15:13:32.531Z</td><td>headless-oracle</td></tr>
+<tr><td>selected witness receipt checkpoint_ts (sidecar-d line 1)</td><td>2026-10-25T15:13:32.224Z</td><td>headless-oracle</td></tr>
+<tr><td>ins-d iat</td><td>2026-10-22T03:07:27Z</td><td>principal</td></tr>
+<tr><td>ins-d valid_from</td><td>2026-10-22T03:07:27Z</td><td>principal</td></tr>
+<tr><td>ins-d valid_until</td><td>2026-10-29T03:07:27Z</td><td>principal</td></tr>
+<tr><td>stated authorization time</td><td>2026-10-25T15:14:32Z</td><td>processor</td></tr>
+</tbody>
+</table>
+    <h4>Every limit of the online verdict</h4>
+<table>
+<thead><tr><th scope="col">limit</th><th scope="col">text</th></tr></thead>
+<tbody>
+<tr><td>L1</td><td>A gate entry is the operator&#39;s own signed statement of what its gate saw and decided. The bundle does not show that a decision was wise, that the agent read the instruction correctly, or that any member&#39;s contents are true.</td></tr>
+<tr><td>L2</td><td>A log records what passed through the gate. It does not show that no action bypassed the gate. The verifier reports the gate version each entry names; chirindo entries through release 0.5.2 carry the constant 0.0.1 in place of a version. chirindo through release 0.5.2 (source read at tags v0.3.0, v0.4.0, v0.5.1 and v0.5.2; run on 0.5.2) forwarded a tools/call without an id member without evaluating policy or writing a receipt, and ran an allowed tools/call with id null without a receipt.</td></tr>
+<tr><td>L3</td><td>The witness receipt is Headless Oracle&#39;s signed statement that at received_at it was shown a checkpoint signed by the key with that thumbprint; it is only as reliable as Headless Oracle and its signing key. The witness is operated by Headless Oracle, which also publishes the gate software: it is independent of an operator other than Headless Oracle, not of Headless Oracle.</td></tr>
+<tr><td>L6</td><td>A key&#39;s binding to an organisation goes no further than an https origin that served it to the verifier (B-KEY BOUND) or, for a standalone key, than the key itself (KEY-ONLY). An address is an address, not a person or a company.</td></tr>
+<tr><td>L7</td><td>Times on the principal&#39;s, the issuer&#39;s, the operator&#39;s and Headless Oracle&#39;s clocks are those parties&#39; statements, and the block timestamp is set by the block producer within the chain&#39;s rules. Only the orderings that need no clock rest on signatures and hashes alone.</td></tr>
+<tr><td>L8</td><td>This bundle is named in none of the card network rules read for this specification (scope: the pages its sources list; the dispute chapters of the Visa Core Rules and the body of the Mastercard Chargeback Guide could not be read). It is evidence a decider may weigh within the existing reason codes.</td></tr>
+<tr><td>L9</td><td>The bundle carries what its assembler chose to put in. A verifier can show that the pieces present bind; it cannot show that a piece which would contradict them was left out, except where the witness&#39;s receipts show a longer history than the log carried (TRUNCATED) or a different one (FAIL).</td></tr>
+<tr><td>L12</td><td>The principal key in a minimal instruction is bound to no person, account or payer; the bundle shows that the holder of that key signed the instruction.</td></tr>
+<tr><td>L13</td><td>Uses and budget are counted only over what the bundle carries: the records whose arguments it carries and the payments it binds. Uses and payments outside the bundle cannot be counted; the output gives the number of records whose arguments are not carried.</td></tr>
+<tr><td>L14</td><td>Headless Oracle operates both the gate whose key signed this log and the witness, so the log and the witness receipt are statements by one party.</td></tr>
+<tr><td>L17</td><td>This version does not verify card payments: whether the action connects to the card payment is not verified.</td></tr>
+<tr><td>L24</td><td>v0.10. For a card payment, the payment proof is the card network&#39;s authorization record, which the issuer holds; this bundle neither carries nor verifies it. What this verdict shows is whether the decision and the order the gate recorded were witnessed before the charge&#39;s authorization time as stated, and whether that order matches the stated charge: the stated charge and its time are the statements of the person running the verifier, taken from the processor&#39;s records.</td></tr>
+<tr><td>L25</td><td>v0.10. The committed order is the agent&#39;s statement at decision time, as the gate recorded it: its merchant, items, prices, refundability, dates and places are what the agent&#39;s call named. The bundle does not show that the merchant fulfilled that order, that the charge was for it beyond the fields compared, or that an item&#39;s attributes are true.</td></tr>
+</tbody>
+</table>
+    <h4>Files</h4>
+<table>
+<thead><tr><th scope="col">file</th><th scope="col">bytes</th><th scope="col">sha256</th></tr></thead>
+<tbody>
+<tr><td><a href="/evidence/examples/we-4-2/pins.json"><code>pins.json</code></a></td><td>2776</td><td><code>f79e079688f45432768da26f02d088b3277adaed0f5ad9c3ac1699dd952cd476</code></td></tr>
+<tr><td><a href="/evidence/examples/we-4-2/we-4-2.bundle.json"><code>we-4-2.bundle.json</code></a></td><td>7795</td><td><code>4e2e8dd7ad37c31436ebab4ca631a288941e75b6d940aea4e9354261a4b5304b</code></td></tr>
+<tr><td><a href="/evidence/examples/we-4-2/we-4-2.json"><code>we-4-2.json</code></a></td><td>41323</td><td><code>9b833567b55f26587c71ffa245e7d707118769e2fb241fdbdbe188f865de55ff</code></td></tr>
+<tr><td><a href="/evidence/examples/we-4-2/we-4-2.letter.pdf"><code>we-4-2.letter.pdf</code></a></td><td>776038</td><td><code>3debff273454cfd5e5ea4120289a5769c5a82c7b87b73f8f98266e72bbb4edf4</code></td></tr>
+<tr><td><a href="/evidence/examples/we-4-2/we-4-2.online-verdict.json"><code>we-4-2.online-verdict.json</code></a></td><td>17239</td><td><code>e6199fa824f15b78d193acc086c860067a0857e1a4bfa3c0bb3a476b0f68022a</code></td></tr>
+<tr><td><a href="/evidence/examples/we-4-2/we-4-2.online.datapoints.json"><code>we-4-2.online.datapoints.json</code></a></td><td>1593</td><td><code>a75cf5bdacdb07fafdfe362ee61defed21e04345d21c3756097f5477f41283aa</code></td></tr>
+<tr><td><a href="/evidence/examples/we-4-2/we-4-2.online.letter.pdf"><code>we-4-2.online.letter.pdf</code></a></td><td>775192</td><td><code>a67499344ccf1ea1d52ec5a7ddd1c7ffdbcfc960358e2a64b6f8554a855b8791</code></td></tr>
+</tbody>
+</table>
+    <h4>Run it yourself</h4>
+<pre><code>git clone https://github.com/LembaGang/chirindo.git
+cd chirindo
+git checkout 6285832c294493001b12d4467259c04a2c4890fb
+cd examples/ordering-evidence-h4
+npm ci
+cd ../evidence-bundle
+npm ci
+node check-bundle.mjs pages/we-4-2.bundle.json --charge-id TEST-ch-we4-2 --charge-amount 4500 --charge-currency USD --charge-authorized-at 2026-10-25T15:14:32Z --merchant-order-id TEST-1001 --pins pages/we-4-2-pins &gt; we-4-2.verdict.json
+node check-bundle.mjs pages/we-4-2.bundle.json --charge-id TEST-ch-we4-2 --charge-amount 4500 --charge-currency USD --charge-authorized-at 2026-10-25T15:14:32Z --merchant-order-id TEST-1001 --pins pages/we-4-2-pins --online &gt; we-4-2.online-verdict.json
+node make-exhibit.mjs we-4-2.online-verdict.json --page letter --out we-4-2.online.letter.pdf
+node make-datapoints.mjs we-4-2.online-verdict.json &gt; we-4-2.online.datapoints.json</code></pre>
+    <p>Or download the zip below, extract it, and start from <code>cd chirindo-evidence/examples/ordering-evidence-h4</code>. The charge and its authorization time are test values. In a real dispute, the person running the verifier states them from the dispute record they hold.</p>
+
+  </div>
+</section>
+
+<section class="section" id="shared" aria-labelledby="h-shared">
+  <div class="wrap">
+    <h2 id="h-shared">Shared files</h2>
+    <p>The operator key set the bundles name, and the verifier's source at commit <code>6285832c294493001b12d4467259c04a2c4890fb</code> as one zip.</p>
+<table>
+<thead><tr><th scope="col">file</th><th scope="col">bytes</th><th scope="col">sha256</th></tr></thead>
+<tbody>
+<tr><td><a href="/evidence/examples/jwks.json"><code>jwks.json</code></a></td><td>142</td><td><code>d72d37e6aff4e58734ed6cec607f5c1151f573589ed81cc7f2a14ce3a8bc27ed</code></td></tr>
+<tr><td><a href="/evidence/examples/chirindo-evidence-6285832c2944.zip"><code>chirindo-evidence-6285832c2944.zip</code></a></td><td>2049433</td><td><code>14f4d580e03a4ca777dae602312c7f341335a1f04a9327910ee7efa7a4095f24</code></td></tr>
+</tbody>
+</table>
+    <p>The source is also in the <a href="https://github.com/LembaGang/chirindo">chirindo repository</a>, commit <code>6285832c294493001b12d4467259c04a2c4890fb</code>. More: <a href="/evidence">all worked examples</a>, <a href="/evidence/integration">integration</a>, <a href="/evidence/datapoints">the data-point sheet</a>.</p>
+  </div>
+</section>
+
+
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="mono">Headless Oracle</span>
+    <ul class="foot-links">
+      <li><a href="/terms">Terms</a></li>
+      <li><a href="/privacy">Privacy</a></li>
+      <li><a href="/refund">Refund</a></li>
+      <li><!--email_off--><a href="mailto:mike@headlessoracle.com">mike@headlessoracle.com</a><!--/email_off--></li>
+    </ul>
+  </div>
+</footer>
+</body>
+</html>

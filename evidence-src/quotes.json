@@ -1,0 +1,149 @@
+{
+  "sources": [
+    {
+      "n": 1,
+      "url": "https://www.chargeflow.io/blog/securing-agentic-commerce",
+      "title": "Securing Agentic Commerce: Why Payment Is Just the Beginning",
+      "byline": "Ariel Chen",
+      "fetched_at": "2026-10-26T11:00:13Z",
+      "status": 200,
+      "bytes": 491976,
+      "sha256": "af397617ccdeee808dfba466726ce134ed9aa6e780276f5f4cc03625285c6a7c",
+      "strings": [
+        {
+          "s": "As agent context becomes available, it belongs in the decisions made at every stage",
+          "count": 1
+        },
+        {
+          "s": "Ariel Chen",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "url": "https://www.chargeflow.io/blog/agentic-commerce-chargebacks-the-evidence-playbook-merchants-need",
+      "title": "Agentic Commerce Chargebacks: The Evidence Playbook Merchants Need",
+      "byline": "Dan Moshkovich",
+      "fetched_at": "2026-10-26T11:00:15Z",
+      "status": 200,
+      "bytes": 544990,
+      "sha256": "5f068bf3e84cb8c935006b772ee3358036eb4358239fab0ac3e90eb82e13ae1e",
+      "strings": [
+        {
+          "s": "Agent identity and signature check",
+          "count": 1
+        },
+        {
+          "s": "Customer mandate",
+          "count": 1
+        },
+        {
+          "s": "Cart as approved and as placed",
+          "count": 1
+        },
+        {
+          "s": "Customer recognition",
+          "count": 1
+        },
+        {
+          "s": "Notification and cancel window",
+          "count": 1
+        },
+        {
+          "s": "Payment authentication",
+          "count": 1
+        },
+        {
+          "s": "Fulfillment",
+          "count": 4
+        },
+        {
+          "s": "mandate record",
+          "count": 2
+        },
+        {
+          "s": "cart as approved compared with the order as placed",
+          "count": 1
+        },
+        {
+          "s": "Dan Moshkovich",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "n": 3,
+      "url": "https://justt.ai/blog/solving-agentic-commerce-chargebacks/",
+      "title": "Agentic Commerce Chargebacks and Solving the Evidence Gap",
+      "byline": "Ronen Shnidman",
+      "published": "2026-07-01T08:51:45+00:00",
+      "modified": "2026-08-11T12:47:30+00:00",
+      "fetched_at": "2026-10-26T12:12:00Z",
+      "read_by": "Headless Oracle, in a desktop Chrome browser (the page answers 403 to scripted fetches); title from the page's h1, byline from its 'Written by' element, dates from its article:published_time and article:modified_time meta tags, counts from document.body.innerText; fetched_at is the minute of the read, to within two minutes",
+      "status": 200,
+      "strings": [
+        {
+          "s": "Proof that the customer delegated authority",
+          "count": 1
+        },
+        {
+          "s": "Timing and scope of approval",
+          "count": 1
+        },
+        {
+          "s": "Rules or parameters that were set",
+          "count": 1
+        },
+        {
+          "s": "Did the agent correctly interpret the instructions",
+          "count": 1
+        },
+        {
+          "s": "Ronen Shnidman",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "n": 4,
+      "url": "https://developers.justt.ai/docs/evidence-upload-guide",
+      "title": "Evidence Upload Guide",
+      "byline": null,
+      "fetched_at": "2026-10-26T11:00:16Z",
+      "status": 200,
+      "bytes": 197736,
+      "sha256": "e88101aca80aa9e1323b1a93fab155d95372d0b2f31e561e24a2bb9e97f920e3",
+      "strings": [
+        {
+          "s": "Must be evidence_file",
+          "count": 1
+        },
+        {
+          "s": "Supported formats : PDF",
+          "count": 1
+        },
+        {
+          "s": "Maximum file size : 6MB",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "n": 5,
+      "url": "https://developers.justt.ai/docs/customized-api-params",
+      "title": "Customized API Params",
+      "byline": null,
+      "fetched_at": "2026-10-26T11:00:17Z",
+      "status": 200,
+      "bytes": 185337,
+      "sha256": "04cc66fccf21be1e2dc8b42d8f0be49d6bcbd188a0f2bb6622fc76ddcb28b17c",
+      "strings": [
+        {
+          "s": "tailor-made solutions to each of our valued customers",
+          "count": 1
+        }
+      ]
+    }
+  ]
+}

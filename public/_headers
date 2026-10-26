@@ -24,3 +24,21 @@
 
 /evidence/examples/jwks.json
   Cache-Control: public, max-age=300
+
+/evidence
+  Link: </evidence.md>; rel="alternate"; type="text/markdown"
+
+/evidence/cases/physical-order
+  Link: </evidence/cases/physical-order.md>; rel="alternate"; type="text/markdown"
+
+/evidence/cases/hotel-booking
+  Link: </evidence/cases/hotel-booking.md>; rel="alternate"; type="text/markdown"
+
+/evidence/integration
+  Link: </evidence/integration.md>; rel="alternate"; type="text/markdown"
+
+/evidence/datapoints
+  Link: </evidence/datapoints.md>; rel="alternate"; type="text/markdown"
+
+/evidence/for/*
+  X-Robots-Tag: noindex, nofollow

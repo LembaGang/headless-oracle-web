@@ -70,7 +70,7 @@ const BANNED = [
 const WORD_CHAR = /[a-z0-9]/;
 
 /** Binary assets carry no prose. Anything else is scanned. */
-const SKIP_EXT = new Set(['.png', '.jpg', '.jpeg', '.gif', '.webp', '.ico', '.avif', '.woff', '.woff2', '.ttf', '.otf', '.pdf', '.wasm']);
+const SKIP_EXT = new Set(['.png', '.jpg', '.jpeg', '.gif', '.webp', '.ico', '.avif', '.woff', '.woff2', '.ttf', '.otf', '.pdf', '.wasm', '.zip']);
 
 function arg(name, fallback) {
   const hit = process.argv.slice(2).find((a) => a.startsWith(`--${name}=`));

@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<title>Agent dispute evidence, prepared for Justt · Headless Oracle</title>
+<meta name="description" content="A worked agent card dispute mapped to published kinds of missing evidence. Not reviewed or endorsed by Justt.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+<style>.ev code, .ev td, .ev pre { overflow-wrap: anywhere; } .ev pre { white-space: pre-wrap; } .ev table { width: 100%; margin: 0.75rem 0 1.25rem; } .ev th, .ev td { text-align: left; vertical-align: top; padding: 0.35rem 0.6rem 0.35rem 0; border-bottom: 1px solid var(--rule, #ccc); } .ev blockquote { margin: 0.75rem 0; padding-left: 1rem; border-left: 3px solid var(--rule, #ccc); }</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="wordmark" href="/">Headless Oracle</a>
+    <nav aria-label="Main">
+      <ul class="nav-list nav-wide">
+        <li><a href="/witness">Witness</a></li>
+        <li><a href="/verify">Verify</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/docs">Docs</a></li>
+        <li><a href="/auditors">For auditors</a></li>
+        <li><a href="https://github.com/LembaGang">GitHub</a></li>
+      </ul>
+      <details class="nav-small">
+        <summary>Menu</summary>
+        <ul>
+          <li><a href="/witness">Witness</a></li>
+          <li><a href="/verify">Verify</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+          <li><a href="/docs">Docs</a></li>
+          <li><a href="/auditors">For auditors</a></li>
+          <li><a href="https://github.com/LembaGang">GitHub</a></li>
+        </ul>
+      </details>
+    </nav>
+  </div>
+</header>
+<main id="main" class="ev">
+
+<div class="wrap page-head">
+  <p class="kicker">Agent dispute evidence</p>
+  <h1>An agent card dispute, and the missing evidence</h1>
+</div>
+
+<section class="section" id="front" aria-labelledby="h-front">
+  <div class="wrap">
+    <h2 id="h-front">Read this first</h2>
+    <p><strong>Prepared for the Justt team. As of 2026-10-26, Justt has not reviewed or endorsed this page, and no page or menu on this site links to it.</strong></p>
+    <p>The example's own limit:</p>
+    <blockquote><p>Headless Oracle is the gate&#39;s operator and the witness; the traveller, the hotel and the charge are test parties; test card data only.</p></blockquote>
+<table>
+<thead><tr><th scope="col">limit</th><th scope="col">text</th></tr></thead>
+<tbody>
+<tr><td>L24</td><td>v0.10. For a card payment, the payment proof is the card network&#39;s authorization record, which the issuer holds; this bundle neither carries nor verifies it. What this verdict shows is whether the decision and the order the gate recorded were witnessed before the charge&#39;s authorization time as stated, and whether that order matches the stated charge: the stated charge and its time are the statements of the person running the verifier, taken from the processor&#39;s records.</td></tr>
+<tr><td>L14</td><td>Headless Oracle operates both the gate whose key signed this log and the witness, so the log and the witness receipt are statements by one party.</td></tr>
+<tr><td>L3</td><td>The witness receipt is Headless Oracle&#39;s signed statement that at received_at it was shown a checkpoint signed by the key with that thumbprint; it is only as reliable as Headless Oracle and its signing key. The witness is operated by Headless Oracle, which also publishes the gate software: it is independent of an operator other than Headless Oracle, not of Headless Oracle.</td></tr>
+</tbody>
+</table>
+  </div>
+</section>
+
+<section class="section" id="items" aria-labelledby="h-items">
+  <div class="wrap">
+    <h2 id="h-items">The missing evidence</h2>
+    <p>The four "missing evidence" items in Ronen Shnidman, "Agentic Commerce Chargebacks and Solving the Evidence Gap" (<a href="https://justt.ai/blog/solving-agentic-commerce-chargebacks/">https://justt.ai/blog/solving-agentic-commerce-chargebacks/</a>, read 2026-10-26), each with what this bundle shows and the state in variant 1's online verdict:</p>
+<table>
+<thead><tr><th scope="col">item</th><th scope="col">what this bundle shows</th><th scope="col">state in we-5-1</th></tr></thead>
+<tbody>
+<tr><td>"Proof that the customer delegated authority"</td><td>The customer's signed instruction.<blockquote><p>L12: The principal key in a minimal instruction is bound to no person, account or payer; the bundle shows that the holder of that key signed the instruction.</p></blockquote></td><td>B-INS BOUND</td></tr>
+<tr><td>"Timing and scope of approval"</td><td>The instruction's validity window and card limits, and the witness time against the stated authorization.<blockquote><p>L7: Times on the principal&#39;s, the issuer&#39;s, the operator&#39;s and Headless Oracle&#39;s clocks are those parties&#39; statements, and the block timestamp is set by the block producer within the chain&#39;s rules. Only the orderings that need no clock rest on signatures and hashes alone.</p></blockquote></td><td>B-INS BOUND; B-WIT BOUND; <code>agent_decision_before_auth</code> true</td></tr>
+<tr><td>"Rules or parameters that were set"</td><td>The gate's decision on the action (<code>decision</code>: allow) and the instruction's card limits as the verdict lists them (currency inside, max_unit_price_minor inside, categories inside, refundable_only inside, service_window inside, locations inside). Gap: a chirindo record does not commit to the policy that produced the decision.</td><td>B-INS BOUND</td></tr>
+<tr><td>"Did the agent correctly interpret the instructions"</td><td>Not shown by the records in this bundle.<blockquote><p>L1: A gate entry is the operator&#39;s own signed statement of what its gate saw and decided. The bundle does not show that a decision was wise, that the agent read the instruction correctly, or that any member&#39;s contents are true.</p></blockquote></td><td>not shown</td></tr>
+</tbody>
+</table>
+  </div>
+</section>
+
+<section class="section" id="datapoints" aria-labelledby="h-datapoints">
+  <div class="wrap">
+    <h2 id="h-datapoints">The data points</h2>
+    <p>The online exports of variant 1 (<code>we-5-1</code>, RECORDED-BEFORE-CHARGE) and variant 2 (<code>we-5-2</code>, OUTSIDE-INSTRUCTION). Every member is defined on <a href="/evidence/datapoints">the data-point sheet</a>.</p>
+<table>
+<thead><tr><th scope="col">member</th><th scope="col">we-5-1</th><th scope="col">we-5-2</th></tr></thead>
+<tbody>
+<tr><td><code>agent_evidence_format</code></td><td><code>&quot;evidence-bundle-datapoints/0.10&quot;</code></td><td><code>&quot;evidence-bundle-datapoints/0.10&quot;</code></td></tr>
+<tr><td><code>agent_evidence_verdict</code></td><td><code>&quot;RECORDED-BEFORE-CHARGE&quot;</code></td><td><code>&quot;OUTSIDE-INSTRUCTION&quot;</code></td></tr>
+<tr><td><code>agent_evidence_verdict_text</code></td><td><code>&quot;RECORDED BEFORE THE CHARGE: the decision and the instruction were recorded before the charge and match it&quot;</code></td><td><code>&quot;OUTSIDE THE INSTRUCTION: the decision was recorded before the charge and matches it, and the order falls outside the instruction or goes against the decision&quot;</code></td></tr>
+<tr><td><code>agent_evidence_verdict_rule</code></td><td><code>&quot;C5&quot;</code></td><td><code>&quot;C4&quot;</code></td></tr>
+<tr><td><code>agent_evidence_verdict_reason</code></td><td><code>null</code></td><td><code>null</code></td></tr>
+<tr><td><code>agent_evidence_mode</code></td><td><code>&quot;online&quot;</code></td><td><code>&quot;online&quot;</code></td></tr>
+<tr><td><code>agent_evidence_checked_at</code></td><td><code>&quot;2026-10-26T10:24:25.867Z&quot;</code></td><td><code>&quot;2026-10-26T10:24:28.928Z&quot;</code></td></tr>
+<tr><td><code>agent_evidence_bundle_sha256</code></td><td><code>&quot;sha256:ffd6def6008684f2dffd16b52936b1c78875f5313b442215f7e65a41ad306572&quot;</code></td><td><code>&quot;sha256:8da516d746229d963701c9a4634540e30e7adb8cf5c974619146e5654c582bdc&quot;</code></td></tr>
+<tr><td><code>agent_evidence_verdict_sha256</code></td><td><code>&quot;sha256:634f363420ec2b0c187b66e9fc6e93a6c8bb6919529d594a74234d238b559d43&quot;</code></td><td><code>&quot;sha256:bae6151b0fe34b2eb3f09490a7b2b9a9eb99abf38daf9ba6c7ab1802c7b077e7&quot;</code></td></tr>
+<tr><td><code>agent_evidence_uri</code></td><td><code>null</code></td><td><code>null</code></td></tr>
+<tr><td><code>agent_evidence_entry</code></td><td><code>null</code></td><td><code>null</code></td></tr>
+<tr><td><code>agent_evidence_entry_cited</code></td><td><code>null</code></td><td><code>null</code></td></tr>
+<tr><td><code>agent_evidence_pointer_status</code></td><td><code>null</code></td><td><code>null</code></td></tr>
+<tr><td><code>agent_decision</code></td><td><code>&quot;allow&quot;</code></td><td><code>&quot;allow&quot;</code></td></tr>
+<tr><td><code>agent_decision_before_auth</code></td><td><code>true</code></td><td><code>true</code></td></tr>
+<tr><td><code>agent_order_matches_charge</code></td><td><code>true</code></td><td><code>true</code></td></tr>
+<tr><td><code>agent_order_reference_matched</code></td><td><code>true</code></td><td><code>true</code></td></tr>
+<tr><td><code>agent_charge_id</code></td><td><code>&quot;TEST-ch-we5-1&quot;</code></td><td><code>&quot;TEST-ch-we5-2&quot;</code></td></tr>
+<tr><td><code>agent_authorization_time</code></td><td><code>&quot;2026-10-25T15:18:03Z&quot;</code></td><td><code>&quot;2026-10-25T15:14:34Z&quot;</code></td></tr>
+<tr><td><code>agent_witness_time</code></td><td><code>&quot;2026-10-25T15:17:03.685Z&quot;</code></td><td><code>&quot;2026-10-25T15:13:34.504Z&quot;</code></td></tr>
+<tr><td><code>agent_witness_state</code></td><td><code>&quot;BOUND&quot;</code></td><td><code>&quot;BOUND&quot;</code></td></tr>
+<tr><td><code>agent_witness_time_as_supplied</code></td><td><code>false</code></td><td><code>false</code></td></tr>
+<tr><td><code>agent_log_state</code></td><td><code>&quot;BOUND&quot;</code></td><td><code>&quot;BOUND&quot;</code></td></tr>
+<tr><td><code>agent_key_state</code></td><td><code>&quot;BOUND&quot;</code></td><td><code>&quot;BOUND&quot;</code></td></tr>
+<tr><td><code>agent_card_binding_state</code></td><td><code>&quot;BOUND&quot;</code></td><td><code>&quot;BOUND&quot;</code></td></tr>
+<tr><td><code>agent_instruction_state</code></td><td><code>&quot;BOUND&quot;</code></td><td><code>&quot;EXCEEDS&quot;</code></td></tr>
+<tr><td><code>agent_instruction_scope_ok</code></td><td><code>true</code></td><td><code>false</code></td></tr>
+<tr><td><code>agent_instruction_exceeded</code></td><td><code>&quot;&quot;</code></td><td><code>&quot;refundable_only&quot;</code></td></tr>
+<tr><td><code>agent_gate_receipt_state</code></td><td><code>&quot;ABSENT&quot;</code></td><td><code>&quot;ABSENT&quot;</code></td></tr>
+<tr><td><code>agent_gaps</code></td><td><code>&quot;B-PAY:NOT-EVALUATED,B-CHAIN:NOT-EVALUATED&quot;</code></td><td><code>&quot;B-PAY:NOT-EVALUATED,B-CHAIN:NOT-EVALUATED,B-INS:EXCEEDS&quot;</code></td></tr>
+<tr><td><code>agent_limits</code></td><td><code>&quot;L1,L2,L3,L6,L7,L8,L9,L12,L13,L14,L17,L24,L25&quot;</code></td><td><code>&quot;L1,L2,L3,L6,L7,L8,L9,L12,L13,L14,L17,L24,L25&quot;</code></td></tr>
+<tr><td><code>agent_verifier</code></td><td><code>&quot;chirindo examples/evidence-bundle 0.10.0&quot;</code></td><td><code>&quot;chirindo examples/evidence-bundle 0.10.0&quot;</code></td></tr>
+<tr><td><code>agent_verifier_commit</code></td><td><code>&quot;unrecorded&quot;</code></td><td><code>&quot;unrecorded&quot;</code></td></tr>
+</tbody>
+</table>
+    <p>Justt's documentation describes per-customer API parameters: "tailor-made solutions to each of our valued customers" (<a href="https://developers.justt.ai/docs/customized-api-params">https://developers.justt.ai/docs/customized-api-params</a>, read 2026-10-26).</p>
+  </div>
+</section>
+
+<section class="section" id="exhibit" aria-labelledby="h-exhibit">
+  <div class="wrap">
+    <h2 id="h-exhibit">The exhibit</h2>
+    <p>The online exhibits, one page each: <a href="/evidence/examples/we-5-1/we-5-1.online.letter.pdf"><code>we-5-1.online.letter.pdf</code></a> (775062 bytes) and <a href="/evidence/examples/we-5-2/we-5-2.online.letter.pdf"><code>we-5-2.online.letter.pdf</code></a> (775170 bytes).</p>
+    <p>The evidence upload guide states "Supported formats : PDF" and "Maximum file size : 6MB" (<a href="https://developers.justt.ai/docs/evidence-upload-guide">https://developers.justt.ai/docs/evidence-upload-guide</a>, read 2026-10-26).</p>
+  </div>
+</section>
+
+<section class="section" id="more" aria-labelledby="h-more">
+  <div class="wrap">
+    <h2 id="h-more">Run it</h2>
+    <p>The <a href="/evidence/cases/hotel-booking">hotel booking case</a>, <a href="/evidence/integration">integration</a>, and <a href="/evidence/examples/chirindo-evidence-6285832c2944.zip"><code>chirindo-evidence-6285832c2944.zip</code></a>. The one command for variant 1, from <code>examples/evidence-bundle</code> after setup:</p>
+<pre><code>node check-bundle.mjs pages/we-5-1.bundle.json --charge-id TEST-ch-we5-1 --charge-amount 28000 --charge-currency EUR --charge-authorized-at 2026-10-25T15:18:03Z --merchant-order-id TEST-H-2001 --pins pages/we-5-1-pins --online &gt; we-5-1.online-verdict.json</code></pre>
+  </div>
+</section>
+
+
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="mono">Headless Oracle</span>
+    <ul class="foot-links">
+      <li><a href="/terms">Terms</a></li>
+      <li><a href="/privacy">Privacy</a></li>
+      <li><a href="/refund">Refund</a></li>
+      <li><!--email_off--><a href="mailto:mike@headlessoracle.com">mike@headlessoracle.com</a><!--/email_off--></li>
+    </ul>
+  </div>
+</footer>
+</body>
+</html>
