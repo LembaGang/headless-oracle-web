@@ -18,3 +18,9 @@
 
 /docs
   Link: </docs.md>; rel="alternate"; type="text/markdown"
+
+/evidence/examples/*
+  Access-Control-Allow-Origin: *
+
+/evidence/examples/jwks.json
+  Cache-Control: public, max-age=300
