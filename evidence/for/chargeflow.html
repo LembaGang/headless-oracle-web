@@ -6,7 +6,7 @@
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <title>Agent dispute evidence, prepared for Chargeflow · Headless Oracle</title>
-<meta name="description" content="A worked agent card dispute mapped to a published evidence playbook. Not reviewed or endorsed by Chargeflow.">
+<meta name="description" content="A constructed test case of an agent card dispute, mapped to a published evidence playbook. Not reviewed or endorsed by Chargeflow.">
 <meta name="robots" content="noindex, nofollow">
 <meta name="color-scheme" content="light dark">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -48,13 +48,14 @@
 
 <div class="wrap page-head">
   <p class="kicker">Agent dispute evidence</p>
-  <h1>An agent card dispute, mapped to the evidence playbook</h1>
+  <h1>A constructed agent card dispute, mapped to the evidence playbook</h1>
 </div>
 
 <section class="section" id="front" aria-labelledby="h-front">
   <div class="wrap">
     <h2 id="h-front">Read this first</h2>
     <p><strong>Prepared for the Chargeflow team. As of 2026-10-26, Chargeflow has not reviewed or endorsed this page, and no page or menu on this site links to it.</strong></p>
+    <p>The case on this page is a constructed test case. A script built the signed log with a test key; only the witness receipts are live, signed by Headless Oracle's witness on 25 October 2026; and each card charge time is a test value, the receipt's time plus 60 seconds written to the whole second, so the check that the witness receipt's time is before the charge time passes by construction. No real order was placed, no card was charged, and no AI agent or gate ran. The limits below are the verifier's standard wording for a log of this format; here Headless Oracle holds the test key and a script built the log. The case page linked below says how it was built.</p>
     <p>The example's own limit:</p>
     <blockquote><p>in WE-4, Headless Oracle is the gate&#39;s operator (it runs the gate and holds the operator key) and the witness, and the customer, the merchant and the charge are test parties the example makes. The example demonstrates the format and the checks, not independence between those parties (L14, L3). The card data is test data only: no card number, expiry, security code, network token or last four digits appears in the bundle, in the stated inputs, on the page or on the exhibit, because B-CARD reads none of them; the charge id and every merchant and item value are labelled test values (`TEST`, and the domain `test-merchant.example`, under the `.example` name reserved for examples).</p></blockquote>
 <table>
@@ -73,11 +74,11 @@
     <h2 id="h-stages">At every stage</h2>
     <blockquote><p>"As agent context becomes available, it belongs in the decisions made at every stage"</p></blockquote>
     <p>Ariel Chen, "Securing Agentic Commerce: Why Payment Is Just the Beginning" (<a href="https://www.chargeflow.io/blog/securing-agentic-commerce">https://www.chargeflow.io/blog/securing-agentic-commerce</a>, read 2026-10-26).</p>
-    <p>The physical order case at three stages, stating only what its verdicts and data points show:</p>
+    <p>The physical order case at three stages, using its two test variants and stating only what their verdicts and data points show:</p>
     <ul>
       <li>Before fulfilment: variant 2 (<code>we-4-2</code>) reads OUTSIDE-INSTRUCTION, with <code>agent_instruction_scope_ok</code> false and <code>agent_instruction_exceeded</code> refundable_only: a final-sale item, against an instruction that allows only refundable items.</li>
-      <li>When the customer complains: the same values are available from the same files.</li>
-      <li>After a chargeback: variant 1 (<code>we-4-1</code>) reads RECORDED-BEFORE-CHARGE, with its exhibit <a href="/evidence/examples/we-4-1/we-4-1.online.letter.pdf"><code>we-4-1.online.letter.pdf</code></a> (775084 bytes) and its verdict JSON <a href="/evidence/examples/we-4-1/we-4-1.online-verdict.json"><code>we-4-1.online-verdict.json</code></a> (17056 bytes).</li>
+      <li>If the customer complained: the same values would be available from the same files.</li>
+      <li>If a chargeback followed: variant 1 (<code>we-4-1</code>) reads RECORDED-BEFORE-CHARGE, with its exhibit <a href="/evidence/examples/we-4-1/we-4-1.online.letter.pdf"><code>we-4-1.online.letter.pdf</code></a> (775084 bytes) and its verdict JSON <a href="/evidence/examples/we-4-1/we-4-1.online-verdict.json"><code>we-4-1.online-verdict.json</code></a> (17056 bytes).</li>
     </ul>
   </div>
 </section>

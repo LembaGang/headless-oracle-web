@@ -18,7 +18,7 @@ Three limits from the verifier's online verdict:
 
 ## The case
 
-This is a constructed test case for one situation: an AI agent books a hotel stay for a customer who has signed an instruction that sets limits on what the agent may book. A script, using a test key, builds a signed log in the format a Chirindo gate writes, as if for the agent's separate decision call. The log's checkpoint was sent to Headless Oracle's live witness, which signed a receipt with its own clock time. The card charge time is a test value, set one minute after the witness receipt's time, so the ordering the verdict checks holds by construction here.
+This is a constructed test case for one situation: an AI agent books a hotel stay for a customer who has signed an instruction that sets limits on what the agent may book. A script, using a test key, builds a signed log in the format a Chirindo gate writes, as if for the agent's separate decision call. The log's checkpoint was sent to Headless Oracle's live witness, which signed a receipt with its own clock time. The card charge time is a test value, the witness receipt's time plus 60 seconds written to the whole second, so the check that the witness receipt's time is before the charge time passes by construction here.
 
 The customer, the hotel, the stay, its dates and the charge are test values made for this example. No real booking was made, no card was charged, and no AI agent or gate ran: the files show what the verifier checks and what it reports. The limits above are the verifier's standard wording for a log of this format; here Headless Oracle holds the test key and a script built the log.
 

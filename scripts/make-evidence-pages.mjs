@@ -246,7 +246,7 @@ const CASES = {
     title: 'Worked example: a constructed test case of an AI agent ordering a physical item',
     h1: 'A constructed test case: an AI agent orders a physical item, and what the evidence shows',
     case: [
-      'This is a constructed test case for one situation: an AI agent orders a physical item for a customer who has signed an instruction that sets limits on what the agent may buy. A script, using a test key, builds a signed log in the format a Chirindo gate writes, as if for the agent\'s separate decision call. The log\'s checkpoint was sent to Headless Oracle\'s live witness, which signed a receipt with its own clock time. The card charge time is a test value, set one minute after the witness receipt\'s time, so the ordering the verdict checks holds by construction here.',
+      'This is a constructed test case for one situation: an AI agent orders a physical item for a customer who has signed an instruction that sets limits on what the agent may buy. A script, using a test key, builds a signed log in the format a Chirindo gate writes, as if for the agent\'s separate decision call. The log\'s checkpoint was sent to Headless Oracle\'s live witness, which signed a receipt with its own clock time. The card charge time is a test value, the witness receipt\'s time plus 60 seconds written to the whole second, so the check that the witness receipt\'s time is before the charge time passes by construction here.',
       'The customer, the merchant, the order and the charge are test values made for this example. No real purchase was made, no card was charged, and no AI agent or gate ran: the files show what the verifier checks and what it reports. The limits above are the verifier\'s standard wording for a log of this format; here Headless Oracle holds the test key and a script built the log.',
       'In variant 1 the order is inside the instruction. In variant 2 the order holds a final-sale item, and the instruction allows only refundable items.',
     ],
@@ -256,7 +256,7 @@ const CASES = {
     title: 'Worked example: a constructed test case of an AI agent booking a hotel',
     h1: 'A constructed test case: an AI agent books a hotel, and what the evidence shows',
     case: [
-      'This is a constructed test case for one situation: an AI agent books a hotel stay for a customer who has signed an instruction that sets limits on what the agent may book. A script, using a test key, builds a signed log in the format a Chirindo gate writes, as if for the agent\'s separate decision call. The log\'s checkpoint was sent to Headless Oracle\'s live witness, which signed a receipt with its own clock time. The card charge time is a test value, set one minute after the witness receipt\'s time, so the ordering the verdict checks holds by construction here.',
+      'This is a constructed test case for one situation: an AI agent books a hotel stay for a customer who has signed an instruction that sets limits on what the agent may book. A script, using a test key, builds a signed log in the format a Chirindo gate writes, as if for the agent\'s separate decision call. The log\'s checkpoint was sent to Headless Oracle\'s live witness, which signed a receipt with its own clock time. The card charge time is a test value, the witness receipt\'s time plus 60 seconds written to the whole second, so the check that the witness receipt\'s time is before the charge time passes by construction here.',
       'The customer, the hotel, the stay, its dates and the charge are test values made for this example. No real booking was made, no card was charged, and no AI agent or gate ran: the files show what the verifier checks and what it reports. The limits above are the verifier\'s standard wording for a log of this format; here Headless Oracle holds the test key and a script built the log.',
       'In variant 1 the order is inside the instruction. In variant 2 the order holds a non-refundable rate, and the instruction allows only refundable ones.',
     ],
@@ -712,6 +712,7 @@ const fileLink = (id, name) => { const f = fileOf(id, name); return `<a href="${
 function packFront(company, exampleId) {
   const v = ex[exampleId].online;
   return `    <p><strong>Prepared for the ${company} team. As of ${ASOF}, ${company} has not reviewed or endorsed this page, and no page or menu on this site links to it.</strong></p>
+    <p>The case on this page is a constructed test case. A script built the signed log with a test key; only the witness receipts are live, signed by Headless Oracle's witness on 25 October 2026; and each card charge time is a test value, the receipt's time plus 60 seconds written to the whole second, so the check that the witness receipt's time is before the charge time passes by construction. No real order was placed, no card was charged, and no AI agent or gate ran. The limits below are the verifier's standard wording for a log of this format; here Headless Oracle holds the test key and a script built the log. The case page linked below says how it was built.</p>
     <p>The example's own limit:</p>
     <blockquote><p>${V(ex[exampleId].page.limit)}</p></blockquote>
 ${table(['limit', 'text'], ['L24', 'L14', 'L3'].map((lid) => [V(lid), V(limitOf(v, lid).text)]))}`;
@@ -733,11 +734,11 @@ function chargeflowPage() {
     ? `    <blockquote><p>${q('As agent context becomes available, it belongs in the decisions made at every stage')}</p></blockquote>
     <p>${attribution(1, 'Ariel Chen')}.</p>`
     : '';
-  const stages = `    <p>The physical order case at three stages, stating only what its verdicts and data points show:</p>
+  const stages = `    <p>The physical order case at three stages, using its two test variants and stating only what their verdicts and data points show:</p>
     <ul>
       <li>Before fulfilment: variant 2 (<code>we-4-2</code>) reads ${V(dp2.agent_evidence_verdict)}, with <code>agent_instruction_scope_ok</code> ${V(dp2.agent_instruction_scope_ok)} and <code>agent_instruction_exceeded</code> ${V(dp2.agent_instruction_exceeded)}: a final-sale item, against an instruction that allows only refundable items.</li>
-      <li>When the customer complains: the same values are available from the same files.</li>
-      <li>After a chargeback: variant 1 (<code>we-4-1</code>) reads ${V(dp1.agent_evidence_verdict)}, with its exhibit ${fileLink('we-4-1', 'we-4-1.online.letter.pdf')} and its verdict JSON ${fileLink('we-4-1', 'we-4-1.online-verdict.json')}.</li>
+      <li>If the customer complained: the same values would be available from the same files.</li>
+      <li>If a chargeback followed: variant 1 (<code>we-4-1</code>) reads ${V(dp1.agent_evidence_verdict)}, with its exhibit ${fileLink('we-4-1', 'we-4-1.online.letter.pdf')} and its verdict JSON ${fileLink('we-4-1', 'we-4-1.online-verdict.json')}.</li>
     </ul>`;
   const rows = [
     [item('Agent identity and signature check'), `The gate's signed record of which agent key acted. The key's origin, as B-KEY shows it, is headlessoracle.com, the operator itself. A payment network's agent-identity record is not in this bundle.${LT('L6')}`, `B-LOG ${st('B-LOG')}; B-KEY ${st('B-KEY')}`],
@@ -759,7 +760,7 @@ function chargeflowPage() {
     section('more', 'Run it', `    <p>The <a href="/evidence/cases/physical-order">physical order case</a>, <a href="/evidence/integration">integration</a>, and <a href="/evidence/examples/${ZIP}"><code>${ZIP}</code></a>. The one command for variant 1, from <code>examples/evidence-bundle</code> after setup:</p>
 ${preCmds([cmd])}`),
   ].join('\n');
-  return [{ file: 'evidence/for/chargeflow.html', text: htmlPage({ path: '/evidence/for/chargeflow', title: 'Agent dispute evidence, prepared for Chargeflow', description: 'A worked agent card dispute mapped to a published evidence playbook. Not reviewed or endorsed by Chargeflow.', indexable: false, twin: null, kicker: 'Agent dispute evidence', h1: 'An agent card dispute, mapped to the evidence playbook', body }) }];
+  return [{ file: 'evidence/for/chargeflow.html', text: htmlPage({ path: '/evidence/for/chargeflow', title: 'Agent dispute evidence, prepared for Chargeflow', description: 'A constructed test case of an agent card dispute, mapped to a published evidence playbook. Not reviewed or endorsed by Chargeflow.', indexable: false, twin: null, kicker: 'Agent dispute evidence', h1: 'A constructed agent card dispute, mapped to the evidence playbook', body }) }];
 }
 
 function justtPage() {
@@ -803,7 +804,7 @@ ${upload}`),
     section('more', 'Run it', `    <p>The <a href="/evidence/cases/hotel-booking">hotel booking case</a>, <a href="/evidence/integration">integration</a>, and <a href="/evidence/examples/${ZIP}"><code>${ZIP}</code></a>. The one command for variant 1, from <code>examples/evidence-bundle</code> after setup:</p>
 ${preCmds([cmd])}`),
   ].join('\n');
-  return [{ file: 'evidence/for/justt.html', text: htmlPage({ path: '/evidence/for/justt', title: 'Agent dispute evidence, prepared for Justt', description: 'A worked agent card dispute mapped to published kinds of missing evidence. Not reviewed or endorsed by Justt.', indexable: false, twin: null, kicker: 'Agent dispute evidence', h1: 'An agent card dispute, and the missing evidence', body }) }];
+  return [{ file: 'evidence/for/justt.html', text: htmlPage({ path: '/evidence/for/justt', title: 'Agent dispute evidence, prepared for Justt', description: 'A constructed test case of an agent card dispute, mapped to published kinds of missing evidence. Not reviewed or endorsed by Justt.', indexable: false, twin: null, kicker: 'Agent dispute evidence', h1: 'A constructed agent card dispute, and the missing evidence', body }) }];
 }
 
 // ---- build, write or check -------------------------------------------------------------
