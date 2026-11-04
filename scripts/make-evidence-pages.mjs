@@ -84,6 +84,8 @@ const QURL = {
   3: 'https://justt.ai/blog/solving-agentic-commerce-chargebacks/',
   4: 'https://developers.justt.ai/docs/evidence-upload-guide',
   5: 'https://developers.justt.ai/docs/customized-api-params',
+  6: 'https://thepaypers.com/fraud-and-fincrime/news/chargebacks911-warns-of-dispute-risk-gap-in-agentic-payments',
+  7: 'https://thepaypers.com/fraud-and-fincrime/news/chargebacks911-launches-indemnification-for-ai-agent-purchases',
 };
 const qsrc = (n) => {
   const s = quotes.sources.find((x) => x.n === n);
@@ -709,9 +711,10 @@ const attribution = (n, author) => {
 const q = (text) => `"${V(text)}"`;
 const fileLink = (id, name) => { const f = fileOf(id, name); return `<a href="${f.href}"><code>${f.name}</code></a> (${f.size} bytes)`; };
 
-function packFront(company, exampleId) {
+// `first` replaces the opening line when a handoff fixes its wording.
+function packFront(company, exampleId, first = null) {
   const v = ex[exampleId].online;
-  return `    <p><strong>Prepared for the ${company} team. As of ${ASOF}, ${company} has not reviewed or endorsed this page, and no page or menu on this site links to it.</strong></p>
+  return `    <p><strong>${first ?? `Prepared for the ${company} team. As of ${ASOF}, ${company} has not reviewed or endorsed this page, and no page or menu on this site links to it.`}</strong></p>
     <p>The case on this page is a constructed test case. A script built the signed log with a test key; only the witness receipts are live, signed by Headless Oracle's witness on 25 October 2026; and each card charge time is a test value, the receipt's time plus 60 seconds written to the whole second, so the check that the witness receipt's time is before the charge time passes by construction. No real order was placed, no card was charged, and no AI agent or gate ran. The limits below are the verifier's standard wording for a log of this format; here Headless Oracle holds the test key and a script built the log. The case page linked below says how it was built.</p>
     <p>The example's own limit:</p>
     <blockquote><p>${V(ex[exampleId].page.limit)}</p></blockquote>
@@ -807,6 +810,49 @@ ${preCmds([cmd])}`),
   return [{ file: 'evidence/for/justt.html', text: htmlPage({ path: '/evidence/for/justt', title: 'Agent dispute evidence, prepared for Justt', description: 'A constructed test case of an agent card dispute, mapped to published kinds of missing evidence. Not reviewed or endorsed by Justt.', indexable: false, twin: null, kicker: 'Agent dispute evidence', h1: 'A constructed agent card dispute, and the missing evidence', body }) }];
 }
 
+// The Paypers paraphrases Chargebacks911; its 15 May article prints three recommendations and
+// one sentence on what the company's own system captures, not a list called missing evidence.
+// So the page quotes those words as The Paypers printed them and says whose words they are.
+// Kossmann's line is printed there as reported speech, so it is quoted as The Paypers' sentence.
+function chargebacks911Page() {
+  const v1 = ex['we-5-1'].online;
+  const dp1 = ex['we-5-1'].dp;
+  const st = (bid) => V(binding(v1, bid).state);
+  const LT = (lid) => `<blockquote><p>${V(lid)}: ${V(limitOf(v1, lid).text)}</p></blockquote>`;
+  const tm = (what) => (v1.times.find((t) => t.what === what) ?? die(`we-5-1: no time ${JSON.stringify(what)}`));
+  const tv = (what) => { const t = tm(what); return `<code>${V(t.value)}</code> (${V(t.clock)} clock)`; };
+  const ITEMS = [
+    'documenting authorisation at the point of delegation rather than reconstructing it after a dispute',
+    'establishing granular permission and scope frameworks for AI agents transacting on their platforms',
+    'logs agent behaviour continuously across the transaction journey rather than only at checkout',
+    'a timestamped record of each action taken',
+  ];
+  const KOSS = 'Donald Kossmann, CTO of Chargebacks911, said that in agentic commerce the transaction is only one part of the picture, and that understanding behaviour, authorisation, and what happens after the purchase is necessary to assess risk.';
+  const LAUNCH = 'an AI agent purchase indemnification service designed to protect merchants against qualifying chargebacks arising from these transactions';
+  // A page that cannot quote its sources is not built at all: its whole point is their words.
+  if (!(qsrc(6).status === 200 && ITEMS.every((t) => quoted(6, t)) && quoted(6, 'Iulia Musat'))) die('quotes.json source 6 does not confirm every item');
+  if (!(qsrc(7).status === 200 && quoted(7, KOSS) && quoted(7, LAUNCH) && quoted(7, 'Claudia Pincovski'))) die('quotes.json source 7 does not confirm the launch lines');
+  const ins = v1.instructions.find((i) => i.cited) ?? die('we-5-1: no cited instruction');
+  const limitsShown = ins.card_limits.filter((l) => l.result !== 'not-declared').map((l) => `${V(l.limit)} ${V(l.result)}`).join(', ');
+  const rows = [
+    [q(ITEMS[0]), `The customer's signed instruction, issued at ${tv('ins-d iat')}, whose hash the gate's log entry carries; the witness received that log's checkpoint at ${tv('selected witness receipt received_at (sidecar-d line 1)')}, before the stated authorization time ${tv('stated authorization time')}. So the instruction was on record before the charge, not assembled after a dispute. The moment of delegation itself is the principal's own statement.${LT('L12')}${LT('L7')}`, `B-INS ${st('B-INS')}; B-WIT ${st('B-WIT')}; <code>agent_decision_before_auth</code> ${V(dp1.agent_decision_before_auth)}`],
+    [q(ITEMS[1]), `The instruction's validity window and card limits as the verdict lists them (${limitsShown}), and the gate's decision on the action (<code>decision</code>: ${V(v1.decision.value)}). Gap: a chirindo record does not commit to the policy that produced the decision.`, `B-INS ${st('B-INS')}`],
+    [q(ITEMS[2]), `The gate's signed, hash-chained log, with a witnessed checkpoint over its head. It holds only what passed through the gate: steps of the journey that did not reach the gate, such as browsing before it or delivery after it, are not carried by this bundle.${LT('L2')}${LT('L9')}`, `B-LOG ${st('B-LOG')}; B-CKP ${st('B-CKP')}; B-WIT ${st('B-WIT')}`],
+    [q(ITEMS[3]), `Each log record carries the operator's time (the decision here: ${tv('log-d record 0 ts')}), and the witness receipt carries Headless Oracle's time of receipt. Each time is its own clock's statement; only the order of the records rests on the hash chain alone.${LT('L7')}${LT('L3')}`, `B-LOG ${st('B-LOG')}; B-WIT ${st('B-WIT')}; <code>agent_witness_time</code> ${V(dp1.agent_witness_time)}`],
+  ];
+  const lead = `    <p>As reported by The Paypers on ${V(qsrc(6).published.slice(0, 10))} (${attribution(6, 'Iulia Musat')}), which paraphrases the company: the first three are the steps Chargebacks911 recommends, and the fourth is among the records the article says the company's own dispute system captures. Beside each, what this bundle shows and the state in variant 1's online verdict:</p>`;
+  const launch = `    <p>On ${V(qsrc(7).published.slice(0, 10))} The Paypers reported the launch of ${q(LAUNCH)}, and printed: ${q(KOSS)} (${attribution(7, 'Claudia Pincovski')}).</p>`;
+  const cmd = runCommands('we-5-1')[8];
+  const body = [
+    section('front', 'Read this first', packFront('Chargebacks911', 'we-5-1', 'Prepared for the Chargebacks911 team. Chargebacks911 has not reviewed or endorsed this page. It is not listed on this site.')),
+    section('items', 'Their list, and this bundle', `${lead}\n${table(['item, as reported', 'what this bundle shows', 'state in we-5-1'], rows)}`),
+    section('launch', 'The indemnification launch', launch),
+    section('more', 'Run it', `    <p>The <a href="/evidence/cases/hotel-booking">hotel booking case</a>, <a href="/evidence/integration">integration</a>, and <a href="/evidence/examples/${ZIP}"><code>${ZIP}</code></a>. The online exhibit is ${fileLink('we-5-1', 'we-5-1.online.letter.pdf')}. The one command for variant 1, from <code>examples/evidence-bundle</code> after setup:</p>
+${preCmds([cmd])}`),
+  ].join('\n');
+  return [{ file: 'evidence/for/chargebacks911.html', text: htmlPage({ path: '/evidence/for/chargebacks911', title: 'Agent dispute evidence, prepared for Chargebacks911', description: 'A constructed test case of an agent card dispute, mapped to recommendations reported by The Paypers. Not reviewed or endorsed by Chargebacks911.', indexable: false, twin: null, kicker: 'Agent dispute evidence', h1: 'A constructed agent card dispute, and the records behind it', body }) }];
+}
+
 // ---- build, write or check -------------------------------------------------------------
 
 const built = [
@@ -817,14 +863,16 @@ const built = [
   ...datapointsPage(),
   ...chargeflowPage(),
   ...justtPage(),
+  ...chargebacks911Page(),
 ];
 
 const BANNED_AUTHORED = ['proven', 'proof of payment', 'payment verified', 'verified payment', 'guarantee', 'certified', 'partner', 'integrates with', 'fraud-proof', 'tamper-proof', '—'];
 const INTERNAL = /\bLead\b|\bruling\b|\bfounder\b|\bhandoff\b|\bB-[0-9]{2,3}\b|PLAN_/;
 const MARKERS = ['[relayed', '[verified', '[open]', 'this drafter'];
-const ALL_NAMES = /chargeflow|justt|moshkovich|shnidman|ariel chen/i;
-const NOT_IN_CHARGEFLOW = /justt|shnidman/i;
-const NOT_IN_JUSTT = /chargeflow|moshkovich|ariel chen/i;
+const ALL_NAMES = /chargeflow|justt|moshkovich|shnidman|ariel chen|chargebacks911|kossmann|musat|pincovski|paypers/i;
+const NOT_IN_CHARGEFLOW = /justt|shnidman|chargebacks911|kossmann|musat|pincovski|paypers/i;
+const NOT_IN_JUSTT = /chargeflow|moshkovich|ariel chen|chargebacks911|kossmann|musat|pincovski|paypers/i;
+const NOT_IN_CB911 = /chargeflow|justt|moshkovich|shnidman|ariel chen/i;
 
 for (const { file, text } of built) {
   const out = strip(text);
@@ -832,6 +880,7 @@ for (const { file, text } of built) {
   for (const w of BANNED_AUTHORED) if (authored.includes(w)) problems.push(`${file}: authored text contains ${JSON.stringify(w)}`);
   if (file === 'evidence/for/chargeflow.html') { if (NOT_IN_CHARGEFLOW.test(out)) problems.push(`${file}: names the other company or its author`); }
   else if (file === 'evidence/for/justt.html') { if (NOT_IN_JUSTT.test(out)) problems.push(`${file}: names the other company or its authors`); }
+  else if (file === 'evidence/for/chargebacks911.html') { if (NOT_IN_CB911.test(out)) problems.push(`${file}: names another company or its authors`); }
   else if (ALL_NAMES.test(out)) problems.push(`${file}: names a company or author outside the pack pages`);
   if (INTERNAL.test(out)) problems.push(`${file}: carries an internal reference (${out.match(INTERNAL)[0]})`);
   for (const m of MARKERS) if (out.includes(m)) problems.push(`${file}: carries ${JSON.stringify(m)}`);

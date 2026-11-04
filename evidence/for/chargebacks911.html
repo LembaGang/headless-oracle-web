@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<title>Agent dispute evidence, prepared for Chargebacks911 · Headless Oracle</title>
+<meta name="description" content="A constructed test case of an agent card dispute, mapped to recommendations reported by The Paypers. Not reviewed or endorsed by Chargebacks911.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+<style>.ev code, .ev td, .ev pre { overflow-wrap: anywhere; } .ev pre { white-space: pre-wrap; } .ev table { width: 100%; margin: 0.75rem 0 1.25rem; } .ev th, .ev td { text-align: left; vertical-align: top; padding: 0.35rem 0.6rem 0.35rem 0; border-bottom: 1px solid var(--rule, #ccc); } .ev blockquote { margin: 0.75rem 0; padding-left: 1rem; border-left: 3px solid var(--rule, #ccc); }</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="wordmark" href="/">Headless Oracle</a>
+    <nav aria-label="Main">
+      <ul class="nav-list nav-wide">
+        <li><a href="/witness">Witness</a></li>
+        <li><a href="/verify">Verify</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/docs">Docs</a></li>
+        <li><a href="/auditors">For auditors</a></li>
+        <li><a href="https://github.com/LembaGang">GitHub</a></li>
+      </ul>
+      <details class="nav-small">
+        <summary>Menu</summary>
+        <ul>
+          <li><a href="/witness">Witness</a></li>
+          <li><a href="/verify">Verify</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+          <li><a href="/docs">Docs</a></li>
+          <li><a href="/auditors">For auditors</a></li>
+          <li><a href="https://github.com/LembaGang">GitHub</a></li>
+        </ul>
+      </details>
+    </nav>
+  </div>
+</header>
+<main id="main" class="ev">
+
+<div class="wrap page-head">
+  <p class="kicker">Agent dispute evidence</p>
+  <h1>A constructed agent card dispute, and the records behind it</h1>
+</div>
+
+<section class="section" id="front" aria-labelledby="h-front">
+  <div class="wrap">
+    <h2 id="h-front">Read this first</h2>
+    <p><strong>Prepared for the Chargebacks911 team. Chargebacks911 has not reviewed or endorsed this page. It is not listed on this site.</strong></p>
+    <p>The case on this page is a constructed test case. A script built the signed log with a test key; only the witness receipts are live, signed by Headless Oracle's witness on 25 October 2026; and each card charge time is a test value, the receipt's time plus 60 seconds written to the whole second, so the check that the witness receipt's time is before the charge time passes by construction. No real order was placed, no card was charged, and no AI agent or gate ran. The limits below are the verifier's standard wording for a log of this format; here Headless Oracle holds the test key and a script built the log. The case page linked below says how it was built.</p>
+    <p>The example's own limit:</p>
+    <blockquote><p>Headless Oracle is the gate&#39;s operator and the witness; the traveller, the hotel and the charge are test parties; test card data only.</p></blockquote>
+<table>
+<thead><tr><th scope="col">limit</th><th scope="col">text</th></tr></thead>
+<tbody>
+<tr><td>L24</td><td>v0.10. For a card payment, the payment proof is the card network&#39;s authorization record, which the issuer holds; this bundle neither carries nor verifies it. What this verdict shows is whether the decision and the order the gate recorded were witnessed before the charge&#39;s authorization time as stated, and whether that order matches the stated charge: the stated charge and its time are the statements of the person running the verifier, taken from the processor&#39;s records.</td></tr>
+<tr><td>L14</td><td>Headless Oracle operates both the gate whose key signed this log and the witness, so the log and the witness receipt are statements by one party.</td></tr>
+<tr><td>L3</td><td>The witness receipt is Headless Oracle&#39;s signed statement that at received_at it was shown a checkpoint signed by the key with that thumbprint; it is only as reliable as Headless Oracle and its signing key. The witness is operated by Headless Oracle, which also publishes the gate software: it is independent of an operator other than Headless Oracle, not of Headless Oracle.</td></tr>
+</tbody>
+</table>
+  </div>
+</section>
+
+<section class="section" id="items" aria-labelledby="h-items">
+  <div class="wrap">
+    <h2 id="h-items">Their list, and this bundle</h2>
+    <p>As reported by The Paypers on 2026-05-15 (Iulia Musat, "Chargebacks911 warns of dispute risk gap in agentic payments" (<a href="https://thepaypers.com/fraud-and-fincrime/news/chargebacks911-warns-of-dispute-risk-gap-in-agentic-payments">https://thepaypers.com/fraud-and-fincrime/news/chargebacks911-warns-of-dispute-risk-gap-in-agentic-payments</a>, read 2026-11-04)), which paraphrases the company: the first three are the steps Chargebacks911 recommends, and the fourth is among the records the article says the company's own dispute system captures. Beside each, what this bundle shows and the state in variant 1's online verdict:</p>
+<table>
+<thead><tr><th scope="col">item, as reported</th><th scope="col">what this bundle shows</th><th scope="col">state in we-5-1</th></tr></thead>
+<tbody>
+<tr><td>"documenting authorisation at the point of delegation rather than reconstructing it after a dispute"</td><td>The customer's signed instruction, issued at <code>2026-10-24T15:07:27Z</code> (principal clock), whose hash the gate's log entry carries; the witness received that log's checkpoint at <code>2026-10-25T15:17:03.685Z</code> (headless-oracle clock), before the stated authorization time <code>2026-10-25T15:18:03Z</code> (processor clock). So the instruction was on record before the charge, not assembled after a dispute. The moment of delegation itself is the principal's own statement.<blockquote><p>L12: The principal key in a minimal instruction is bound to no person, account or payer; the bundle shows that the holder of that key signed the instruction.</p></blockquote><blockquote><p>L7: Times on the principal&#39;s, the issuer&#39;s, the operator&#39;s and Headless Oracle&#39;s clocks are those parties&#39; statements, and the block timestamp is set by the block producer within the chain&#39;s rules. Only the orderings that need no clock rest on signatures and hashes alone.</p></blockquote></td><td>B-INS BOUND; B-WIT BOUND; <code>agent_decision_before_auth</code> true</td></tr>
+<tr><td>"establishing granular permission and scope frameworks for AI agents transacting on their platforms"</td><td>The instruction's validity window and card limits as the verdict lists them (currency inside, max_unit_price_minor inside, categories inside, refundable_only inside, service_window inside, locations inside), and the gate's decision on the action (<code>decision</code>: allow). Gap: a chirindo record does not commit to the policy that produced the decision.</td><td>B-INS BOUND</td></tr>
+<tr><td>"logs agent behaviour continuously across the transaction journey rather than only at checkout"</td><td>The gate's signed, hash-chained log, with a witnessed checkpoint over its head. It holds only what passed through the gate: steps of the journey that did not reach the gate, such as browsing before it or delivery after it, are not carried by this bundle.<blockquote><p>L2: A log records what passed through the gate. It does not show that no action bypassed the gate. The verifier reports the gate version each entry names; chirindo entries through release 0.5.2 carry the constant 0.0.1 in place of a version. chirindo through release 0.5.2 (source read at tags v0.3.0, v0.4.0, v0.5.1 and v0.5.2; run on 0.5.2) forwarded a tools/call without an id member without evaluating policy or writing a receipt, and ran an allowed tools/call with id null without a receipt.</p></blockquote><blockquote><p>L9: The bundle carries what its assembler chose to put in. A verifier can show that the pieces present bind; it cannot show that a piece which would contradict them was left out, except where the witness&#39;s receipts show a longer history than the log carried (TRUNCATED) or a different one (FAIL).</p></blockquote></td><td>B-LOG BOUND; B-CKP BOUND; B-WIT BOUND</td></tr>
+<tr><td>"a timestamped record of each action taken"</td><td>Each log record carries the operator's time (the decision here: <code>2026-10-25T15:17:01.472Z</code> (operator clock)), and the witness receipt carries Headless Oracle's time of receipt. Each time is its own clock's statement; only the order of the records rests on the hash chain alone.<blockquote><p>L7: Times on the principal&#39;s, the issuer&#39;s, the operator&#39;s and Headless Oracle&#39;s clocks are those parties&#39; statements, and the block timestamp is set by the block producer within the chain&#39;s rules. Only the orderings that need no clock rest on signatures and hashes alone.</p></blockquote><blockquote><p>L3: The witness receipt is Headless Oracle&#39;s signed statement that at received_at it was shown a checkpoint signed by the key with that thumbprint; it is only as reliable as Headless Oracle and its signing key. The witness is operated by Headless Oracle, which also publishes the gate software: it is independent of an operator other than Headless Oracle, not of Headless Oracle.</p></blockquote></td><td>B-LOG BOUND; B-WIT BOUND; <code>agent_witness_time</code> 2026-10-25T15:17:03.685Z</td></tr>
+</tbody>
+</table>
+  </div>
+</section>
+
+<section class="section" id="launch" aria-labelledby="h-launch">
+  <div class="wrap">
+    <h2 id="h-launch">The indemnification launch</h2>
+    <p>On 2026-10-27 The Paypers reported the launch of "an AI agent purchase indemnification service designed to protect merchants against qualifying chargebacks arising from these transactions", and printed: "Donald Kossmann, CTO of Chargebacks911, said that in agentic commerce the transaction is only one part of the picture, and that understanding behaviour, authorisation, and what happens after the purchase is necessary to assess risk." (Claudia Pincovski, "Chargebacks911 launches indemnification for AI agent purchases" (<a href="https://thepaypers.com/fraud-and-fincrime/news/chargebacks911-launches-indemnification-for-ai-agent-purchases">https://thepaypers.com/fraud-and-fincrime/news/chargebacks911-launches-indemnification-for-ai-agent-purchases</a>, read 2026-11-04)).</p>
+  </div>
+</section>
+
+<section class="section" id="more" aria-labelledby="h-more">
+  <div class="wrap">
+    <h2 id="h-more">Run it</h2>
+    <p>The <a href="/evidence/cases/hotel-booking">hotel booking case</a>, <a href="/evidence/integration">integration</a>, and <a href="/evidence/examples/chirindo-evidence-6285832c2944.zip"><code>chirindo-evidence-6285832c2944.zip</code></a>. The online exhibit is <a href="/evidence/examples/we-5-1/we-5-1.online.letter.pdf"><code>we-5-1.online.letter.pdf</code></a> (775062 bytes). The one command for variant 1, from <code>examples/evidence-bundle</code> after setup:</p>
+<pre><code>node check-bundle.mjs pages/we-5-1.bundle.json --charge-id TEST-ch-we5-1 --charge-amount 28000 --charge-currency EUR --charge-authorized-at 2026-10-25T15:18:03Z --merchant-order-id TEST-H-2001 --pins pages/we-5-1-pins --online &gt; we-5-1.online-verdict.json</code></pre>
+  </div>
+</section>
+
+
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="mono">Headless Oracle</span>
+    <ul class="foot-links">
+      <li><a href="/terms">Terms</a></li>
+      <li><a href="/privacy">Privacy</a></li>
+      <li><a href="/refund">Refund</a></li>
+      <li><!--email_off--><a href="mailto:mike@headlessoracle.com">mike@headlessoracle.com</a><!--/email_off--></li>
+    </ul>
+  </div>
+</footer>
+</body>
+</html>

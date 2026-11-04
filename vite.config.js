@@ -28,6 +28,7 @@ export default defineConfig({
         evidenceDatapoints: resolve(__dirname, 'evidence/datapoints.html'),
         evidenceForChargeflow: resolve(__dirname, 'evidence/for/chargeflow.html'),
         evidenceForJustt: resolve(__dirname, 'evidence/for/justt.html'),
+        evidenceForChargebacks911: resolve(__dirname, 'evidence/for/chargebacks911.html'),
       },
     },
   },

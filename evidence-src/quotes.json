@@ -144,6 +144,66 @@
           "count": 1
         }
       ]
+    },
+    {
+      "n": 6,
+      "url": "https://thepaypers.com/fraud-and-fincrime/news/chargebacks911-warns-of-dispute-risk-gap-in-agentic-payments",
+      "title": "Chargebacks911 warns of dispute risk gap in agentic payments",
+      "byline": "Iulia Musat",
+      "published": "2026-05-15T04:27:06+00:00",
+      "fetched_at": "2026-11-04T10:04:38Z",
+      "read_by": "Headless Oracle, curl with a desktop browser User-Agent; title from the article's h1, byline and published from its JSON-LD author and datePublished; counts over the article's visible text (scripts and styles removed)",
+      "status": 200,
+      "bytes": 532673,
+      "sha256": "d22ec5d029160124a5d92614af78b10ceaf9973e070735165774148561fc2066",
+      "strings": [
+        {
+          "s": "documenting authorisation at the point of delegation rather than reconstructing it after a dispute",
+          "count": 1
+        },
+        {
+          "s": "establishing granular permission and scope frameworks for AI agents transacting on their platforms",
+          "count": 1
+        },
+        {
+          "s": "logs agent behaviour continuously across the transaction journey rather than only at checkout",
+          "count": 1
+        },
+        {
+          "s": "a timestamped record of each action taken",
+          "count": 1
+        },
+        {
+          "s": "Iulia Musat",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "n": 7,
+      "url": "https://thepaypers.com/fraud-and-fincrime/news/chargebacks911-launches-indemnification-for-ai-agent-purchases",
+      "title": "Chargebacks911 launches indemnification for AI agent purchases",
+      "byline": "Claudia Pincovski",
+      "published": "2026-10-27T15:06:31+00:00",
+      "fetched_at": "2026-11-04T10:05:41Z",
+      "read_by": "Headless Oracle, curl with a desktop browser User-Agent; title from the article's h1, byline and published from its JSON-LD author and datePublished; counts over the article's visible text (scripts and styles removed)",
+      "status": 200,
+      "bytes": 531397,
+      "sha256": "5857914cf9b2d1e8b06c6ce0b0d7e16da898ac3790abd794a816319e7dbd3fc5",
+      "strings": [
+        {
+          "s": "an AI agent purchase indemnification service designed to protect merchants against qualifying chargebacks arising from these transactions",
+          "count": 1
+        },
+        {
+          "s": "Donald Kossmann, CTO of Chargebacks911, said that in agentic commerce the transaction is only one part of the picture, and that understanding behaviour, authorisation, and what happens after the purchase is necessary to assess risk.",
+          "count": 1
+        },
+        {
+          "s": "Claudia Pincovski",
+          "count": 1
+        }
+      ]
     }
   ]
 }
