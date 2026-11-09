@@ -78,6 +78,15 @@ source is the `LLMS_TXT` constant in `headless-oracle-v5/src/index.ts`.
 Do NOT add llms.txt files to this repo — they will never be served and
 will only create sync problems. Edit the worker constant instead.
 
+## sitemap.xml — served by the Worker, not Pages
+`headlessoracle.com/sitemap.xml` is routed to the Worker (`headless-oracle-v5`
+`wrangler.toml`), which serves the `SITEMAP_XML` constant in
+`headless-oracle-v5/src/index.ts`. That constant is the sitemap's only source.
+A page added here reaches the sitemap only when it is added there and the worker
+is deployed; `npm run check:live-links` fails the deploy while a public page is
+missing from the live sitemap. `public/sitemap.xml` was deleted on 2026-11-10
+because it was never served: do not recreate it.
+
 ## Adding a New Page
 1. Create the `.html` file in the project root
 2. Register it in `vite.config.js` under `build.rollupOptions.input`
