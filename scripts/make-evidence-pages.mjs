@@ -405,6 +405,30 @@ Or download the zip below, extract it, and start from \`cd chirindo-evidence/exa
   return { html, md };
 }
 
+// The verdict-type note (2026-11-10). The records on these pages are dated
+// evidence-bundle-verdict/0.10 verdicts and stay as published; chirindo main writes 0.11
+// since 7678c97. The type and the dates are read from the records themselves, never typed.
+const README_PRESENT = `${REPO}/blob/main/examples/evidence-bundle/README.md#the-bundle-as-an-envelope-what-it-carries-today`;
+function verdictNote(ids) {
+  const verdicts = ids.flatMap((id) => [['offline', ex[id].page.offline_verdict], ['online', ex[id].online]]);
+  const types = [...new Set(verdicts.map(([, v]) => v.type))];
+  if (types.length !== 1) die(`verdictNote(${ids.join(', ')}): the records carry more than one type: ${types.join(', ')}`);
+  const dateOfMode = (mode) => {
+    const d = [...new Set(verdicts.filter(([m]) => m === mode).map(([, v]) => v.checked_at.slice(0, 10)))].sort();
+    return d.length === 1 ? d[0] : `${d[0]} to ${d.at(-1)}`;
+  };
+  const off = dateOfMode('offline');
+  const on = dateOfMode('online');
+  const idsHtml = ids.map((id) => `<code>${id}</code>`).join(', ');
+  const idsMd = ids.map((id) => '`' + id + '`').join(', ');
+  const tail = 'and kept as published: their files, digests and exhibits are unchanged. The verifier on chirindo\'s main branch now writes';
+  const only = 'whose only change is the PRESENT marker on members the verifier does not read';
+  return {
+    html: `    <p>Format: the verdicts on this page (${idsHtml}) are ${V(types[0])} records, produced on ${V(off)} (offline) and ${V(on)} (online), ${tail} <code>evidence-bundle-verdict/0.11</code>, ${only} (<a href="${README_PRESENT}">the verifier's README</a>).</p>`,
+    md: `Format: the verdicts on this page (${idsMd}) are ${VM(types[0])} records, produced on ${VM(off)} (offline) and ${VM(on)} (online), ${tail} \`evidence-bundle-verdict/0.11\`, ${only} ([the verifier's README](${README_PRESENT})).`,
+  };
+}
+
 function casePage(slug) {
   const cfg = CASES[slug];
   const [a, b] = cfg.ids;
@@ -425,6 +449,7 @@ function casePage(slug) {
 ${table(['limit', 'text'], front.map((l) => [V(l.id), V(l.text)]))}`),
     section('case', 'The case', cfg.case.map((p) => `    <p>${escHtml(p)}</p>`).join('\n')),
     section('variants', 'The two variants', variants.map((x) => x.html).join('\n')),
+    section('format', 'The verdicts\' format', verdictNote(cfg.ids).html),
     section('shared', 'Shared files', `    <p>The operator key set the bundles name, and the verifier's source at commit <code>${COMMIT}</code> as one zip.</p>
 ${table(['file', 'bytes', 'sha256'], fileRows(shared))}
     <p>The source is also in the <a href="${REPO}">chirindo repository</a>, commit <code>${COMMIT}</code>. More: <a href="/evidence">all worked examples</a>, <a href="/evidence/integration">integration</a>, <a href="/evidence/datapoints">the data-point sheet</a>.</p>`),
@@ -452,6 +477,10 @@ ${cfg.case.join('\n\n')}
 ## The two variants
 
 ${variants.map((x) => x.md).join('\n')}
+## The verdicts' format
+
+${verdictNote(cfg.ids).md}
+
 ## Shared files
 
 The operator key set the bundles name, and the verifier's source at commit \`${COMMIT}\` as one zip.
@@ -768,7 +797,7 @@ function chargeflowPage() {
   const exhibits = `    <p>Two of the playbook's exhibit names: the ${item('mandate record')} sits beside the customer's signed instruction, and the ${item('cart as approved compared with the order as placed')} beside the cart against the charge. Our exhibit's sections for the customer's signed instruction and for the cart against the charge are in the online exhibits: ${fileLink('we-4-1', 'we-4-1.online.letter.pdf')} and ${fileLink('we-4-2', 'we-4-2.online.letter.pdf')}. The playbook's signature verification record is not mapped here: it is a payment network's agent-identity record, not the gate operator's key.</p>`;
   const cmd = runCommands('we-4-1')[8];
   const body = [
-    section('front', 'Read this first', packFront('Chargeflow', 'we-4-1')),
+    section('front', 'Read this first', `${packFront('Chargeflow', 'we-4-1')}\n${verdictNote(['we-4-1', 'we-4-2']).html}`),
     section('stages', 'At every stage', `${chenLine}\n${stages}`),
     section('items', 'The playbook\'s items', `${tableHead}\n${table(['item', 'what this bundle supplies', 'state in we-4-1'], rows)}\n${exhibits}`),
     section('more', 'Run it', `    <p>The <a href="/evidence/cases/physical-order">physical order case</a>, <a href="/evidence/integration">integration</a>, and <a href="/evidence/examples/${ZIP}"><code>${ZIP}</code></a>. The one command for variant 1, from <code>examples/evidence-bundle</code> after setup:</p>
@@ -808,7 +837,7 @@ function justtPage() {
     : '';
   const cmd = runCommands('we-5-1')[8];
   const body = [
-    section('front', 'Read this first', packFront('Justt', 'we-5-1')),
+    section('front', 'Read this first', `${packFront('Justt', 'we-5-1')}\n${verdictNote(['we-5-1', 'we-5-2']).html}`),
     section('items', 'The missing evidence', `${lead}\n${table(['item', 'what this bundle shows', 'state in we-5-1'], rows)}`),
     section('datapoints', 'The data points', `    <p>The online exports of variant 1 (<code>we-5-1</code>, ${V(dp1.agent_evidence_verdict)}) and variant 2 (<code>we-5-2</code>, ${V(dp2.agent_evidence_verdict)}). Every member is defined on <a href="/evidence/datapoints">the data-point sheet</a>.</p>
 ${table(['member', 'we-5-1', 'we-5-2'], dpRows)}
@@ -855,7 +884,7 @@ function chargebacks911Page() {
   const launch = `    <p>On ${V(qsrc(7).published.slice(0, 10))} The Paypers reported the launch of ${q(LAUNCH)}, and printed: ${q(KOSS)} (${attribution(7, 'Claudia Pincovski')}).</p>`;
   const cmd = runCommands('we-5-1')[8];
   const body = [
-    section('front', 'Read this first', packFront('Chargebacks911', 'we-5-1', 'Prepared for the Chargebacks911 team. Chargebacks911 has not reviewed or endorsed this page. It is not listed on this site.')),
+    section('front', 'Read this first', `${packFront('Chargebacks911', 'we-5-1','Prepared for the Chargebacks911 team. Chargebacks911 has not reviewed or endorsed this page. It is not listed on this site.')}\n${verdictNote(['we-5-1']).html}`),
     section('items', 'Their list, and this bundle', `${lead}\n${table(['item, as reported', 'what this bundle shows', 'state in we-5-1'], rows)}`),
     section('launch', 'The indemnification launch', launch),
     section('more', 'Run it', `    <p>The <a href="/evidence/cases/hotel-booking">hotel booking case</a>, <a href="/evidence/integration">integration</a>, and <a href="/evidence/examples/${ZIP}"><code>${ZIP}</code></a>. The online exhibit is ${fileLink('we-5-1', 'we-5-1.online.letter.pdf')}. The one command for variant 1, from <code>examples/evidence-bundle</code> after setup:</p>

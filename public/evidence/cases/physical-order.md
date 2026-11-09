@@ -298,6 +298,10 @@ node make-datapoints.mjs we-4-2.online-verdict.json > we-4-2.online.datapoints.j
 
 Or download the zip below, extract it, and start from `cd chirindo-evidence/examples/ordering-evidence-h4`. The charge and its authorization time are test values. In a real dispute, the person running the verifier states them from the dispute record they hold.
 
+## The verdicts' format
+
+Format: the verdicts on this page (`we-4-1`, `we-4-2`) are evidence-bundle-verdict/0.10 records, produced on 2026-10-25 (offline) and 2026-10-26 (online), and kept as published: their files, digests and exhibits are unchanged. The verifier on chirindo's main branch now writes `evidence-bundle-verdict/0.11`, whose only change is the PRESENT marker on members the verifier does not read ([the verifier's README](https://github.com/LembaGang/chirindo/blob/main/examples/evidence-bundle/README.md#the-bundle-as-an-envelope-what-it-carries-today)).
+
 ## Shared files
 
 The operator key set the bundles name, and the verifier's source at commit `6285832c294493001b12d4467259c04a2c4890fb` as one zip.

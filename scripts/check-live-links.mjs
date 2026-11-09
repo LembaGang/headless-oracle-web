@@ -287,9 +287,10 @@ export async function runLiveLinks({ allowDistFixes = true } = {}) {
 }
 
 /**
- * Drift already known on the day this gate shipped, and handed to the worker (it owns
- * sitemap.xml). Listed here, each still prints on every run but does not fail it; any drift
- * outside this file fails. An entry the worker has fixed prints RESOLVED: delete it here.
+ * Sitemap URLs known not to be indexable, handed to the worker (it owns sitemap.xml). Listed
+ * here, each still prints on every run but does not fail it. A public page MISSING from the
+ * sitemap is never exempt (2026-11-10): the baseline once exempted 15, /evidence among them,
+ * and the deploy passed with them missing. A non-empty missing_from_sitemap now fails the run.
  */
 const DRIFT_BASELINE = 'scripts/sitemap-drift-baseline.json';
 
@@ -307,9 +308,10 @@ export async function checkSitemapDrift(dist, locs) {
   const baselineFile = resolve(DRIFT_BASELINE);
   const baseline = existsSync(baselineFile) ? JSON.parse(readFileSync(baselineFile, 'utf8')) : {};
   const known = {
-    missing: new Set(baseline.missing_from_sitemap || []),
+    missing: new Set(),
     notIndexable: new Set(baseline.not_indexable_in_sitemap || []),
   };
+  const staleExemptions = baseline.missing_from_sitemap || [];
 
   // Every indexable built page. 404.html is noindex, so it drops out on its own.
   const built = new Map();
@@ -353,6 +355,10 @@ export async function checkSitemapDrift(dist, locs) {
     }
   };
   report('sitemap-missing', missing, known.missing);
+  if (staleExemptions.length) {
+    lines.push(`FAIL  ${DRIFT_BASELINE} lists missing_from_sitemap (${staleExemptions.join(' ')}); a missing public page is never exempt: add it to the worker's sitemap and empty that list`);
+    fail++;
+  }
   report('sitemap-not-indexable', notIndexable, known.notIndexable);
   lines.push(
     `SITEMAP-DRIFT ${[...built.values()].filter((ni) => !ni).length} indexable built pages, ${inSitemap.size} sitemap URLs; ` +
