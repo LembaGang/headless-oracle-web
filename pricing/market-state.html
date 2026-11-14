@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <title>Market-state API plans · Headless Oracle</title>
+    <meta name="description" content="Plans for the market-state API. Prices are in US dollars.">
+    <meta name="robots" content="noindex, follow">
+    <meta name="color-scheme" content="light dark">
+    <link rel="canonical" href="https://headlessoracle.com/pricing/market-state">
+    <link rel="alternate" type="text/markdown" href="/pricing/market-state.md" title="This page in Markdown">
+    <link rel="alternate" type="application/json" href="/v5/pricing" title="These prices as JSON">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="wordmark" href="/">Headless Oracle</a>
+    <nav aria-label="Main">
+      <ul class="nav-list nav-wide">
+        <li><a href="/witness">Witness</a></li>
+        <li><a href="/verify">Verify</a></li>
+        <li><a href="/pricing" aria-current="page">Pricing</a></li>
+        <li><a href="/docs">Docs</a></li>
+        <li><a href="/auditors">For auditors</a></li>
+        <li><a href="https://github.com/LembaGang">GitHub</a></li>
+      </ul>
+      <details class="nav-small">
+        <summary>Menu</summary>
+        <ul>
+          <li><a href="/witness">Witness</a></li>
+          <li><a href="/verify">Verify</a></li>
+          <li><a href="/pricing" aria-current="page">Pricing</a></li>
+          <li><a href="/docs">Docs</a></li>
+          <li><a href="/auditors">For auditors</a></li>
+          <li><a href="https://github.com/LembaGang">GitHub</a></li>
+        </ul>
+      </details>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+    <div class="wrap page-head">
+        <p class="kicker">Pricing</p>
+        <h1>Market-state API plans</h1>
+        <div class="lede">
+            <p>Plans for the market-state API. Prices are in US dollars. The same prices are served as JSON at <a href="/v5/pricing">/v5/pricing</a>. For the five-alteration test, grading and the outside checkpoint, see <a href="/pricing">Pricing</a>.</p>
+        </div>
+    </div>
+
+    <!-- ==================== MARKET-STATE API ==================== -->
+    <section id="api" class="section" aria-labelledby="h-api">
+        <div class="wrap sec-grid">
+            <div class="sec-num">Market-state API</div>
+            <div class="sec-body">
+                <h2 id="h-api">Market-state API</h2>
+
+                <div class="plans">
+
+                    <!-- Sandbox -->
+                    <div class="plan" data-price-item data-plan="sandbox" data-price-usd="0" data-cycle="free">
+                        <p class="plan-kind">Explore</p>
+                        <h3>Sandbox</h3>
+                        <p class="plan-price">$0</p>
+                        <p class="plan-cycle">200 calls over 7 days</p>
+                        <p class="plan-desc"><code>POST /v5/sandbox</code> with an email in the body</p>
+                        <ul>
+                            <li><code>sb_</code> key returned in the response</li>
+                            <li>All 28 exchanges</li>
+                            <li>Ed25519 signed receipts</li>
+                            <li>One per IP, no credit card</li>
+                        </ul>
+                        <button onclick="getInstantKey('sandbox-card')" id="sandbox-card-btn" class="btn btn--line btn--block">Get Instant Free Key (500 calls/day)</button>
+                        <div id="sandbox-card-result" class="hidden plan-result"></div>
+                        <div id="sandbox-card-error" class="hidden err"></div>
+                    </div>
+
+                    <!-- Free Tier -->
+                    <div class="plan" data-price-item data-plan="free" data-price-usd="0" data-cycle="free" data-calls-per-day="500">
+                        <p class="plan-kind">Free</p>
+                        <h3>Free Tier</h3>
+                        <p class="plan-price">$0</p>
+                        <p class="plan-cycle">/month</p>
+                        <p class="plan-desc">Get started instantly, no credit card needed</p>
+                        <ul>
+                            <li>500 API calls/day</li>
+                            <li>All 28 exchanges</li>
+                            <li>Ed25519 signed receipts</li>
+                            <li>Instant provisioning</li>
+                        </ul>
+                        <button onclick="getInstantKey('free-card')" id="free-card-btn" class="btn btn--block">Get Free API Key</button>
+                        <div id="free-card-result" class="hidden plan-result"></div>
+                        <div id="free-card-error" class="hidden err"></div>
+                    </div>
+
+                    <!-- Pay-per-use (x402) -->
+                    <div class="plan" data-price-item data-plan="x402" data-price-usd="0.001" data-cycle="request">
+                        <p class="plan-kind">x402 &middot; Live</p>
+                        <h3>Pay-per-use</h3>
+                        <p class="plan-price">$0.001</p>
+                        <p class="plan-cycle">/request</p>
+                        <p class="plan-desc">0.001 USDC on Base mainnet, no subscription required</p>
+                        <ul>
+                            <li>No API key required</li>
+                            <li>All 28 exchanges</li>
+                            <li>Ed25519 signed receipts</li>
+                            <li>HTTP 402 machine-readable</li>
+                        </ul>
+                        <button onclick="toggleX402Panel()" id="x402-btn" class="btn btn--line btn--block">Pay with Crypto</button>
+                        <div id="x402-panel" class="hidden plan-result"></div>
+                    </div>
+
+                    <!-- Credits -->
+                    <div class="plan" data-price-item data-plan="credits" data-price-usd="5" data-cycle="one-time">
+                        <p class="plan-kind">One-time</p>
+                        <h3>Credits</h3>
+                        <p class="plan-price">$5</p>
+                        <p class="plan-cycle">one-time</p>
+                        <p class="plan-desc">1,000 API calls, no expiry</p>
+                        <ul>
+                            <li>1,000 API calls</li>
+                            <li>All 28 exchanges</li>
+                            <li>No expiry date</li>
+                            <li>Pay via card</li>
+                        </ul>
+                        <button onclick="openPaddleCheckout('credits')" id="credits-btn" class="btn btn--block">Buy Credits</button>
+                        <div id="credits-fallback" class="hidden plan-fallback"></div>
+                    </div>
+
+                    <!-- Builder -->
+                    <div class="plan" data-price-item data-plan="builder" data-price-usd="99" data-cycle="month" data-calls-per-day="50000">
+                        <p class="plan-kind">Subscription</p>
+                        <h3>Builder</h3>
+                        <p class="plan-price">$99</p>
+                        <p class="plan-cycle">/month</p>
+                        <ul>
+                            <li>50,000 API calls/day</li>
+                            <li>All 28 exchanges</li>
+                            <li>Webhook subscriptions</li>
+                            <li>Receipt audit log</li>
+                        </ul>
+                        <button onclick="openPaddleCheckout('builder')" id="builder-btn" class="btn btn--block">Subscribe: $99/mo</button>
+                        <div id="builder-fallback" class="hidden plan-fallback"></div>
+                    </div>
+
+                    <!-- Pro -->
+                    <div class="plan" data-price-item data-plan="pro" data-price-usd="299" data-cycle="month" data-calls-per-day="200000">
+                        <p class="plan-kind">Subscription</p>
+                        <h3>Pro</h3>
+                        <p class="plan-price">$299</p>
+                        <p class="plan-cycle">/month</p>
+                        <ul>
+                            <li>200,000 API calls/day</li>
+                            <li>All 28 exchanges</li>
+                            <li>25 webhook subscriptions</li>
+                            <li>Priority support</li>
+                        </ul>
+                        <button onclick="openPaddleCheckout('pro')" id="pro-btn" class="btn btn--block">Subscribe: $299/mo</button>
+                        <div id="pro-fallback" class="hidden plan-fallback"></div>
+                    </div>
+
+                </div>
+
+                <!-- Protocol tier -->
+                <div class="plan plan--wide" data-price-item data-plan="protocol" data-price-usd="500" data-cycle="month">
+                    <div>
+                        <h3>Protocol / Enterprise</h3>
+                        <p class="plan-desc">Unlimited calls, dedicated support, direct engineering access; service levels by agreement after the public beta.</p>
+                        <p class="plan-cycle">Starting at $500/month. Best for DeFi protocols, RWA platforms, institutional trading.</p>
+                    </div>
+                    <!--email_off--><a href="mailto:mike@headlessoracle.com?subject=Protocol%20tier%20inquiry" class="btn btn--line">Contact Sales</a><!--/email_off-->
+                </div>
+
+                <!-- Instant API Key Section -->
+                <div id="get-free-key" class="panel" style="margin-top:32px">
+                    <h3>Get your API key instantly</h3>
+                    <p class="small">Click the button below. No email, no signup, no credit card. Your key appears in seconds.</p>
+                    <div class="row">
+                        <div class="field" style="flex:1 1 18rem">
+                            <label for="instant-agent-id" class="visually-hidden">Agent ID (optional)</label>
+                            <input id="instant-agent-id" type="text" placeholder="Agent ID (optional, any unique string)" class="input mono">
+                        </div>
+                        <button onclick="getInstantKey('section')" id="section-btn" class="btn">Get Free API Key</button>
+                    </div>
+                    <div id="section-result" class="hidden" style="margin-top:16px">
+                        <div class="out">
+                            <div class="row row--between">
+                                <span class="label">Your API key (500 calls/day)</span>
+                                <button onclick="copyToClipboard(this, document.getElementById('section-key').textContent)" class="copy">Copy key</button>
+                            </div>
+                            <pre id="section-key"></pre>
+                            <p class="label">Quick test:</p>
+                            <pre id="section-curl"></pre>
+                            <button onclick="copyToClipboard(this, document.getElementById('section-curl').textContent)" class="copy" style="margin-top:8px">Copy curl command</button>
+                        </div>
+                    </div>
+                    <div id="section-error" class="hidden err"></div>
+                    <p class="small muted" style="margin:16px 0 0">Prefer the raw curl? <code>curl -X POST https://headlessoracle.com/v5/keys/instant -H "Content-Type: application/json" -d '{"agent_id":"my-trading-bot"}'</code></p>
+                </div>
+
+                <!-- What's included -->
+                <div class="panel" style="margin-top:16px">
+                    <h3>All plans include</h3>
+                    <ul class="small" style="margin:0;padding-left:1.1em">
+                        <li>Ed25519 cryptographic signatures on every response</li>
+                        <li>Fail-closed architecture</li>
+                        <li>28 global exchanges across 7 regions (Americas, Europe, Middle East, Africa, Asia, Pacific, Derivatives &amp; Crypto)</li>
+                    </ul>
+                </div>
+
+                <!-- Bottom CTA -->
+                <div style="margin-top:32px">
+                    <p class="small" style="margin-bottom:4px">All tiers are live. x402 micropayments available now.</p>
+                    <p class="small muted">Try the API now, no signup needed.</p>
+                    <button onclick="testDemo()" id="demo-btn" class="btn btn--line">Try Live Demo</button>
+                    <div id="demo-result" class="hidden" style="margin-top:16px">
+                        <pre id="demo-json" class="block" style="max-height:18rem"></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+    <!-- Post-payment key dialog. Outside every data-price-item card on purpose:
+         check-prices parses the cards. All dynamic text is set with textContent. -->
+    <a id="ho-claim-reopen" href="#" class="hidden btn float-action">Reopen your key</a>
+    <div id="ho-claim-overlay" class="hidden dialog-overlay">
+        <div id="ho-claim-dialog" role="dialog" aria-modal="true" aria-labelledby="ho-claim-heading" class="dialog">
+            <div class="dialog-head">
+                <h2 id="ho-claim-heading" tabindex="-1">Payment received</h2>
+                <button type="button" id="ho-claim-close" aria-label="Close" class="dialog-close">&times;</button>
+            </div>
+            <p id="ho-claim-status" aria-live="polite" class="small"></p>
+            <p id="ho-claim-message" role="status" class="hidden small"><span id="ho-claim-message-text"></span> <!--email_off--><a id="ho-claim-mailto" href="mailto:mike@headlessoracle.com">Email mike@headlessoracle.com</a><!--/email_off--></p>
+            <div id="ho-claim-ready" class="hidden">
+                <pre id="ho-claim-key"></pre>
+                <div class="row" style="margin-bottom:16px">
+                    <button type="button" id="ho-claim-copy" class="btn btn--small">Copy key</button>
+                    <button type="button" id="ho-claim-download" class="btn btn--line btn--small">Download as a text file</button>
+                </div>
+                <pre id="ho-claim-instructions"></pre>
+                <p class="small warn">Keep this key private. Save it now: this page shows it for 24 hours.</p>
+                <button type="button" id="ho-claim-saved" class="btn">I have saved my key</button>
+            </div>
+        </div>
+    </div>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="mono">Headless Oracle</span>
+    <ul class="foot-links">
+      <li><a href="/terms">Terms</a></li>
+      <li><a href="/privacy">Privacy</a></li>
+      <li><a href="/refund">Refund</a></li>
+      <li><!--email_off--><a href="mailto:mike@headlessoracle.com">mike@headlessoracle.com</a><!--/email_off--></li>
+    </ul>
+  </div>
+</footer>
+
+    <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+    <script src="/js/paddle-init.js"></script>
+    <script>
+    const API = 'https://headlessoracle.com';
+
+    // --- Instant Key Provisioning ---
+    async function getInstantKey(source) {
+        const btn = document.getElementById(source + '-btn');
+        const resultEl = document.getElementById(source + '-result');
+        const errorEl = document.getElementById(source + '-error');
+        const origText = btn.textContent;
+        btn.textContent = 'Getting key...';
+        btn.disabled = true;
+        if (errorEl) errorEl.classList.add('hidden');
+        if (resultEl) resultEl.classList.add('hidden');
+
+        // Use agent_id from the section input, or generate one
+        let agentId = '';
+        const inputEl = document.getElementById('instant-agent-id');
+        if (inputEl && inputEl.value.trim()) {
+            agentId = inputEl.value.trim();
+        } else {
+            agentId = 'web-' + crypto.randomUUID().slice(0, 12);
+        }
+
+        try {
+            const res = await fetch(API + '/v5/keys/instant', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ agent_id: agentId }),
+            });
+            const data = await res.json();
+
+            if (!res.ok || !data.api_key) {
+                throw new Error(data.message || data.error || 'Failed to get key');
+            }
+
+            if (source === 'section') {
+                // Show in the dedicated section with pre-built DOM
+                document.getElementById('section-key').textContent = data.api_key;
+                document.getElementById('section-curl').textContent =
+                    "curl -H 'X-Oracle-Key: " + data.api_key + "' \\\n  'https://headlessoracle.com/v5/status?mic=XNYS'";
+                resultEl.classList.remove('hidden');
+            } else {
+                // Show inline result on the card (free-card, sandbox-card, etc.)
+                resultEl.innerHTML = '<div class="out">' +
+                    '<div class="row row--between"><span class="label">Your API key (500 calls/day)</span>' +
+                    '<button onclick="copyToClipboard(this, \'' + escapeHtml(data.api_key) + '\')" class="copy">Copy</button></div>' +
+                    '<pre>' + escapeHtml(data.api_key) + '</pre>' +
+                    '<p class="label">Quick test:</p>' +
+                    '<pre>curl -H \'X-Oracle-Key: ' + escapeHtml(data.api_key) + '\' \\\n  \'https://headlessoracle.com/v5/status?mic=XNYS\'</pre>' +
+                    '</div>';
+                resultEl.classList.remove('hidden');
+            }
+
+            // If the key was already created (note field present), show a message
+            if (data.note) {
+                btn.textContent = 'Key exists (see below)';
+                setTimeout(() => { btn.textContent = origText; btn.disabled = false; }, 3000);
+                return;
+            }
+
+            btn.textContent = 'Key created!';
+            setTimeout(() => { btn.textContent = origText; btn.disabled = false; }, 3000);
+        } catch (e) {
+            if (errorEl) {
+                errorEl.textContent = e.message || 'Failed to provision key. Try again.';
+                errorEl.classList.remove('hidden');
+            }
+            btn.textContent = origText;
+            btn.disabled = false;
+        }
+    }
+
+    // --- x402 Inline Panel ---
+    function toggleX402Panel() {
+        const panel = document.getElementById('x402-panel');
+        if (!panel.classList.contains('hidden')) {
+            panel.classList.add('hidden');
+            return;
+        }
+        panel.innerHTML =
+            '<div class="out">' +
+            '<p><strong>Pay 0.001 USDC per request on Base mainnet</strong></p>' +
+            '<p>Your agent sends an <code>X-Payment</code> header with the USDC transfer proof. No API key needed.</p>' +
+            '<div><p class="label">Payment address (Base mainnet):</p>' +
+            '<pre>0x26d4ffe98017d2f160e2daae9d119e3d8b860ad3</pre></div>' +
+            '<div><p class="label">Chain:</p>' +
+            '<pre>Base (EIP-155: 8453) &middot; USDC &middot; 0.001 per request</pre></div>' +
+            '<div><p class="label">Example curl:</p>' +
+            '<pre>curl \'https://headlessoracle.com/v5/status?mic=XNYS\' \\\n  -H \'X-Payment: {"txHash":"0x...your_tx_hash","network":"base-mainnet","amount":"1000","paymentAddress":"0x26d4ffe98017d2f160e2daae9d119e3d8b860ad3","memo":""}\' </pre>' +
+            '<button onclick="copyToClipboard(this, this.previousElementSibling.textContent)" class="copy">Copy</button></div>' +
+            '<p class="row">' +
+            '<a href="/docs/x402-payments">Full x402 guide &rarr;</a>' +
+            '<a href="/.well-known/x402.json">x402 discovery JSON</a></p>' +
+            '</div>';
+        panel.classList.remove('hidden');
+    }
+
+    // --- Paddle Checkout ---
+    // The plan last clicked, so checkout.completed can tell a referee purchase (no key)
+    // from a key purchase. Empty on the _ptxn reopen, where the plan is unknown.
+    let lastPlan = '';
+    let lastBuyBtn = null;
+
+    async function openPaddleCheckout(plan) {
+        const btn = document.getElementById(plan + '-btn');
+        const fallbackEl = document.getElementById(plan + '-fallback');
+        const origText = btn.textContent;
+        lastPlan = plan;
+        lastBuyBtn = btn;
+        btn.textContent = 'Loading checkout...';
+        btn.disabled = true;
+
+        try {
+            // First try the server-side checkout creation (returns a transaction ID)
+            const res = await fetch(API + '/v5/checkout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ plan: plan }),
+            });
+            const data = await res.json();
+
+            // Saved before the overlay or redirect, so the key can still be picked up
+            // if this tab reloads or comes back from the hosted checkout.
+            if (res.ok && typeof data.claim_token === 'string' && CLAIM_TOKEN_RE.test(data.claim_token)) {
+                saveClaim({
+                    claim_token: data.claim_token,
+                    plan: plan,
+                    transaction_id: data.transaction_id,
+                    started_at: Date.now(),
+                    paid: false,
+                });
+            }
+
+            if (res.ok && data.transaction_id) {
+                // Use Paddle.js overlay checkout
+                if (typeof Paddle !== 'undefined' && Paddle.Checkout) {
+                    Paddle.Checkout.open({ transactionId: data.transaction_id });
+                    btn.textContent = origText;
+                    btn.disabled = false;
+                    return;
+                }
+            }
+
+            if (res.ok && data.url) {
+                // Fallback: redirect to Paddle hosted checkout
+                window.location.href = data.url;
+                return;
+            }
+
+            // If we got a SERVICE_UNAVAILABLE or CHECKOUT_FAILED, show fallback
+            throw new Error(data.message || data.error || 'Checkout not available');
+        } catch (e) {
+            if (plan === 'custody_90d' || plan === 'custody_1y') {
+                // Witness accounts cannot be bought with x402 or replaced by a free API key.
+                fallbackEl.innerHTML =
+                    '<div class="out">' +
+                    '<p>Card checkout did not open. Try again, or write to <a href="mailto:mike@headlessoracle.com">mike@headlessoracle.com</a>.</p>' +
+                    '</div>';
+                fallbackEl.classList.remove('hidden');
+                btn.textContent = origText;
+                btn.disabled = false;
+                return;
+            }
+            // Show fallback with x402 alternative + contact
+            fallbackEl.innerHTML =
+                '<div class="out">' +
+                '<p><strong>Card checkout loading; if it doesn\'t open:</strong></p>' +
+                '<p>&#8226; <strong>x402 alternative:</strong> Pay with USDC on Base mainnet. <button onclick="toggleX402Panel()" class="linkish">Show details</button></p>' +
+                ((plan === 'builder' || plan === 'pro') ?
+                    '<p>&#8226; <strong>Mint via x402:</strong> Send ' + (plan === 'builder' ? '99' : '299') + ' USDC to mint a ' + plan + ' key instantly via <code>POST /v5/x402/mint</code></p>' : '') +
+                '<p>&#8226; <strong>Email:</strong> <a href="mailto:mike@headlessoracle.com?subject=' + encodeURIComponent(plan + ' plan subscription') + '">mike@headlessoracle.com</a></p>' +
+                '<p class="muted">Meanwhile, <button onclick="getInstantKey(\'free-card\')" class="linkish">get a free key</button> to start using the API immediately.</p>' +
+                '</div>';
+            fallbackEl.classList.remove('hidden');
+            btn.textContent = origText;
+            btn.disabled = false;
+        }
+    }
+
+    // --- Key on screen after payment (POST /v5/claim) ---
+    // Key emails can fail to arrive, so the tab that started the checkout picks the key
+    // up itself. Only the claim token is stored (sessionStorage, this tab only); the key
+    // lives in memory and is fetched again after a reload. Nothing here is logged.
+    const CLAIM_KEY = 'ho_claim';
+    const CLAIM_TOKEN_RE = /^[0-9a-f]{64}$/;
+    const CLAIM_POLL_MS = 2000;
+    const CLAIM_404_GRACE_MS = 60 * 1000;
+    const CLAIM_GIVE_UP_MS = 5 * 60 * 1000;
+    const CLAIM_SILENT_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+    const NO_KEY_PLANS = ['conformance_entry', 'regrade', 'dispute', 'dispute_note'];
+
+    let claimMemo = null;     // used when sessionStorage throws
+    let claimReady = null;    // last ready response, memory only
+    let claimPollRun = 0;     // bumping this cancels any running poll
+    let claimModalShown = false;
+    let claimReturnFocus = null;
+
+    function loadClaim() {
+        try {
+            const raw = sessionStorage.getItem(CLAIM_KEY);
+            if (raw) {
+                const c = JSON.parse(raw);
+                if (c && typeof c.claim_token === 'string' && CLAIM_TOKEN_RE.test(c.claim_token)) return c;
+            }
+            return null;
+        } catch (e) {
+            return claimMemo;
+        }
+    }
+
+    function saveClaim(c) {
+        claimMemo = c;
+        try { sessionStorage.setItem(CLAIM_KEY, JSON.stringify(c)); } catch (e) { /* page variable only */ }
+    }
+
+    function clearClaim() {
+        claimMemo = null;
+        try { sessionStorage.removeItem(CLAIM_KEY); } catch (e) { /* nothing stored */ }
+    }
+
+    function claimEl(id) { return document.getElementById('ho-claim-' + id); }
+
+    // view: 'pending' | 'ready' | 'message'
+    function showClaimView(view, opts) {
+        opts = opts || {};
+        claimEl('heading').textContent = view === 'ready' ? 'Your key' : 'Payment received';
+        claimEl('status').textContent = opts.status || '';
+        claimEl('message').classList.toggle('hidden', view !== 'message');
+        claimEl('ready').classList.toggle('hidden', view !== 'ready');
+        if (view === 'message') {
+            claimEl('message-text').textContent = opts.text;
+            claimEl('mailto').href = 'mailto:mike@headlessoracle.com?subject=' +
+                encodeURIComponent('Key for transaction ' + (opts.txn || 'unknown'));
+        }
+        openClaimModal();
+    }
+
+    function openClaimModal() {
+        const overlay = claimEl('overlay');
+        if (overlay.classList.contains('hidden')) {
+            claimReturnFocus = lastBuyBtn || null;
+            overlay.classList.remove('hidden');
+            claimEl('heading').focus();
+        }
+        claimModalShown = true;
+        document.getElementById('ho-claim-reopen').classList.add('hidden');
+    }
+
+    function closeClaimModal() {
+        claimEl('overlay').classList.add('hidden');
+        const reopen = document.getElementById('ho-claim-reopen');
+        // The claim survives a close; only "I have saved my key" clears it.
+        if (loadClaim() && claimModalShown) reopen.classList.remove('hidden');
+        const target = claimReturnFocus && document.body.contains(claimReturnFocus) ? claimReturnFocus
+            : (!reopen.classList.contains('hidden') ? reopen : null);
+        if (target) target.focus();
+    }
+
+    function instructionsText(ins) {
+        if (ins == null) return '';
+        if (typeof ins === 'string') return ins;
+        if (Array.isArray(ins)) return ins.map(instructionsText).join('\n');
+        if (typeof ins === 'object') {
+            return Object.keys(ins).map(function (k) {
+                const v = ins[k];
+                return k + ': ' + (v !== null && typeof v === 'object' ? JSON.stringify(v) : String(v));
+            }).join('\n');
+        }
+        return String(ins);
+    }
+
+    function showClaimReady(data) {
+        claimReady = data;
+        claimEl('key').textContent = data.key;
+        claimEl('instructions').textContent = instructionsText(data.instructions);
+        showClaimView('ready', { status: 'Your key is ready.' });
+    }
+
+    function showClaimTimeout(txn) {
+        showClaimView('message', {
+            txn: txn,
+            text: 'Your payment went through, but the key is taking longer than usual. Write to mike@headlessoracle.com with ' +
+                (txn ? 'transaction ' + txn : 'the transaction ID from your Paddle receipt') + ' and you will get it today.',
+        });
+    }
+
+    // modal=true: the buyer has paid; show progress and the timeout message.
+    // modal=false: payment not confirmed in this tab; stay invisible unless the key is ready.
+    function startClaimPoll(claim, modal) {
+        const run = ++claimPollRun;
+        const startedAt = Date.now();
+        if (modal) showClaimView('pending', { status: 'Payment received. Activating your plan...' });
+
+        function giveUp() {
+            if (run !== claimPollRun) return;
+            if (modal) showClaimTimeout(claim.transaction_id);
+        }
+
+        async function tick() {
+            if (run !== claimPollRun) return;
+            if (Date.now() - startedAt >= CLAIM_GIVE_UP_MS) return giveUp();
+            let delay = CLAIM_POLL_MS;
+            try {
+                const res = await fetch(API + '/v5/claim', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ claim_token: claim.claim_token }),
+                    cache: 'no-store',
+                    // A stalled request aborts and is retried like any network error.
+                    signal: AbortSignal.timeout(15000),
+                });
+                let data = {};
+                try { data = await res.json(); } catch (e) { data = {}; }
+                if (run !== claimPollRun) return;
+                if (res.ok && data.state === 'ready' && typeof data.key === 'string' && data.key) {
+                    const c = loadClaim();
+                    if (c && c.claim_token === claim.claim_token && !c.paid) { c.paid = true; saveClaim(c); }
+                    showClaimReady(data);
+                    return;
+                }
+                // 404 right after payment can mean the webhook has not landed yet.
+                if (res.status === 404 && Date.now() - startedAt >= CLAIM_404_GRACE_MS) return giveUp();
+                // Fail closed on anything not listed as retryable (400, 405, other 4xx).
+                if (!res.ok && res.status !== 404 && res.status !== 429 && res.status < 500) return giveUp();
+                if (typeof data.retry_after_seconds === 'number' && data.retry_after_seconds > 0) {
+                    delay = Math.min(data.retry_after_seconds * 1000, 60 * 1000);
+                }
+            } catch (e) {
+                // Network error or timeout: pending.
+            }
+            if (run !== claimPollRun) return;
+            setTimeout(tick, delay);
+        }
+        tick();
+    }
+
+    window.hoPaddleEvent = function (e) {
+        if (!e || e.name !== 'checkout.completed') return;
+        try { Paddle.Checkout.close(); } catch (err) { /* overlay already gone */ }
+        const txn = e.data && e.data.transaction_id;
+        const claim = loadClaim();
+        if (claim && txn && claim.transaction_id === txn) {
+            claim.paid = true;
+            saveClaim(claim);
+            startClaimPoll(claim, true);
+            return;
+        }
+        let text;
+        if (lastPlan && NO_KEY_PLANS.indexOf(lastPlan) !== -1) {
+            text = 'Payment received. Paddle emails your receipt, and we will be in touch within one business day at the address you used.';
+        } else if (!lastPlan) {
+            text = 'Payment received. If you bought a plan with a key, it appears here or, if it does not, write to mike@headlessoracle.com with the transaction ID from your Paddle receipt; otherwise Paddle emails your receipt and we will be in touch within one business day.';
+        } else {
+            text = 'Payment received, but this page could not prepare your key. Write to mike@headlessoracle.com with ' +
+                (txn ? 'transaction ' + txn : 'the transaction ID from your Paddle receipt') + '.';
+        }
+        showClaimView('message', { txn: txn, text: text });
+    };
+
+    (function initClaimDialog() {
+        const overlay = claimEl('overlay');
+        claimEl('close').addEventListener('click', closeClaimModal);
+        overlay.addEventListener('keydown', function (ev) {
+            if (ev.key === 'Escape') { ev.preventDefault(); closeClaimModal(); return; }
+            if (ev.key !== 'Tab') return;
+            const focusable = Array.prototype.filter.call(
+                claimEl('dialog').querySelectorAll('button, a[href], [tabindex]:not([tabindex="-1"])'),
+                function (el) { return el.offsetParent !== null; }
+            );
+            if (!focusable.length) return;
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (ev.shiftKey && (document.activeElement === first || document.activeElement === claimEl('heading'))) {
+                ev.preventDefault(); last.focus();
+            } else if (!ev.shiftKey && document.activeElement === last) {
+                ev.preventDefault(); first.focus();
+            }
+        });
+        // Focus that escapes the dialog (e.g. a click on the backdrop) is pulled back in.
+        document.addEventListener('focusin', function (ev) {
+            if (!overlay.classList.contains('hidden') && !claimEl('dialog').contains(ev.target)) claimEl('heading').focus();
+        });
+
+        claimEl('copy').addEventListener('click', function () {
+            if (!claimReady) return;
+            navigator.clipboard.writeText(claimReady.key).then(function () {
+                claimEl('status').textContent = 'Key copied.';
+            }).catch(function () {
+                claimEl('status').textContent = 'Copy failed. Select the key and copy it by hand.';
+            });
+        });
+
+        claimEl('download').addEventListener('click', function () {
+            if (!claimReady) return;
+            const text = 'Headless Oracle key (' + (claimReady.plan || '') + ')\n\n' + claimReady.key + '\n\n' +
+                instructionsText(claimReady.instructions) + '\n\nKeep this key private.\n';
+            const url = URL.createObjectURL(new Blob([text], { type: 'text/plain' }));
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'headless-oracle-key.txt';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+        });
+
+        claimEl('saved').addEventListener('click', function () {
+            claimPollRun++;
+            clearClaim();
+            claimReady = null;
+            claimEl('key').textContent = '';
+            claimEl('instructions').textContent = '';
+            claimModalShown = false;
+            closeClaimModal();
+        });
+
+        document.getElementById('ho-claim-reopen').addEventListener('click', function (ev) {
+            ev.preventDefault();
+            const claim = loadClaim();
+            if (claimReady) showClaimReady(claimReady);
+            else if (claim) startClaimPoll(claim, true);
+        });
+
+        // Resume after a reload or a return from the hosted checkout.
+        // A claim older than 24 hours is past the key's on-screen window, paid or not.
+        const claim = loadClaim();
+        if (!claim) return;
+        if (!(typeof claim.started_at === 'number' && Date.now() - claim.started_at < CLAIM_SILENT_MAX_AGE_MS)) return;
+        startClaimPoll(claim, !!claim.paid);
+    }());
+
+    // --- Demo ---
+    async function testDemo() {
+        const btn = document.getElementById('demo-btn');
+        btn.textContent = 'Fetching...';
+        btn.disabled = true;
+        try {
+            const res = await fetch(API + '/v5/demo?mic=XNYS');
+            const data = await res.json();
+            document.getElementById('demo-json').textContent = JSON.stringify(data, null, 2);
+            document.getElementById('demo-result').classList.remove('hidden');
+        } catch (e) {
+            document.getElementById('demo-json').textContent = '{ "error": "Network error. Try again." }';
+            document.getElementById('demo-result').classList.remove('hidden');
+        }
+        btn.innerHTML = 'Try Live Demo';
+        btn.disabled = false;
+    }
+
+    // --- Utilities ---
+    function copyToClipboard(btn, text) {
+        navigator.clipboard.writeText(text.trim()).then(() => {
+            const orig = btn.textContent;
+            btn.textContent = 'Copied!';
+            btn.classList.add('is-copied');
+            setTimeout(() => { btn.textContent = orig; btn.classList.remove('is-copied'); }, 2000);
+        }).catch(() => {});
+    }
+
+    function escapeHtml(str) {
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+    </script>
+</body>
+</html>

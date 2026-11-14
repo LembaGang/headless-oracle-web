@@ -16,20 +16,21 @@
  * Three states, three exit codes:
  *   0  MATCH                          — every plan the API knows agrees with the page
  *   1  MISMATCH <field> page=<a> api=<b>  — first disagreement, named
- *   3  REFEREE_SECTION_ABSENT_FROM_API — the six referee services are on the page but
+ *   3  REFEREE_SECTION_ABSENT_FROM_API — the four paid services are on the page but
  *                                        the API carries no referee.services[] block.
  *                                        Not a mismatch. Still blocks publish: shipping
  *                                        a page that advertises services the API cannot
  *                                        sell is the worse failure. The gate opens by
  *                                        itself once the worker deploys. A referee
  *                                        block that is PRESENT but missing one of the
- *                                        six is a mismatch, not an absence.
+ *                                        four is a mismatch, not an absence.
  *   2  usage / fetch / parse error
  *
  * Usage:
  *   node scripts/check-prices.mjs [--page=dist/pricing.html] [--api=https://headlessoracle.com/v5/pricing]
  *     [--offer-pages=dist/index.html,dist/pricing.html,dist/witness.html]   JSON-LD Offers held to the API too
  *     [--plan-rows=dist/pricing.md:complete,dist/docs.md,dist/docs.html]     "Plan id" tables held to the API too
+ *     [--market-pages=dist/pricing/market-state.html]   market-state cards held to the API too (B-482)
  */
 
 import { readFileSync } from 'node:fs';
@@ -43,12 +44,15 @@ const EXIT_MISMATCH = 1;
 const EXIT_ERROR = 2;
 const EXIT_REFEREE_ABSENT = 3;
 
-/** The six referee services. Absence of any of these from the page is a page defect. */
+/**
+ * The four paid services /pricing sells (B-482, plan of 11 Nov 2026): grading and the
+ * outside checkpoint. Absence of any of these from the page is a page defect. The
+ * dispute packages (dispute, dispute_note) are not sold from the page; the worker still
+ * lists them in referee.services[], and their absence from the page is not a mismatch.
+ */
 const REFEREE_PLANS = [
   'conformance_entry',
   'regrade',
-  'dispute',
-  'dispute_note',
   'custody_90d',
   'custody_1y',
 ];
@@ -198,6 +202,7 @@ async function main() {
   const apiUrl = arg('api', DEFAULT_API);
   const offerPages = arg('offer-pages', DEFAULT_OFFER_PAGES.join(',')).split(',').filter(Boolean);
   const planRowFiles = arg('plan-rows', DEFAULT_PLAN_ROW_FILES.join(',')).split(',').filter(Boolean);
+  const marketPages = arg('market-pages', DEFAULT_MARKET_PAGES.join(',')).split(',').filter(Boolean);
 
   let html;
   try {
@@ -359,13 +364,16 @@ async function main() {
   // --- "Plan id" tables in the Markdown twins and /docs (W5) ---------------------------
   const rowLines = checkPlanRows(planRowFiles, { tiers, refereeBlock, apiByPlan, pageItems });
 
+  // --- B-482: the market-state plans have their own page --------------------------------
+  const marketLines = checkMarketPages(marketPages, apiByPlan, tierById);
+
   if (absentFromApi.length > 0) {
     return {
       code: EXIT_REFEREE_ABSENT,
       lines: [
         `REFEREE_SECTION_ABSENT_FROM_API missing=${absentFromApi.join(',')}`,
         `  ${checked.length} API plans checked and in agreement: ${checked.join(', ')}`,
-        `  The six referee services are on the page and priced, but ${apiUrl} carries`,
+        `  The four paid services are on the page and priced, but ${apiUrl} carries`,
         '  no referee.services[] block. Publish stays blocked until the worker deploy',
         '  lands, so that the page and the API go live together.',
       ],
@@ -379,6 +387,7 @@ async function main() {
       `  ${checked.join(', ')}`,
       ...offerLines,
       ...rowLines,
+      ...marketLines,
     ],
   };
 }
@@ -392,7 +401,7 @@ async function main() {
  * every data-price-item plan on the pricing page, the neutrality rule verbatim, and the
  * introductory date wherever a listed plan has one. A listed file with no such table fails.
  */
-const DEFAULT_PLAN_ROW_FILES = ['dist/pricing.md:complete', 'dist/docs.md', 'dist/docs.html'];
+const DEFAULT_PLAN_ROW_FILES = ['dist/pricing.md:complete', 'dist/docs.md', 'dist/docs.html', 'dist/pricing/market-state.md'];
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -585,6 +594,43 @@ function checkOfferPages(pages, tiers) {
       }
     }
     lines.push(`  JSON-LD offers agree on ${page}: ${offers.map((o) => `${o.sku}=${o.price}`).join(', ')}`);
+  }
+  return lines;
+}
+
+/**
+ * B-482: pages that sell the market-state plans apart from /pricing. Every data-price-item
+ * card on them is held to the API as a card on /pricing is: the printed figure, the price,
+ * the cycle and the daily allowance. A listed page with no cards fails.
+ */
+const DEFAULT_MARKET_PAGES = ['dist/pricing/market-state.html'];
+
+function checkMarketPages(pages, apiByPlan, tierById) {
+  const lines = [];
+  for (const page of pages) {
+    let html;
+    try {
+      html = readFileSync(resolve(page), 'utf8');
+    } catch (e) {
+      fail(EXIT_ERROR, `ERROR cannot read ${page} for its plan cards (${e.code})`);
+    }
+    if (/\bpri_/.test(html)) fail(EXIT_MISMATCH, `MISMATCH price_id_leaked page=${page} api=<worker holds price ids, page must not>`);
+    const items = parsePage(html);
+    if (items.length === 0) fail(EXIT_MISMATCH, `MISMATCH market_cards page=${page}:<none> api=<at least one expected>`);
+    for (const item of items) {
+      const offering = apiByPlan.get(item.plan);
+      if (!offering) fail(EXIT_MISMATCH, `MISMATCH unknown_plan page=${page}:${item.plan} api=<not offered>`);
+      if (item.price === null || (item.price > 0 && !item.visible.includes(item.price))) {
+        fail(EXIT_MISMATCH, `MISMATCH ${item.plan}.visible_price page=${page}:${JSON.stringify(item.visible)} api=${item.price}`);
+      }
+      if (offering.price !== item.price) fail(EXIT_MISMATCH, `MISMATCH ${item.plan}.price page=${page}:${item.price} api=${offering.price}`);
+      if (offering.cycle !== item.cycle) fail(EXIT_MISMATCH, `MISMATCH ${item.plan}.cycle page=${page}:${item.cycle} api=${offering.cycle}`);
+      const tier = tierById.get(item.plan);
+      if (tier && item.callsPerDay !== null && typeof tier.calls_per_day === 'number' && Number(item.callsPerDay) !== tier.calls_per_day) {
+        fail(EXIT_MISMATCH, `MISMATCH ${item.plan}.calls_per_day page=${page}:${item.callsPerDay} api=${tier.calls_per_day}`);
+      }
+    }
+    lines.push(`  market-state cards agree on ${page}: ${items.map((i) => i.plan).join(', ')}`);
   }
   return lines;
 }

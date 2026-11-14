@@ -12,6 +12,7 @@ export default defineConfig({
         terms: resolve(__dirname, 'terms.html'),
         status: resolve(__dirname, 'status.html'),
         pricing: resolve(__dirname, 'pricing.html'),
+        pricingMarketState: resolve(__dirname, 'pricing/market-state.html'),
         refund: resolve(__dirname, 'refund.html'),
         traction: resolve(__dirname, 'traction.html'),
         blog: resolve(__dirname, 'blog.html'),

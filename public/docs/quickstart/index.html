@@ -117,7 +117,7 @@
                     <div class="note">
                         <p><strong>Auth:</strong> send your API key as <code>Authorization: Bearer &lt;key&gt;</code> (or <code>X-Oracle-Key: &lt;key&gt;</code>); calls then count against that key's plan, as on REST. An OAuth access token from <code>POST https://headlessoracle.com/oauth/token</code> (form-encoded <code>grant_type=client_credentials&amp;client_id=&lt;key&gt;</code>, valid one hour) is also accepted. A Headless Oracle key or token that is not accepted (unknown, expired, out of quota) gets a JSON-RPC error, never anonymous service; other <code>Authorization</code> values are ignored.</p>
                         <p><strong>Limits:</strong> Anonymous MCP allows 10 <code>get_market_status</code> calls per IP per UTC day. With a key, calls count against its plan: Free 500/day, Builder 50,000/day, Pro 200,000/day; only Protocol is unlimited.
-                        A free key needs no signup: <code>POST /v5/keys/instant</code>. A sandbox key (<code>sb_</code>, 200 calls over 7 days, one per IP) comes only from <code>POST /v5/sandbox</code> with <!--email_off--><code>{"email":"you@example.com"}</code><!--/email_off-->; the key is in the response. Paid plans: <a href="/pricing">headlessoracle.com/pricing</a>.</p>
+                        A free key needs no signup: <code>POST /v5/keys/instant</code>. A sandbox key (<code>sb_</code>, 200 calls over 7 days, one per IP) comes only from <code>POST /v5/sandbox</code> with <!--email_off--><code>{"email":"you@example.com"}</code><!--/email_off-->; the key is in the response. Paid plans: <a href="/pricing/market-state">headlessoracle.com/pricing/market-state</a>.</p>
                     </div>
                 </section>
 
@@ -158,7 +158,7 @@
                     <h2>Need more than 10 calls a day?</h2>
                     <p>Anonymous MCP stops at 10 <code>get_market_status</code> calls per IP per UTC day. A free key (500 calls/day) or a paid plan raises that limit; send it as in step 1. Only the Protocol plan is unlimited.</p>
                     <div class="ctas">
-                        <a href="/pricing" class="btn">Get API Key →</a>
+                        <a href="/pricing/market-state" class="btn">Get API Key →</a>
                         <a href="/docs" class="btn btn--line">Full Docs</a>
                     </div>
                 </section>

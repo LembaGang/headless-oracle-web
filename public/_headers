@@ -13,6 +13,9 @@
 /pricing
   Link: </pricing.md>; rel="alternate"; type="text/markdown"
 
+/pricing/market-state
+  Link: </pricing/market-state.md>; rel="alternate"; type="text/markdown"
+
 /verify
   Link: </verify.md>; rel="alternate"; type="text/markdown"
 
