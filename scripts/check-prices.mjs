@@ -60,7 +60,7 @@ const REFEREE_PLANS = [
 /** Byte-exact neutrality rule. Paraphrase is a defect, not a style choice. */
 const NEUTRALITY_RULE =
   'A paid entry buys the run and the published record, never the verdict. Every entry ' +
-  'carries an Interests section: the referee is the author of a competing format; ' +
+  'carries an Interests section: Headless Oracle wrote the test, makes Chirindo, one of the tools that can be tested, and runs a witness service; ' +
   'independence is not claimed; recomputability from pinned bytes is claimed; the text ' +
   'and the implementation are scored separately; a finding stands until its author ' +
   'corrects the record, and the correction is published beside it. Verification of any ' +

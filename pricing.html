@@ -118,7 +118,7 @@
         <p class="kicker">Pricing</p>
         <h1>Pricing</h1>
         <div class="lede">
-            <p>This page sells three things, in this order: <a href="#referee">get your tool graded</a>, <a href="#witness">the outside checkpoint</a>, and <a href="#programme">the programme</a>. All three rest on the <a href="#test">five-alteration test</a>, which is public and free to run. Prices are in US dollars.</p>
+            <p>This page sells three things, in this order: <a href="#referee">get your tool graded</a>, <a href="#witness">the outside checkpoint</a>, and <a href="#programme">the programme</a>. If you make a tool that keeps logs of AI agents' actions, <a href="#referee">get it graded</a>. If you run AI agents, <a href="#witness">add the outside checkpoint</a>, so that someone other than you holds a signed receipt saying how far your log had got, and when. If you run a platform or an audit firm, <a href="#programme">ask about the programme</a>. All three rest on the <a href="#test">five-alteration test</a>, which is public and free to run. Prices are in US dollars.</p>
         </div>
     </div>
 
@@ -129,14 +129,14 @@
             <div class="sec-body">
                 <h2 id="h-test">Run the five-alteration test</h2>
                 <div class="prose">
-                    <p>The need, in a published control's words: AIUC-1's logging control E015 lists, among the things an implementation may include, logs that are "tamper-evident and independently verifiable" (item E015.4, log integrity protection). The test below is our own reading of that control. It is not an AIUC document, and we do not claim that AIUC, any auditor, any insurer or any network endorses, requires or has reviewed it.</p>
+                    <p>Where the test comes from, in a published control's words: AIUC-1's logging control E015 lists, among the things an implementation may include, technical controls to ensure logs are "tamper-evident and independently verifiable" (item E015.4, log integrity protection). The test below is our own reading of that control. It is not an AIUC document, and we do not claim that AIUC, any auditor, any insurer or any network endorses, requires or has reviewed it.</p>
                     <p>The five-alteration test is for any tool that keeps a log of an AI agent's actions and has a command that verifies the log. It shows whether that verification catches five specific alterations of one log. It does not show that the tool is tamper-evident in general.</p>
                     <p>Take one log of at least five records and make five altered copies: edit one record, remove one, swap two neighbours, cut off the last two, and rewrite a record and sign the whole log again with the key of the company running the agent, the operator. Run the tool's own verification on each copy and write down what it catches.</p>
-                    <p>A signed, hash-chained log can catch the first three on its own. Cutting off the end is caught only by something outside the log that fixes where it ends, such as a checkpoint held by someone other than the operator. Rewriting and re-signing is caught only against a checkpoint or copy held by someone other than the operator, and only for history up to when it was taken.</p>
+                    <p>A signed, hash-chained log can catch the first three on its own. Cutting off the end is caught only by something outside the log that fixes where it ends, such as a checkpoint held by someone other than the operator. A checkpoint is a note of how many records the log held at a moment and the hash of the last one. A witness is an outside party that records each checkpoint it is sent and signs a receipt saying when it saw it. Rewriting and re-signing is caught only against a checkpoint or copy held by someone other than the operator, and only for history up to when it was taken.</p>
                     <p>We ran it on Chirindo, our own tool. The chain alone caught the edit, the removal and the swap, and reported the cut-off and re-signed copies as valid. Checked against the witness checkpoints, all five altered copies failed verification, so all five alterations were caught. Those checkpoints came from a local stub witness and were read from a file the operator supplies, which the test does not count as an outside party. So by the test's own definition our run is not a pass.</p>
-                    <p>A pass means each of the five altered copies failed verification, the tool said where, and for the last two the check was made against an outside party. A pass must state how many records came after the last outside checkpoint: those records can be cut off or rewritten without detection. A pass does not show that every action was recorded, or that any record is true. Any outside witness qualifies, not only ours. Headless Oracle's witness is run by Headless Oracle alone today: it is one outside party, not several. When the operator being tested is Headless Oracle itself, that witness is not an outside party. The kit's own results use a local stub witness, not a witness service.</p>
+                    <p>A pass means each of the five altered copies failed verification, the tool said where, and for the last two the check was made against an outside party. A pass must state how many records came after the last outside checkpoint: those records can be cut off or rewritten without detection. If an alteration cannot be made, that row is marked not testable and no pass can be claimed. A pass does not show that every action was recorded, or that any record is true. Any outside witness qualifies, not only ours. Headless Oracle's witness is run by Headless Oracle alone today: it is one outside party, not several. When the operator being tested is Headless Oracle itself, that witness is not an outside party. The kit's own results use a local stub witness, not a witness service.</p>
                     <p>Headless Oracle wrote this test. Headless Oracle also makes Chirindo, the tool in our run above, and runs a witness service, the outside checkpoint sold below. Run the test yourself; do not take our results on trust.</p>
-                    <p><a href="https://github.com/LembaGang/chirindo/blob/main/examples/e015-4-kit/PROCEDURE.md" target="_blank" rel="noopener">Read the test and run it</a> &middot; <a href="https://github.com/LembaGang/chirindo/blob/main/examples/e015-4-kit/RESULTS.md" target="_blank" rel="noopener">Our own run: all twelve checks</a></p>
+                    <p><a href="https://github.com/LembaGang/chirindo/blob/main/examples/e015-4-kit/PROCEDURE.md" target="_blank" rel="noopener">Read the test and run it</a> &middot; <a href="https://github.com/LembaGang/chirindo/blob/main/examples/e015-4-kit/RESULTS.md" target="_blank" rel="noopener">Our own run: the output of all twelve checks, not a pass</a></p>
                 </div>
             </div>
         </div>
@@ -159,7 +159,7 @@
                 <!-- The neutrality rule. Verbatim and whole; do not paraphrase, do not split. -->
                 <div class="note">
                     <h3 class="note-title">The neutrality rule</h3>
-                    <p id="neutrality-rule">A paid entry buys the run and the published record, never the verdict. Every entry carries an Interests section: the referee is the author of a competing format; independence is not claimed; recomputability from pinned bytes is claimed; the text and the implementation are scored separately; a finding stands until its author corrects the record, and the correction is published beside it. Verification of any receipt is free, always.</p>
+                    <p id="neutrality-rule">A paid entry buys the run and the published record, never the verdict. Every entry carries an Interests section: Headless Oracle wrote the test, makes Chirindo, one of the tools that can be tested, and runs a witness service; independence is not claimed; recomputability from pinned bytes is claimed; the text and the implementation are scored separately; a finding stands until its author corrects the record, and the correction is published beside it. Verification of any receipt is free, always.</p>
                 </div>
 
                 <!-- The two grading services; custody_90d and custody_1y are in #witness. check-prices requires these four (B-482). -->
@@ -192,7 +192,7 @@
                 <!-- Intake form -->
                 <div id="referee-intake" class="panel" style="margin-top:16px">
                     <h3>Ask to be graded</h3>
-                    <p class="small">Name the tool and the version to be graded. You receive an intake id; the run is not scheduled until the entry fee is paid.</p>
+                    <p class="small">Start here: name the tool and the version to be graded. You receive an intake id and a link to pay the $2,500 entry fee; the run is not scheduled until it is paid.</p>
 
                     <form id="referee-intake-form" onsubmit="submitRefereeIntake(event)" class="form-grid">
                         <div class="field">
@@ -221,7 +221,7 @@
                         </div>
                         <div class="full check-field">
                             <input id="ri-consent_to_be_named" name="consent_to_be_named" type="checkbox">
-                            <label for="ri-consent_to_be_named"><span class="mono small muted">consent_to_be_named</span>: the implementation and its result may be named in the published register. Leave unticked to be recorded without a name.</label>
+                            <label for="ri-consent_to_be_named"><span class="mono small muted">consent_to_be_named</span>: the implementation and its result may be named when the result is published. Leave unticked to be recorded without a name.</label>
                         </div>
                         <div class="full">
                             <button type="submit" id="referee-intake-btn" class="btn">Submit intake</button>
@@ -244,7 +244,7 @@
             <div class="sec-body">
                 <h2 id="h-witness">The outside checkpoint: Chirindo Witness</h2>
                 <div class="prose">
-                    <p>A signed hash chain catches edits to an agent's log, but not the last records being cut off, or a history rewritten by whoever holds the signing key. Witness keeps signed checkpoints of your log outside your control, so both show up when the log is checked against Witness, for everything up to the last checkpoint it signed. Verification is free and open source: anyone can run the check themselves.</p>
+                    <p>A signed hash chain catches edits to an agent's log, but not the last records being cut off, or a history rewritten by whoever holds the signing key. Witness records checkpoints of your log outside your control and signs a receipt for each one. When the log is compared with those receipts, a cut-off tail, or a rewrite by the key holder, of any history up to the last witnessed checkpoint and made after that checkpoint was witnessed, shows up. Records after the last witnessed checkpoint are not covered. Verification is free and open source: anyone can run the check themselves.</p>
                     <p><a href="https://github.com/LembaGang/chirindo/tree/main/examples/e015-4-kit" target="_blank" rel="noopener">See the test kit: five tampering cases and an untouched control, chain alone vs witnessed</a> &middot; <a href="https://api.headlessoracle.com/v1/witness/spec" target="_blank" rel="noopener">Read the Witness spec</a></p>
                     <p class="muted small">Free: anonymous checkpoints from a shared pool, currently 2,000 new checkpoints per UTC day. Paid plans get their own key and quota.</p>
                     <p class="small">The test counts any outside witness, not only ours. Headless Oracle's witness is run by Headless Oracle alone today: it is one outside party, not several. When the operator being tested is Headless Oracle itself, that witness is not an outside party.</p>
@@ -291,7 +291,7 @@
             <div class="sec-body">
                 <h2 id="h-programme">The programme</h2>
                 <div class="panel">
-                    <p class="small">For a platform or an audit firm that wants the test and the register of published grades inside its own product or audit work. Two annual programmes, at <strong>$60,000 a year</strong> and <strong>$150,000 a year</strong>. Neither is bought from this page: both are <strong>by invoice after a conversation</strong>. Write to <!--email_off--><a href="mailto:mike@headlessoracle.com?subject=Programme">mike@headlessoracle.com</a><!--/email_off--> with the subject "Programme" and say which of the two you are asking about.</p>
+                    <p class="small">For a platform or an audit firm that wants to use the test, and the results we publish from it, inside its own product or audit work. There are two annual programmes. <strong>$60,000 a year</strong>: up to 12 conformance entries a year, and the test run again every quarter on the tools you entered. <strong>$150,000 a year</strong>: as many conformance entries as you need, the test run again every month, and a named reviewer of record: one person at Headless Oracle who is named on every result we publish for you and answers your questions about it. Neither is bought from this page: both are <strong>by invoice after a conversation</strong>. Write to <!--email_off--><a href="mailto:mike@headlessoracle.com?subject=Programme">mike@headlessoracle.com</a><!--/email_off--> with the subject "Programme" and say which of the two you are asking about.</p>
                 </div>
             </div>
         </div>
