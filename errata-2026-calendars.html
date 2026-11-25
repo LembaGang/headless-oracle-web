@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <title>Errata: exchange calendar errors in 2026</title>
+    <meta name="description" content="We are Headless Oracle. Our public service at headlessoracle.com, which AI agents and other software call, answers whether a stock or futures exchange is OPEN or CLOSED right now. It signs each answer with our key, so the answer becomes a receipt: a record of the answer and the time it was given that anyone can check later. This page lists the times in 2026 when those answers were wrong.">
+    <meta name="robots" content="noindex, follow">
+    <meta name="color-scheme" content="light dark">
+    <link rel="canonical" href="https://headlessoracle.com/errata-2026-calendars">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="wordmark" href="/">Headless Oracle</a>
+    <nav aria-label="Main">
+      <ul class="nav-list nav-wide">
+        <li><a href="/witness">Witness</a></li>
+        <li><a href="/verify">Verify</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/docs">Docs</a></li>
+        <li><a href="/auditors">For auditors</a></li>
+        <li><a href="https://github.com/LembaGang">GitHub</a></li>
+      </ul>
+      <details class="nav-small">
+        <summary>Menu</summary>
+        <ul>
+          <li><a href="/witness">Witness</a></li>
+          <li><a href="/verify">Verify</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+          <li><a href="/docs">Docs</a></li>
+          <li><a href="/auditors">For auditors</a></li>
+          <li><a href="https://github.com/LembaGang">GitHub</a></li>
+        </ul>
+      </details>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+    <div class="wrap page-head">
+        <h1>Errata: exchange calendar errors in 2026</h1>
+        <p class="legal-meta">Last updated: Wed 25 Nov 2026.</p>
+    </div>
+    <div class="wrap page-body">
+      <div class="doc">
+        <h2>What this is</h2>
+        <p>We are Headless Oracle. Our public service at headlessoracle.com, which AI agents and other software call, answers whether a stock or futures exchange is OPEN or CLOSED right now. It signs each answer with our key, so the answer becomes a receipt: a record of the answer and the time it was given that anyone can check later. This page lists the times in 2026 when those answers were wrong. Some are still wrong now: for XCBT (Chicago Board of Trade) and XNYM (New York Mercantile Exchange), two futures exchanges run by CME Group, the service gives a wrong CLOSED on Thu 26 and Fri 27 Nov 2026 and a wrong OPEN on 24 to 25 Dec 2026 and on 31 Dec 2026 to 1 Jan 2027 (exact times in UTC, Coordinated Universal Time, are under "Errors still live at CME").</p>
+        <p>Each answer comes from a calendar kept in our code: each exchange's weekend days, trading hours, lunch break, holidays and early-close days. Exchanges are named by four-letter codes, for most of them the market identifier codes of ISO 10383, for example XNSE for the National Stock Exchange of India. ISO 10383 is the international standard for exchange codes. For XNYS (New York Stock Exchange) and XNAS (Nasdaq), a feed of trading halts can also make the answer HALTED, which means trading is paused. We can also set the answer by hand for any exchange; this page calls that an operator override.</p>
+        <p>On 21 Nov 2026 two internal checks, the second done separately to test the first, compared that calendar with the exchanges' own published calendars, with government holiday lists where an exchange page could not be read, and with news or broker pages where neither could be read. The checks, runs and reads on this page were done by AI agents working for us.</p>
+        <p>They found errors at 23 of the 26 exchanges that have a holiday list (the service's two crypto venues, Coinbase and Binance, have no holiday list). In what the checks covered, the other three, XNYS, XNAS and XLON (London Stock Exchange), had no error (London was checked only from 31 Aug 2026). We corrected the calendars of 21 of those 23 exchanges, and the corrected calendars went live in a deploy of our code at 10:43 UTC on Tue 24 Nov 2026. Until then the service answered from the old calendar. The calendars of the other two, XCBT and XNYM at CME, were not corrected, and their holiday errors are still live (see "Errors still live at CME" below). The same deploy fixed a separate error in our code for these two on Friday evenings (see "XCBT and XNYM" under "By exchange").</p>
+        <p>So 21 exchanges are listed under "By exchange". Nineteen of them are corrected exchanges with wrong days before 21 Nov 2026. The other two are XCBT and XNYM, for the Friday-evening error in our code. Two corrected exchanges have no entry, because their errors fell on later days or changed no answer: XASX (Australian Securities Exchange) lacked the early closes of Thu 24 and Thu 31 Dec 2026, and XJSE (Johannesburg Stock Exchange) listed two Saturdays of 2026 as holidays; the 2027 lists of both were also corrected.</p>
+        <p>This page lists the days of 2026 before 21 Nov 2026 on which the old calendar or our old code was wrong. The entries under "By exchange" cover only what the two checks examined, plus the Dubai Financial Market's own 2026 holiday circulars, read the same day, and, for XCBT and XNYM, CME's own product documents, read on 25 Nov 2026; they are not an audit of every day. The dated entries under "By exchange" were worked out from the calendar and our code alone: no record of what the service actually signed, and no record of operator overrides, was examined for them. For India on 24 Nov 2026 we also read the service's request logs (see that section).</p>
+        <p>The errors at the Dubai Financial Market (DFM, our code XDFM) and the Singapore Exchange (SGX, our code XSES) that repeat every week or every trading day went on until the corrected calendars went live at 10:43 UTC on Tue 24 Nov 2026. So did one more error, in India on that day (see "India, Tue 24 Nov 2026" below).</p>
+        <h2>Errors still live at CME (XCBT and XNYM)</h2>
+        <p>What to do:</p>
+        <ul>
+          <li>Do not rely on an OPEN from us for XCBT or XNYM at the three times listed under "Wrong OPEN" below. A wrong OPEN is the dangerous direction: an agent that acts on it acts while the market is closed.</li>
+          <li>On Thu 26 and Fri 27 Nov 2026, before you treat a CLOSED from us for XCBT or XNYM as final, check CME's own holiday hours page, <a href="https://www.cmegroup.com/trading-hours.html">https://www.cmegroup.com/trading-hours.html</a>, the page we read on Tue 24 Nov 2026. A wrong CLOSED makes a careful agent wait when it could have traded.</li>
+        </ul>
+        <p>A fix is planned to be live before Thu 24 Dec 2026. No fix is planned for Thu 26 or Fri 27 Nov 2026.</p>
+        <p>These errors were not fixed when this page was last updated on Wed 25 Nov 2026. The first of them, the wrong CLOSED on Thanksgiving Day, runs from 06:00 UTC on Thu 26 Nov 2026. Until a fix is live, the service gives the wrong answer at the times below. Times are UTC. CME's page gives US Central time, which on these dates is UTC minus 6 hours, so 12:00 Central is 18:00 UTC.</p>
+        <p>XCBT is our code for CME's Chicago Board of Trade futures. Its calendar is built for the weekly hours of CME's interest rate and equity futures. XNYM is our code for the New York Mercantile Exchange. Its calendar is built for the hours of CME's energy and metals futures. Neither follows the hours of CME's grain or livestock futures.</p>
+        <p>On Tue 24 Nov 2026 we read CME's own holiday trading hours page (cmegroup.com/trading-hours.html) for Thanksgiving, Christmas and New Year. We ran the code that is live, offline, minute by minute over those days, and compared its answers with CME's tables. A second check, run separately, found the same times.</p>
+        <p>Wrong CLOSED, while CME is open:</p>
+        <ul>
+          <li>Thu 26 Nov 2026, 06:00 to 18:00 UTC for XCBT, and 06:00 to 19:30 UTC for XNYM.</li>
+          <li>From Thu 26 Nov 2026 23:00 UTC to Fri 27 Nov 2026 18:15 UTC for XCBT, and to 19:45 UTC for XNYM.</li>
+        </ul>
+        <p>Wrong OPEN, while CME is closed:</p>
+        <ul>
+          <li>Thu 24 Dec 2026, 18:15 to 22:00 UTC for XCBT, and 18:45 to 22:00 UTC for XNYM. CME closes early that day.</li>
+          <li>From Thu 24 Dec 2026 23:00 UTC to Fri 25 Dec 2026 06:00 UTC, for both.</li>
+          <li>From Thu 31 Dec 2026 23:00 UTC to Fri 1 Jan 2027 06:00 UTC, for both.</li>
+        </ul>
+        <p>The cause of the wrong OPEN: CME's evening session starts at 17:00 Chicago time, and our check for the evening session looks only at weekends, not at holidays. So the service opens the evening before Christmas Day and New Year's Day. The code also cannot hold a CME day that closes early, or one that halts at midday and reopens in the evening. That is why it gives CLOSED for all of Thanksgiving Day and the Friday after, including the hours listed above when CME is open, and OPEN after CME's early close on 24 Dec.</p>
+        <p>Limits of this comparison. CME's page sets the three days of each holiday side by side, and the text we read runs them together, so placing each time on its day is our reading of the page. For 24 Dec and 31 Dec the page lists no evening reopen, and we read that as no evening session. The page says its hours are subject to change and are usually finalized about two weeks before each holiday. We compared only these three holiday periods. Times not on the page, such as the normal Sunday reopen, were taken from the normal weekly schedule (Sunday 17:00 to Friday 16:00 Chicago time, with a daily break from 16:00 to 17:00), which the comparison did not read on CME's site; CME's own product documents, read on 25 Nov 2026, give the same weekly hours for gold, Treasury and equity index futures.</p>
+        <h2>India, Tue 24 Nov 2026</h2>
+        <p>Tue 24 Nov 2026 was a trading holiday at the National Stock Exchange of India (NSE, our code XNSE) and at BSE (the Bombay Stock Exchange, our code XBOM), for the Guru Nanak Jayanti holiday. The old calendar did not have it: it had 19 Nov as the holiday instead. So for the hours our calendar uses for these two exchanges, 03:45 to 10:00 UTC (09:15 to 15:30 India time), the old calendar gave OPEN on a day both exchanges were closed. The corrected calendar went live at 10:43 UTC, after those hours had ended.</p>
+        <p>Shortly before the deploy, at 10:40 UTC, we asked the service's history endpoint (an address on the service that works out the answer for a past time) what it computed for XNSE and XBOM at 05:30 UTC that day. Both answers were OPEN. After the deploy, at 10:44 UTC, the same two questions answered CLOSED, for a holiday.</p>
+        <p>We do not know whether anyone was given the wrong answer. We read the service's request logs for 03:45 to 10:00 UTC that day. No request that named XNSE or XBOM in its web address appears in them. The service also answers through its MCP endpoint (MCP, the Model Context Protocol, is a standard way for AI agents to call tools). The log tool counted 1,435 requests to that endpoint in the same hours, and its logs do not record which exchange a request asked about. So we cannot say whether any of those requests asked about XNSE or XBOM. The log tool also did not show whether these logs hold every request or only a sample.</p>
+        <p>If you hold an OPEN receipt for XNSE or XBOM issued between 03:45 and 10:00 UTC on Tue 24 Nov 2026, it is wrong: both exchanges were closed.</p>
+        <p>Sources for the holiday: NSE's own holiday list, read on Sat 21 Nov 2026; the second check confirmed the date from other NSE documents. For BSE, a copy of BSE's 2026 holiday circular and a broker's article, also read on 21 Nov 2026; BSE's own site could not be read.</p>
+        <h2>How to read the entries below</h2>
+        <p>When each exchange was covered: sixteen exchanges (XASX, XBOM, XNSE, XSHG, XSHE, XKRX, XJSE, XBSP, XSWX, XMIL, XIST, XSAU, XDFM, XNZE, XHEL and XSTO; each is named in full under "By exchange", apart from XASX and XJSE, named above) were added to the code on 17 March 2026, and XCBO, XCBT and XNYM on 25 March 2026. XJPX, XPAR, XHKG and XSES were in the code from 18 February 2026. The launch date in the service's own configuration is 10 March 2026. The dates above are when each exchange was added to the code; this page does not establish the day the service began answering for each one. An entry dated before an exchange was in the code describes the calendar data only, and is marked "(calendar data only)". An entry dated before 10 March 2026 for an exchange already in the code is marked "(before the stated launch date)".</p>
+        <p>In the entries, "signed CLOSED" means the old calendar gave CLOSED for that exchange during its normal trading hours on that day, although the exchange was open, so a status issued then said CLOSED, unless an operator override was in force, in which case it gave the status the override set. "Signed OPEN" means the reverse. Times in the entries are the exchange's local time. A receipt's own timestamp tells you whether it falls in an entry. If a receipt you hold falls in an entry, its signature still verifies, because the signature proves what the service said, not what the market did. Its OPEN or CLOSED value is wrong in the way the entry describes. "Signed OPEN" entries matter most: anyone who let an action go ahead on OPEN did so while the market was closed, so review any action taken on such a receipt. "Signed CLOSED" entries blocked or delayed actions that could have gone ahead.</p>
+        <p>Confidence, from the checks:</p>
+        <ul>
+          <li>Exchange source: the exchange's own page, notice, circular or rulebook was read.</li>
+          <li>Government source: an official government holiday list was read because the exchange's page could not be read.</li>
+          <li>Government institute source: the Korea Astronomy and Space Science Institute's calendar data, which says it is not the official publication.</li>
+          <li>Confirmed: the second check opened a source itself and agreed.</li>
+          <li>Secondary: news or broker pages only.</li>
+          <li>One source: a single secondary source; listed here, but not applied to the corrected calendar.</li>
+        </ul>
+        <p>For each day the corrected calendar treats as closed or shortened, our code keeps a record of the source and the quoted words that set the date. For days the old calendar wrongly treated as closed, the sources are in the reports of the two checks. We will send both on request: write to <!--email_off--><a href="mailto:mike@headlessoracle.com">mike@headlessoracle.com</a><!--/email_off-->.</p>
+        <p>Exchanges with no past error found in 2026: XNYS, XNAS, XLON (London was checked only from 31 August 2026), XASX, XJSE. For XCBT and XNYM, CME's holiday hours were compared only for Thanksgiving, Christmas and New Year 2026; see "Errors still live at CME" above. Trading hours were not checked at XBSP, XIST, XJSE, XNZE, XSWX, XMIL, XBOM, XNSE and XSHE, and at XPAR only against a 2021 half-day note, so no hours error is stated for them.</p>
+        <h2>By exchange</h2>
+        <h3>XJPX, Japan Exchange Group (Tokyo)</h3>
+        <ul>
+          <li>2 Jan 2026: the old calendar gave OPEN; the market was closed. Exchange source. (calendar data only)</li>
+          <li>10 Aug 2026: signed CLOSED; the market was open (Mountain Day was 11 Aug). Exchange source.</li>
+          <li>11 Aug 2026: signed OPEN; the market was closed (Mountain Day). Exchange source, and the Cabinet Office holiday list.</li>
+          <li>23 Sep 2026: signed OPEN; the market was closed (Autumnal Equinox). Exchange source, confirmed.</li>
+        </ul>
+        <h3>XPAR, Euronext Paris</h3>
+        <ul>
+          <li>14 May 2026 (Ascension Day): signed CLOSED; full trading day. Exchange source, confirmed.</li>
+          <li>25 May 2026 (Whit Monday): signed CLOSED; full trading day. Exchange source.</li>
+          <li>14 Jul 2026: signed CLOSED; trading day. Exchange source.</li>
+          <li>11 Nov 2026: signed CLOSED; trading day. Exchange source.</li>
+        </ul>
+        <h3>XMIL, Borsa Italiana (Milan)</h3>
+        <ul>
+          <li>2 Jun 2026: signed CLOSED; a trading day (only the after-hours session did not run). Exchange source (Euronext), confirmed.</li>
+        </ul>
+        <h3>XHKG, Hong Kong Exchanges and Clearing</h3>
+        <ul>
+          <li>19 Feb 2026: signed OPEN; a Hong Kong public holiday, market closed. Government source. (before the stated launch date)</li>
+          <li>7 Apr, 25 May, 19 Jun, 19 Oct 2026: signed OPEN; Hong Kong public holidays, market closed. Government source.</li>
+          <li>15 May 2026: signed CLOSED; the market was open. Government source, confirmed (a market close report for that day).</li>
+          <li>10 Jun and 29 Oct 2026: signed CLOSED; the market was open. Government source.</li>
+        </ul>
+        <h3>XSES, Singapore Exchange</h3>
+        <ul>
+          <li>Every trading day from 19 Feb 2026 to 20 Nov 2026, 12:00 to 13:00, except 2 Jun (below): signed OPEN; this is SGX's mid-day break, with no continuous trading (and again on Mon 23 and Tue 24 Nov 2026, before the corrected calendar went live). Exchange source (SGX Rulebook), confirmed. Days from 19 Feb to 9 Mar are before the stated launch date.</li>
+          <li>Every trading day from 2 Jan to 16 Feb 2026, 12:00 to 13:00: the old calendar gave OPEN, for the same reason. (calendar data only)</li>
+          <li>27 May, 1 Jun, 10 Aug, 9 Nov 2026: signed OPEN; public holidays, market closed. Government source.</li>
+          <li>2 Jun 2026: signed CLOSED all day; the market was open. Government source.</li>
+          <li>16 Feb 2026 (Lunar New Year eve), after 12:00: the old calendar gave OPEN; one broker page says the market closed early at 12:00. One source; not applied. (calendar data only)</li>
+        </ul>
+        <h3>XNSE, National Stock Exchange of India</h3>
+        <ul>
+          <li>26 Mar, 31 Mar, 28 May, 26 Jun, 14 Sep, 20 Oct, 10 Nov 2026: signed OPEN; trading holidays, market closed. Exchange source.</li>
+          <li>25 Mar, 21 Oct, 4 Nov, 19 Nov 2026: signed CLOSED; trading days. Exchange source (19 Nov confirmed).</li>
+          <li>Sunday 8 Nov 2026: NSE's holiday page announced a Muhurat trading session that day (a special session; NSE lists 8 Nov as Diwali Laxmi Pujan); the service signed CLOSED (weekend). The calendar has no way to show a Sunday session and was not changed for it.</li>
+          <li>15 Jan and 3 Mar 2026: the old calendar gave OPEN; trading holidays, market closed. Exchange source (15 Jan confirmed by an NSE circular). (calendar data only)</li>
+          <li>2 Mar 2026: the old calendar gave CLOSED; a trading day. Exchange source. (calendar data only)</li>
+        </ul>
+        <h3>XBOM, BSE India</h3>
+        <ul>
+          <li>26 Mar, 31 Mar, 28 May, 26 Jun, 14 Sep, 20 Oct, 10 Nov 2026: signed OPEN; trading holidays, market closed. Secondary (a copy of BSE's 2026 holiday circular and a broker's BSE holiday page; BSE's own site could not be read).</li>
+          <li>25 Mar, 21 Oct, 4 Nov, 19 Nov 2026: signed CLOSED; trading days. Secondary (19 Nov confirmed on secondary sources).</li>
+          <li>Sunday 8 Nov 2026: Muhurat session announced, signed CLOSED, as for NSE.</li>
+          <li>3 Mar 2026: the old calendar gave OPEN; trading holiday. Secondary. (calendar data only)</li>
+          <li>2 Mar 2026: the old calendar gave CLOSED; a trading day. Secondary. (calendar data only)</li>
+          <li>15 Jan 2026: unresolved. NSE closed for the Maharashtra municipal election; the BSE sources read do not list the day. The old calendar gave OPEN. (calendar data only)</li>
+        </ul>
+        <h3>XSHG, Shanghai Stock Exchange, and XSHE, Shenzhen Stock Exchange</h3>
+        <ul>
+          <li>3 Apr and 8 Oct 2026: signed CLOSED; the markets were open. Exchange source.</li>
+          <li>2 Jan and 16 Feb 2026: the old calendar gave OPEN; the markets were closed. Exchange source (Shanghai 2 Jan confirmed). (calendar data only)</li>
+        </ul>
+        <h3>XKRX, Korea Exchange (KRX)</h3>
+        <ul>
+          <li>15 May 2026: signed CLOSED; a trading day. Government institute source, confirmed.</li>
+          <li>25 May 2026: signed OPEN; substitute holiday for Buddha's Birthday, market closed. Government institute source, confirmed.</li>
+          <li>3 Jun 2026 (local elections) and 17 Jul 2026 (Constitution Day): signed OPEN; KRX closed its markets. Two sources, confirmed.</li>
+          <li>17 Aug and 5 Oct 2026: signed OPEN; substitute public holidays, market closed. Government institute source.</li>
+          <li>19 Nov 2026 (university entrance exam day), 09:00 to 10:00: signed OPEN, and 15:30 to 16:30: signed CLOSED; hours were 10:00 to 16:30 that day. One news source. The calendar has no field for a one-day later opening, and the later close was not entered either; the calendar was not changed for this day.</li>
+          <li>28, 29, 30 Jan 2026: the old calendar gave CLOSED; trading days (Lunar New Year was 16 to 18 Feb). Government institute source; 29 Jan confirmed from news headlines of that day's trading. (calendar data only)</li>
+          <li>16, 17, 18 Feb and 2 Mar 2026: the old calendar gave OPEN; holidays, market closed. Government institute source; 16 to 18 Feb confirmed indirectly. (calendar data only)</li>
+          <li>2 Jan 2026, 09:00 to 10:00: the old calendar gave OPEN; the regular session opened at 10:00 that day. One news source; the calendar was not changed for it, because it has no field for a one-day later opening. (calendar data only)</li>
+        </ul>
+        <h3>XBSP, B3 (Sao Paulo)</h3>
+        <ul>
+          <li>9 Jul 2026: signed CLOSED; B3 traded (the day is not on B3's 2026 calendar). Exchange source.</li>
+          <li>18 Feb 2026 (Ash Wednesday), 10:00 to 13:00: the old calendar gave OPEN; trading started at 13:00. Exchange source, confirmed. Not changed in the calendar (no field for a one-day later opening). (calendar data only)</li>
+        </ul>
+        <h3>XSWX, SIX Swiss Exchange</h3>
+        <ul>
+          <li>1 May 2026: signed OPEN; a market holiday. Exchange source (SIX trading calendar).</li>
+          <li>2 Jan 2026: the old calendar gave OPEN; a market holiday. Exchange source, confirmed. (calendar data only)</li>
+        </ul>
+        <h3>XIST, Borsa Istanbul</h3>
+        <ul>
+          <li>19 Mar and 26 May 2026, after 13:00: signed OPEN; half days, trading ended at 13:00. Exchange source.</li>
+          <li>20 Mar, 27, 28, 29 May 2026: signed OPEN; holidays, market closed. Exchange source (29 May confirmed).</li>
+          <li>31 Mar, 1, 2 Apr, 8, 9 Jun 2026: signed CLOSED; trading days. Exchange source.</li>
+          <li>28 Oct 2026, 10:00 to 13:00: signed CLOSED; a half day, open until 13:00. Exchange source.</li>
+        </ul>
+        <h3>XSAU, Saudi Exchange (Tadawul)</h3>
+        <ul>
+          <li>17, 18, 19, 22, 23 Mar 2026: signed OPEN; trading stopped at the end of 16 Mar for Eid al-Fitr and resumed on 24 Mar. Exchange notice (read as a summary).</li>
+          <li>29, 30, 31 Mar 2026: signed CLOSED; trading days. Exchange notice (summary); 29 and 30 Mar confirmed by a broker's daily report.</li>
+          <li>24 to 28 May 2026: signed OPEN; the Eid al-Adha closure. Secondary (two reports).</li>
+          <li>7, 8 Jun 2026: signed CLOSED; trading days. Secondary (two reports).</li>
+          <li>1 Jan 2026: the old calendar gave CLOSED; the market traded. Secondary (two market reports). (calendar data only)</li>
+        </ul>
+        <h3>XDFM, Dubai Financial Market</h3>
+        <ul>
+          <li>Every Friday from 17 Mar 2026: signed CLOSED; DFM trades Monday to Friday. Exchange source (DFM circular 12/2025), confirmed. The Fridays that were DFM holidays (20 Mar, 29 May, 28 Aug) were signed CLOSED correctly.</li>
+          <li>Every Sunday from 22 Mar 2026: signed OPEN; Sunday is a DFM weekend day. Exchange source, confirmed. Exceptions: 29 Mar and 7 Jun, which the old calendar listed as holidays, were signed CLOSED.</li>
+          <li>Every DFM trading day from 17 Mar 2026, 14:00 to 14:45: signed CLOSED; continuous trading runs to 14:45, followed by DFM's closing phases until 15:00. Exchange source, confirmed.</li>
+          <li>19 Mar, 26, 27, 28 May and 15 Jun 2026: signed OPEN; DFM holidays, market closed. Exchange source (DFM circulars 06/2026 for Eid Al Fitr, 08/2026 for Eid Al Adha and 09/2026 for the New Hijri Year).</li>
+          <li>30, 31 Mar, 5 Jun, 8 Jun 2026: signed CLOSED; trading days. Exchange source (31 Mar confirmed by a market report).</li>
+          <li>Before XDFM was in the code, the old calendar data had the same three errors: CLOSED on every Friday from 2 Jan to 13 Mar 2026, OPEN on every Sunday from 4 Jan to 15 Mar 2026, and CLOSED from 14:00 to 14:45 on every DFM trading day from 5 Jan to 16 Mar 2026. (calendar data only)</li>
+          <li>Not a calendar error: DFM was shut on 2 and 3 Mar 2026 by an unscheduled closure, and trading resumed on 4 Mar (DFM circulars 03/2026 and 05/2026). XDFM was not yet in the code on those days.</li>
+        </ul>
+        <h3>XNZE, NZX, New Zealand's stock exchange</h3>
+        <ul>
+          <li>27 Apr, 10 Jul 2026: signed OPEN; market closed. Government source, confirmed by NZX's own holiday memo.</li>
+          <li>24 Jun 2026: signed CLOSED; a trading day (Matariki was 10 Jul). Government source.</li>
+          <li>2 Jan 2026: the old calendar gave OPEN; market closed. Government source, confirmed by NZX's memo. (calendar data only)</li>
+        </ul>
+        <h3>XHEL, Nasdaq Helsinki</h3>
+        <ul>
+          <li>15 May 2026: signed CLOSED; a trading day. Exchange source (Nasdaq), confirmed.</li>
+        </ul>
+        <h3>XSTO, Nasdaq Stockholm</h3>
+        <ul>
+          <li>15 May 2026: signed CLOSED; a trading day. Exchange source (Nasdaq).</li>
+          <li>2 Apr, 30 Apr, 13 May, 30 Oct 2026, after 13:00: signed OPEN; half trading days, equities closed at 13:00. Exchange source (2 Apr confirmed).</li>
+          <li>5 Jan 2026, after 13:00: the old calendar gave OPEN; a half trading day. Exchange source. (calendar data only)</li>
+        </ul>
+        <h3>XCBT and XNYM, CME Group</h3>
+        <ul>
+          <li>Every Friday from 27 Mar 2026 to 20 Nov 2026 except 3 Jul, 17:00 to midnight US Central time: the old code gave OPEN, so a status issued then said OPEN; the CME futures these codes stand for were closed then, from Friday afternoon until 17:00 Central on Sunday. That is 34 Fridays. In UTC that is 22:00 to 05:00 the next day until 30 Oct, and 23:00 to 06:00 from 6 Nov. Exchange source (CME's own product documents, read on 25 Nov 2026: a gold futures fact card, copyright 2023, an equity index futures overview, copyright 2024, and an undated Treasury futures page give the week as Sunday 17:00 to Friday 16:00 Central; a crude oil futures fact card, copyright 2012, gives Sunday 17:00 to Friday 16:15 Central; they are product documents, not a 2026 schedule). This was an error in our code, not in the calendar data, and the deploy at 10:43 UTC on Tue 24 Nov 2026 fixed it.</li>
+          <li>Every Friday from 2 Jan to 20 Mar 2026, 17:00 to midnight US Central time: the old code gave OPEN, for the same reason. (calendar data only)</li>
+        </ul>
+        <h3>XCBO, Cboe Options</h3>
+        <ul>
+          <li>19 Jun 2026 (Juneteenth): signed OPEN; no regular trading hours that day. Exchange source.</li>
+        </ul>
+        <h2>Not covered here</h2>
+        <ul>
+          <li>XCBT and XNYM (CME Group): CME's holiday hour tables could not be read in either check of 21 Nov 2026. They were read on Tue 24 Nov 2026, for Thanksgiving, Christmas and New Year only; the results are in "Errors still live at CME" above. Apart from those holidays and the Friday evenings under "By exchange", no 2026 day at CME was compared with CME's own published hours, so no other 2026 error is stated for them here. Their calendar data was not changed in the correction of 24 Nov 2026; the deploy of that day fixed only the Friday evenings.</li>
+          <li>Days not yet settled on 21 Nov 2026, which this page does not cover: XKRX 31 Dec 2026, XDFM 1 to 4 Dec 2026, and the early-close times at NZX, JSE, Euronext Paris and Borsa Italiana.</li>
+        </ul>
+      </div>
+    </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="mono">Headless Oracle</span>
+    <ul class="foot-links">
+      <li><a href="/terms">Terms</a></li>
+      <li><a href="/privacy">Privacy</a></li>
+      <li><a href="/refund">Refund</a></li>
+      <li><!--email_off--><a href="mailto:mike@headlessoracle.com">mike@headlessoracle.com</a><!--/email_off--></li>
+    </ul>
+  </div>
+</footer>
+</body>
+</html>

@@ -30,6 +30,7 @@ export default defineConfig({
         evidenceForChargeflow: resolve(__dirname, 'evidence/for/chargeflow.html'),
         evidenceForJustt: resolve(__dirname, 'evidence/for/justt.html'),
         evidenceForChargebacks911: resolve(__dirname, 'evidence/for/chargebacks911.html'),
+        errata2026Calendars: resolve(__dirname, 'errata-2026-calendars.html'),
       },
     },
   },
